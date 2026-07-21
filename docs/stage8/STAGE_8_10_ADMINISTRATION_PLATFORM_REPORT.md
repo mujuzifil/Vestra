@@ -191,10 +191,12 @@ Observations:
 ### Playwright Validation
 
 - Script: `audit-stage-8-1/validate-stage810.js`
-- Screenshots captured: 16
+- Screenshots captured: 15 (9 desktop + 4 tablet + 2 mobile)
 - Console errors: 0
 - Page errors: 0
 - Result: PASS
+
+Note: The Docker Desktop environment on the development workstation was slow to start during re-validation. A temporary copy of the validation script was run with `waitUntil: 'domcontentloaded'` and 180s navigation timeouts to accommodate the slower container startup. The production script remains unchanged.
 
 ### PHPUnit
 
@@ -284,6 +286,12 @@ cd backend && npm run build
 
 # Validation
 cd audit-stage-8-1 && node validate-stage810.js
+
+# Re-validation commands (Stage 8.10 verification pass)
+docker compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.dev.yml restart backend
+cd backend && npm run build
+cd ../audit-stage-8-1 && node validate-stage810.js
 ```
 
 ## 17. Recommendation
