@@ -192,14 +192,14 @@ class CustomerFeedbackResource extends Resource
                     ->color('warning')
                     ->requiresConfirmation()
                     ->visible(fn (CustomerFeedback $record): bool => $record->status !== FeedbackStatus::RESOLVED->value)
-                    ->action(fn (CustomerFeedback $record) => $record->update(['status' => FeedbackStatus::IN_PROGRESS->value])),
+                    ->action(fn (CustomerFeedback $record) => $record->forceFill(['status' => FeedbackStatus::IN_PROGRESS->value])->save()),
                 Tables\Actions\Action::make('markResolved')
                     ->label('Mark Resolved')
                     ->icon('heroicon-o-check')
                     ->color('success')
                     ->requiresConfirmation()
                     ->visible(fn (CustomerFeedback $record): bool => $record->status !== FeedbackStatus::RESOLVED->value)
-                    ->action(fn (CustomerFeedback $record) => $record->update(['status' => FeedbackStatus::RESOLVED->value])),
+                    ->action(fn (CustomerFeedback $record) => $record->forceFill(['status' => FeedbackStatus::RESOLVED->value])->save()),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -226,7 +226,7 @@ class CustomerFeedbackResource extends Resource
                         ->color('warning')
                         ->requiresConfirmation()
                         ->action(function (Collection $records): void {
-                            $records->each->update(['status' => FeedbackStatus::IN_PROGRESS->value]);
+                            $records->each(fn (CustomerFeedback $record) => $record->forceFill(['status' => FeedbackStatus::IN_PROGRESS->value])->save());
                             Notification::make()->title('Feedback marked in progress')->success()->send();
                         }),
                     Tables\Actions\BulkAction::make('markResolved')
@@ -235,7 +235,7 @@ class CustomerFeedbackResource extends Resource
                         ->color('success')
                         ->requiresConfirmation()
                         ->action(function (Collection $records): void {
-                            $records->each->update(['status' => FeedbackStatus::RESOLVED->value]);
+                            $records->each(fn (CustomerFeedback $record) => $record->forceFill(['status' => FeedbackStatus::RESOLVED->value])->save());
                             Notification::make()->title('Feedback marked resolved')->success()->send();
                         }),
                     Tables\Actions\BulkAction::make('assign')

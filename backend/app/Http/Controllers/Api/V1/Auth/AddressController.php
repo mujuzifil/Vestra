@@ -26,14 +26,14 @@ class AddressController extends Controller
     public function store(StoreAddressRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $data['user_id'] = $request->user()->id;
 
         // If this is the first address or marked as default, unset others
         if ($data['is_default'] ?? false) {
             $request->user()->addresses()->update(['is_default' => false]);
         }
 
-        $address = CustomerAddress::create($data);
+        $address = CustomerAddress::make($data);
+        $address->forceFill(['user_id' => $request->user()->id])->save();
 
         return $this->successResponse(
             new AddressResource($address),

@@ -69,6 +69,29 @@ return Application::configure(basePath: dirname(__DIR__))
             return null;
         });
 
+        $exceptions->renderable(function (\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e, $request) {
+            if ($request->is('api/*')) {
+                AuditService::log(
+                    $request->user(),
+                    'authorization.denied',
+                    null,
+                    [
+                        'method' => $request->method(),
+                        'url' => $request->url(),
+                        'message' => $e->getMessage(),
+                    ],
+                    $request->ip(),
+                    $request->userAgent()
+                );
+
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage() ?: 'Forbidden.',
+                ], 403);
+            }
+            return null;
+        });
+
         $exceptions->renderable(function (\Illuminate\Database\Eloquent\ModelNotFoundException $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([

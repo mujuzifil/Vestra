@@ -2,40 +2,66 @@
 
 namespace App\Providers;
 
+use App\Models\AdminSession;
+use App\Models\AuditLog;
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\ContactMessage;
+use App\Models\CustomerAddress;
+use App\Models\CustomerFeedback;
 use App\Models\DistributorRequest;
+use App\Models\LoginActivity;
+use App\Models\Order;
+use App\Models\PaymentTransaction;
 use App\Models\Product;
+use App\Models\Review;
 use App\Models\Setting;
 use App\Models\User;
+use App\Policies\AddressPolicy;
+use App\Policies\AdminSessionPolicy;
+use App\Policies\AuditLogPolicy;
+use App\Policies\CartItemPolicy;
+use App\Policies\CartPolicy;
 use App\Policies\CategoryPolicy;
 use App\Policies\ContactMessagePolicy;
+use App\Policies\CustomerFeedbackPolicy;
 use App\Policies\DistributorRequestPolicy;
+use App\Policies\LoginActivityPolicy;
+use App\Policies\OrderPolicy;
+use App\Policies\PaymentTransactionPolicy;
 use App\Policies\ProductPolicy;
+use App\Policies\ReviewPolicy;
 use App\Policies\SettingPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-
-use App\Models\CustomerAddress;
-use App\Models\Order;
-use App\Policies\AddressPolicy;
-use App\Policies\OrderPolicy;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
     protected $policies = [
+        AdminSession::class => AdminSessionPolicy::class,
+        AuditLog::class => AuditLogPolicy::class,
+        Cart::class => CartPolicy::class,
+        CartItem::class => CartItemPolicy::class,
         Category::class => CategoryPolicy::class,
-        Product::class => ProductPolicy::class,
         ContactMessage::class => ContactMessagePolicy::class,
+        CustomerAddress::class => AddressPolicy::class,
+        CustomerFeedback::class => CustomerFeedbackPolicy::class,
         DistributorRequest::class => DistributorRequestPolicy::class,
+        LoginActivity::class => LoginActivityPolicy::class,
+        Order::class => OrderPolicy::class,
+        PaymentTransaction::class => PaymentTransactionPolicy::class,
+        Product::class => ProductPolicy::class,
+        Review::class => ReviewPolicy::class,
         Setting::class => SettingPolicy::class,
         User::class => UserPolicy::class,
-        CustomerAddress::class => AddressPolicy::class,
-        Order::class => OrderPolicy::class,
     ];
 
     public function boot(): void
     {
         $this->registerPolicies();
+
+        Gate::define('view reports', fn (User $user): bool => $user->isAdmin());
     }
 }

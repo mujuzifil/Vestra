@@ -22,7 +22,7 @@ class LogAdminLogin
         $userAgent = request()?->userAgent();
         $parsed = UserAgentParser::parse($userAgent);
 
-        $user->update(['last_login_at' => now()]);
+        $user->forceFill(['last_login_at' => now()])->save();
 
         LoginActivity::create([
             'user_id' => $user->id,

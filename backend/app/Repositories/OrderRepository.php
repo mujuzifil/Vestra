@@ -8,7 +8,10 @@ class OrderRepository
 {
     public function create(array $data): Order
     {
-        return Order::create($data);
+        $order = new Order();
+        $order->forceFill($data)->save();
+
+        return $order;
     }
 
     public function findById(int $id): ?Order

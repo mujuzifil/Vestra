@@ -63,7 +63,8 @@ class OrderService
             $paymentMethod = $data['payment_method'];
             $isCod = $paymentMethod === PaymentMethod::COD->value;
 
-            $order = Order::create([
+            $order = new Order();
+            $order->forceFill([
                 'user_id' => $user->id,
                 'invoice_number' => $this->generateInvoiceNumber(),
                 'status' => OrderStatus::PENDING->value,
@@ -75,7 +76,7 @@ class OrderService
                 'tax_amount' => $taxAmount,
                 'total_amount' => $totalAmount,
                 'notes' => $data['notes'] ?? null,
-            ]);
+            ])->save();
 
             $order->items()->createMany($orderItems);
 

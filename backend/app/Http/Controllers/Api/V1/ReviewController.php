@@ -73,14 +73,15 @@ class ReviewController extends Controller
             ]);
         }
 
-        $review = Review::create([
+        $review = new Review();
+        $review->forceFill([
             'user_id' => $user->id,
             'product_id' => $data['product_id'],
             'rating' => $data['rating'],
             'title' => $data['title'] ?? null,
             'comment' => $data['comment'] ?? null,
             'status' => 'pending',
-        ]);
+        ])->save();
 
         return $this->successResponse(
             new ReviewResource($review->load('user')),
@@ -91,9 +92,7 @@ class ReviewController extends Controller
 
     public function update(Request $request, Review $review): JsonResponse
     {
-        if ($review->user_id !== $request->user()->id) {
-            return $this->errorResponse('Unauthorized.', 403);
-        }
+        $this->authorize('update', $review);
 
         $data = $request->validate([
             'rating' => 'sometimes|integer|min:1|max:5',
@@ -102,7 +101,7 @@ class ReviewController extends Controller
         ]);
 
         $review->update($data);
-        $review->update(['status' => 'pending']);
+        $review->forceFill(['status' => 'pending'])->save();
 
         return $this->successResponse(
             new ReviewResource($review->fresh()->load('user')),
@@ -112,9 +111,7 @@ class ReviewController extends Controller
 
     public function destroy(Request $request, Review $review): JsonResponse
     {
-        if ($review->user_id !== $request->user()->id && ! $request->user()->isAdmin()) {
-            return $this->errorResponse('Unauthorized.', 403);
-        }
+        $this->authorize('delete', $review);
 
         $review->delete();
 
@@ -123,9 +120,7 @@ class ReviewController extends Controller
 
     public function adminIndex(Request $request): JsonResponse
     {
-        if (! $request->user()->isAdmin()) {
-            return $this->errorResponse('Unauthorized.', 403);
-        }
+        $this->authorize('viewAny', Review::class);
 
         $reviews = Review::with(['user', 'product'])
             ->latest()
@@ -136,15 +131,13 @@ class ReviewController extends Controller
 
     public function updateStatus(Request $request, Review $review): JsonResponse
     {
-        if (! $request->user()->isAdmin()) {
-            return $this->errorResponse('Unauthorized.', 403);
-        }
+        $this->authorize('moderate', $review);
 
         $data = $request->validate([
             'status' => 'required|in:pending,approved,rejected',
         ]);
 
-        $review->update(['status' => $data['status']]);
+        $review->forceFill(['status' => $data['status']])->save();
 
         return $this->successResponse(
             new ReviewResource($review->fresh()->load('user')),

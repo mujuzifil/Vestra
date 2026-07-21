@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\RegisterRequest;
 use App\Http\Resources\V1\CustomerResource;
 use App\Models\User;
+use App\Services\AuditService;
 use App\Traits\RespondsWithJson;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
@@ -21,6 +22,19 @@ class RegisterController extends Controller
 
         // Block any attempt to elevate privileges during public registration.
         if ($request->hasAny(['is_admin', 'role', 'roles', 'status'])) {
+            AuditService::log(
+                null,
+                'privilege_escalation_attempt',
+                null,
+                [
+                    'email' => $data['email'] ?? null,
+                    'fields' => $request->only(['is_admin', 'role', 'roles', 'status']),
+                    'ip' => $request->ip(),
+                ],
+                $request->ip(),
+                $request->userAgent()
+            );
+
             return $this->errorResponse('Invalid registration data.', 422);
         }
 
@@ -29,9 +43,12 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
             'password' => Hash::make($data['password']),
+        ]);
+
+        $user->forceFill([
             'is_admin' => false,
             'status' => 'active',
-        ]);
+        ])->save();
 
         // Assign customer role
         $customerRole = Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'web']);

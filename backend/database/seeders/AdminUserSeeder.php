@@ -12,7 +12,8 @@ class AdminUserSeeder extends Seeder
 
     public function run(): void
     {
-        $reset = filter_var(env('RESET_BOOTSTRAP_ADMIN', false), FILTER_VALIDATE_BOOLEAN);
+        $reset = filter_var(env('RESET_BOOTSTRAP_ADMIN', false), FILTER_VALIDATE_BOOLEAN)
+            || app()->environment('testing');
 
         $existing = User::where('email', 'admin@vestra.com')->first();
 
@@ -36,12 +37,13 @@ class AdminUserSeeder extends Seeder
             [
                 'name' => 'VESTRA Administrator',
                 'password' => $password,
-                'is_admin' => true,
                 'status' => 'active',
                 'email_verified_at' => now(),
                 'force_password_change_at' => $forcePasswordChangeAt,
             ]
         );
+
+        $user->forceFill(['is_admin' => true])->save();
 
         $user->assignRole('Super Administrator');
     }

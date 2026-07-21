@@ -13,13 +13,10 @@ class Review extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'product_id',
         'rating',
         'title',
         'comment',
-        'status',
-        'is_hidden',
     ];
 
     protected function casts(): array

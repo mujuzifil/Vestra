@@ -10,10 +10,13 @@ class CartRepository
 {
     public function getOrCreateCart(User $user): Cart
     {
-        return Cart::firstOrCreate(
-            ['user_id' => $user->id],
-            ['user_id' => $user->id]
-        );
+        $cart = Cart::firstOrNew(['user_id' => $user->id]);
+
+        if (! $cart->exists) {
+            $cart->forceFill(['user_id' => $user->id])->save();
+        }
+
+        return $cart;
     }
 
     public function addItem(Cart $cart, int $productId, int $quantity): CartItem

@@ -77,12 +77,14 @@ Route::prefix('v1')->group(function () {
         Route::get('/payments/{reference}/verify', [PaymentController::class, 'verify']);
         Route::get('/payments/{reference}', [PaymentController::class, 'getTransaction']);
 
-        // Reports
-        Route::get('/reports/dashboard', [ReportController::class, 'dashboard']);
-        Route::get('/reports/sales-trend', [ReportController::class, 'salesTrend']);
-        Route::get('/reports/best-sellers', [ReportController::class, 'bestSellers']);
-        Route::get('/reports/inventory-value', [ReportController::class, 'inventoryValue']);
-        Route::get('/reports/customer-growth', [ReportController::class, 'customerGrowth']);
+        // Reports (admin only)
+        Route::middleware(['can:view reports'])->group(function () {
+            Route::get('/reports/dashboard', [ReportController::class, 'dashboard']);
+            Route::get('/reports/sales-trend', [ReportController::class, 'salesTrend']);
+            Route::get('/reports/best-sellers', [ReportController::class, 'bestSellers']);
+            Route::get('/reports/inventory-value', [ReportController::class, 'inventoryValue']);
+            Route::get('/reports/customer-growth', [ReportController::class, 'customerGrowth']);
+        });
 
         // Reviews
         Route::post('/reviews', [ReviewController::class, 'store']);

@@ -17,13 +17,9 @@ class CustomerFeedback extends Model
     protected $table = 'customer_feedback';
 
     protected $fillable = [
-        'user_id',
         'category',
         'subject',
         'message',
-        'status',
-        'priority',
-        'read_at',
     ];
 
     protected function casts(): array
@@ -65,12 +61,12 @@ class CustomerFeedback extends Model
 
     public function markAsRead(): void
     {
-        $this->update(['read_at' => now()]);
+        $this->forceFill(['read_at' => now()])->save();
     }
 
     public function markAsUnread(): void
     {
-        $this->update(['read_at' => null]);
+        $this->forceFill(['read_at' => null])->save();
     }
 
     public function isRead(): bool

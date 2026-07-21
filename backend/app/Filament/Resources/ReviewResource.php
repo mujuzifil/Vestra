@@ -172,28 +172,28 @@ class ReviewResource extends Resource
                     ->color('success')
                     ->requiresConfirmation()
                     ->visible(fn (Review $record): bool => $record->status === ReviewStatus::PENDING->value)
-                    ->action(fn (Review $record) => $record->update(['status' => ReviewStatus::APPROVED->value])),
+                    ->action(fn (Review $record) => $record->forceFill(['status' => ReviewStatus::APPROVED->value])->save()),
                 Tables\Actions\Action::make('reject')
                     ->label('Reject')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
                     ->requiresConfirmation()
                     ->visible(fn (Review $record): bool => $record->status === ReviewStatus::PENDING->value)
-                    ->action(fn (Review $record) => $record->update(['status' => ReviewStatus::REJECTED->value])),
+                    ->action(fn (Review $record) => $record->forceFill(['status' => ReviewStatus::REJECTED->value])->save()),
                 Tables\Actions\Action::make('hide')
                     ->label('Hide')
                     ->icon('heroicon-o-eye-slash')
                     ->color('warning')
                     ->requiresConfirmation()
                     ->visible(fn (Review $record): bool => ! $record->is_hidden)
-                    ->action(fn (Review $record) => $record->update(['is_hidden' => true])),
+                    ->action(fn (Review $record) => $record->forceFill(['is_hidden' => true])->save()),
                 Tables\Actions\Action::make('restore')
                     ->label('Restore')
                     ->icon('heroicon-o-eye')
                     ->color('success')
                     ->requiresConfirmation()
                     ->visible(fn (Review $record): bool => $record->is_hidden)
-                    ->action(fn (Review $record) => $record->update(['is_hidden' => false])),
+                    ->action(fn (Review $record) => $record->forceFill(['is_hidden' => false])->save()),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -204,7 +204,7 @@ class ReviewResource extends Resource
                         ->color('success')
                         ->requiresConfirmation()
                         ->action(function (Collection $records): void {
-                            $records->each->update(['status' => ReviewStatus::APPROVED->value]);
+                            $records->each(fn (Review $record) => $record->forceFill(['status' => ReviewStatus::APPROVED->value])->save());
                             Notification::make()->title('Reviews approved')->success()->send();
                         }),
                     Tables\Actions\BulkAction::make('reject')
@@ -213,7 +213,7 @@ class ReviewResource extends Resource
                         ->color('danger')
                         ->requiresConfirmation()
                         ->action(function (Collection $records): void {
-                            $records->each->update(['status' => ReviewStatus::REJECTED->value]);
+                            $records->each(fn (Review $record) => $record->forceFill(['status' => ReviewStatus::REJECTED->value])->save());
                             Notification::make()->title('Reviews rejected')->success()->send();
                         }),
                     Tables\Actions\BulkAction::make('hide')
@@ -222,7 +222,7 @@ class ReviewResource extends Resource
                         ->color('warning')
                         ->requiresConfirmation()
                         ->action(function (Collection $records): void {
-                            $records->each->update(['is_hidden' => true]);
+                            $records->each(fn (Review $record) => $record->forceFill(['is_hidden' => true])->save());
                             Notification::make()->title('Reviews hidden')->success()->send();
                         }),
                     Tables\Actions\BulkAction::make('restore')
@@ -231,7 +231,7 @@ class ReviewResource extends Resource
                         ->color('success')
                         ->requiresConfirmation()
                         ->action(function (Collection $records): void {
-                            $records->each->update(['is_hidden' => false]);
+                            $records->each(fn (Review $record) => $record->forceFill(['is_hidden' => false])->save());
                             Notification::make()->title('Reviews restored')->success()->send();
                         }),
                     Tables\Actions\DeleteBulkAction::make(),

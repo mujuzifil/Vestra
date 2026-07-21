@@ -15,12 +15,13 @@ class FeedbackController extends Controller
 
     public function store(StoreFeedbackRequest $request): JsonResponse
     {
-        $feedback = CustomerFeedback::create([
+        $feedback = new CustomerFeedback();
+        $feedback->forceFill([
             'user_id' => $request->user()?->id,
             'category' => $request->validated('category'),
             'subject' => $request->validated('subject'),
             'message' => $request->validated('message'),
-        ]);
+        ])->save();
 
         return $this->successResponse(
             $feedback,
@@ -31,9 +32,7 @@ class FeedbackController extends Controller
 
     public function adminIndex(Request $request): JsonResponse
     {
-        if (! $request->user()->isAdmin()) {
-            return $this->errorResponse('Unauthorized.', 403);
-        }
+        $this->authorize('viewAny', CustomerFeedback::class);
 
         $feedback = CustomerFeedback::with('user')
             ->latest()
@@ -44,15 +43,13 @@ class FeedbackController extends Controller
 
     public function updateStatus(Request $request, CustomerFeedback $feedback): JsonResponse
     {
-        if (! $request->user()->isAdmin()) {
-            return $this->errorResponse('Unauthorized.', 403);
-        }
+        $this->authorize('moderate', $feedback);
 
         $data = $request->validate([
             'status' => 'required|in:new,in_progress,resolved',
         ]);
 
-        $feedback->update(['status' => $data['status']]);
+        $feedback->forceFill(['status' => $data['status']])->save();
 
         return $this->successResponse(
             $feedback->fresh(),
