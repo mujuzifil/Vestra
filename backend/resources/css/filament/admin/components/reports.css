@@ -1,0 +1,99 @@
+/* VESTRA Reports & Business Intelligence Platform */
+
+.vestra-reports-page .fi-main {
+    background-color: var(--surface-page);
+}
+
+.reports-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.reports-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+/* Section headings */
+.reports-page h2,
+.reports-dashboard h2 {
+    color: var(--text-muted);
+    font-size: var(--text-caption);
+    font-weight: var(--font-semibold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* KPI grid spacing */
+.reports-page .grid,
+.reports-dashboard .grid {
+    gap: var(--space-4);
+}
+
+/* Chart widget refinement */
+.vestra-reports-page .fi-wi-chart canvas {
+    max-height: 300px;
+}
+
+/* Table refinements */
+.report-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.report-table-container th {
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.report-table-container td,
+.report-table-container th {
+    white-space: nowrap;
+}
+
+/* Navigation cards */
+.reports-dashboard a.group {
+    text-decoration: none;
+}
+
+.reports-dashboard a.group:hover h3 {
+    color: var(--primary-600);
+}
+
+/* Smooth widget loading */
+.vestra-reports-page .fi-wi-widget {
+    animation: fade-in var(--duration-base) var(--ease-out);
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vestra-reports-page .fi-wi-widget {
+        animation: none;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .reports-page,
+    .reports-dashboard {
+        gap: var(--space-6);
+    }
+
+    .report-table-container td,
+    .report-table-container th {
+        white-space: normal;
+    }
+}

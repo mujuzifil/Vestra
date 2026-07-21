@@ -1,0 +1,131 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+
+  --color-navy-900: #050d18;
+  --color-navy-800: #0a1628;
+  --color-navy-700: #0d1f33;
+  --color-navy-600: #142c47;
+  --color-royal-blue: #0d3b66;
+  --color-blue-700: #124e8a;
+  --color-blue-500: #1565c0;
+  --color-blue-400: #4a90d9;
+  --color-blue-300: #7db8ec;
+  --color-green-600: #5aa33d;
+  --color-green-500: #70c050;
+  --color-green-400: #8fd974;
+  --color-gold: #d4af37;
+  --color-gold-light: #f0d878;
+  --color-hero-bg: #031128;
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-full: 9999px;
+}
+:root {
+  --background: #ffffff;
+  --foreground: #334155;
+  --card: #ffffff;
+  --card-foreground: #334155;
+  --popover: #ffffff;
+  --popover-foreground: #334155;
+  --primary: #70c050;
+  --primary-foreground: #ffffff;
+  --secondary: #0d3b66;
+  --secondary-foreground: #ffffff;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #f8fafc;
+  --accent-foreground: #0d3b66;
+  --destructive: #ef4444;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #70c050;
+  --radius: 0.625rem;
+  --navbar-height: 88px;
+  --hero-bg: #031128;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  html {
+    @apply scroll-smooth;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-green-500 ring-offset-2 ring-offset-background;
+  }
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    @apply rounded-md;
+  }
+}
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 0.4; }
+  100% { transform: translateY(-120px) translateX(40px); opacity: 0; }
+}
+
+@keyframes rise-bubble {
+  0% { transform: translateY(0) scale(0.8); opacity: 0; }
+  15% { opacity: 0.7; }
+  85% { opacity: 0.3; }
+  100% { transform: translateY(-180px) scale(1.2); opacity: 0; }
+}
+
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float-particle {
+  animation: float-particle 12s infinite ease-in-out;
+}
+
+.animate-rise-bubble {
+  animation: rise-bubble 10s infinite ease-in;
+}
+
+.animate-reveal-up {
+  animation: reveal-up 0.8s ease forwards;
+}

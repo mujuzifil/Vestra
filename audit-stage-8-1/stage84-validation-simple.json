@@ -1,0 +1,41 @@
+{
+  "consoleErrors": [],
+  "pageErrors": [],
+  "results": [
+    {
+      "route": "/admin",
+      "status": 200,
+      "url": "http://localhost:8000/admin"
+    },
+    {
+      "route": "/admin/products",
+      "status": 200,
+      "url": "http://localhost:8000/admin/products"
+    },
+    {
+      "route": "/admin/orders",
+      "status": 200,
+      "url": "http://localhost:8000/admin/orders"
+    },
+    {
+      "route": "/admin/customers",
+      "status": 200,
+      "url": "http://localhost:8000/admin/customers"
+    },
+    {
+      "route": "/admin/settings",
+      "status": 200,
+      "url": "http://localhost:8000/admin/settings"
+    },
+    {
+      "route": "/admin/users",
+      "status": 200,
+      "url": "http://localhost:8000/admin/users"
+    },
+    {
+      "route": "/admin/roles",
+      "status": 200,
+      "url": "http://localhost:8000/admin/roles"
+    }
+  ]
+}

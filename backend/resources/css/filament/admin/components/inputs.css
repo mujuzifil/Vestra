@@ -1,0 +1,112 @@
+.fi-input,
+.fi-select-input,
+.fi-textarea {
+    font-family: var(--font-ui);
+    font-size: var(--text-body);
+    min-height: 40px;
+    padding: 8px 12px;
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    color: var(--text-heading);
+    transition: border-color var(--duration-fast) var(--ease-base),
+                box-shadow var(--duration-fast) var(--ease-base);
+}
+
+.fi-input:hover,
+.fi-select-input:hover,
+.fi-textarea:hover {
+    border-color: var(--border-hover);
+}
+
+.fi-input:focus,
+.fi-select-input:focus,
+.fi-textarea:focus {
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-focus);
+}
+
+.fi-input::placeholder,
+.fi-textarea::placeholder {
+    color: var(--text-placeholder);
+}
+
+/* Disabled state */
+.fi-input:disabled,
+.fi-select-input:disabled,
+.fi-textarea:disabled {
+    background-color: var(--neutral-100);
+    opacity: var(--opacity-disabled);
+}
+
+/* Error state */
+.fi-input-wrap.fi-invalid .fi-input,
+.fi-input-wrap.fi-invalid .fi-select-input,
+.fi-input-wrap.fi-invalid .fi-textarea,
+.fi-input.fi-invalid,
+.fi-select-input.fi-invalid,
+.fi-textarea.fi-invalid {
+    border-color: var(--border-error);
+}
+
+.fi-input-wrap.fi-invalid .fi-input:focus,
+.fi-input-wrap.fi-invalid .fi-select-input:focus,
+.fi-input-wrap.fi-invalid .fi-textarea:focus,
+.fi-input.fi-invalid:focus,
+.fi-select-input.fi-invalid:focus,
+.fi-textarea.fi-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
+}
+
+/* Field labels */
+.fi-fo-field-wrp-label {
+    color: var(--text-heading);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+}
+
+/* Helper / hint text */
+.fi-fo-field-wrp-helper-text,
+.fi-fo-field-wrp-hint {
+    color: var(--text-muted);
+    font-size: var(--text-caption);
+}
+
+/* Validation error text */
+.fi-fo-field-wrp-error-message {
+    color: var(--danger-500);
+    font-size: var(--text-caption);
+    font-weight: var(--font-medium);
+}
+
+/* Checkboxes and switches */
+.fi-checkbox-input,
+.fi-radio-input {
+    color: var(--primary-500);
+    border-color: var(--border-default);
+    border-radius: var(--radius-sm);
+}
+
+.fi-checkbox-input:checked,
+.fi-radio-input:checked {
+    background-color: var(--primary-500);
+    border-color: var(--primary-500);
+}
+
+.fi-checkbox-input:focus-visible,
+.fi-radio-input:focus-visible {
+    box-shadow: var(--shadow-focus);
+}
+
+.fi-switch-input {
+    background-color: var(--neutral-300);
+    border-radius: var(--radius-full);
+}
+
+.fi-switch-input:checked {
+    background-color: var(--primary-500);
+}
+
+.fi-switch-input:focus-visible {
+    box-shadow: var(--shadow-focus);
+}

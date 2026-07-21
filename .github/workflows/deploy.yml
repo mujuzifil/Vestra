@@ -1,0 +1,37 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and push images
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/vestra-frontend:${{ github.sha }} ./frontend
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/vestra-backend:${{ github.sha }} -f ./backend/Dockerfile.prod ./backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/vestra-frontend:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/vestra-backend:${{ github.sha }}
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /opt/vestra
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d
+            docker compose -f docker-compose.prod.yml exec -T backend php artisan migrate --force
+            docker compose -f docker-compose.prod.yml exec -T backend php artisan optimize
+            docker system prune -f

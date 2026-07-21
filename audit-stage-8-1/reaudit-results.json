@@ -1,0 +1,130 @@
+[
+  {
+    "name": "dashboard",
+    "url": "/admin",
+    "title": "VESTRA Dashboard - VESTRA",
+    "heading": "VESTRA Dashboard",
+    "elapsed": 37341,
+    "status": "ok"
+  },
+  {
+    "name": "products-list",
+    "url": "/admin/products",
+    "title": "Products - VESTRA",
+    "heading": "Products",
+    "elapsed": 26818,
+    "status": "ok"
+  },
+  {
+    "name": "products-create",
+    "url": "/admin/products/create",
+    "title": "Create Product - VESTRA",
+    "heading": "Create Product",
+    "elapsed": 28626,
+    "status": "ok"
+  },
+  {
+    "name": "categories-list",
+    "url": "/admin/categories",
+    "title": "Categories - VESTRA",
+    "heading": "Categories",
+    "elapsed": 5664,
+    "status": "ok"
+  },
+  {
+    "name": "orders-list",
+    "url": "/admin/orders",
+    "title": "Orders - VESTRA",
+    "heading": "Orders",
+    "elapsed": 6209,
+    "status": "ok"
+  },
+  {
+    "name": "customers-list",
+    "url": "/admin/customers",
+    "title": "Customers - VESTRA",
+    "heading": "Customers",
+    "elapsed": 5237,
+    "status": "ok"
+  },
+  {
+    "name": "customers-view",
+    "url": "/admin/customers/1",
+    "title": "View Customer - VESTRA",
+    "heading": "View Customer",
+    "elapsed": 16755,
+    "status": "ok"
+  },
+  {
+    "name": "reviews-list",
+    "url": "/admin/reviews",
+    "title": "Reviews - VESTRA",
+    "heading": "Reviews",
+    "elapsed": 6789,
+    "status": "ok"
+  },
+  {
+    "name": "contact-messages-list",
+    "url": "/admin/contact-messages",
+    "title": "Contact Messages - VESTRA",
+    "heading": "Contact Messages",
+    "elapsed": 7710,
+    "status": "ok"
+  },
+  {
+    "name": "customer-feedback-list",
+    "url": "/admin/customer-feedbacks",
+    "title": "Customer Feedbacks - VESTRA",
+    "heading": "Customer Feedbacks",
+    "elapsed": 6309,
+    "status": "ok"
+  },
+  {
+    "name": "distributor-requests-list",
+    "url": "/admin/distributor-requests",
+    "title": "Distributor Requests - VESTRA",
+    "heading": "Distributor Requests",
+    "elapsed": 7675,
+    "status": "ok"
+  },
+  {
+    "name": "administrators-list",
+    "url": "/admin/users",
+    "title": "Administrators - VESTRA",
+    "heading": "Administrators",
+    "elapsed": 6156,
+    "status": "ok"
+  },
+  {
+    "name": "roles-list",
+    "url": "/admin/roles",
+    "title": "Roles - VESTRA",
+    "heading": "Roles",
+    "elapsed": 5548,
+    "status": "ok"
+  },
+  {
+    "name": "permissions-list",
+    "url": "/admin/permissions",
+    "title": "Permissions - VESTRA",
+    "heading": "Permissions",
+    "elapsed": 5001,
+    "status": "ok"
+  },
+  {
+    "name": "settings-list",
+    "url": "/admin/settings",
+    "title": "Settings - VESTRA",
+    "heading": "Settings",
+    "elapsed": 5569,
+    "status": "ok"
+  },
+  {
+    "name": "settings-edit",
+    "url": "/admin/settings/1/edit",
+    "title": "Edit Setting - VESTRA",
+    "heading": "Edit Setting",
+    "elapsed": 6476,
+    "status": "ok"
+  }
+]

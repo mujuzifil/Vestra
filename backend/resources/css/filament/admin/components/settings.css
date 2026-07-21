@@ -1,0 +1,108 @@
+/* VESTRA Platform Configuration & Settings */
+
+.vestra-settings-page .fi-main {
+    background-color: var(--surface-page);
+}
+
+.settings-dashboard,
+.settings-edit-page,
+.settings-system-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+/* Page header */
+.settings-dashboard h1,
+.settings-edit-page h1,
+.settings-system-page h1 {
+    color: var(--text-heading);
+    font-size: var(--text-h2);
+    font-weight: var(--font-bold);
+}
+
+.settings-dashboard p,
+.settings-edit-page p,
+.settings-system-page p {
+    color: var(--text-body);
+}
+
+/* Search input */
+#settings-search {
+    transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+}
+
+#settings-search:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+/* Navigation cards */
+.settings-dashboard a.group {
+    text-decoration: none;
+}
+
+.settings-dashboard a.group:hover h3 {
+    color: var(--primary-600);
+}
+
+/* Form sections */
+.settings-edit-page .fi-fo-section {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.settings-edit-page .fi-fo-section-header {
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--border-default);
+}
+
+.settings-edit-page .fi-fo-section-header-heading {
+    color: var(--text-heading);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+}
+
+.settings-edit-page .fi-fo-section-content {
+    padding: var(--space-5);
+}
+
+/* Form actions */
+.settings-form-actions {
+    display: flex;
+    gap: var(--space-3);
+}
+
+/* System info sections */
+.settings-system-page section {
+    background-color: var(--surface-card);
+}
+
+.settings-system-page dl > div:first-child {
+    padding-top: 0;
+}
+
+.settings-system-page dl > div:last-child {
+    padding-bottom: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .settings-dashboard,
+    .settings-edit-page,
+    .settings-system-page {
+        gap: var(--space-6);
+    }
+
+    .settings-form-actions {
+        flex-direction: column-reverse;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #settings-search {
+        transition: none;
+    }
+}

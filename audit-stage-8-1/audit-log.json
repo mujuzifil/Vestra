@@ -1,0 +1,180 @@
+{
+  "visitedAt": "2026-07-20T11:07:41.808Z",
+  "results": [
+    {
+      "name": "dashboard",
+      "url": "/admin",
+      "finalUrl": "http://localhost:8000/admin",
+      "title": "VESTRA Dashboard - VESTRA",
+      "heading": "VESTRA Dashboard",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "products-list",
+      "url": "/admin/products",
+      "finalUrl": "http://localhost:8000/admin/products",
+      "title": "Products - VESTRA",
+      "heading": "Products",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "products-create",
+      "url": "/admin/products/create",
+      "finalUrl": "http://localhost:8000/admin/products/create",
+      "title": {},
+      "heading": null,
+      "status": "error",
+      "error": "page.goto: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://localhost:8000/admin/products/create\", waiting until \"networkidle\"\u001b[22m\n"
+    },
+    {
+      "name": "categories-list",
+      "url": "/admin/categories",
+      "finalUrl": "http://localhost:8000/admin/categories",
+      "title": "Categories - VESTRA",
+      "heading": "Categories",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "categories-create",
+      "url": "/admin/categories/create",
+      "finalUrl": "http://localhost:8000/admin/categories/create",
+      "title": "Create Category - VESTRA",
+      "heading": "Create Category",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "orders-list",
+      "url": "/admin/orders",
+      "finalUrl": "http://localhost:8000/admin/orders",
+      "title": "Orders - VESTRA",
+      "heading": "Orders",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "customers-list",
+      "url": "/admin/customers",
+      "finalUrl": "http://localhost:8000/admin/customers",
+      "title": "Customers - VESTRA",
+      "heading": "Customers",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "reviews-list",
+      "url": "/admin/reviews",
+      "finalUrl": "http://localhost:8000/admin/reviews",
+      "title": "Reviews - VESTRA",
+      "heading": "Reviews",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "contact-messages-list",
+      "url": "/admin/contact-messages",
+      "finalUrl": "http://localhost:8000/admin/contact-messages",
+      "title": "Contact Messages - VESTRA",
+      "heading": "Contact Messages",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "customer-feedback-list",
+      "url": "/admin/customer-feedbacks",
+      "finalUrl": "http://localhost:8000/admin/customer-feedbacks",
+      "title": "Customer Feedbacks - VESTRA",
+      "heading": "Customer Feedbacks",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "distributor-requests-list",
+      "url": "/admin/distributor-requests",
+      "finalUrl": "http://localhost:8000/admin/distributor-requests",
+      "title": "Distributor Requests - VESTRA",
+      "heading": "Distributor Requests",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "administrators-list",
+      "url": "/admin/users",
+      "finalUrl": "http://localhost:8000/admin/users",
+      "title": "Administrators - VESTRA",
+      "heading": "Administrators",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "administrators-create",
+      "url": "/admin/users/create",
+      "finalUrl": "http://localhost:8000/admin/users/create",
+      "title": "Create Administrator - VESTRA",
+      "heading": "Create Administrator",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "roles-list",
+      "url": "/admin/roles",
+      "finalUrl": "http://localhost:8000/admin/roles",
+      "title": "Roles - VESTRA",
+      "heading": "Roles",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "roles-create",
+      "url": "/admin/roles/create",
+      "finalUrl": "http://localhost:8000/admin/roles/create",
+      "title": "Create Role - VESTRA",
+      "heading": "Create Role",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "permissions-list",
+      "url": "/admin/permissions",
+      "finalUrl": "http://localhost:8000/admin/permissions",
+      "title": "Permissions - VESTRA",
+      "heading": "Permissions",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "name": "permissions-create",
+      "url": "/admin/permissions/create",
+      "finalUrl": "http://localhost:8000/admin/permissions/create",
+      "title": "Create Permission - VESTRA",
+      "heading": "Create Permission",
+      "status": "visited",
+      "error": null
+    },
+    {
+      "url": "http://localhost:8000/admin/settings",
+      "status": 500,
+      "route": "network-error"
+    },
+    {
+      "name": "settings-list",
+      "url": "/admin/settings",
+      "finalUrl": "http://localhost:8000/admin/settings",
+      "title": "Server Error",
+      "heading": "500",
+      "status": "visited",
+      "error": null
+    }
+  ],
+  "consoleErrors": [
+    {
+      "url": "http://localhost:8000/admin/settings",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 500 (Internal Server Error)"
+    }
+  ],
+  "pageErrors": []
+}

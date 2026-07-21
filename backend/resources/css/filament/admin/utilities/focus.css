@@ -1,0 +1,45 @@
+/* Focus rings — visible only for keyboard navigation */
+.fi-input,
+.fi-select-input,
+.fi-textarea,
+.fi-btn,
+.fi-sidebar-item-button,
+.fi-topbar-item-button,
+.fi-tabs-item,
+.fi-pagination-item-button,
+.fi-dropdown-list-item,
+.filament-forms-rich-editor-toolbar button,
+[role="button"],
+a,
+button {
+    @apply outline-none;
+}
+
+.fi-input:focus-visible,
+.fi-select-input:focus-visible,
+.fi-textarea:focus-visible,
+.fi-btn:focus-visible,
+.fi-sidebar-item-button:focus-visible,
+.fi-topbar-item-button:focus-visible,
+.fi-tabs-item:focus-visible,
+.fi-pagination-item-button:focus-visible,
+.fi-dropdown-list-item:focus-visible,
+.filament-forms-rich-editor-toolbar button:focus-visible,
+[role="button"]:focus-visible,
+a:focus-visible,
+button:focus-visible {
+    box-shadow: var(--shadow-focus);
+    border-color: var(--primary-400);
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .fi-sidebar,
+    .fi-main-ctn,
+    .fi-btn,
+    .fi-input,
+    .fi-card,
+    .fi-section {
+        transition: none !important;
+    }
+}

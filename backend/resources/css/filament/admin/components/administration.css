@@ -1,0 +1,80 @@
+/* VESTRA Administration Platform */
+
+.vestra-administration-page .fi-main {
+    background-color: var(--surface-page);
+}
+
+.administration-dashboard,
+.administration-security-page,
+.administration-health-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+/* Search input */
+#admin-search {
+    transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+}
+
+#admin-search:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+/* Navigation cards */
+.administration-dashboard a.group {
+    text-decoration: none;
+}
+
+.administration-dashboard a.group:hover h3 {
+    color: var(--primary-600);
+}
+
+/* Health check cards */
+.administration-health-page .rounded-xl {
+    transition: box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.administration-health-page .rounded-xl:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* Form sections */
+.administration-security-page .fi-fo-section {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.administration-security-page .fi-fo-section-header {
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--border-default);
+}
+
+.administration-security-page .fi-fo-section-header-heading {
+    color: var(--text-heading);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+}
+
+.administration-security-page .fi-fo-section-content {
+    padding: var(--space-5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .administration-dashboard,
+    .administration-security-page,
+    .administration-health-page {
+        gap: var(--space-6);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #admin-search,
+    .administration-health-page .rounded-xl {
+        transition: none;
+    }
+}

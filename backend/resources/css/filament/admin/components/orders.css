@@ -1,0 +1,108 @@
+/* VESTRA Orders Module Styling */
+
+/* Order detail page container */
+.fi-vestra-order-detail .fi-section {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.fi-vestra-order-detail .fi-section-header-heading {
+    font-size: var(--text-h3);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+}
+
+/* Order summary cards */
+.fi-vestra-order-detail .bg-primary-50 {
+    background-color: var(--primary-50);
+}
+
+.fi-vestra-order-detail .text-primary-600 {
+    color: var(--primary-600);
+}
+
+.fi-vestra-order-detail .text-primary-700 {
+    color: var(--primary-700);
+}
+
+/* Ordered items table */
+.fi-vestra-order-detail .fi-ta-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.fi-vestra-order-detail .fi-ta-table th {
+    background-color: var(--neutral-50);
+    color: var(--text-heading);
+    font-weight: var(--font-medium);
+    text-transform: uppercase;
+    font-size: var(--text-caption);
+    letter-spacing: 0.05em;
+}
+
+.fi-vestra-order-detail .fi-ta-table td,
+.fi-vestra-order-detail .fi-ta-table th {
+    border-bottom: 1px solid var(--border-default);
+}
+
+.fi-vestra-order-detail .fi-ta-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Definition lists in payment / shipping panels */
+.fi-vestra-order-detail dl > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border-default);
+}
+
+.fi-vestra-order-detail dl > div:last-child {
+    border-bottom: none;
+}
+
+/* Timeline consistency */
+.fi-vestra-order-detail .fi-section .fi-icon {
+    flex-shrink: 0;
+}
+
+/* Customer recent orders list */
+.fi-vestra-order-detail ul.space-y-2 li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--border-default);
+}
+
+.fi-vestra-order-detail ul.space-y-2 li:last-child {
+    border-bottom: none;
+}
+
+/* Order list table improvements */
+.fi-ta-record .fi-ta-text-invoice_number {
+    font-weight: var(--font-semibold);
+}
+
+/* Status action buttons in header */
+.fi-page-header-actions .fi-btn {
+    white-space: nowrap;
+}
+
+/* Empty state consistency */
+.fi-vestra-order-detail .fi-empty-state-icon {
+    color: var(--neutral-400);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .fi-vestra-order-detail dl > div {
+        flex-direction: column;
+        gap: var(--space-1);
+    }
+}

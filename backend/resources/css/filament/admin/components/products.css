@@ -1,0 +1,95 @@
+/* VESTRA Products & Categories Module Styling */
+
+/* Product table thumbnail */
+.fi-ta-record .fi-ta-image {
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+/* Product name emphasis */
+.fi-ta-record .fi-ta-text-product-name {
+    font-weight: var(--font-semibold);
+}
+
+/* Stock badge alignment */
+.fi-ta-record .fi-ta-badge-cell-stock .fi-badge {
+    min-width: 6rem;
+    justify-content: center;
+}
+
+/* Filter chip bar */
+.fi-vestra-filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.fi-vestra-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-full);
+    background-color: var(--primary-100);
+    color: var(--primary-700);
+    font-size: var(--text-caption);
+    font-weight: var(--font-medium);
+}
+
+/* SEO preview card */
+.fi-vestra-seo-preview {
+    border: 1px solid var(--border-default);
+    background-color: var(--surface-card);
+    border-radius: var(--radius-md);
+}
+
+/* Empty state icon container */
+.fi-vestra-empty-state .rounded-full {
+    background-color: var(--neutral-100);
+}
+
+/* Form section spacing */
+.fi-fo-section-vestra .fi-section-header-heading {
+    font-size: var(--text-h3);
+    font-weight: var(--font-semibold);
+}
+
+/* Sticky save bar on edit product */
+@media (min-width: 1024px) {
+    .vestra-edit-product .fi-form-actions {
+        position: sticky;
+        bottom: 0;
+        z-index: 20;
+        background-color: var(--surface-page);
+        border-top: 1px solid var(--border-default);
+        padding: var(--space-4) 0;
+        margin-top: var(--space-8);
+    }
+}
+
+/* Media repeater grid improvements */
+.fi-fo-repeater-media .fi-fo-repeater-item {
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background-color: var(--surface-card);
+}
+
+.fi-fo-repeater-media .fi-fo-file-upload {
+    border-style: dashed;
+    border-color: var(--border-default);
+    border-radius: var(--radius-sm);
+    background-color: var(--neutral-50);
+}
+
+.fi-fo-repeater-media .fi-fo-file-upload:hover {
+    border-color: var(--primary-400);
+    background-color: var(--primary-50);
+}
+
+/* Skeleton consistency */
+.fi-loading-section .fi-skeleton {
+    border-radius: var(--radius-sm);
+    background-color: var(--neutral-200);
+}

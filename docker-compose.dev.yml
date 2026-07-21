@@ -1,0 +1,75 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: builder
+    container_name: vestra-frontend-dev
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+      - API_BASE_URL=http://vestra-backend-dev:8000/api/v1
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    command: npx next dev --hostname 0.0.0.0 --port 3000
+    networks:
+      - vestra-dev-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vestra-backend-dev
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=false
+      - APP_URL=http://localhost:8000
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=vestra
+      - DB_USERNAME=vestra
+      - DB_PASSWORD=vestrasecret
+      - CACHE_DRIVER=file
+      - SESSION_DRIVER=database
+    volumes:
+      - ./backend:/var/www/html
+      - /var/www/html/vendor
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - vestra-dev-network
+
+  db:
+    image: mysql:8.0
+    container_name: vestra-db-dev
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootsecret
+      - MYSQL_DATABASE=vestra
+      - MYSQL_USER=vestra
+      - MYSQL_PASSWORD=vestrasecret
+    ports:
+      - "3307:3306"
+    volumes:
+      - db-dev-data:/var/lib/mysql
+    networks:
+      - vestra-dev-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  vestra-dev-network:
+    driver: bridge
+
+volumes:
+  db-dev-data:

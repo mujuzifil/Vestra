@@ -1,0 +1,105 @@
+/* VESTRA Customers Module Styling */
+
+/* Customer detail page container */
+.fi-vestra-customer-detail .fi-section {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.fi-vestra-customer-detail .fi-section-header-heading {
+    font-size: var(--text-h3);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+}
+
+/* Customer initials avatar */
+.fi-vestra-customer-detail .rounded-full {
+    font-family: var(--font-ui);
+}
+
+/* Commerce insights cards */
+.fi-vestra-customer-detail .bg-primary-50 {
+    background-color: var(--primary-50);
+}
+
+.fi-vestra-customer-detail .text-primary-600 {
+    color: var(--primary-600);
+}
+
+.fi-vestra-customer-detail .text-primary-700 {
+    color: var(--primary-700);
+}
+
+/* Recent orders table */
+.fi-vestra-customer-detail .fi-ta-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.fi-vestra-customer-detail .fi-ta-table th {
+    background-color: var(--neutral-50);
+    color: var(--text-heading);
+    font-weight: var(--font-medium);
+    text-transform: uppercase;
+    font-size: var(--text-caption);
+    letter-spacing: 0.05em;
+}
+
+.fi-vestra-customer-detail .fi-ta-table td,
+.fi-vestra-customer-detail .fi-ta-table th {
+    border-bottom: 1px solid var(--border-default);
+}
+
+.fi-vestra-customer-detail .fi-ta-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Address cards */
+.fi-vestra-customer-detail .rounded-lg.border {
+    border-color: var(--border-default);
+    background-color: var(--surface-card);
+}
+
+/* Definition lists */
+.fi-vestra-customer-detail dl > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border-default);
+}
+
+.fi-vestra-customer-detail dl > div:last-child {
+    border-bottom: none;
+}
+
+/* Customer list avatar column */
+.fi-vestra-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-full);
+    background-color: var(--primary-100);
+    color: var(--primary-700);
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+}
+
+/* Empty state placeholders */
+.fi-vestra-customer-detail .border-dashed {
+    border-style: dashed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .fi-vestra-customer-detail dl > div {
+        flex-direction: column;
+        gap: var(--space-1);
+    }
+}

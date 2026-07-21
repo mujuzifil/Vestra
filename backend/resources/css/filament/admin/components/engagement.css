@@ -1,0 +1,77 @@
+/* VESTRA Customer Engagement Module Styling */
+/* Reviews, Customer Feedback, Contact Messages */
+
+/* Detail page container */
+.fi-vestra-engagement-detail .fi-section {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.fi-vestra-engagement-detail .fi-section-header-heading {
+    font-size: var(--text-h3);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+}
+
+/* Shared initials avatar in table cells */
+.fi-vestra-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-full);
+    background-color: var(--primary-100);
+    color: var(--primary-700);
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+    flex-shrink: 0;
+}
+
+/* Smaller avatars for compact table rows */
+.fi-vestra-avatar.h-9 {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: var(--text-xs);
+}
+
+.fi-vestra-avatar.h-12 {
+    width: 3rem;
+    height: 3rem;
+    font-size: var(--text-sm);
+}
+
+/* Rating badge in review detail */
+.fi-vestra-engagement-detail .rating-badge {
+    font-family: var(--font-ui);
+}
+
+/* Definition lists inside detail cards */
+.fi-vestra-engagement-detail dl > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border-default);
+}
+
+.fi-vestra-engagement-detail dl > div:last-child {
+    border-bottom: none;
+}
+
+/* Placeholder dashed cards */
+.fi-vestra-engagement-detail .border-dashed {
+    border-style: dashed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .fi-vestra-engagement-detail dl > div {
+        flex-direction: column;
+        gap: var(--space-1);
+    }
+}

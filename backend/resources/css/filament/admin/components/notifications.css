@@ -1,0 +1,87 @@
+/* Toast notifications */
+.fi-no-notification {
+    background-color: var(--surface-card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    border-left-width: 4px;
+    border-left-style: solid;
+}
+
+.fi-no-notification.fi-no-success {
+    border-left-color: var(--success-500);
+}
+
+.fi-no-notification.fi-no-danger {
+    border-left-color: var(--danger-500);
+}
+
+.fi-no-notification.fi-no-warning {
+    border-left-color: var(--warning-500);
+}
+
+.fi-no-notification.fi-no-info {
+    border-left-color: var(--info-500);
+}
+
+.fi-no-notification-title {
+    color: var(--text-heading);
+    font-weight: var(--font-semibold);
+}
+
+.fi-no-notification-body {
+    color: var(--text-body);
+}
+
+.fi-no-notification-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.fi-no-notification-icon.fi-color-success {
+    color: var(--success-500);
+}
+
+.fi-no-notification-icon.fi-color-danger {
+    color: var(--danger-500);
+}
+
+.fi-no-notification-icon.fi-color-warning {
+    color: var(--warning-500);
+}
+
+.fi-no-notification-icon.fi-color-info {
+    color: var(--info-500);
+}
+
+/* Badges */
+.fi-badge {
+    font-size: var(--text-caption);
+    font-weight: var(--font-medium);
+    border-radius: var(--radius-full);
+    padding: 2px 10px;
+}
+
+.fi-badge-color-success {
+    background-color: var(--success-100);
+    color: var(--success-600);
+}
+
+.fi-badge-color-warning {
+    background-color: var(--warning-100);
+    color: var(--warning-600);
+}
+
+.fi-badge-color-danger {
+    background-color: var(--danger-100);
+    color: var(--danger-600);
+}
+
+.fi-badge-color-info {
+    background-color: var(--info-100);
+    color: var(--info-600);
+}
+
+.fi-badge-color-gray {
+    background-color: var(--neutral-100);
+    color: var(--neutral-600);
+}

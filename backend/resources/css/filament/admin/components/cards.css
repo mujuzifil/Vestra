@@ -1,0 +1,175 @@
+.fi-section,
+.fi-card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-6);
+}
+
+.fi-section-header {
+    padding-bottom: var(--space-4);
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-default);
+}
+
+.fi-section-header-heading {
+    color: var(--text-heading);
+    font-size: var(--text-h2);
+    font-weight: var(--font-semibold);
+}
+
+.fi-section-header-description {
+    color: var(--text-muted);
+    font-size: var(--text-body-sm);
+}
+
+/* Clickable cards */
+.fi-card.fi-link:hover,
+a.fi-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-hover);
+    transition: box-shadow var(--duration-base) var(--ease-base),
+                border-color var(--duration-fast) var(--ease-base);
+}
+
+/* Page header */
+.fi-header-heading {
+    color: var(--text-heading);
+    font-size: var(--text-display);
+    font-weight: var(--font-bold);
+    letter-spacing: var(--tracking-display);
+    line-height: var(--leading-display);
+}
+
+.fi-header-subheading {
+    color: var(--text-muted);
+    font-size: var(--text-body);
+}
+
+/* Breadcrumbs */
+.fi-breadcrumbs {
+    color: var(--text-muted);
+    font-size: var(--text-caption);
+    line-height: 1.4;
+}
+
+.fi-breadcrumbs-item a {
+    color: var(--neutral-500);
+    transition: color var(--duration-fast) var(--ease-base);
+    max-width: 160px;
+}
+
+.fi-breadcrumbs-item a:hover {
+    color: var(--neutral-700);
+}
+
+.fi-breadcrumbs-item-current {
+    color: var(--neutral-700);
+    font-weight: var(--font-medium);
+    max-width: 200px;
+}
+
+.fi-breadcrumbs-separator {
+    display: flex;
+    align-items: center;
+}
+
+/* Page framework components */
+.fi-vestra-card,
+.fi-vestra-form-container,
+.fi-vestra-table-container,
+.fi-vestra-widget-container {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.fi-vestra-filter-bar {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.fi-vestra-empty-state {
+    background-color: var(--surface-card);
+    border-radius: var(--radius-md);
+}
+
+/* Workspace spacing */
+.fi-main {
+    background-color: var(--surface-page);
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-10);
+}
+
+@media (min-width: 1024px) {
+    .fi-main {
+        padding-top: var(--space-8);
+        padding-bottom: var(--space-12);
+    }
+}
+
+/* Tabs */
+.fi-tabs-item {
+    color: var(--text-muted);
+    font-size: var(--text-body);
+    font-weight: var(--font-medium);
+    border-bottom: 2px solid transparent;
+    padding: var(--space-3) var(--space-4);
+}
+
+.fi-tabs-item:hover {
+    color: var(--text-heading);
+}
+
+.fi-tabs-item.fi-active {
+    color: var(--primary-500);
+    border-bottom-color: var(--primary-500);
+}
+
+/* Stats / KPI cards */
+.fi-wi-stats-overview-stat {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-6);
+}
+
+.fi-wi-stats-overview-stat-label {
+    color: var(--text-muted);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+}
+
+.fi-wi-stats-overview-stat-value {
+    color: var(--text-heading);
+    font-size: var(--text-h1);
+    font-weight: var(--font-bold);
+    letter-spacing: var(--tracking-h1);
+}
+
+/* Skeletons */
+.fi-loading-skeleton {
+    background-color: var(--neutral-200);
+    border-radius: var(--radius-sm);
+    animation: skeleton-pulse var(--duration-slow) ease-in-out infinite alternate;
+}
+
+@keyframes skeleton-pulse {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fi-loading-skeleton {
+        animation: none;
+    }
+}

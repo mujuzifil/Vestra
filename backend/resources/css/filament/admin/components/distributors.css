@@ -1,0 +1,69 @@
+/* VESTRA Distributor Requests Module Styling */
+
+/* Detail page container */
+.fi-vestra-distributor-detail .fi-section {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.fi-vestra-distributor-detail .fi-section-header-heading {
+    font-size: var(--text-h3);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+}
+
+/* Reuse shared avatar styling */
+.fi-vestra-distributor-detail .fi-vestra-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-full);
+    background-color: var(--primary-100);
+    color: var(--primary-700);
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+    flex-shrink: 0;
+}
+
+.fi-vestra-distributor-detail .fi-vestra-avatar.h-12 {
+    width: 3rem;
+    height: 3rem;
+    font-size: var(--text-sm);
+}
+
+/* Definition lists */
+.fi-vestra-distributor-detail dl > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-4);
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--border-default);
+}
+
+.fi-vestra-distributor-detail dl > div:last-child {
+    border-bottom: none;
+}
+
+.fi-vestra-distributor-detail dl > div.flex-col {
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+/* Document placeholders */
+.fi-vestra-distributor-detail .border-dashed {
+    border-style: dashed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .fi-vestra-distributor-detail dl > div {
+        flex-direction: column;
+        gap: var(--space-1);
+    }
+}

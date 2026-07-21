@@ -1,0 +1,79 @@
+/* VESTRA Dashboard Layout */
+
+.vestra-dashboard .dashboard-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.vestra-dashboard .dashboard-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.vestra-dashboard .dashboard-section > h2 {
+    color: var(--text-muted);
+    font-size: var(--text-caption);
+    font-weight: var(--font-semibold);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* Stats overview card refinements */
+.vestra-dashboard .fi-wi-stats-overview-stats-ctn > div {
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background-color: var(--surface-card);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--duration-base) var(--ease-base);
+}
+
+.vestra-dashboard .fi-wi-stats-overview-stats-ctn > div:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* Chart widget refinements */
+.vestra-dashboard .fi-wi-chart canvas {
+    max-height: 300px;
+}
+
+/* Quick action refinements */
+.vestra-dashboard .fi-wi-quick-actions a,
+.vestra-dashboard .fi-wi-quick-actions button {
+    text-decoration: none;
+}
+
+/* Alert and activity widget refinements */
+.vestra-dashboard .fi-wi-alerts .fi-section,
+.vestra-dashboard .fi-wi-recent-activity .fi-section {
+    height: 100%;
+}
+
+/* Table widget header link spacing */
+.vestra-dashboard .fi-wi-table-widget .fi-ta-header-actions {
+    margin-inline-start: auto;
+}
+
+/* Smooth widget loading */
+.vestra-dashboard .fi-wi-widget {
+    animation: fade-in var(--duration-base) var(--ease-out);
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vestra-dashboard .fi-wi-widget {
+        animation: none;
+    }
+}

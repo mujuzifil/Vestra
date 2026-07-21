@@ -1,0 +1,18 @@
+{
+  "consoleErrors": [
+    {
+      "url": "http://127.0.0.1:8000/admin/products/1/edit",
+      "text": "Access to fetch at 'http://localhost:8000/storage/products/ecosuit-cleaner.png' from origin 'http://127.0.0.1:8000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+    },
+    {
+      "url": "http://127.0.0.1:8000/admin/products/1/edit",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ],
+  "pageErrors": [
+    {
+      "url": "http://127.0.0.1:8000/admin/products/1/edit",
+      "error": "Failed to fetch"
+    }
+  ]
+}

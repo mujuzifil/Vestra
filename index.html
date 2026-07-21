@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VESTRA - Professional Fabric Care</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="nav-logo">
+                <img src="Vestra%20logo.png" alt="VESTRA" width="180" height="70">
+            </a>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li class="dropdown">
+                    <a href="#products">Products <i class="fas fa-chevron-down"></i></a>
+                </li>
+                <li><a href="#distributor">Distributor</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+            </ul>
+            <div class="nav-icons">
+                <button class="icon-btn" aria-label="Search"><i class="fas fa-search"></i></button>
+                <button class="icon-btn" aria-label="Account"><i class="fas fa-user"></i></button>
+                <button class="icon-btn cart-btn" aria-label="Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home" aria-label="VESTRA Hero">
+        <div class="hero-bg">
+            <div class="hero-glow hero-glow-1"></div>
+            <div class="hero-glow hero-glow-2"></div>
+            <div class="hero-radial"></div>
+            <div class="hero-vignette"></div>
+            <div class="hero-particles" id="heroParticles" aria-hidden="true"></div>
+            <div class="hero-bubbles" id="heroBubbles" aria-hidden="true"></div>
+        </div>
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="hero-eyebrow">
+                    <i class="fas fa-star"></i>
+                    <span>PROFESSIONAL CARE. PREMIUM RESULTS.</span>
+                </div>
+                <h1 class="hero-title">
+                    Professional<br>Fabric Care.<br>
+                    <span class="text-green">Engineered<br>for&nbsp;Excellence.</span>
+                </h1>
+                <p class="hero-description">
+                    VESTRA is a premium fabric care brand dedicated to developing high-performance cleaning solutions 
+                    that combine advanced chemistry, innovation, and exceptional garment care. Every product is designed 
+                    to deliver professional results while protecting the fabrics people value most.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#products" class="btn btn-primary">
+                        Explore Products <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <a href="#distributor" class="btn btn-outline">
+                        Become a Distributor <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+                <div class="hero-features">
+                    <div class="hero-feature">
+                        <div class="hero-feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="hero-feature-text">
+                            <strong>Professional</strong>
+                            <span>Results</span>
+                        </div>
+                    </div>
+                    <div class="hero-feature-divider"></div>
+                    <div class="hero-feature">
+                        <div class="hero-feature-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="hero-feature-text">
+                            <strong>Fabric</strong>
+                            <span>Protection</span>
+                        </div>
+                    </div>
+                    <div class="hero-feature-divider"></div>
+                    <div class="hero-feature">
+                        <div class="hero-feature-icon">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <div class="hero-feature-text">
+                            <strong>Innovative</strong>
+                            <span>Formulations</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <picture>
+                    <source srcset="assets/images/home_page_image.webp" type="image/webp">
+                    <img src="assets/images/home_page_image.png" alt="VESTRA Professional Fabric Care Product Composition" width="1536" height="1024" loading="eager" decoding="async">
+                </picture>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brand Introduction -->
+    <section class="brand-intro" id="about">
+        <div class="container">
+            <div class="brand-grid">
+                <div class="brand-logo-wrapper reveal">
+                    <img src="Vestra%20logo.png" alt="VESTRA" class="brand-logo-img" width="220" height="90" loading="lazy">
+                </div>
+                <div class="brand-content reveal">
+                    <p class="lead-text">
+                        VESTRA exists to redefine fabric care through innovation, quality, and performance. 
+                        We develop professional-grade detergents and garment care solutions for laundries, 
+                        businesses, and consumers who expect more than ordinary cleaning.
+                    </p>
+                    <p>
+                        Rather than focusing only on removing dirt, VESTRA aims to preserve fabrics, 
+                        extend garment life, and deliver a premium cleaning experience.
+                    </p>
+                </div>
+                <div class="quality-badge reveal">
+                    <div class="badge-inner">
+                        <i class="fas fa-shield-alt"></i>
+                        <span class="badge-title">PROFESSIONAL<br>QUALITY</span>
+                        <span class="badge-subtitle">PREMIUM<br>RESULTS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Promise -->
+    <section class="promise" id="promise">
+        <div class="container">
+            <div class="promise-grid">
+                <div class="promise-card reveal">
+                    <div class="promise-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <div class="promise-text">
+                        <h3>Outstanding Cleaning Performance</h3>
+                        <p>Powerful cleaning that gets the job done.</p>
+                    </div>
+                </div>
+                <div class="promise-card reveal">
+                    <div class="promise-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="promise-text">
+                        <h3>Fabric Protection</h3>
+                        <p>Gentle on fabrics, tough on dirt.</p>
+                    </div>
+                </div>
+                <div class="promise-card reveal">
+                    <div class="promise-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <div class="promise-text">
+                        <h3>Consistent Quality</h3>
+                        <p>Reliable performance in every bottle.</p>
+                    </div>
+                </div>
+                <div class="promise-card reveal">
+                    <div class="promise-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="promise-text">
+                        <h3>Professional Results</h3>
+                        <p>Designed for professional and everyday excellence.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose VESTRA -->
+    <section class="why-choose" id="why-choose">
+        <div class="container">
+            <h2 class="section-title center light reveal">Why Choose VESTRA</h2>
+            <div class="features-grid">
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="far fa-gem"></i>
+                    </div>
+                    <h3>Premium Quality Formulations</h3>
+                    <p>Advanced ingredients for superior cleaning.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="fas fa-broom"></i>
+                    </div>
+                    <h3>Professional Cleaning Performance</h3>
+                    <p>Delivering outstanding results every time.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3>Designed for Modern Laundries</h3>
+                    <p>Perfect for businesses and homes.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Innovative Quality</h3>
+                    <p>Continuously improving for better care.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                    <h3>Reliable & Consistent Results</h3>
+                    <p>Trust in every wash, always.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>Fabric Safe Technology</h3>
+                    <p>Protects colors, fibers and fabric life.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="products" id="products">
+        <div class="container">
+            <h2 class="section-title center reveal">Featured Products</h2>
+            <div class="products-grid" id="productsGrid">
+                <!-- Products injected via JS -->
+            </div>
+            <div class="products-note reveal">
+                <span class="note-badge">More Products Coming Soon</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vision Banner -->
+    <section class="vision-banner">
+        <div class="vision-bg"></div>
+        <div class="container">
+            <div class="vision-content reveal">
+                <i class="fas fa-quote-left quote-icon"></i>
+                <h2>
+                    Building one of Africa's most respected fabric care brands through 
+                    innovation, quality, and continuous improvement.
+                </h2>
+                <i class="fas fa-quote-right quote-icon quote-right"></i>
+            </div>
+            <div class="vision-towels reveal">
+                <div class="towel-vision towel-v-white"></div>
+                <div class="towel-vision towel-v-green"></div>
+                <div class="vision-flower">&#10047;</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Distributor CTA -->
+    <section class="distributor" id="distributor">
+        <div class="container">
+            <div class="distributor-content reveal">
+                <h2 class="section-title">Become a VESTRA Distributor</h2>
+                <p>Join our growing network of professional fabric care partners across Uganda and beyond.</p>
+                <a href="#contact" class="btn btn-primary">Apply Now <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand reveal">
+                    <img src="Vestra%20logo.png" alt="VESTRA" class="footer-logo" width="200" height="80" loading="lazy">
+                    <p>Premium fabric care solutions engineered for professional results and fabric protection.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links reveal">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#distributor">Become a Distributor</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links reveal">
+                    <h4>Customer</h4>
+                    <ul>
+                        <li><a href="#">Login</a></li>
+                        <li><a href="#">Register</a></li>
+                        <li><a href="#">My Orders</a></li>
+                        <li><a href="#">Cart</a></li>
+                        <li><a href="#">Track Order</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact reveal">
+                    <h4>Contact Us</h4>
+                    <ul>
+                        <li><i class="fas fa-phone-alt"></i> <span>+256 707 128 442</span></li>
+                        <li><i class="fas fa-envelope"></i> <span>vestradetergent@gmail.com</span></li>
+                        <li><i class="fas fa-map-marker-alt"></i> <span>Kampala, Uganda</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 VESTRA. All Rights Reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms & Conditions</a>
+                    <a href="#">Return Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/256707128442" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span class="whatsapp-tooltip">Chat with us</span>
+    </a>
+
+    <!-- Cart Notification -->
+    <div class="cart-notification" id="cartNotification">
+        <i class="fas fa-check-circle"></i>
+        <span>Added to cart</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

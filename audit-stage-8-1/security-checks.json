@@ -1,0 +1,17 @@
+[
+  {
+    "check": "unauth-admin-products-redirect",
+    "url": "http://localhost:8000/admin/login",
+    "pass": true
+  },
+  {
+    "check": "unauth-admin-users-redirect",
+    "url": "http://localhost:8000/admin/login",
+    "pass": true
+  },
+  {
+    "check": "login-csrf-token",
+    "pass": false,
+    "tokenLength": 0
+  }
+]

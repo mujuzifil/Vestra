@@ -1,0 +1,23 @@
+const { chromium } = require('playwright');
+(async () => {
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+  page.setDefaultNavigationTimeout(120000);
+  const startLogin = Date.now();
+  await page.goto('http://localhost:8000/admin/login', { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(2000);
+  await page.fill('input[type="email"]', 'admin@vestra.com');
+  await page.fill('input[type="password"]', 'Admin@12345');
+  await page.click('button[type="submit"]');
+  await page.waitForURL('http://localhost:8000/admin', { waitUntil: 'domcontentloaded', timeout: 120000 });
+  console.log('Login time:', Date.now() - startLogin, 'ms');
+  const start = Date.now();
+  await page.goto('http://localhost:8000/admin/products/create', { waitUntil: 'domcontentloaded', timeout: 120000 });
+  await page.waitForTimeout(2000);
+  const heading = await page.$eval('h1', el => el.innerText).catch(() => null);
+  const elapsed = Date.now() - start;
+  console.log('Products create load time:', elapsed, 'ms');
+  console.log('Heading:', heading);
+  await page.screenshot({ path: require('path').join(__dirname, 'screenshots', 'products-create-optimized.png'), fullPage: true });
+  await browser.close();
+})();
