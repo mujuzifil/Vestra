@@ -96,6 +96,9 @@ class ForcePasswordChange extends Page implements HasForms
 
         $user->clearPasswordChangeRequired();
 
+        // Revoke any Sanctum tokens issued before the forced password change.
+        $user->tokens()->delete();
+
         if (request()->hasSession()) {
             request()->session()->put([
                 'password_hash_' . Filament::getAuthGuard() => $user->getAuthPassword(),

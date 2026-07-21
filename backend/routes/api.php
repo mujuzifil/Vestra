@@ -40,7 +40,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/feedback', [FeedbackController::class, 'store']);
 
     // Customer auth (public)
-    Route::post('/auth/register', [RegisterController::class, 'register'])->middleware('throttle:login');
+    Route::post('/auth/register', [RegisterController::class, 'register'])->middleware('throttle:register');
     Route::post('/auth/login', [UnifiedLoginController::class, 'login'])->middleware('throttle:login');
 
     // Customer auth (protected)
@@ -48,7 +48,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/auth/logout', [LogoutController::class, 'logout']);
         Route::get('/auth/profile', [ProfileController::class, 'show']);
         Route::put('/auth/profile', [ProfileController::class, 'update']);
-        Route::post('/auth/change-password', [ChangePasswordController::class, 'store']);
+        Route::post('/auth/change-password', [ChangePasswordController::class, 'store'])->middleware('throttle:change-password');
 
 
         // Addresses

@@ -28,12 +28,16 @@ class UnifiedLoginController extends Controller
             ->first();
 
         if (! $user || ! Hash::check($request->validated('password'), $user->password)) {
+            AuditService::logAuth($user, 'login.failed', $request->ip(), $request->userAgent());
+
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
 
         if (! $user->isActive()) {
+            AuditService::logAuth($user, 'login.rejected.disabled', $request->ip(), $request->userAgent());
+
             $message = $user->isAdmin()
                 ? 'Account is disabled. Contact a Super Administrator.'
                 : 'Account is disabled. Contact support.';

@@ -22,14 +22,32 @@ class RateLimitServiceProvider extends ServiceProvider
             return Limit::perMinute(120)->by($key);
         });
 
-        // Login attempts: 5 per minute per IP
+        // Login attempts: 5 per minute per IP and 5 per minute per email
         RateLimiter::for('login', function (Request $request) {
-            return Limit::perMinute(5)->by($request->ip());
+            $ipKey = 'login:ip:'.$request->ip();
+            $emailKey = 'login:email:'.($request->input('email') ?: $request->ip());
+
+            return [
+                Limit::perMinute(5)->by($ipKey),
+                Limit::perMinute(5)->by($emailKey),
+            ];
+        });
+
+        // Registration attempts: 5 per minute per IP
+        RateLimiter::for('register', function (Request $request) {
+            return Limit::perMinute(5)->by('register:ip:'.$request->ip());
+        });
+
+        // Change-password attempts: 5 per minute per user
+        RateLimiter::for('change-password', function (Request $request) {
+            $key = $request->user()?->id ?? $request->ip();
+
+            return Limit::perMinute(5)->by('change-password:'.$key);
         });
 
         // Contact form: 3 per minute per IP
         RateLimiter::for('contact', function (Request $request) {
-            return Limit::perMinute(3)->by($request->ip());
+            return Limit::perMinute(3)->by('contact:ip:'.$request->ip());
         });
 
         // Payment initiation: 10 per minute per user

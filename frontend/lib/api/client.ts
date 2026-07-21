@@ -25,11 +25,24 @@ function getAuthToken(): string | null {
   return localStorage.getItem("vestra_auth_token");
 }
 
+function handleUnauthenticated(): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  localStorage.removeItem("vestra_auth_token");
+  window.location.href = "/auth/login";
+}
+
 async function handleResponse<T>(response: Response): Promise<T> {
   const contentType = response.headers.get("content-type") ?? "";
   const isJson = contentType.includes("application/json");
 
   if (!response.ok) {
+    if (response.status === 401) {
+      handleUnauthenticated();
+    }
+
     if (isJson) {
       const errorBody = await response.json();
       throw new ApiRequestError(

@@ -28,6 +28,11 @@ class ChangePasswordController extends Controller
             'password' => Hash::make($request->validated('password')),
         ]);
 
+        // Invalidate all other personal access tokens so old credentials cannot
+        // continue to be used after a password change.
+        $currentTokenId = $user->currentAccessToken()?->id;
+        $user->tokens()->where('id', '!=', $currentTokenId)->delete();
+
         $hadRequiredChange = $user->mustChangePassword();
         $user->clearPasswordChangeRequired();
 

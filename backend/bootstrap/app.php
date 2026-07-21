@@ -2,9 +2,11 @@
 
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\TrustProxies;
+use App\Services\AuditService;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Middleware\HandleCors;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
@@ -83,6 +85,20 @@ return Application::configure(basePath: dirname(__DIR__))
                     'success' => false,
                     'message' => 'Resource not found.',
                 ], 404);
+            }
+            return null;
+        });
+
+        $exceptions->renderable(function (ThrottleRequestsException $e, $request) {
+            if ($request->is('api/*')) {
+                if ($request->is('api/*/auth/login')) {
+                    AuditService::logAuth(null, 'login.lockout', $request->ip(), $request->userAgent());
+                }
+
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage() ?: 'Too many attempts.',
+                ], 429);
             }
             return null;
         });
