@@ -71,13 +71,50 @@ class ApiEndpointsTest extends TestCase
             ->assertJsonPath('message', 'Product not found.');
     }
 
-    public function test_settings_endpoint_returns_settings(): void
+    public function test_settings_endpoint_returns_only_public_settings(): void
     {
         $response = $this->getJson('/api/v1/settings');
 
         $response->assertOk()
             ->assertJsonPath('success', true)
-            ->assertJsonCount(Setting::query()->count(), 'data');
+            ->assertJsonStructure([
+                'success',
+                'data' => [
+                    '*' => [
+                        'key',
+                        'value',
+                        'type',
+                        'group',
+                        'label',
+                    ],
+                ],
+                'message',
+            ])
+            ->assertJsonCount(Setting::query()->where('is_public', true)->count(), 'data');
+
+        $keys = collect($response->json('data'))->pluck('key')->all();
+
+        // Public branding and operational settings must be present.
+        $this->assertContains('app_name', $keys);
+        $this->assertContains('company_name', $keys);
+        $this->assertContains('company_logo', $keys);
+        $this->assertContains('currency', $keys);
+        $this->assertContains('timezone', $keys);
+
+        // Secrets and sensitive configuration must never be exposed publicly.
+        $this->assertNotContains('smtp_password', $keys);
+        $this->assertNotContains('smtp_username', $keys);
+        $this->assertNotContains('smtp_host', $keys);
+        $this->assertNotContains('smtp_encryption', $keys);
+        $this->assertNotContains('sender_email', $keys);
+        $this->assertNotContains('flutterwave_secret_key', $keys);
+        $this->assertNotContains('flutterwave_public_key', $keys);
+        $this->assertNotContains('password_min_length', $keys);
+        $this->assertNotContains('password_requires_symbols', $keys);
+        $this->assertNotContains('max_login_attempts', $keys);
+        $this->assertNotContains('session_timeout_minutes', $keys);
+        $this->assertNotContains('debug_mode', $keys);
+        $this->assertNotContains('maintenance_mode', $keys);
     }
 
     public function test_contact_endpoint_stores_message_with_validation(): void

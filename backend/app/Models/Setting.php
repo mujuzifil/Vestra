@@ -24,6 +24,7 @@ class Setting extends Model implements HasMedia
         'description',
         'options',
         'sort_order',
+        'is_public',
     ];
 
     protected function casts(): array
@@ -33,6 +34,7 @@ class Setting extends Model implements HasMedia
             'group' => SettingGroup::class,
             'options' => 'array',
             'sort_order' => 'integer',
+            'is_public' => 'boolean',
         ];
     }
 

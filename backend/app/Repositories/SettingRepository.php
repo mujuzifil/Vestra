@@ -21,6 +21,7 @@ class SettingRepository
     public function getPublicSettings(): Collection
     {
         return $this->model->newQuery()
+            ->where('is_public', true)
             ->ordered()
             ->get();
     }
