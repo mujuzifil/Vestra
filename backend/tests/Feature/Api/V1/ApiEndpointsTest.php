@@ -109,12 +109,20 @@ class ApiEndpointsTest extends TestCase
         $this->assertNotContains('sender_email', $keys);
         $this->assertNotContains('flutterwave_secret_key', $keys);
         $this->assertNotContains('flutterwave_public_key', $keys);
+        $this->assertNotContains('flutterwave_encryption_key', $keys);
+        $this->assertNotContains('flutterwave_webhook_secret', $keys);
         $this->assertNotContains('password_min_length', $keys);
         $this->assertNotContains('password_requires_symbols', $keys);
         $this->assertNotContains('max_login_attempts', $keys);
         $this->assertNotContains('session_timeout_minutes', $keys);
         $this->assertNotContains('debug_mode', $keys);
         $this->assertNotContains('maintenance_mode', $keys);
+
+        // No ciphertext should ever appear in the public payload.
+        foreach ($response->json('data') as $setting) {
+            $value = (string) ($setting['value'] ?? '');
+            $this->assertStringStartsNotWith('eyJpdiI6', $value, "Setting [{$setting['key']}] appears to contain encrypted ciphertext.");
+        }
     }
 
     public function test_contact_endpoint_stores_message_with_validation(): void

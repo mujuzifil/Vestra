@@ -47,6 +47,9 @@ FROM base AS app
 COPY --from=deps /var/www/html/vendor ./vendor
 COPY . .
 
+# Clear any stale package/service caches that may reference dev-only packages
+RUN rm -f bootstrap/cache/packages.php bootstrap/cache/services.php
+
 # Generate autoloader and optimize
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative \
     && php artisan config:cache \

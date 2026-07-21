@@ -71,6 +71,8 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
 
+        $bootstrapPassword = env('BOOTSTRAP_ADMIN_PASSWORD', 'Admin@12345');
+
         try {
             $user = User::where('email', 'admin@vestra.com')->first();
 
@@ -78,7 +80,7 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
 
-            if (! Hash::check('Admin@12345', $user->password)) {
+            if (! Hash::check($bootstrapPassword, $user->password)) {
                 return;
             }
 

@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\SettingResource\Pages;
 
 use App\Enums\SettingGroup;
+use App\Models\Setting;
+use App\Services\SettingService;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
@@ -33,12 +35,18 @@ class EditEmailSettings extends EditGroupSettings
     {
         $state = $this->form->getState();
 
+        $settings = $this->settings ?? app(SettingService::class)->group($this->getGroup());
+
+        $resolve = fn (string $key, mixed $stateValue): mixed => $stateValue === Setting::ENCRYPTED_PLACEHOLDER
+            ? $settings->firstWhere('key', $key)?->value
+            : $stateValue;
+
         $host = $state['smtp_host'] ?? '';
         $port = (int) ($state['smtp_port'] ?? 587);
         $encryption = $state['smtp_encryption'] ?? 'tls';
-        $username = $state['smtp_username'] ?? '';
-        $password = $state['smtp_password'] ?? '';
-        $fromAddress = $state['sender_email'] ?? 'noreply@vestra.com';
+        $username = (string) $resolve('smtp_username', $state['smtp_username'] ?? '');
+        $password = (string) $resolve('smtp_password', $state['smtp_password'] ?? '');
+        $fromAddress = (string) $resolve('sender_email', $state['sender_email'] ?? 'noreply@vestra.com');
         $fromName = $state['sender_name'] ?? 'VESTRA';
         $recipient = $state['support_email'] ?? $fromAddress;
 

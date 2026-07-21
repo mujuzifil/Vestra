@@ -54,30 +54,41 @@ class SettingResource extends Resource
 
                 Forms\Components\TextInput::make('value')
                     ->maxLength(65535)
-                    ->hidden(fn (Forms\Get $get) => $get('type') !== 'string' && $get('type') !== 'number')
-                    ->numeric(fn (Forms\Get $get) => $get('type') === 'number'),
+                    ->hidden(fn (Forms\Get $get, ?Setting $record): bool => $record?->isSensitive() || ($get('type') !== 'string' && $get('type') !== 'number'))
+                    ->numeric(fn (Forms\Get $get) => $get('type') === 'number')
+                    ->autocomplete(false),
 
                 Forms\Components\Textarea::make('value')
                     ->rows(4)
                     ->columnSpanFull()
-                    ->hidden(fn (Forms\Get $get) => $get('type') !== 'text' && $get('type') !== 'json')
+                    ->hidden(fn (Forms\Get $get, ?Setting $record): bool => $record?->isSensitive() || ($get('type') !== 'text' && $get('type') !== 'json'))
                     ->extraInputAttributes(['class' => 'font-mono'])
                     ->hint(fn (Forms\Get $get) => $get('type') === 'json' ? 'Valid JSON required' : null),
 
                 Forms\Components\Toggle::make('value')
-                    ->hidden(fn (Forms\Get $get) => $get('type') !== 'boolean')
+                    ->hidden(fn (Forms\Get $get, ?Setting $record): bool => $record?->isSensitive() || $get('type') !== 'boolean')
                     ->dehydrateStateUsing(fn (?bool $state): string => $state ? '1' : '0')
                     ->formatStateUsing(fn (?string $state): bool => $state === '1'),
 
                 Forms\Components\Select::make('value')
-                    ->hidden(fn (Forms\Get $get) => $get('type') !== 'select')
+                    ->hidden(fn (Forms\Get $get, ?Setting $record): bool => $record?->isSensitive() || $get('type') !== 'select')
                     ->options(fn (Forms\Get $get, ?Setting $record) => $record?->selectOptions() ?? []),
+
+                Forms\Components\TextInput::make('value')
+                    ->label(fn (?Setting $record) => $record?->label)
+                    ->helperText(fn (?Setting $record) => $record?->description)
+                    ->password()
+                    ->revealable()
+                    ->autocomplete(false)
+                    ->placeholder('Enter new value to replace the stored secret')
+                    ->hidden(fn (Forms\Get $get, ?Setting $record): bool => ! $record?->isSensitive())
+                    ->formatStateUsing(fn (?string $state, ?Setting $record): string => $record?->isSensitive() && filled($state) ? Setting::ENCRYPTED_PLACEHOLDER : $state),
 
                 Forms\Components\SpatieMediaLibraryFileUpload::make('settings_image')
                     ->collection('settings')
                     ->image()
                     ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/jpg', 'image/webp'])
-                    ->hidden(fn (Forms\Get $get) => $get('type') !== 'image')
+                    ->hidden(fn (Forms\Get $get, ?Setting $record): bool => $record?->isSensitive() || $get('type') !== 'image')
                     ->columnSpanFull()
                     ->dehydrated(false),
             ]);
@@ -127,8 +138,9 @@ class SettingResource extends Resource
 
                 Tables\Columns\TextColumn::make('value')
                     ->hidden(fn (?Setting $record): bool => $record?->type->value === 'image' || $record?->type->value === 'boolean')
+                    ->formatStateUsing(fn (?string $state, Setting $record): string => $record->isSensitive() ? '••••••••' : (string) $state)
                     ->limit(50)
-                    ->tooltip(fn (Setting $record): ?string => $record->type->value === 'text' || $record->type->value === 'json' ? $record->value : null),
+                    ->tooltip(fn (Setting $record): ?string => ($record->type->value === 'text' || $record->type->value === 'json') && ! $record->isSensitive() ? $record->value : null),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
@@ -157,11 +169,11 @@ class SettingResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->mutateRecordDataUsing(function (array $data, Setting $record): array {
-                        if ($record->type->value === 'boolean') {
+                        if ($record->isSensitive() && filled($record->value)) {
+                            $data['value'] = Setting::ENCRYPTED_PLACEHOLDER;
+                        } elseif ($record->type->value === 'boolean') {
                             $data['value'] = $record->typedValue();
-                        }
-
-                        if ($record->type->value === 'select') {
+                        } elseif ($record->type->value === 'select') {
                             $data['value'] = $record->value;
                         }
 
@@ -170,7 +182,11 @@ class SettingResource extends Resource
                     ->using(function (Setting $record, array $data): Setting {
                         $previousValue = $record->value;
 
-                        if ($record->type->value === 'boolean') {
+                        if ($record->isSensitive()) {
+                            if (array_key_exists('value', $data) && $data['value'] !== Setting::ENCRYPTED_PLACEHOLDER) {
+                                $record->value = $data['value'];
+                            }
+                        } elseif ($record->type->value === 'boolean') {
                             $record->value = $data['value'] ? '1' : '0';
                         } elseif ($record->type->value === 'image') {
                             // Image is handled by Spatie media upload; value unchanged unless media replaced.
@@ -180,6 +196,8 @@ class SettingResource extends Resource
 
                         $record->save();
 
+                        $auditValue = $record->isSensitive() ? '[redacted]' : $record->value;
+
                         AuditService::log(
                             auth()->user(),
                             'setting.updated',
@@ -187,8 +205,8 @@ class SettingResource extends Resource
                             [
                                 'key' => $record->key,
                                 'group' => $record->group->value,
-                                'previous_value' => $previousValue,
-                                'new_value' => $record->value,
+                                'previous_value' => $record->isSensitive() ? '[redacted]' : $previousValue,
+                                'new_value' => $auditValue,
                             ]
                         );
 

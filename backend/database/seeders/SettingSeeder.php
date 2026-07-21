@@ -22,6 +22,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Name shown in the administration panel and browser title.',
                 'sort_order' => 1,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'company_name',
@@ -32,6 +33,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Legal or trading name of the business.',
                 'sort_order' => 2,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'support_email',
@@ -42,6 +44,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Primary customer support email address.',
                 'sort_order' => 3,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'support_phone',
@@ -52,6 +55,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Primary customer support phone number.',
                 'sort_order' => 4,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'website_url',
@@ -62,6 +66,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Public website URL.',
                 'sort_order' => 5,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'company_logo',
@@ -72,6 +77,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Logo used in admin panel and public branding.',
                 'sort_order' => 6,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'favicon',
@@ -82,6 +88,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Browser tab icon.',
                 'sort_order' => 7,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'business_address',
@@ -92,6 +99,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Primary business address displayed to customers.',
                 'sort_order' => 8,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'timezone',
@@ -109,6 +117,7 @@ class SettingSeeder extends Seeder
                 ],
                 'sort_order' => 9,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'language',
@@ -120,6 +129,7 @@ class SettingSeeder extends Seeder
                 'options' => ['en' => 'English', 'fr' => 'French', 'es' => 'Spanish', 'sw' => 'Swahili'],
                 'sort_order' => 10,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'date_format',
@@ -131,6 +141,7 @@ class SettingSeeder extends Seeder
                 'options' => ['d M Y' => '01 Jan 2024', 'Y-m-d' => '2024-01-01', 'm/d/Y' => '01/01/2024', 'd/m/Y' => '01/01/2024'],
                 'sort_order' => 11,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'currency',
@@ -142,6 +153,7 @@ class SettingSeeder extends Seeder
                 'options' => ['UGX' => 'Ugandan Shilling (UGX)', 'USD' => 'US Dollar (USD)', 'EUR' => 'Euro (EUR)', 'GBP' => 'British Pound (GBP)'],
                 'sort_order' => 12,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
 
             // Business
@@ -154,6 +166,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Official business registration number.',
                 'sort_order' => 1,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'tax_number',
@@ -164,6 +177,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Tax identification number.',
                 'sort_order' => 2,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'vat_number',
@@ -174,6 +188,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Value-added tax registration number.',
                 'sort_order' => 3,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'invoice_prefix',
@@ -184,6 +199,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Prefix used on invoice numbers.',
                 'sort_order' => 4,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'invoice_starting_number',
@@ -194,6 +210,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Starting number for invoice sequences.',
                 'sort_order' => 5,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'default_distributor_status',
@@ -205,6 +222,7 @@ class SettingSeeder extends Seeder
                 'options' => ['pending' => 'Pending', 'under_review' => 'Under Review'],
                 'sort_order' => 6,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'business_hours',
@@ -215,6 +233,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Publicly displayed business hours.',
                 'sort_order' => 7,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
 
             // Commerce
@@ -228,6 +247,7 @@ class SettingSeeder extends Seeder
                 'options' => ['active' => 'Active', 'inactive' => 'Inactive'],
                 'sort_order' => 1,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'default_review_behaviour',
@@ -239,6 +259,7 @@ class SettingSeeder extends Seeder
                 'options' => ['manual' => 'Manual moderation', 'auto' => 'Auto-approve'],
                 'sort_order' => 2,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'featured_product_rules',
@@ -249,6 +270,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Rules for selecting featured products.',
                 'sort_order' => 3,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'stock_threshold',
@@ -259,6 +281,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Quantity at which products are considered low stock.',
                 'sort_order' => 4,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'default_category',
@@ -269,6 +292,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Default category slug for new products.',
                 'sort_order' => 5,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'price_precision',
@@ -279,6 +303,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Number of decimal places for prices.',
                 'sort_order' => 6,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'tax_display',
@@ -290,6 +315,7 @@ class SettingSeeder extends Seeder
                 'options' => ['exclusive' => 'Exclusive of tax', 'inclusive' => 'Inclusive of tax'],
                 'sort_order' => 7,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
 
             // Orders
@@ -302,6 +328,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Prefix for generated order numbers.',
                 'sort_order' => 1,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'default_order_status',
@@ -313,6 +340,7 @@ class SettingSeeder extends Seeder
                 'options' => ['pending' => 'Pending', 'processing' => 'Processing'],
                 'sort_order' => 2,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'cancellation_window_hours',
@@ -323,6 +351,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Hours after order creation within which customers may cancel.',
                 'sort_order' => 3,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'auto_archive_days',
@@ -333,6 +362,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Days after delivery before orders are archived. Set to 0 to disable.',
                 'sort_order' => 4,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
 
             // Payments
@@ -345,6 +375,7 @@ class SettingSeeder extends Seeder
                 'description' => 'JSON array of enabled payment method identifiers.',
                 'sort_order' => 1,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'default_payment_method',
@@ -356,6 +387,7 @@ class SettingSeeder extends Seeder
                 'options' => ['flutterwave' => 'Flutterwave', 'cod' => 'Cash on Delivery', 'bank_transfer' => 'Bank Transfer'],
                 'sort_order' => 2,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'offline_payment_instructions',
@@ -366,6 +398,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Instructions shown when offline payment is selected.',
                 'sort_order' => 3,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'payment_timeout_minutes',
@@ -376,6 +409,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Minutes before an unpaid order is considered expired.',
                 'sort_order' => 4,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'transaction_reference_prefix',
@@ -386,6 +420,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Prefix for payment transaction references.',
                 'sort_order' => 5,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
 
             // Inventory
@@ -398,6 +433,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Stock level that triggers low-stock alerts.',
                 'sort_order' => 1,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'out_of_stock_behaviour',
@@ -409,6 +445,7 @@ class SettingSeeder extends Seeder
                 'options' => ['hide' => 'Hide from storefront', 'show' => 'Show but disable purchase', 'notify' => 'Show with notify-me option'],
                 'sort_order' => 2,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'inventory_alerts_enabled',
@@ -419,6 +456,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Enable low-stock and out-of-stock alerts.',
                 'sort_order' => 3,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'sku_format',
@@ -429,6 +467,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Pattern used when generating SKUs.',
                 'sort_order' => 4,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
 
             // Notifications
@@ -441,6 +480,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Enable notifications to administrators.',
                 'sort_order' => 1,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'customer_notifications_enabled',
@@ -451,6 +491,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Enable notifications to customers.',
                 'sort_order' => 2,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'distributor_notifications_enabled',
@@ -461,6 +502,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Enable notifications to distributors.',
                 'sort_order' => 3,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'review_notifications_enabled',
@@ -471,6 +513,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Notify administrators of new reviews.',
                 'sort_order' => 4,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'email_notifications_enabled',
@@ -481,6 +524,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Send notifications via email.',
                 'sort_order' => 5,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
 
             // Email
@@ -493,6 +537,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Outgoing mail server hostname.',
                 'sort_order' => 1,
                 'is_public' => false,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'smtp_port',
@@ -503,6 +548,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Outgoing mail server port.',
                 'sort_order' => 2,
                 'is_public' => false,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'smtp_encryption',
@@ -514,6 +560,7 @@ class SettingSeeder extends Seeder
                 'options' => ['tls' => 'TLS', 'ssl' => 'SSL', 'none' => 'None'],
                 'sort_order' => 3,
                 'is_public' => false,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'smtp_username',
@@ -524,6 +571,7 @@ class SettingSeeder extends Seeder
                 'description' => 'SMTP authentication username.',
                 'sort_order' => 4,
                 'is_public' => false,
+                'is_sensitive' => true,
             ],
             [
                 'key' => 'smtp_password',
@@ -534,6 +582,7 @@ class SettingSeeder extends Seeder
                 'description' => 'SMTP authentication password.',
                 'sort_order' => 5,
                 'is_public' => false,
+                'is_sensitive' => true,
             ],
             [
                 'key' => 'sender_name',
@@ -544,6 +593,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Name displayed in the From field.',
                 'sort_order' => 6,
                 'is_public' => false,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'sender_email',
@@ -554,6 +604,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Email address used in the From field.',
                 'sort_order' => 7,
                 'is_public' => false,
+                'is_sensitive' => true,
             ],
 
             // Localization
@@ -567,6 +618,7 @@ class SettingSeeder extends Seeder
                 'options' => ['en' => 'English', 'fr' => 'French', 'es' => 'Spanish', 'sw' => 'Swahili'],
                 'sort_order' => 1,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'localization_timezone',
@@ -584,6 +636,7 @@ class SettingSeeder extends Seeder
                 ],
                 'sort_order' => 2,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'localization_date_format',
@@ -595,6 +648,7 @@ class SettingSeeder extends Seeder
                 'options' => ['d M Y' => '01 Jan 2024', 'Y-m-d' => '2024-01-01', 'm/d/Y' => '01/01/2024', 'd/m/Y' => '01/01/2024'],
                 'sort_order' => 3,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'time_format',
@@ -606,6 +660,7 @@ class SettingSeeder extends Seeder
                 'options' => ['12' => '12-hour', '24' => '24-hour'],
                 'sort_order' => 4,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'number_format',
@@ -617,6 +672,7 @@ class SettingSeeder extends Seeder
                 'options' => ['en' => '1,234.56', 'de' => '1.234,56', 'fr' => '1 234,56'],
                 'sort_order' => 5,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'currency_symbol',
@@ -627,6 +683,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Symbol or code shown before or after amounts.',
                 'sort_order' => 6,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'currency_position',
@@ -638,6 +695,7 @@ class SettingSeeder extends Seeder
                 'options' => ['before' => 'Before amount', 'after' => 'After amount'],
                 'sort_order' => 7,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
 
             // Security
@@ -650,6 +708,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Minimum number of characters for passwords.',
                 'sort_order' => 1,
                 'is_public' => false,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'password_requires_symbols',
@@ -660,6 +719,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Require special characters in passwords.',
                 'sort_order' => 2,
                 'is_public' => false,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'max_login_attempts',
@@ -670,6 +730,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Failed attempts before temporary lockout.',
                 'sort_order' => 3,
                 'is_public' => false,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'session_timeout_minutes',
@@ -680,6 +741,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Minutes of inactivity before automatic logout.',
                 'sort_order' => 4,
                 'is_public' => false,
+                'is_sensitive' => false,
             ],
 
             // Integrations
@@ -692,6 +754,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Enable Flutterwave payment gateway.',
                 'sort_order' => 1,
                 'is_public' => false,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'flutterwave_public_key',
@@ -702,6 +765,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Public API key for Flutterwave.',
                 'sort_order' => 2,
                 'is_public' => false,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'flutterwave_secret_key',
@@ -712,6 +776,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Secret API key for Flutterwave.',
                 'sort_order' => 3,
                 'is_public' => false,
+                'is_sensitive' => true,
             ],
             [
                 'key' => 'google_analytics_id',
@@ -722,6 +787,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Measurement ID for Google Analytics.',
                 'sort_order' => 4,
                 'is_public' => true,
+                'is_sensitive' => false,
             ],
 
             // System
@@ -734,6 +800,7 @@ class SettingSeeder extends Seeder
                 'description' => 'Put the storefront into maintenance mode.',
                 'sort_order' => 1,
                 'is_public' => false,
+                'is_sensitive' => false,
             ],
             [
                 'key' => 'debug_mode',
@@ -744,44 +811,45 @@ class SettingSeeder extends Seeder
                 'description' => 'Enable detailed error output. Use only in development.',
                 'sort_order' => 2,
                 'is_public' => false,
+                'is_sensitive' => false,
             ],
 
             // Social (existing)
-            ['key' => 'facebook', 'value' => 'https://facebook.com/vestra', 'type' => SettingType::STRING, 'group' => SettingGroup::SOCIAL, 'label' => 'Facebook', 'sort_order' => 1, 'is_public' => true],
-            ['key' => 'instagram', 'value' => 'https://instagram.com/vestra', 'type' => SettingType::STRING, 'group' => SettingGroup::SOCIAL, 'label' => 'Instagram', 'sort_order' => 2, 'is_public' => true],
-            ['key' => 'linkedin', 'value' => 'https://linkedin.com/company/vestra', 'type' => SettingType::STRING, 'group' => SettingGroup::SOCIAL, 'label' => 'LinkedIn', 'sort_order' => 3, 'is_public' => true],
+            ['key' => 'facebook', 'value' => 'https://facebook.com/vestra', 'type' => SettingType::STRING, 'group' => SettingGroup::SOCIAL, 'label' => 'Facebook', 'sort_order' => 1, 'is_public' => true, 'is_sensitive' => false],
+            ['key' => 'instagram', 'value' => 'https://instagram.com/vestra', 'type' => SettingType::STRING, 'group' => SettingGroup::SOCIAL, 'label' => 'Instagram', 'sort_order' => 2, 'is_public' => true, 'is_sensitive' => false],
+            ['key' => 'linkedin', 'value' => 'https://linkedin.com/company/vestra', 'type' => SettingType::STRING, 'group' => SettingGroup::SOCIAL, 'label' => 'LinkedIn', 'sort_order' => 3, 'is_public' => true, 'is_sensitive' => false],
 
             // Content (existing)
-            ['key' => 'mission', 'value' => 'To deliver premium garment care solutions that protect your fabrics and the planet.', 'type' => SettingType::TEXT, 'group' => SettingGroup::CONTENT, 'label' => 'Mission', 'sort_order' => 1, 'is_public' => true],
-            ['key' => 'vision', 'value' => 'To become the global standard for professional and sustainable fabric care.', 'type' => SettingType::TEXT, 'group' => SettingGroup::CONTENT, 'label' => 'Vision', 'sort_order' => 2, 'is_public' => true],
-            ['key' => 'company_description', 'value' => 'VESTRA is a premium fabric care brand dedicated to developing high-performance cleaning solutions that combine advanced chemistry, innovation, and exceptional garment care.', 'type' => SettingType::TEXT, 'group' => SettingGroup::CONTENT, 'label' => 'Company Description', 'sort_order' => 3, 'is_public' => true],
-            ['key' => 'philosophy', 'value' => 'We believe fabric care should do more than clean. It should preserve, protect, and prolong the life of every garment we touch.', 'type' => SettingType::TEXT, 'group' => SettingGroup::CONTENT, 'label' => 'Philosophy', 'sort_order' => 4, 'is_public' => true],
-            ['key' => 'footer_text', 'value' => '© '.date('Y').' VESTRA. All rights reserved. Premium garment care solutions.', 'type' => SettingType::TEXT, 'group' => SettingGroup::CONTENT, 'label' => 'Footer Text', 'sort_order' => 5, 'is_public' => true],
-            ['key' => 'founded', 'value' => '2020', 'type' => SettingType::STRING, 'group' => SettingGroup::GENERAL, 'label' => 'Founded Year', 'sort_order' => 13, 'is_public' => true],
-            ['key' => 'headquarters', 'value' => 'Kampala, Uganda', 'type' => SettingType::STRING, 'group' => SettingGroup::GENERAL, 'label' => 'Headquarters', 'sort_order' => 14, 'is_public' => true],
+            ['key' => 'mission', 'value' => 'To deliver premium garment care solutions that protect your fabrics and the planet.', 'type' => SettingType::TEXT, 'group' => SettingGroup::CONTENT, 'label' => 'Mission', 'sort_order' => 1, 'is_public' => true, 'is_sensitive' => false],
+            ['key' => 'vision', 'value' => 'To become the global standard for professional and sustainable fabric care.', 'type' => SettingType::TEXT, 'group' => SettingGroup::CONTENT, 'label' => 'Vision', 'sort_order' => 2, 'is_public' => true, 'is_sensitive' => false],
+            ['key' => 'company_description', 'value' => 'VESTRA is a premium fabric care brand dedicated to developing high-performance cleaning solutions that combine advanced chemistry, innovation, and exceptional garment care.', 'type' => SettingType::TEXT, 'group' => SettingGroup::CONTENT, 'label' => 'Company Description', 'sort_order' => 3, 'is_public' => true, 'is_sensitive' => false],
+            ['key' => 'philosophy', 'value' => 'We believe fabric care should do more than clean. It should preserve, protect, and prolong the life of every garment we touch.', 'type' => SettingType::TEXT, 'group' => SettingGroup::CONTENT, 'label' => 'Philosophy', 'sort_order' => 4, 'is_public' => true, 'is_sensitive' => false],
+            ['key' => 'footer_text', 'value' => '© '.date('Y').' VESTRA. All rights reserved. Premium garment care solutions.', 'type' => SettingType::TEXT, 'group' => SettingGroup::CONTENT, 'label' => 'Footer Text', 'sort_order' => 5, 'is_public' => true, 'is_sensitive' => false],
+            ['key' => 'founded', 'value' => '2020', 'type' => SettingType::STRING, 'group' => SettingGroup::GENERAL, 'label' => 'Founded Year', 'sort_order' => 13, 'is_public' => true, 'is_sensitive' => false],
+            ['key' => 'headquarters', 'value' => 'Kampala, Uganda', 'type' => SettingType::STRING, 'group' => SettingGroup::GENERAL, 'label' => 'Headquarters', 'sort_order' => 14, 'is_public' => true, 'is_sensitive' => false],
             ['key' => 'core_values', 'value' => json_encode([
                 ['icon' => 'FlaskConical', 'title' => 'Innovation', 'description' => 'We continuously research and develop better formulas for modern fabric care.'],
                 ['icon' => 'ShieldCheck', 'title' => 'Quality', 'description' => 'Every product meets strict quality standards for professional results.'],
                 ['icon' => 'Leaf', 'title' => 'Responsibility', 'description' => 'We create effective solutions while caring for people and the environment.'],
                 ['icon' => 'Users', 'title' => 'Partnership', 'description' => 'We build lasting relationships with distributors, laundries, and customers.'],
-            ]), 'type' => SettingType::JSON, 'group' => SettingGroup::CONTENT, 'label' => 'Core Values', 'sort_order' => 6, 'is_public' => true],
+            ]), 'type' => SettingType::JSON, 'group' => SettingGroup::CONTENT, 'label' => 'Core Values', 'sort_order' => 6, 'is_public' => true, 'is_sensitive' => false],
             ['key' => 'distributor_benefits', 'value' => json_encode([
                 ['icon' => 'Award', 'title' => 'Exclusive Territory', 'description' => 'Gain protected distribution rights in your region.'],
                 ['icon' => 'Truck', 'title' => 'Reliable Supply', 'description' => 'Consistent product availability and timely deliveries.'],
                 ['icon' => 'BadgeCheck', 'title' => 'Marketing Support', 'description' => 'Access branded materials and promotional resources.'],
                 ['icon' => 'Sparkles', 'title' => 'Training', 'description' => 'Receive product knowledge and sales training from our team.'],
-            ]), 'type' => SettingType::JSON, 'group' => SettingGroup::CONTENT, 'label' => 'Distributor Benefits', 'sort_order' => 7, 'is_public' => true],
+            ]), 'type' => SettingType::JSON, 'group' => SettingGroup::CONTENT, 'label' => 'Distributor Benefits', 'sort_order' => 7, 'is_public' => true, 'is_sensitive' => false],
             ['key' => 'hero_features', 'value' => json_encode([
                 ['icon' => 'Shield', 'title' => 'Professional', 'description' => 'Results'],
                 ['icon' => 'Leaf', 'title' => 'Fabric', 'description' => 'Protection'],
                 ['icon' => 'FlaskConical', 'title' => 'Innovative', 'description' => 'Formulations'],
-            ]), 'type' => SettingType::JSON, 'group' => SettingGroup::CONTENT, 'label' => 'Hero Features', 'sort_order' => 8, 'is_public' => true],
+            ]), 'type' => SettingType::JSON, 'group' => SettingGroup::CONTENT, 'label' => 'Hero Features', 'sort_order' => 8, 'is_public' => true, 'is_sensitive' => false],
             ['key' => 'promise_items', 'value' => json_encode([
                 ['icon' => 'Award', 'title' => 'Outstanding Cleaning Performance', 'description' => 'Powerful cleaning that gets the job done.'],
                 ['icon' => 'ShieldCheck', 'title' => 'Fabric Protection', 'description' => 'Gentle on fabrics, tough on dirt.'],
                 ['icon' => 'BadgeCheck', 'title' => 'Consistent Quality', 'description' => 'Reliable performance in every bottle.'],
                 ['icon' => 'Users', 'title' => 'Professional Results', 'description' => 'Designed for professional and everyday excellence.'],
-            ]), 'type' => SettingType::JSON, 'group' => SettingGroup::CONTENT, 'label' => 'Promise Items', 'sort_order' => 9, 'is_public' => true],
+            ]), 'type' => SettingType::JSON, 'group' => SettingGroup::CONTENT, 'label' => 'Promise Items', 'sort_order' => 9, 'is_public' => true, 'is_sensitive' => false],
             ['key' => 'why_choose_features', 'value' => json_encode([
                 ['icon' => 'Droplets', 'title' => 'Deep Cleaning', 'description' => 'Advanced formulas penetrate fibers for thorough cleaning.'],
                 ['icon' => 'Shield', 'title' => 'Fabric Safe', 'description' => 'Protects colors and delicate fabrics during every wash.'],
@@ -789,19 +857,19 @@ class SettingSeeder extends Seeder
                 ['icon' => 'Sparkles', 'title' => 'Long Lasting Freshness', 'description' => 'Keeps fabrics smelling fresh for longer.'],
                 ['icon' => 'FlaskConical', 'title' => 'Scientifically Tested', 'description' => 'Proven performance through rigorous testing.'],
                 ['icon' => 'Truck', 'title' => 'Professional Grade', 'description' => 'Trusted by professionals and commercial laundries.'],
-            ]), 'type' => SettingType::JSON, 'group' => SettingGroup::CONTENT, 'label' => 'Why Choose Features', 'sort_order' => 10, 'is_public' => true],
+            ]), 'type' => SettingType::JSON, 'group' => SettingGroup::CONTENT, 'label' => 'Why Choose Features', 'sort_order' => 10, 'is_public' => true, 'is_sensitive' => false],
             ['key' => 'general_faqs', 'value' => json_encode([
                 ['question' => 'Where can I buy VESTRA products?', 'answer' => 'VESTRA products are available through authorized distributors, select retail stores, and our online store once launched.'],
                 ['question' => 'Are VESTRA products safe for all fabrics?', 'answer' => 'Each product is formulated for specific fabric types. Please check the product label or page for recommended usage.'],
                 ['question' => 'Do you offer bulk or commercial pricing?', 'answer' => 'Yes. We offer competitive pricing for commercial laundries, hotels, and bulk buyers. Contact us for a quote.'],
                 ['question' => 'How can I become a distributor?', 'answer' => 'Fill out the distributor application form on our Become a Distributor page and our team will get in touch.'],
-            ]), 'type' => SettingType::JSON, 'group' => SettingGroup::CONTENT, 'label' => 'General FAQs', 'sort_order' => 11, 'is_public' => true],
+            ]), 'type' => SettingType::JSON, 'group' => SettingGroup::CONTENT, 'label' => 'General FAQs', 'sort_order' => 11, 'is_public' => true, 'is_sensitive' => false],
             ['key' => 'distributor_faqs', 'value' => json_encode([
                 ['question' => 'What is the minimum order quantity?', 'answer' => 'Minimum order quantities vary by product. Our team will share the full price list and MOQ after reviewing your application.'],
                 ['question' => 'Do I need a registered business to apply?', 'answer' => 'Yes, we prefer working with registered businesses that have experience in distribution or retail.'],
                 ['question' => 'How long does the approval process take?', 'answer' => 'Applications are typically reviewed within 5-7 business days.'],
                 ['question' => 'What support do distributors receive?', 'answer' => 'Distributors receive marketing materials, training, territory protection, and dedicated account support.'],
-            ]), 'type' => SettingType::JSON, 'group' => SettingGroup::CONTENT, 'label' => 'Distributor FAQs', 'sort_order' => 12, 'is_public' => true],
+            ]), 'type' => SettingType::JSON, 'group' => SettingGroup::CONTENT, 'label' => 'Distributor FAQs', 'sort_order' => 12, 'is_public' => true, 'is_sensitive' => false],
         ];
 
         foreach ($settings as $setting) {

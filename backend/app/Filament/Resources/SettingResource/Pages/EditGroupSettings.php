@@ -54,7 +54,9 @@ abstract class EditGroupSettings extends Page implements HasForms
         foreach ($this->settings as $setting) {
             $value = $setting->typedValue();
 
-            if ($setting->type === SettingType::IMAGE) {
+            if ($setting->isSensitive() && filled($value)) {
+                $state[$setting->key] = Setting::ENCRYPTED_PLACEHOLDER;
+            } elseif ($setting->type === SettingType::IMAGE) {
                 $state[$setting->key] = $value ? [$value] : [];
             } elseif ($setting->type === SettingType::JSON) {
                 $state[$setting->key] = is_string($value) ? $value : json_encode($value, JSON_PRETTY_PRINT);
@@ -92,6 +94,17 @@ abstract class EditGroupSettings extends Page implements HasForms
     protected function buildField(Setting $setting): mixed
     {
         $key = $setting->key;
+
+        if ($setting->isSensitive()) {
+            return TextInput::make($key)
+                ->label($setting->label)
+                ->helperText($setting->description)
+                ->password()
+                ->revealable()
+                ->autocomplete(false)
+                ->placeholder('Enter new value to replace the stored secret')
+                ->maxLength(65535);
+        }
 
         return match ($setting->type) {
             SettingType::STRING => TextInput::make($key)
@@ -178,6 +191,11 @@ abstract class EditGroupSettings extends Page implements HasForms
             $newValue = $state[$setting->key] ?? null;
             $previousValue = $setting->value;
 
+            // Sensitive fields send a placeholder when unchanged. Preserve the stored value.
+            if ($setting->isSensitive() && $newValue === Setting::ENCRYPTED_PLACEHOLDER) {
+                continue;
+            }
+
             if ($setting->type === SettingType::IMAGE) {
                 $newValue = $this->processImageSetting($setting, $newValue);
             }
@@ -203,8 +221,8 @@ abstract class EditGroupSettings extends Page implements HasForms
                     [
                         'key' => $setting->key,
                         'group' => $setting->group->value,
-                        'previous_value' => $previousValue,
-                        'new_value' => $normalised,
+                        'previous_value' => $setting->isSensitive() ? '[redacted]' : $previousValue,
+                        'new_value' => $setting->isSensitive() ? '[redacted]' : $normalised,
                     ]
                 );
             }

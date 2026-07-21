@@ -16,12 +16,16 @@ class AdminUserSeeder extends Seeder
 
         $existing = User::where('email', 'admin@vestra.com')->first();
 
-        $password = Hash::make(self::DEFAULT_PASSWORD);
+        // Allow the bootstrap password to be overridden via environment for production deployments.
+        // The default value is intended for local and test environments only.
+        $bootstrapPassword = env('BOOTSTRAP_ADMIN_PASSWORD', self::DEFAULT_PASSWORD);
+
+        $password = Hash::make($bootstrapPassword);
         $forcePasswordChangeAt = now();
 
         if (! $reset && $existing) {
             // Preserve an already-changed password.
-            if (! Hash::check(self::DEFAULT_PASSWORD, $existing->password)) {
+            if (! Hash::check($bootstrapPassword, $existing->password)) {
                 $password = $existing->password;
                 $forcePasswordChangeAt = $existing->force_password_change_at;
             }
