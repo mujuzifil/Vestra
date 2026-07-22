@@ -18,6 +18,25 @@ class ApiEndpointsTest extends TestCase
         parent::setUp();
 
         $this->seed();
+
+        // Belt-and-suspenders: ensure the bootstrap admin is always in the
+        // expected default state before each test, independent of any state
+        // leakage from earlier tests in this class.
+        $admin = User::where('email', 'admin@vestra.com')->first();
+        if ($admin) {
+            // The User model casts 'password' to 'hashed', so assign plaintext
+            // and let Laravel hash it on save.
+            $admin->forceFill([
+                'password' => 'Admin@12345',
+                'force_password_change_at' => now(),
+                'status' => 'active',
+            ])->saveQuietly();
+            $admin->syncRoles(['Super Administrator']);
+        }
+
+        // Remove any tokens left behind by previous tests.
+        \App\Models\ExchangeToken::query()->delete();
+        \Laravel\Sanctum\PersonalAccessToken::query()->delete();
     }
 
     public function test_categories_endpoint_returns_active_categories(): void

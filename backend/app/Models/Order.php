@@ -19,6 +19,7 @@ class Order extends Model
         'status',
         'payment_method',
         'payment_status',
+        'stock_decremented',
         'shipping_address',
         'subtotal',
         'shipping_cost',
@@ -36,6 +37,7 @@ class Order extends Model
     {
         return [
             'shipping_address' => 'array',
+            'stock_decremented' => 'boolean',
             'subtotal' => 'decimal:2',
             'shipping_cost' => 'decimal:2',
             'tax_amount' => 'decimal:2',

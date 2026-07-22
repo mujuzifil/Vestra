@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Enums\ProductStatus;
 use App\Models\Product;
 use App\Services\AdminNotificationService;
 
@@ -16,9 +17,9 @@ class ProductObserver
 
             // Auto-update status based on stock
             if ($newStock <= 0) {
-                $product->update(['status' => 'out_of_stock']);
-            } elseif ($newStock > 0 && $product->status === 'out_of_stock') {
-                $product->update(['status' => 'active']);
+                $product->update(['status' => ProductStatus::OUT_OF_STOCK->value]);
+            } elseif ($newStock > 0 && $product->status === ProductStatus::OUT_OF_STOCK) {
+                $product->update(['status' => ProductStatus::ACTIVE->value]);
             }
 
             // Send low stock alert

@@ -14,9 +14,9 @@ class StoreDistributorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'company_name' => ['required', 'string', 'max:255'],
-            'contact_person' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
+            'company_name' => ['required', 'string', 'min:2', 'max:255'],
+            'contact_person' => ['required', 'string', 'min:2', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'address' => ['nullable', 'string', 'max:1000'],
             'business_description' => ['nullable', 'string', 'max:5000'],

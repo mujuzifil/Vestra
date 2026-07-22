@@ -6,7 +6,6 @@ use App\Http\Middleware\TrustProxies;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Sanctum\PersonalAccessToken;
@@ -21,9 +20,6 @@ class AuthenticationSecurityTest extends TestCase
         parent::setUp();
 
         $this->seed();
-
-        RateLimiter::clear('*');
-        Cache::flush();
     }
 
     /**

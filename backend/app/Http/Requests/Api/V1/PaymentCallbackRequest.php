@@ -23,7 +23,12 @@ class PaymentCallbackRequest extends FormRequest
 
     private function verifySignature(): bool
     {
-        $secret = config('services.flutterwave.secret_key') ?? '';
+        // Prefer the dedicated webhook secret; fall back to the API secret key
+        // only when the webhook secret is not configured.
+        $secret = config('services.flutterwave.webhook_secret')
+            ?: config('services.flutterwave.secret_key')
+            ?: '';
+
         if (empty($secret)) {
             return false;
         }
@@ -41,6 +46,13 @@ class PaymentCallbackRequest extends FormRequest
 
     protected function failedAuthorization()
     {
+        \Illuminate\Support\Facades\Log::warning('Webhook signature verification failed.', [
+            'tx_ref' => $this->input('tx_ref'),
+            'status' => $this->input('status'),
+            'ip' => $this->ip(),
+            'user_agent' => $this->userAgent(),
+        ]);
+
         throw new \Illuminate\Http\Exceptions\HttpResponseException(
             response()->json([
                 'success' => false,

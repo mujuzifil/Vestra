@@ -12,8 +12,7 @@ class AdminUserSeeder extends Seeder
 
     public function run(): void
     {
-        $reset = filter_var(env('RESET_BOOTSTRAP_ADMIN', false), FILTER_VALIDATE_BOOLEAN)
-            || app()->environment('testing');
+        $reset = filter_var(env('RESET_BOOTSTRAP_ADMIN', false), FILTER_VALIDATE_BOOLEAN);
 
         $existing = User::where('email', 'admin@vestra.com')->first();
 

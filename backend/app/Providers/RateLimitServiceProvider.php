@@ -55,5 +55,20 @@ class RateLimitServiceProvider extends ServiceProvider
             $key = $request->user()?->id ?? $request->ip();
             return Limit::perMinute(10)->by($key);
         });
+
+        // Public distributor request form: 3 per minute per IP
+        RateLimiter::for('distributor', function (Request $request) {
+            return Limit::perMinute(3)->by('distributor:ip:'.$request->ip());
+        });
+
+        // Public feedback form: 3 per minute per IP
+        RateLimiter::for('feedback', function (Request $request) {
+            return Limit::perMinute(3)->by('feedback:ip:'.$request->ip());
+        });
+
+        // Payment webhook callback: 30 per minute per IP
+        RateLimiter::for('webhook', function (Request $request) {
+            return Limit::perMinute(30)->by('webhook:ip:'.$request->ip());
+        });
     }
 }

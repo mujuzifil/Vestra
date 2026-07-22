@@ -11,6 +11,7 @@ use App\Services\PaymentService;
 use App\Traits\RespondsWithJson;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
@@ -55,9 +56,18 @@ class PaymentController extends Controller
 
     public function callback(PaymentCallbackRequest $request): JsonResponse
     {
-        $result = $this->service->handleCallback($request->validated());
+        $payload = $request->validated();
+
+        $result = $this->service->handleCallback($payload);
 
         if (! $result['success']) {
+            Log::warning('Payment callback processing failed.', [
+                'tx_ref' => $payload['tx_ref'] ?? null,
+                'status' => $payload['status'] ?? null,
+                'ip' => $request->ip(),
+                'message' => $result['message'] ?? 'Unknown failure',
+            ]);
+
             return $this->errorResponse($result['message'], 400);
         }
 

@@ -16,10 +16,10 @@ class StoreFeedbackRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category' => ['required', 'string', Rule::in(array_map(fn (FeedbackCategory $c) => $c->value, FeedbackCategory::cases()))],
-            'rating' => 'nullable|integer|min:1|max:5',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string|max:2000',
+            'category' => ['required', 'string', Rule::enum(FeedbackCategory::class)],
+            'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
+            'subject' => ['required', 'string', 'min:3', 'max:255'],
+            'message' => ['required', 'string', 'min:10', 'max:2000'],
         ];
     }
 

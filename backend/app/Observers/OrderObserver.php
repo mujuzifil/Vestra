@@ -16,6 +16,9 @@ class OrderObserver
 
     public function created(Order $order): void
     {
+        // Send customer order confirmation immediately on creation.
+        $this->notificationService->sendOrderConfirmation($order);
+
         // Notify admin of new order
         $this->adminNotificationService->newOrder(
             $order->invoice_number,
@@ -33,7 +36,6 @@ class OrderObserver
         $newStatus = OrderStatus::from($order->status);
 
         match ($newStatus) {
-            OrderStatus::PENDING => $this->notificationService->sendOrderConfirmation($order),
             OrderStatus::PAID => $this->notificationService->sendPaymentConfirmation($order),
             OrderStatus::SHIPPED => $this->notificationService->sendShippingNotification($order),
             OrderStatus::DELIVERED => $this->notificationService->sendDeliveryNotification($order),

@@ -13,6 +13,8 @@ use Illuminate\Support\Str;
 
 class PaymentService
 {
+    private const CURRENCY = 'UGX';
+
     public function __construct(
         private readonly PaymentGatewayInterface $gateway,
         private readonly OrderStatusService $orderStatusService,
@@ -28,13 +30,13 @@ class PaymentService
             'provider' => 'flutterwave',
             'transaction_reference' => $reference,
             'amount' => $order->total_amount,
-            'currency' => 'UGX',
+            'currency' => self::CURRENCY,
             'status' => 'initiated',
         ]);
 
         $result = $this->gateway->initiate(
             (float) $order->total_amount,
-            'UGX',
+            self::CURRENCY,
             $reference,
             [
                 'order_id' => $order->id,
@@ -60,47 +62,63 @@ class PaymentService
 
     public function verifyAndProcess(string $reference): array
     {
-        $transaction = PaymentTransaction::where('transaction_reference', $reference)->first();
+        return DB::transaction(function () use ($reference) {
+            $transaction = PaymentTransaction::where('transaction_reference', $reference)->lockForUpdate()->first();
 
-        if (! $transaction) {
-            return ['success' => false, 'message' => 'Transaction not found.'];
-        }
+            if (! $transaction) {
+                return ['success' => false, 'message' => 'Transaction not found.'];
+            }
 
-        // Idempotency: already processed
-        if ($transaction->status === 'success') {
-            return ['success' => true, 'message' => 'Payment already confirmed.'];
-        }
+            // Idempotency: already processed
+            if ($transaction->status === 'success') {
+                return ['success' => true, 'message' => 'Payment already confirmed.'];
+            }
 
-        $result = $this->gateway->verify($reference);
+            $result = $this->gateway->verify($reference);
 
-        if (! $result['success']) {
+            if (! $result['success']) {
+                $transaction->update([
+                    'status' => 'failed',
+                    'response_data' => $result,
+                ]);
+                return $result;
+            }
+
+            $order = Order::lockForUpdate()->with('items')->find($transaction->order_id);
+
+            if (! $order) {
+                return ['success' => false, 'message' => 'Order not found.'];
+            }
+
+            // Verify payment amount and currency match the order to prevent tampering.
+            if (! $this->amountMatches($order, $result)) {
+                $transaction->update([
+                    'status' => 'failed',
+                    'response_data' => $result,
+                ]);
+
+                return ['success' => false, 'message' => 'Payment amount does not match order.'];
+            }
+
             $transaction->update([
-                'status' => 'failed',
+                'status' => 'success',
+                'provider_reference' => $result['provider_reference'],
+                'paid_at' => $result['paid_at'],
                 'response_data' => $result,
             ]);
-            return $result;
-        }
 
-        $transaction->update([
-            'status' => 'success',
-            'provider_reference' => $result['provider_reference'],
-            'paid_at' => $result['paid_at'],
-            'response_data' => $result,
-        ]);
+            $order->update([
+                'payment_status' => PaymentStatus::PAID->value,
+            ]);
 
-        // Update order
-        $order = $transaction->order;
-        $order->update([
-            'payment_status' => PaymentStatus::PAID->value,
-        ]);
+            // Decrement stock idempotently for digital payments.
+            $this->decrementStock($order);
 
-        // Decrement stock if not already done (for digital payments)
-        $this->decrementStock($order);
+            // Update status to paid
+            $this->orderStatusService->transition($order, OrderStatus::PAID, 'Payment confirmed via Flutterwave.');
 
-        // Update status to paid
-        $this->orderStatusService->transition($order, OrderStatus::PAID, 'Payment confirmed via Flutterwave.');
-
-        return ['success' => true, 'message' => 'Payment verified and order updated.'];
+            return ['success' => true, 'message' => 'Payment verified and order updated.'];
+        });
     }
 
     public function handleCallback(array $payload): array
@@ -114,15 +132,35 @@ class PaymentService
         return $this->verifyAndProcess($payload['tx_ref']);
     }
 
+    private function amountMatches(Order $order, array $result): bool
+    {
+        $expectedAmount = round((float) $order->total_amount, 2);
+        $actualAmount = round((float) ($result['amount'] ?? 0), 2);
+        $currency = strtoupper((string) ($result['currency'] ?? self::CURRENCY));
+
+        return $currency === self::CURRENCY && abs($expectedAmount - $actualAmount) < 0.01;
+    }
+
     private function decrementStock(Order $order): void
     {
-        DB::transaction(function () use ($order) {
-            foreach ($order->items as $item) {
-                $product = Product::find($item->product_id);
-                if ($product) {
-                    $product->decrement('stock_quantity', $item->quantity);
-                }
+        if ($order->stock_decremented) {
+            return;
+        }
+
+        $productIds = $order->items->pluck('product_id')->toArray();
+        sort($productIds);
+
+        $lockedProducts = Product::lockForUpdate()->whereIn('id', $productIds)
+            ->get()
+            ->keyBy('id');
+
+        foreach ($order->items as $item) {
+            $product = $lockedProducts->get($item->product_id);
+            if ($product) {
+                $product->decrement('stock_quantity', $item->quantity);
             }
-        });
+        }
+
+        $order->update(['stock_decremented' => true]);
     }
 }

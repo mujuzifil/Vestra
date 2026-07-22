@@ -12,11 +12,13 @@ class FlutterwaveGateway implements PaymentGatewayInterface
     private string $baseUrl = 'https://api.flutterwave.com/v3';
     private string $secretKey;
     private string $publicKey;
+    private string $webhookSecret;
 
     public function __construct()
     {
         $this->secretKey = config('services.flutterwave.secret_key') ?? '';
         $this->publicKey = config('services.flutterwave.public_key') ?? '';
+        $this->webhookSecret = config('services.flutterwave.webhook_secret') ?? '';
     }
 
     public function initiate(float $amount, string $currency, string $reference, array $meta): array
@@ -106,11 +108,15 @@ class FlutterwaveGateway implements PaymentGatewayInterface
 
     public function verifyWebhookSignature(string $payload, string $signature): bool
     {
-        if (empty($this->secretKey) || empty($signature)) {
+        // Prefer the dedicated webhook secret; fall back to the API secret key
+        // only when the webhook secret is not configured.
+        $secret = ! empty($this->webhookSecret) ? $this->webhookSecret : $this->secretKey;
+
+        if (empty($secret) || empty($signature)) {
             return false;
         }
 
-        $computed = hash_hmac('sha256', $payload, $this->secretKey);
+        $computed = hash_hmac('sha256', $payload, $secret);
 
         return hash_equals($computed, $signature);
     }

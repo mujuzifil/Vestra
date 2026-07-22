@@ -16,6 +16,10 @@ class UpdateProfileRequest extends FormRequest
         return [
             'name' => ['sometimes', 'string', 'min:2', 'max:255'],
             'phone' => ['sometimes', 'nullable', 'string', 'max:20'],
+            'status' => ['exclude'],
+            'is_admin' => ['exclude'],
+            'role' => ['exclude'],
+            'roles' => ['exclude'],
         ];
     }
 }

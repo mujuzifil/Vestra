@@ -36,8 +36,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/settings', [SettingController::class, 'index']);
 
     Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:contact');
-    Route::post('/distributor', [DistributorController::class, 'store']);
-    Route::post('/feedback', [FeedbackController::class, 'store']);
+    Route::post('/distributor', [DistributorController::class, 'store'])->middleware('throttle:distributor');
+    Route::post('/feedback', [FeedbackController::class, 'store'])->middleware('throttle:feedback');
 
     // Customer auth (public)
     Route::post('/auth/register', [RegisterController::class, 'register'])->middleware('throttle:register');
@@ -69,6 +69,7 @@ Route::prefix('v1')->group(function () {
         // Orders
         Route::get('/orders', [OrderController::class, 'index']);
         Route::get('/orders/{order}', [OrderController::class, 'show']);
+        Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel']);
         Route::get('/orders/{order}/invoice', [InvoiceController::class, 'download']);
         Route::post('/checkout', [CheckoutController::class, 'store']);
 
@@ -101,5 +102,5 @@ Route::prefix('v1')->group(function () {
     });
 
     // Payment callback (public webhook)
-    Route::post('/payments/callback', [PaymentController::class, 'callback']);
+    Route::post('/payments/callback', [PaymentController::class, 'callback'])->middleware('throttle:webhook');
 });
