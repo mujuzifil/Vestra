@@ -9,6 +9,17 @@
 .env.local
 .env.*.local
 !.env.example
+!.env.production.example
+
+# Credential scratch files — never commit these.
+# See docs/release/SECRET_ROTATION_CHECKLIST.md
+VPS.txt
+New Text Document.txt
+*credentials*.txt
+*secrets*.txt
+*.pem
+*.key
+!**/public/**/*.key
 
 # Dependencies
 **/node_modules/
@@ -78,3 +89,7 @@ pnpm-debug.log*
 *.tmp
 *.temp
 *.cache
+
+# TLS certificates — issued per-host by certbot, never committed
+certbot/
+backups/

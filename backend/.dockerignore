@@ -1,19 +1,70 @@
+# ==============================================================================
+# Backend build context exclusions
+# ==============================================================================
+# A stale bootstrap/cache/config.php copied into the image OVERRIDES the
+# production environment injected at run time, so the container silently runs
+# on development configuration. It also breaks `package:discover`, which then
+# tries to load dev-only providers such as Debugbar.
+#
+# All four caches are built at container start by docker/entrypoint.sh, once the
+# real environment is present.
+# ==============================================================================
+
+# Compiled caches — generated at run time, never shipped
+bootstrap/cache/*.php
+
+# Dependencies — reinstalled by the deps stage
 node_modules/
 vendor/
-public/storage
+
+# Secrets — injected as environment, never baked into a layer
 .env
-.env.backup
+.env.*
+!.env.example
+storage/*.key
+
+# Runtime state
+public/storage
+public/hot
+public/build
+storage/logs/*
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/framework/testing/*
+storage/app/public/*
+
+# Local database
+database/database.sqlite
+database/*.sqlite-journal
+
+# Tests are not needed in a production image
+tests/
+phpunit.xml
+
+# Local tooling / alternate compose definitions
+.git/
+.gitignore
 .phpunit.result.cache
 .php-cs-fixer.cache
+docker-compose.yml
+docker-entrypoint.sh
+Dockerfile.standalone
 Homestead.yaml
 Homestead.json
-npm-debug.log
-yarn-error.log
+
+# Reports and documentation
+*.md
+!README.md
+
+# Editor / OS
 /.fleet
 /.idea
 /.nova
 /.vscode
 /.zed
-storage/*.key
-database/database.sqlite
 .DS_Store
+Thumbs.db
+npm-debug.log
+yarn-error.log
+*.log

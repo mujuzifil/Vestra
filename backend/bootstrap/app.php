@@ -35,8 +35,34 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             '/api/v1/auth/exchange',
         ]);
+
+        // Never redirect an unauthenticated API request to a login page.
+        //
+        // The Authenticate middleware resolves this BEFORE the exception
+        // handler runs, so shouldRenderJsonWhen() cannot rescue it. For a
+        // request that did not send `Accept: application/json`, the default
+        // resolves route('login') — which this API-only application does not
+        // define — and the resulting RouteNotFoundException surfaces as a 500
+        // instead of a 401.
+        //
+        // Returning null makes the middleware throw AuthenticationException,
+        // which the handler below renders as a proper 401.
+        $middleware->redirectGuestsTo(fn ($request) => $request->is('api/*') ? null : route('filament.admin.auth.login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // Treat every /api/* request as a JSON client, regardless of whether it
+        // sent an Accept header.
+        //
+        // Without this, an unauthenticated request that does not ask for JSON
+        // takes Laravel's web branch and redirects to route('login') — which
+        // this API-only application does not define — producing a 500
+        // "unexpected error" instead of a 401. The renderable callbacks below
+        // never get the chance to run, because the RouteNotFoundException is
+        // raised first.
+        $exceptions->shouldRenderJsonWhen(
+            fn ($request, \Throwable $e) => $request->is('api/*') || $request->expectsJson()
+        );
+
         // Always return JSON for API routes
         $exceptions->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
             if ($request->is('api/*')) {

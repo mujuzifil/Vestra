@@ -282,16 +282,21 @@ class AuthenticationSecurityTest extends TestCase
         ]);
     }
 
-    public function test_trust_proxies_respects_environment(): void
+    public function test_trust_proxies_respects_configuration(): void
     {
         $proxiesProperty = (new \ReflectionClass(TrustProxies::class))->getProperty('proxies');
         $proxiesProperty->setAccessible(true);
 
-        putenv('TRUSTED_PROXIES=');
+        // Driven through config(), not putenv(). TrustProxies previously read
+        // env() directly, which returns null once the config is cached — so in
+        // production no proxies were trusted at all, while this test passed
+        // because the test environment never caches config. Asserting against
+        // config() is what actually reflects production behaviour.
+        config(['app.trusted_proxies' => '']);
         $middleware = new TrustProxies();
         $this->assertNull($proxiesProperty->getValue($middleware));
 
-        putenv('TRUSTED_PROXIES=10.0.0.1,10.0.0.2');
+        config(['app.trusted_proxies' => '10.0.0.1,10.0.0.2']);
         $middleware = new TrustProxies();
         $this->assertSame(['10.0.0.1', '10.0.0.2'], $proxiesProperty->getValue($middleware));
     }

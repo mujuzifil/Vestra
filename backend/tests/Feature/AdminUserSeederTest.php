@@ -67,11 +67,15 @@ class AdminUserSeederTest extends TestCase
         ]);
         $existing->assignRole('Super Administrator');
 
-        putenv('RESET_BOOTSTRAP_ADMIN=true');
+        // config(), not putenv(). The seeder reads this through config() because
+        // `env()` returns null once the config is cached, which every production
+        // deployment does — driving the test through putenv() would exercise a
+        // path production never takes.
+        config(['app.reset_bootstrap_admin' => true]);
 
         $this->seed(AdminUserSeeder::class);
 
-        putenv('RESET_BOOTSTRAP_ADMIN=false');
+        config(['app.reset_bootstrap_admin' => false]);
 
         $user = User::where('email', 'admin@vestra.com')->firstOrFail();
 

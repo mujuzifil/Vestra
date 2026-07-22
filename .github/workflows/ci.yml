@@ -2,13 +2,132 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, master, develop]
   pull_request:
-    branches: [main, develop]
+    branches: [main, master, develop]
 
 jobs:
+  # ---------------------------------------------------------------------------
+  # Backend test suite — the authoritative quality gate.
+  # ---------------------------------------------------------------------------
+  # Runs against sqlite :memory: exactly as configured in backend/phpunit.xml.
+  # No continue-on-error: a failing test must fail the build.
+  backend-tests:
+    name: Backend Tests (PHPUnit)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          extensions: pdo_mysql, pdo_sqlite, sqlite3, gd, zip, bcmath, opcache, intl, redis, pcntl
+          coverage: none
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: backend/vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('backend/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run PHPUnit
+        run: php artisan test
+
+  # ---------------------------------------------------------------------------
+  # Code style — advisory.
+  # ---------------------------------------------------------------------------
+  # The codebase carries a large Pint backlog inherited from earlier phases.
+  # Enforcing it would mean a repo-wide reformat, which is out of scope for a
+  # production-readiness phase and would bury functional diffs.
+  # Tracked in docs/release/KNOWN_ISSUES.md.
+  backend-style:
+    name: Backend Code Style (advisory)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run Pint
+        run: vendor/bin/pint --test
+        continue-on-error: true
+
+  # ---------------------------------------------------------------------------
+  # Media integrity — every product must resolve to a real image file.
+  # ---------------------------------------------------------------------------
+  backend-media:
+    name: Backend Media Validation
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      DB_CONNECTION: sqlite
+      DB_DATABASE: database/database.sqlite
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          extensions: pdo_sqlite, sqlite3, gd, zip, bcmath, intl
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Prepare environment
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Prepare product images
+        run: |
+          mkdir -p storage/app/public/products
+          cp ../frontend/public/assets/images/products/*.png storage/app/public/products/
+
+      - name: Migrate and seed
+        run: |
+          touch database/database.sqlite
+          php artisan migrate --force
+          php artisan db:seed --class=DatabaseSeeder --force
+          php artisan storage:link
+
+      - name: Validate product media
+        run: php artisan media:validate
+
+  # ---------------------------------------------------------------------------
+  # Frontend build and typecheck.
+  # ---------------------------------------------------------------------------
   frontend:
-    name: Frontend Build & Lint
+    name: Frontend Build & Typecheck
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -30,75 +149,40 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
+      - name: Lint
+        run: npm run lint
+        continue-on-error: true
+
       - name: Build
         run: npm run build
         env:
-          NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+          NEXT_PUBLIC_API_URL: https://api.example.com/api/v1
+          NEXT_PUBLIC_SITE_URL: https://example.com
+          NEXT_PUBLIC_BACKEND_URL: https://api.example.com
 
-  backend:
-    name: Backend Validate
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.4
-          extensions: pdo_mysql, gd, zip, bcmath, opcache, intl
-          coverage: none
-
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist --optimize-autoloader
-
-      - name: Copy environment
-        run: cp .env.example .env
-
-      - name: Generate app key
-        run: php artisan key:generate
-
-      - name: Run Pint (code style)
-        run: vendor/bin/pint --test
-        continue-on-error: true
-
-      - name: Run static analysis
-        run: vendor/bin/phpstan analyse --memory-limit=512M
-        continue-on-error: true
-
-      - name: Prepare product images for validation
+      # Regression guard for the build-arg wiring. If NEXT_PUBLIC_API_URL stops
+      # being inlined at build time, the client falls through to the
+      # http://localhost:8000 fallback in lib/api/client.ts and the production
+      # storefront silently loses its API.
+      #
+      # This asserts the injected origin is PRESENT rather than that "localhost"
+      # is absent: the fallback survives minification as a dead `??` literal
+      # even on a correct build, so its absence is not a usable signal.
+      - name: Assert API URL was inlined into the client bundle
         run: |
-          mkdir -p storage/app/public/products
-          cp ../frontend/public/assets/images/products/*.png storage/app/public/products/
+          if ! grep -rq "api.example.com" .next/static; then
+            echo "::error::Client bundle does not contain the injected API origin — NEXT_PUBLIC_API_URL was not inlined at build time."
+            exit 1
+          fi
+          echo "Injected API origin found in the client bundle."
 
-      - name: Set up SQLite database and seed products
-        run: |
-          touch database/database.sqlite
-          php artisan migrate --force
-          php artisan db:seed --class=DatabaseSeeder --force
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-
-      - name: Link storage
-        run: php artisan storage:link
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-
-      - name: Validate product media
-        run: php artisan media:validate
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-
+  # ---------------------------------------------------------------------------
+  # Production images must build, and compose must be valid.
+  # ---------------------------------------------------------------------------
   docker:
-    name: Docker Build
+    name: Docker Production Build
     runs-on: ubuntu-latest
-    needs: [frontend, backend]
+    needs: [backend-tests, frontend]
 
     steps:
       - uses: actions/checkout@v4
@@ -106,11 +190,40 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build frontend image
-        run: docker build -t vestra-frontend:latest ./frontend
+      - name: Build backend production image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile.prod
+          push: false
+          tags: vestra-backend:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Build backend image
-        run: docker build -t vestra-backend:latest -f ./backend/Dockerfile.prod ./backend
+      - name: Build frontend production image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: false
+          tags: vestra-frontend:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_API_URL=https://api.example.com/api/v1
+            NEXT_PUBLIC_SITE_URL=https://example.com
+            NEXT_PUBLIC_BACKEND_URL=https://api.example.com
 
-      - name: Validate docker-compose
-        run: docker compose -f docker-compose.prod.yml config
+      - name: Validate production compose file
+        run: docker compose -f docker-compose.prod.yml config --quiet
+        env:
+          APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+          APP_URL: https://api.example.com
+          FRONTEND_URL: https://example.com
+          CORS_ALLOWED_ORIGINS: https://example.com
+          DB_PASSWORD: ci-placeholder
+          MYSQL_ROOT_PASSWORD: ci-placeholder
+          REDIS_PASSWORD: ci-placeholder
+          NEXT_PUBLIC_API_URL: https://api.example.com/api/v1
+          NEXT_PUBLIC_SITE_URL: https://example.com
+          NEXT_PUBLIC_BACKEND_URL: https://api.example.com

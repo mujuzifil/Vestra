@@ -1,92 +1,34 @@
-# VESTRA Operations Manual
+# VESTRA Operations
 
-## Daily Operations
+Operations documentation lives in [`docs/release/`](docs/release/).
 
-### Health Checks
+| I want to… | Read |
+|---|---|
+| Run the platform day to day | [Operations Runbook](docs/release/OPERATIONS_RUNBOOK.md) |
+| Back up or restore | [Backup & Restore Guide](docs/release/BACKUP_AND_RESTORE_GUIDE.md) |
+| Recover from disaster | [Backup & Restore Guide](docs/release/BACKUP_AND_RESTORE_GUIDE.md) § Disaster recovery |
+| Hand over to a new operator | [Support Handover](docs/release/SUPPORT_HANDOVER.md) |
+| See what's still open | [Known Issues](docs/release/KNOWN_ISSUES.md) |
 
-```bash
-# Check all services
-docker compose -f docker-compose.prod.yml ps
-
-# Check logs
-docker compose -f docker-compose.prod.yml logs -f backend
-docker compose -f docker-compose.prod.yml logs -f frontend
-docker compose -f docker-compose.prod.yml logs -f db
-```
-
-### Monitoring Endpoints
-
-| Endpoint | Purpose |
-|----------|---------|
-| `GET /api/v1/health` | Full health check (DB, storage, cache) |
-| `GET /api/v1/health/ready` | Readiness probe |
-| `GET /api/v1/health/live` | Liveness probe |
-| `GET /api/health` | Frontend health |
-
-### Log Locations
-
-| Service | Location |
-|---------|----------|
-| Backend | `docker compose logs backend` or `/var/www/html/storage/logs/` |
-| Frontend | `docker compose logs frontend` |
-| Nginx | `docker compose logs nginx` |
-| Database | `docker compose logs db` |
-
-## Backup Procedures
-
-### Automated Daily Backup
+## Quick reference
 
 ```bash
-# Add to crontab (runs daily at 2 AM)
-0 2 * * * /opt/vestra/scripts/backup.sh /opt/vestra/backups >> /opt/vestra/logs/backup.log 2>&1
+alias DC='docker compose -f /opt/vestra/docker-compose.prod.yml --env-file /opt/vestra/.env.production'
+
+DC ps                                   # all eight services should be healthy
+DC logs -f backend
+curl -fsS https://api.vestra.com/api/v1/health | jq
+DC exec scheduler php artisan schedule:list
+DC exec backend php artisan queue:failed
 ```
 
-### Manual Backup
+## Health endpoints
 
-```bash
-./scripts/backup.sh /path/to/backup/destination
-```
+| Endpoint | Meaning |
+|---|---|
+| `/api/v1/health` | DB, cache, storage. **503** when any fails |
+| `/api/v1/health/ready` | DB, cache, Redis. **503** when not ready |
+| `/api/v1/health/live` | Process only — no dependencies, by design |
 
-### Restore
-
-```bash
-./scripts/restore.sh /path/to/backups/20250716_120000
-```
-
-## Alerting Thresholds
-
-| Metric | Warning | Critical |
-|--------|---------|----------|
-| HTTP 5xx rate | > 1% | > 5% |
-| Response time (p95) | > 500ms | > 2s |
-| Disk usage | > 70% | > 90% |
-| Memory usage | > 70% | > 90% |
-| Database connections | > 80% | > 95% |
-
-## Incident Response
-
-### 1. Identify
-- Check monitoring dashboards
-- Review error logs
-- Reproduce the issue
-
-### 2. Contain
-- Scale up if under load
-- Enable maintenance mode if needed
-- Block malicious IPs if under attack
-
-### 3. Resolve
-- Apply fix or rollback
-- Verify resolution
-- Monitor for recurrence
-
-### 4. Post-Incident
-- Document root cause
-- Update runbooks
-- Schedule preventive work
-
-## Maintenance Windows
-
-- **Database migrations**: During low-traffic periods
-- **Dependency updates**: Weekly security patches
-- **Major releases**: Monthly, with 48-hour notice
+Monitoring must alert on the **status code**. These endpoints previously
+returned 200 while unhealthy.

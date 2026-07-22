@@ -107,6 +107,34 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | VESTRA Deployment Settings
+    |--------------------------------------------------------------------------
+    |
+    | These MUST be read through config(), never env(), at their call sites.
+    | `php artisan config:cache` — which every production deployment runs — makes
+    | env() return null everywhere outside these config files. Reading them
+    | directly would silently fall back to defaults in production while working
+    | perfectly in local and test environments, where the config is not cached.
+    |
+    */
+
+    // Comma-separated proxy IPs/CIDRs, or "*" to trust all. Consumed by
+    // App\Http\Middleware\TrustProxies. If this is empty in production, Laravel
+    // ignores X-Forwarded-For and treats nginx as the client: rate limits then
+    // apply to all users collectively and audit logs record the proxy address.
+    'trusted_proxies' => env('TRUSTED_PROXIES'),
+
+    // Initial administrator password, applied by AdminUserSeeder on first seed.
+    'bootstrap_admin_password' => env('BOOTSTRAP_ADMIN_PASSWORD'),
+
+    // Force AdminUserSeeder to reset an existing administrator's password.
+    'reset_bootstrap_admin' => env('RESET_BOOTSTRAP_ADMIN', false),
+
+    // Seed demonstration data. Never enable in production.
+    'demo_data' => env('DEMO_DATA', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Maintenance Mode Driver
     |--------------------------------------------------------------------------
     |

@@ -2,8 +2,11 @@ node_modules
 .next
 .git
 *.log
+.env
 .env.local
 .env.*.local
+*.md
+!README.md
 coverage
 .vscode
 .idea

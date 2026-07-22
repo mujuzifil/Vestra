@@ -3,7 +3,11 @@
 
 FROM php:8.4-fpm-bookworm AS base
 
-# Install system dependencies
+# System dependencies and PHP extensions.
+#   redis  — REDIS_CLIENT=phpredis; cache, queue and sessions all require it
+#   pcntl  — lets queue:work handle SIGTERM for graceful shutdown/restart
+#   exif   — hard requirement of spatie/laravel-medialibrary via spatie/image;
+#            composer install fails outright without it
 RUN apt-get update && apt-get install -y --no-install-recommends \
     nginx \
     libpng-dev \
@@ -17,7 +21,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     ca-certificates \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd pdo_mysql zip bcmath opcache intl \
+    && docker-php-ext-install -j"$(nproc)" gd pdo_mysql zip bcmath opcache intl pcntl exif \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && apt-get purge -y --auto-remove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -50,21 +57,31 @@ COPY . .
 # Clear any stale package/service caches that may reference dev-only packages
 RUN rm -f bootstrap/cache/packages.php bootstrap/cache/services.php
 
-# Generate autoloader and optimize
-RUN composer dump-autoload --optimize --no-dev --classmap-authoritative \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache \
-    && php artisan event:cache
+# Generate the optimised autoloader.
+#
+# config/route/view/event caches are deliberately NOT built here. A config cache
+# baked at build time would freeze build-time environment values — placeholder
+# secrets, wrong URLs — and Laravel would then ignore the real environment
+# injected at run time. docker/entrypoint.sh warms all four caches at startup
+# instead, once the production environment is actually present.
+RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD curl -f http://localhost:8080/health || exit 1
+# Health check.
+#
+# Targets the application endpoint, not nginx's static /nginx-health: a static
+# nginx response reports "healthy" with a dead php-fpm or an unreachable
+# database. /api/v1/health exercises DB, cache and storage and returns 503 when
+# any of them fail.
+# 127.0.0.1, not localhost: `localhost` resolves to ::1 first inside the
+# container and nginx binds IPv4 only, so the probe would fail on a healthy
+# container.
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
+    CMD curl -fsS http://127.0.0.1:8080/api/v1/health || exit 1
 
 EXPOSE 8080
 

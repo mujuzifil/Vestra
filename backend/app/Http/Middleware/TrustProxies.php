@@ -21,8 +21,14 @@ class TrustProxies extends Middleware
 
     public function __construct()
     {
-        $proxies = env('TRUSTED_PROXIES');
+        // config(), not env(). Under `php artisan config:cache` — which every
+        // production deployment runs — env() returns null here, so no proxies
+        // would be trusted: X-Forwarded-For would be ignored and every request
+        // would appear to originate from nginx, collapsing per-client rate
+        // limits into one shared bucket and recording the proxy address in the
+        // audit log.
+        $proxies = config('app.trusted_proxies');
 
-        $this->proxies = $proxies ? explode(',', $proxies) : null;
+        $this->proxies = $proxies ? explode(',', (string) $proxies) : null;
     }
 }

@@ -4,6 +4,13 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       target: builder
+      # The builder stage requires these. In dev they are largely inert — the
+      # container runs `next dev`, which reads NEXT_PUBLIC_* from the runtime
+      # environment below — but the stage will not build without them.
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+        NEXT_PUBLIC_SITE_URL: http://localhost:3000
+        NEXT_PUBLIC_BACKEND_URL: http://localhost:8000
     container_name: vestra-frontend-dev
     ports:
       - "3000:3000"
