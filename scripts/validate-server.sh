@@ -4,7 +4,7 @@
 # ==============================================================================
 # Usage (run as root on the VPS, after provision-server.sh):
 #
-#   ./validate-server.sh
+#   sudo ./validate-server.sh
 #
 # Read-only. Prints PASS/FAIL per check plus a summary; exits non-zero if any
 # check fails. Paste the full output into
@@ -142,10 +142,17 @@ systemctl show systemd-journald -p ActiveState --value | grep -q '^active$' \
     || fail "systemd-journald not running"
 
 # --- Exposure check ---------------------------------------------------------------
-LISTENING="$(ss -tlnH | awk '{print $4}' | grep -oE '[0-9]+$' | sort -un | tr '\n' ' ')"
-[ "$LISTENING" = "22 " ] \
-    && pass "Only port 22 listening (got: ${LISTENING})" \
-    || fail "Unexpected listening ports: ${LISTENING} (expected only 22 at this stage)"
+# Only listeners on PUBLIC interfaces count as exposure. Loopback-only
+# listeners (127.0.0.0/8, [::1]) — systemd-resolved's stub DNS, provider
+# agents — are not reachable from the network and are not findings.
+PUBLIC_LISTENING="$(ss -tlnH | awk '{print $4}' | grep -vE '^(127\.|\[::1\])' | grep -oE '[0-9]+$' | sort -un | tr '\n' ' ')"
+EXPECTED="22 "
+# After Stage 17.6, nginx publishes 80/443 — accept that state too.
+[ "$PUBLIC_LISTENING" = "22 " ] || [ "$PUBLIC_LISTENING" = "80 443 " ] || [ "$PUBLIC_LISTENING" = "22 80 443 " ] \
+    && EXPECTED="$PUBLIC_LISTENING"
+[ "$PUBLIC_LISTENING" = "$EXPECTED" ] \
+    && pass "Public listening ports as expected: ${PUBLIC_LISTENING}" \
+    || fail "Unexpected PUBLIC listening ports: ${PUBLIC_LISTENING} (loopback-only listeners excluded)"
 
 echo "=============================================================================="
 echo "RESULT: ${PASS} passed, ${FAIL} failed"
