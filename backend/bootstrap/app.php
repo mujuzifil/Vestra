@@ -18,12 +18,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // TrustProxies is GLOBAL, not api-group-only: the Filament panel (/admin)
-        // runs through the web group. Without it there, web requests ignore
-        // X-Forwarded-Proto behind the TLS-terminating proxy and URL generation
-        // (login redirects, asset URLs) falls back to http://, breaking the
-        // admin panel over HTTPS.
-        $middleware->prepend(TrustProxies::class);
+        // Replace the framework's built-in TrustProxies with the app's
+        // config-driven one. Do NOT prepend ours alongside it: the global
+        // stack already contains Illuminate\Http\Middleware\TrustProxies,
+        // which runs after any prepended middleware and RESETS trusted proxies
+        // to empty (its own proxies property and trustedproxy.proxies config
+        // are unset), wiping whatever ours established — so X-Forwarded-Proto
+        // was ignored and URLs were generated as http:// behind the
+        // TLS-terminating proxy. Replacing it leaves exactly one, working,
+        // TrustProxies in the stack.
+        $middleware->replace(
+            \Illuminate\Http\Middleware\TrustProxies::class,
+            TrustProxies::class
+        );
 
         $middleware->api(prepend: [
             HandleCors::class,
