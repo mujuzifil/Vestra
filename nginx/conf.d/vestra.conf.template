@@ -104,7 +104,9 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/${API_DOMAIN}/privkey.pem;
     ssl_trusted_certificate /etc/letsencrypt/live/${API_DOMAIN}/chain.pem;
 
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    # No HSTS here: the backend's SecurityHeaders middleware already emits it,
+    # and nginx add_header appends rather than replaces, producing a duplicate
+    # Strict-Transport-Security header on every API response.
 
     client_max_body_size 20M;
     limit_conn conn_limit 50;

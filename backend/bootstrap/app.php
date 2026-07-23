@@ -18,9 +18,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // TrustProxies is GLOBAL, not api-group-only: the Filament panel (/admin)
+        // runs through the web group. Without it there, web requests ignore
+        // X-Forwarded-Proto behind the TLS-terminating proxy and URL generation
+        // (login redirects, asset URLs) falls back to http://, breaking the
+        // admin panel over HTTPS.
+        $middleware->prepend(TrustProxies::class);
+
         $middleware->api(prepend: [
             HandleCors::class,
-            TrustProxies::class,
             SecurityHeaders::class,
         ]);
 
