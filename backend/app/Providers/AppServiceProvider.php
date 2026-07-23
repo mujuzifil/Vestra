@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -64,6 +65,15 @@ class AppServiceProvider extends ServiceProvider
         User::observe(CustomerObserver::class);
         ContactMessage::observe(ContactMessageObserver::class);
         CustomerFeedback::observe(CustomerFeedbackObserver::class);
+
+        // Production is served exclusively over HTTPS behind a TLS-terminating
+        // proxy. URL generation that runs before the TrustProxies middleware —
+        // Filament panel registration, queued mail, console commands — cannot
+        // see X-Forwarded-Proto and would otherwise emit http:// links (e.g.
+        // the admin panel favicon). Force the scheme for all generators.
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
 
         $this->enforceBootstrapPasswordNotDefault();
     }
