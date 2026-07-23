@@ -29,6 +29,13 @@ class TrustProxies extends Middleware
         // audit log.
         $proxies = config('app.trusted_proxies');
 
-        $this->proxies = $proxies ? explode(',', (string) $proxies) : null;
+        // '*' must remain a string. Laravel's TrustProxies treats the literal
+        // string '*' as "trust the calling proxy" (the correct meaning behind
+        // Docker's TLS-terminating nginx). An exploded ['*'] array is matched
+        // as an IP literal and trusts nothing, so X-Forwarded-Proto is ignored
+        // and the application generates http:// URLs behind HTTPS.
+        $this->proxies = $proxies === '*'
+            ? '*'
+            : ($proxies ? explode(',', (string) $proxies) : null);
     }
 }
