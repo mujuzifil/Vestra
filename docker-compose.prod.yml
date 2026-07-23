@@ -79,6 +79,12 @@ services:
     image: nginx:1.27-alpine
     container_name: vestra-nginx
     restart: unless-stopped
+    # The main config sets worker_connections 2048; the default container nofile
+    # (1024) makes nginx warn at startup and caps real concurrency below that.
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
     ports:
       - "80:80"
       - "443:443"
