@@ -33,6 +33,17 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        // Production is served exclusively over HTTPS behind a TLS-terminating
+        // proxy. URL generation that runs before the TrustProxies middleware —
+        // Filament panel registration, queued mail, console commands — cannot
+        // see X-Forwarded-Proto and would otherwise emit http:// links (e.g.
+        // the admin panel favicon). This must live in register(): the Filament
+        // AdminPanelProvider evaluates asset() during the register phase,
+        // before any provider's boot() runs.
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         $this->app->singleton(CategoryRepository::class, function ($app) {
             return new CategoryRepository(new Category);
         });
@@ -65,15 +76,6 @@ class AppServiceProvider extends ServiceProvider
         User::observe(CustomerObserver::class);
         ContactMessage::observe(ContactMessageObserver::class);
         CustomerFeedback::observe(CustomerFeedbackObserver::class);
-
-        // Production is served exclusively over HTTPS behind a TLS-terminating
-        // proxy. URL generation that runs before the TrustProxies middleware —
-        // Filament panel registration, queued mail, console commands — cannot
-        // see X-Forwarded-Proto and would otherwise emit http:// links (e.g.
-        // the admin panel favicon). Force the scheme for all generators.
-        if (app()->environment('production')) {
-            URL::forceScheme('https');
-        }
 
         $this->enforceBootstrapPasswordNotDefault();
     }
