@@ -21,12 +21,12 @@ Certify that the repository baseline accurately represents VESTRA Commerce Platf
 
 ## Repository State
 
-| Branch | HEAD | Description |
-|--------|------|-------------|
+| Branch | HEAD / Contains | Description |
+|--------|-----------------|-------------|
 | `master` | `5a740d2` | Stage 17.6 — unchanged |
-| `develop` | `0d9d3f7` | Version 1.0 baseline |
+| `develop` | Release commit `0d9d3f7` | Version 1.0 baseline |
 | `origin/master` | `5a740d2` | Mirrors local master |
-| `origin/develop` | `0d9d3f7` | Mirrors local develop |
+| `origin/develop` | Release commit `0d9d3f7` | Mirrors local develop |
 
 ## Deliverables
 
