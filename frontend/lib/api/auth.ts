@@ -1,5 +1,5 @@
-import { apiGet, apiPost, apiPut, apiDelete } from "./client";
-import type { Customer, ApiResponse, Address, ContactFormData, AuthResponse } from "@/types";
+import { apiGet, apiPost, apiPut, apiDelete, apiUpload } from "./client";
+import type { Customer, ApiResponse, Address, AuthResponse, CustomerPreferences, ActivityItem } from "@/types";
 
 export async function register(name: string, email: string, password: string, phone?: string): Promise<AuthResponse> {
   const response = await apiPost<ApiResponse<AuthResponse>>("/auth/register", {
@@ -26,8 +26,28 @@ export async function getProfile(): Promise<Customer> {
   return response.data;
 }
 
-export async function updateProfile(data: { name?: string; phone?: string }): Promise<Customer> {
-  const response = await apiPut<ApiResponse<Customer>>("/auth/profile", data);
+export interface UpdateProfileData {
+  name?: string;
+  first_name?: string | null;
+  last_name?: string | null;
+  email?: string;
+  phone?: string | null;
+  date_of_birth?: string | null;
+  gender?: Customer["gender"] | null;
+}
+
+export async function updateProfile(data: UpdateProfileData): Promise<Customer> {
+  const response = await apiPut<ApiResponse<Customer>>("/auth/profile", data as Record<string, unknown>);
+  return response.data;
+}
+
+export async function uploadAvatar(file: File): Promise<Customer> {
+  const response = await apiUpload<ApiResponse<Customer>>("/auth/avatar", file, "avatar");
+  return response.data;
+}
+
+export async function deleteAvatar(): Promise<Customer> {
+  const response = await apiDelete<ApiResponse<Customer>>("/auth/avatar");
   return response.data;
 }
 
@@ -44,7 +64,9 @@ export async function getAddresses(): Promise<Address[]> {
   return response.data;
 }
 
-export async function createAddress(data: Omit<Address, "id" | "created_at" | "updated_at">): Promise<Address> {
+export type CreateAddressData = Omit<Address, "id" | "created_at" | "updated_at">;
+
+export async function createAddress(data: CreateAddressData): Promise<Address> {
   const response = await apiPost<ApiResponse<Address>>("/auth/addresses", data);
   return response.data;
 }
@@ -56,4 +78,31 @@ export async function updateAddress(id: number, data: Partial<Address>): Promise
 
 export async function deleteAddress(id: number): Promise<void> {
   await apiDelete<ApiResponse<null>>(`/auth/addresses/${id}`);
+}
+
+export async function getPreferences(): Promise<CustomerPreferences> {
+  const response = await apiGet<ApiResponse<CustomerPreferences>>("/auth/preferences");
+  return response.data;
+}
+
+export async function updatePreferences(data: Partial<CustomerPreferences>): Promise<CustomerPreferences> {
+  const response = await apiPut<ApiResponse<CustomerPreferences>>("/auth/preferences", data);
+  return response.data;
+}
+
+export interface ActivityResponse {
+  data: ActivityItem[];
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
+export async function getActivity(page: number = 1): Promise<ActivityResponse> {
+  const response = await apiGet<ApiResponse<ActivityResponse>>(`/auth/activity?page=${page}`);
+  return response.data;
+}
+
+export async function requestAccountDeletion(reason?: string, password?: string): Promise<void> {
+  await apiPost<ApiResponse<null>>("/auth/account-deletion-request", { reason, password });
 }

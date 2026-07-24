@@ -1,7 +1,13 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAddresses, createAddress, updateAddress, deleteAddress } from "@/lib/api/auth";
+import {
+  getAddresses,
+  createAddress,
+  updateAddress,
+  deleteAddress,
+  type CreateAddressData,
+} from "@/lib/api/auth";
 import type { Address } from "@/types";
 
 const ADDRESSES_KEY = "addresses";
@@ -13,6 +19,9 @@ export function useAddresses() {
     queryKey: [ADDRESSES_KEY],
     queryFn: getAddresses,
   });
+
+  const defaultShipping = data?.find((a) => a.is_default_shipping) || data?.find((a) => a.is_default) || null;
+  const defaultBilling = data?.find((a) => a.is_default_billing) || data?.find((a) => a.is_default) || null;
 
   const createMutation = useMutation({
     mutationFn: createAddress,
@@ -39,8 +48,13 @@ export function useAddresses() {
     data,
     isLoading,
     error,
+    defaultShipping,
+    defaultBilling,
     create: createMutation.mutateAsync,
     update: updateMutation.mutateAsync,
     remove: deleteMutation.mutateAsync,
   };
 }
+
+export type { CreateAddressData };
+export { getAddresses, createAddress, updateAddress, deleteAddress };

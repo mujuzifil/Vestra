@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { MapPin, Plus, ChevronLeft, Loader2, Trash2, Pencil, Check, X, Home } from "lucide-react";
+import { MapPin, Plus, ChevronLeft, Loader2, Trash2, Pencil, Home } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
 import { useAuth } from "@/lib/auth-context";
@@ -24,7 +24,13 @@ export function AddressesPageClient() {
     region: "",
     district: "",
     address_line: "",
+    address_line_2: "",
+    postal_code: "",
+    country: "Uganda",
+    delivery_notes: "",
     is_default: false,
+    is_default_shipping: false,
+    is_default_billing: false,
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -43,7 +49,13 @@ export function AddressesPageClient() {
       region: "",
       district: "",
       address_line: "",
+      address_line_2: "",
+      postal_code: "",
+      country: "Uganda",
+      delivery_notes: "",
       is_default: false,
+      is_default_shipping: false,
+      is_default_billing: false,
     });
     setEditingId(null);
     setShowForm(false);
@@ -58,7 +70,13 @@ export function AddressesPageClient() {
       region: addr.region || "",
       district: addr.district || "",
       address_line: addr.address_line,
+      address_line_2: addr.address_line_2 || "",
+      postal_code: addr.postal_code || "",
+      country: addr.country || "Uganda",
+      delivery_notes: addr.delivery_notes || "",
       is_default: addr.is_default,
+      is_default_shipping: addr.is_default_shipping,
+      is_default_billing: addr.is_default_billing,
     });
     setEditingId(addr.id);
     setShowForm(true);
@@ -184,16 +202,73 @@ export function AddressesPageClient() {
                     className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none resize-none"
                   />
                 </div>
-                <div className="sm:col-span-2 flex items-center gap-2">
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium text-[#0a1628] mb-1">Apartment / Suite / Floor (optional)</label>
                   <input
-                    type="checkbox"
-                    id="is_default"
-                    checked={form.is_default}
-                    onChange={(e) => setForm({ ...form, is_default: e.target.checked })}
-                    className="w-4 h-4 rounded border-[#e2e8f0] text-green-600 focus:ring-green-500"
+                    type="text"
+                    value={form.address_line_2}
+                    onChange={(e) => setForm({ ...form, address_line_2: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
                   />
-                  <label htmlFor="is_default" className="text-sm text-[#64748b]">
-                    Set as default address
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4 sm:col-span-2">
+                  <div>
+                    <label className="block text-sm font-medium text-[#0a1628] mb-1">Postal Code (optional)</label>
+                    <input
+                      type="text"
+                      value={form.postal_code}
+                      onChange={(e) => setForm({ ...form, postal_code: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[#0a1628] mb-1">Country</label>
+                    <input
+                      type="text"
+                      required
+                      value={form.country}
+                      onChange={(e) => setForm({ ...form, country: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+                    />
+                  </div>
+                </div>
+                <div className="sm:col-span-2">
+                  <label className="block text-sm font-medium text-[#0a1628] mb-1">Delivery Notes (optional)</label>
+                  <textarea
+                    rows={2}
+                    value={form.delivery_notes}
+                    onChange={(e) => setForm({ ...form, delivery_notes: e.target.value })}
+                    placeholder="Gate code, landmark, delivery instructions..."
+                    className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none resize-none"
+                  />
+                </div>
+                <div className="sm:col-span-2 grid sm:grid-cols-3 gap-3">
+                  <label className="flex items-center gap-2 p-3 rounded-xl border border-[#e2e8f0] cursor-pointer hover:bg-[#f8fafc]">
+                    <input
+                      type="checkbox"
+                      checked={form.is_default}
+                      onChange={(e) => setForm({ ...form, is_default: e.target.checked })}
+                      className="w-4 h-4 rounded border-[#e2e8f0] text-green-600 focus:ring-green-500"
+                    />
+                    <span className="text-sm text-[#64748b]">Default</span>
+                  </label>
+                  <label className="flex items-center gap-2 p-3 rounded-xl border border-[#e2e8f0] cursor-pointer hover:bg-[#f8fafc]">
+                    <input
+                      type="checkbox"
+                      checked={form.is_default_shipping}
+                      onChange={(e) => setForm({ ...form, is_default_shipping: e.target.checked })}
+                      className="w-4 h-4 rounded border-[#e2e8f0] text-green-600 focus:ring-green-500"
+                    />
+                    <span className="text-sm text-[#64748b]">Default Shipping</span>
+                  </label>
+                  <label className="flex items-center gap-2 p-3 rounded-xl border border-[#e2e8f0] cursor-pointer hover:bg-[#f8fafc]">
+                    <input
+                      type="checkbox"
+                      checked={form.is_default_billing}
+                      onChange={(e) => setForm({ ...form, is_default_billing: e.target.checked })}
+                      className="w-4 h-4 rounded border-[#e2e8f0] text-green-600 focus:ring-green-500"
+                    />
+                    <span className="text-sm text-[#64748b]">Default Billing</span>
                   </label>
                 </div>
                 <div className="sm:col-span-2 flex gap-3">
@@ -262,12 +337,22 @@ export function AddressesPageClient() {
                     }`}
                   >
                     <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <Home className="w-4 h-4 text-green-600" />
                         <span className="font-semibold text-[#0a1628]">{addr.label}</span>
                         {addr.is_default && (
                           <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
                             Default
+                          </span>
+                        )}
+                        {addr.is_default_shipping && (
+                          <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                            Shipping
+                          </span>
+                        )}
+                        {addr.is_default_billing && (
+                          <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs font-medium rounded-full">
+                            Billing
                           </span>
                         )}
                       </div>
@@ -292,11 +377,15 @@ export function AddressesPageClient() {
                       <p className="font-medium text-[#0a1628]">{addr.full_name}</p>
                       <p>{addr.phone}</p>
                       <p>{addr.address_line}</p>
+                      {addr.address_line_2 && <p>{addr.address_line_2}</p>}
                       <p>
                         {addr.city}
                         {addr.region ? `, ${addr.region}` : ""}
                         {addr.district ? `, ${addr.district}` : ""}
+                        {addr.postal_code ? ` · ${addr.postal_code}` : ""}
                       </p>
+                      {addr.country && <p>{addr.country}</p>}
+                      {addr.delivery_notes && <p className="text-xs text-[#94a3b8] mt-1">{addr.delivery_notes}</p>}
                     </div>
                   </div>
                 ))}

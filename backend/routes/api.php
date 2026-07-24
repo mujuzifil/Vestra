@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Auth\AccountDeletionController;
+use App\Http\Controllers\Api\V1\Auth\ActivityController;
 use App\Http\Controllers\Api\V1\Auth\AddressController;
+use App\Http\Controllers\Api\V1\Auth\AvatarController;
 use App\Http\Controllers\Api\V1\Auth\ChangePasswordController;
 use App\Http\Controllers\Api\V1\Auth\LogoutController;
+use App\Http\Controllers\Api\V1\Auth\PreferenceController;
 use App\Http\Controllers\Api\V1\Auth\ProfileController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\UnifiedLoginController;
@@ -48,8 +52,9 @@ Route::prefix('v1')->group(function () {
         Route::post('/auth/logout', [LogoutController::class, 'logout']);
         Route::get('/auth/profile', [ProfileController::class, 'show']);
         Route::put('/auth/profile', [ProfileController::class, 'update']);
+        Route::post('/auth/avatar', [AvatarController::class, 'store']);
+        Route::delete('/auth/avatar', [AvatarController::class, 'destroy']);
         Route::post('/auth/change-password', [ChangePasswordController::class, 'store'])->middleware('throttle:change-password');
-
 
         // Addresses
         Route::get('/auth/addresses', [AddressController::class, 'index']);
@@ -57,6 +62,14 @@ Route::prefix('v1')->group(function () {
         Route::get('/auth/addresses/{address}', [AddressController::class, 'show']);
         Route::put('/auth/addresses/{address}', [AddressController::class, 'update']);
         Route::delete('/auth/addresses/{address}', [AddressController::class, 'destroy']);
+
+        // Preferences & activity
+        Route::get('/auth/preferences', [PreferenceController::class, 'show']);
+        Route::put('/auth/preferences', [PreferenceController::class, 'update']);
+        Route::get('/auth/activity', [ActivityController::class, 'index']);
+
+        // Account deletion request (does not delete the account)
+        Route::post('/auth/account-deletion-request', [AccountDeletionController::class, 'store']);
 
         // Cart
         Route::get('/cart', [CartController::class, 'index']);

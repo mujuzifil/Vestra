@@ -18,8 +18,8 @@ use App\Models\Product;
 use App\Models\Review;
 use App\Models\Setting;
 use App\Models\User;
-use App\Policies\AddressPolicy;
 use App\Policies\AdminSessionPolicy;
+use App\Policies\CustomerAddressPolicy;
 use App\Policies\AuditLogPolicy;
 use App\Policies\CartItemPolicy;
 use App\Policies\CartPolicy;
@@ -46,7 +46,7 @@ class AuthServiceProvider extends ServiceProvider
         CartItem::class => CartItemPolicy::class,
         Category::class => CategoryPolicy::class,
         ContactMessage::class => ContactMessagePolicy::class,
-        CustomerAddress::class => AddressPolicy::class,
+        CustomerAddress::class => CustomerAddressPolicy::class,
         CustomerFeedback::class => CustomerFeedbackPolicy::class,
         DistributorRequest::class => DistributorRequestPolicy::class,
         LoginActivity::class => LoginActivityPolicy::class,

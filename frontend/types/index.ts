@@ -111,11 +111,30 @@ export interface DistributorFormData {
   experience: string;
 }
 
+export interface CustomerPreferences {
+  email_marketing: boolean;
+  sms_notifications: boolean;
+  order_updates_email: boolean;
+  order_updates_sms: boolean;
+  promotional_emails: boolean;
+  two_factor_enabled: boolean;
+  login_alerts: boolean;
+  profile_visibility: "public" | "private" | "friends";
+  language: string;
+  currency: string;
+}
+
 export interface Customer {
   id: number;
   name: string;
+  first_name: string | null;
+  last_name: string | null;
   email: string;
   phone: string | null;
+  date_of_birth: string | null;
+  gender: "male" | "female" | "other" | "prefer_not_to_say" | null;
+  avatar_url: string | null;
+  preferences: CustomerPreferences | null;
   is_admin: boolean;
   roles?: string[];
   must_change_password?: boolean;
@@ -141,9 +160,25 @@ export interface Address {
   region: string | null;
   district: string | null;
   address_line: string;
+  address_line_2: string | null;
+  postal_code: string | null;
+  country: string | null;
+  delivery_notes: string | null;
   is_default: boolean;
+  is_default_shipping: boolean;
+  is_default_billing: boolean;
   created_at: string;
   updated_at: string;
+}
+
+export interface ActivityItem {
+  id: number | string;
+  type: "login" | "password_change" | "profile_update" | "address_added" | "address_updated" | "address_deleted" | "order_placed" | "order_paid" | "order_shipped" | "order_delivered" | "preference_update" | "account_deletion_requested" | string;
+  description: string;
+  metadata?: Record<string, unknown> | null;
+  ip_address?: string | null;
+  user_agent?: string | null;
+  created_at: string;
 }
 
 export interface CartItemProduct {

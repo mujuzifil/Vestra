@@ -18,11 +18,17 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
+        'first_name',
+        'last_name',
         'email',
         'phone',
         'password',
         'status',
         'force_password_change_at',
+        'date_of_birth',
+        'gender',
+        'avatar_path',
+        'preferences_json',
     ];
 
     protected $hidden = [
@@ -38,6 +44,8 @@ class User extends Authenticatable
             'is_admin' => 'boolean',
             'force_password_change_at' => 'datetime',
             'last_login_at' => 'datetime',
+            'date_of_birth' => 'date',
+            'preferences_json' => 'array',
         ];
     }
 
@@ -95,6 +103,21 @@ class User extends Authenticatable
         return $this->hasOne(Cart::class);
     }
 
+    public function preferences(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(CustomerPreference::class);
+    }
+
+    public function deletionRequests(): HasMany
+    {
+        return $this->hasMany(CustomerDeletionRequest::class);
+    }
+
+    public function auditLogs(): HasMany
+    {
+        return $this->hasMany(AuditLog::class);
+    }
+
     public function lifetimeOrderCount(): int
     {
         return cache()->remember("user.{$this->id}.lifetime_order_count", 300, fn (): int => $this->orders()->count());
@@ -120,7 +143,11 @@ class User extends Authenticatable
 
     public function avatarUrl(): ?string
     {
-        return null;
+        if (empty($this->avatar_path)) {
+            return null;
+        }
+
+        return asset($this->avatar_path);
     }
 
     public function lastOrder(): ?Order

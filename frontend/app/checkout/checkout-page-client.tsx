@@ -188,22 +188,24 @@ export function CheckoutPageClient() {
   // Initialize saved addresses
   useEffect(() => {
     if (addresses && addresses.length > 0) {
-      const defaultAddr = addresses.find((a) => a.is_default);
-      const addr = defaultAddr || addresses[0];
-      setSelectedAddressId(addr.id);
+      const defaultAddr =
+        addresses.find((a) => a.is_default_shipping) ||
+        addresses.find((a) => a.is_default) ||
+        addresses[0];
+      setSelectedAddressId(defaultAddr.id);
       if (isAuthenticated) {
         setShipping({
-          full_name: addr.full_name,
-          phone: addr.phone,
+          full_name: defaultAddr.full_name,
+          phone: defaultAddr.phone,
           email: user?.email || "",
-          country: "Uganda",
-          region: addr.region || "",
-          district: addr.district || "",
-          city: addr.city,
-          address_line: addr.address_line,
-          postal_code: "",
+          country: defaultAddr.country || "Uganda",
+          region: defaultAddr.region || "",
+          district: defaultAddr.district || "",
+          city: defaultAddr.city,
+          address_line: defaultAddr.address_line,
+          postal_code: defaultAddr.postal_code || "",
           landmark: "",
-          instructions: "",
+          instructions: defaultAddr.delivery_notes || "",
         });
       }
     }
@@ -356,7 +358,13 @@ export function CheckoutPageClient() {
             region: shipping.region || null,
             district: shipping.district || null,
             address_line: shipping.address_line,
+            address_line_2: null,
+            postal_code: shipping.postal_code || null,
+            country: shipping.country || "Uganda",
+            delivery_notes: shipping.instructions || null,
             is_default: false,
+            is_default_shipping: false,
+            is_default_billing: false,
           });
         } catch {
           // Non-blocking: continue with order even if address save fails
@@ -546,9 +554,12 @@ export function CheckoutPageClient() {
                               full_name: addr.full_name,
                               phone: addr.phone,
                               city: addr.city,
+                              country: addr.country || "Uganda",
                               region: addr.region || "",
                               district: addr.district || "",
                               address_line: addr.address_line,
+                              postal_code: addr.postal_code || "",
+                              instructions: addr.delivery_notes || "",
                             });
                           }}
                           className="mt-1"

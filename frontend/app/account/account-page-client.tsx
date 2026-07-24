@@ -3,6 +3,7 @@
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
   User,
   Package,
@@ -17,6 +18,10 @@ import {
   Search,
   Settings,
   ArrowRight,
+  Camera,
+  Activity,
+  Home,
+  AlertCircle,
 } from "lucide-react";
 import { FeedbackForm } from "@/components/feedback/feedback-form";
 import { submitFeedback } from "@/lib/api/feedback";
@@ -24,7 +29,9 @@ import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
 import { useAuth } from "@/lib/auth-context";
 import { useOrders } from "@/hooks/use-orders";
-import type { Order } from "@/types";
+import { useAddresses } from "@/hooks/use-addresses";
+import { useActivity } from "@/hooks/use-activity";
+import type { Order, Address } from "@/types";
 
 const statusColors: Record<string, string> = {
   pending: "bg-amber-100 text-amber-700",
@@ -118,6 +125,8 @@ export function AccountPageClient() {
   const router = useRouter();
   const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
   const { data: orders, isLoading: ordersLoading } = useOrders();
+  const { data: addresses, isLoading: addressesLoading } = useAddresses();
+  const { data: activityData, isLoading: activityLoading } = useActivity(1);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -139,6 +148,24 @@ export function AccountPageClient() {
   }, [orders]);
 
   const recentOrders = orders?.slice(0, 5) || [];
+  const savedAddresses = addresses?.slice(0, 2) || [];
+  const recentActivity = activityData?.data?.slice(0, 3) || [];
+
+  const profileCompletion = useMemo(() => {
+    if (!user) return 0;
+    const fields = [
+      user.name,
+      user.first_name,
+      user.last_name,
+      user.phone,
+      user.email,
+      user.date_of_birth,
+      user.gender,
+      user.avatar_url,
+    ];
+    const filled = fields.filter(Boolean).length;
+    return Math.round((filled / fields.length) * 100);
+  }, [user]);
 
   const menuItems = [
     { icon: Package, label: "My Orders", href: "/account/orders", description: "View and track your orders" },
@@ -210,8 +237,50 @@ export function AccountPageClient() {
 
             {/* Main Content */}
             <div className="lg:col-span-3 space-y-8">
+              {/* Welcome + Profile Completion */}
+              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
+                  <div className="relative w-16 h-16 rounded-full overflow-hidden bg-green-50 border-2 border-white shadow-md flex-shrink-0">
+                    {user.avatar_url ? (
+                      <Image src={user.avatar_url} alt={user.name} fill className="object-cover" sizes="64px" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-green-600">
+                        <User className="w-8 h-8" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-lg font-bold text-[#0a1628]">Welcome back, {user.name}</h2>
+                    <p className="text-sm text-[#64748b]">{user.email}</p>
+                  </div>
+                  <Link
+                    href="/account/profile/photo"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-green-600 bg-green-50 rounded-xl hover:bg-green-100 transition-colors"
+                  >
+                    <Camera className="w-4 h-4" />
+                    {user.avatar_url ? "Change Photo" : "Add Photo"}
+                  </Link>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium text-[#0a1628]">Profile Completion</span>
+                    <span className="font-bold text-green-600">{profileCompletion}%</span>
+                  </div>
+                  <div className="h-2.5 bg-[#f1f5f9] rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full transition-all"
+                      style={{ width: `${profileCompletion}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-[#94a3b8]">
+                    Complete your profile for a faster checkout experience.
+                  </p>
+                </div>
+              </div>
+
               {/* Stats */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
                 <StatCard label="Total Orders" value={stats.total} icon={Package} color="bg-[#0a1628]" />
                 <StatCard
                   label="Pending Payment"
@@ -221,6 +290,7 @@ export function AccountPageClient() {
                 />
                 <StatCard label="Processing" value={stats.processing} icon={Truck} color="bg-blue-500" />
                 <StatCard label="Completed" value={stats.completed} icon={CheckCircle2} color="bg-green-500" />
+                <StatCard label="Cancelled" value={stats.cancelled} icon={AlertCircle} color="bg-slate-500" />
               </div>
 
               {/* Quick Actions */}
@@ -240,31 +310,112 @@ export function AccountPageClient() {
                 </div>
               </div>
 
-              {/* Recent Orders */}
+              <div className="grid lg:grid-cols-2 gap-6">
+                {/* Recent Orders */}
+                <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-bold text-[#0a1628]">Recent Orders</h2>
+                    <Link href="/account/orders" className="text-sm font-semibold text-green-600 hover:text-green-700">
+                      View All
+                    </Link>
+                  </div>
+
+                  {ordersLoading ? (
+                    <div className="py-8 text-center">
+                      <Loader2 className="w-6 h-6 animate-spin text-green-500 mx-auto" />
+                    </div>
+                  ) : recentOrders.length === 0 ? (
+                    <div className="py-8 text-center text-[#64748b]">
+                      <Package className="w-10 h-10 mx-auto mb-2 text-[#94a3b8]" />
+                      <p>No orders yet.</p>
+                      <Link href="/products" className="text-green-600 font-semibold hover:text-green-700">
+                        Start Shopping
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {recentOrders.map((order) => (
+                        <OrderRow key={order.id} order={order} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Saved Addresses Preview */}
+                <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-bold text-[#0a1628]">Saved Addresses</h2>
+                    <Link href="/account/addresses" className="text-sm font-semibold text-green-600 hover:text-green-700">
+                      Manage
+                    </Link>
+                  </div>
+
+                  {addressesLoading ? (
+                    <div className="py-8 text-center">
+                      <Loader2 className="w-6 h-6 animate-spin text-green-500 mx-auto" />
+                    </div>
+                  ) : savedAddresses.length === 0 ? (
+                    <div className="py-8 text-center text-[#64748b]">
+                      <MapPin className="w-10 h-10 mx-auto mb-2 text-[#94a3b8]" />
+                      <p>No addresses saved.</p>
+                      <Link href="/account/addresses" className="text-green-600 font-semibold hover:text-green-700">
+                        Add Address
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {savedAddresses.map((addr: Address) => (
+                        <div key={addr.id} className="p-4 rounded-xl bg-[#f8fafc]">
+                          <div className="flex items-center gap-2 mb-1">
+                            <Home className="w-4 h-4 text-green-600" />
+                            <span className="font-semibold text-[#0a1628]">{addr.label}</span>
+                            {addr.is_default && (
+                              <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                                Default
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-[#64748b]">{addr.full_name}</p>
+                          <p className="text-sm text-[#64748b]">{addr.address_line}</p>
+                          <p className="text-sm text-[#64748b]">
+                            {addr.city}
+                            {addr.region ? `, ${addr.region}` : ""}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Recent Activity Preview */}
               <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-[#0a1628]">Recent Orders</h2>
-                  <Link href="/account/orders" className="text-sm font-semibold text-green-600 hover:text-green-700">
+                  <h2 className="text-lg font-bold text-[#0a1628]">Recent Activity</h2>
+                  <Link href="/account/activity" className="text-sm font-semibold text-green-600 hover:text-green-700">
                     View All
                   </Link>
                 </div>
 
-                {ordersLoading ? (
+                {activityLoading ? (
                   <div className="py-8 text-center">
                     <Loader2 className="w-6 h-6 animate-spin text-green-500 mx-auto" />
                   </div>
-                ) : recentOrders.length === 0 ? (
+                ) : recentActivity.length === 0 ? (
                   <div className="py-8 text-center text-[#64748b]">
-                    <Package className="w-10 h-10 mx-auto mb-2 text-[#94a3b8]" />
-                    <p>No orders yet.</p>
-                    <Link href="/products" className="text-green-600 font-semibold hover:text-green-700">
-                      Start Shopping
-                    </Link>
+                    <Activity className="w-10 h-10 mx-auto mb-2 text-[#94a3b8]" />
+                    <p>No recent activity.</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {recentOrders.map((order) => (
-                      <OrderRow key={order.id} order={order} />
+                    {recentActivity.map((item) => (
+                      <div key={item.id} className="flex items-start gap-3 p-4 rounded-xl bg-[#f8fafc]">
+                        <Activity className="w-4 h-4 text-green-600 mt-0.5" />
+                        <div>
+                          <p className="text-sm font-medium text-[#0a1628]">{item.description}</p>
+                          <p className="text-xs text-[#64748b]">{new Date(item.created_at).toLocaleString()}</p>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 )}

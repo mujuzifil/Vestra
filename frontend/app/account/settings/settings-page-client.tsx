@@ -3,7 +3,20 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { User, Lock, ChevronLeft, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import {
+  User,
+  Lock,
+  ChevronLeft,
+  Loader2,
+  CheckCircle2,
+  AlertCircle,
+  Camera,
+  Shield,
+  SlidersHorizontal,
+  Activity,
+  Trash2,
+  ChevronRight,
+} from "lucide-react";
 import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
 import { useAuth } from "@/lib/auth-context";
@@ -258,6 +271,78 @@ export function SettingsPageClient() {
                 </button>
               </form>
             )}
+
+            {/* More Settings */}
+            <div className="mt-10 pt-8 border-t border-[#e2e8f0]">
+              <h2 className="text-base font-bold text-[#0a1628] mb-4">More Settings</h2>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <Link
+                  href="/account/profile/photo"
+                  className="flex items-center gap-3 p-4 rounded-xl border border-[#e2e8f0] hover:border-green-200 hover:bg-green-50/30 transition-colors"
+                >
+                  <div className="p-2 rounded-lg bg-[#f8fafc] text-[#0d3b66]">
+                    <Camera className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-[#0a1628]">Profile Photo</p>
+                    <p className="text-xs text-[#64748b]">Upload or remove avatar</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-[#94a3b8]" />
+                </Link>
+                <Link
+                  href="/account/security"
+                  className="flex items-center gap-3 p-4 rounded-xl border border-[#e2e8f0] hover:border-green-200 hover:bg-green-50/30 transition-colors"
+                >
+                  <div className="p-2 rounded-lg bg-[#f8fafc] text-[#0d3b66]">
+                    <Shield className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-[#0a1628]">Security</p>
+                    <p className="text-xs text-[#64748b]">Sessions and login activity</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-[#94a3b8]" />
+                </Link>
+                <Link
+                  href="/account/preferences"
+                  className="flex items-center gap-3 p-4 rounded-xl border border-[#e2e8f0] hover:border-green-200 hover:bg-green-50/30 transition-colors"
+                >
+                  <div className="p-2 rounded-lg bg-[#f8fafc] text-[#0d3b66]">
+                    <SlidersHorizontal className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-[#0a1628]">Preferences</p>
+                    <p className="text-xs text-[#64748b]">Notifications and account prefs</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-[#94a3b8]" />
+                </Link>
+                <Link
+                  href="/account/activity"
+                  className="flex items-center gap-3 p-4 rounded-xl border border-[#e2e8f0] hover:border-green-200 hover:bg-green-50/30 transition-colors"
+                >
+                  <div className="p-2 rounded-lg bg-[#f8fafc] text-[#0d3b66]">
+                    <Activity className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-[#0a1628]">Activity</p>
+                    <p className="text-xs text-[#64748b]">Account event timeline</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-[#94a3b8]" />
+                </Link>
+                <Link
+                  href="/account/delete"
+                  className="flex items-center gap-3 p-4 rounded-xl border border-red-100 hover:bg-red-50 transition-colors sm:col-span-2"
+                >
+                  <div className="p-2 rounded-lg bg-red-50 text-red-600">
+                    <Trash2 className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-red-600">Delete Account</p>
+                    <p className="text-xs text-red-400">Request permanent account deletion</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-red-400" />
+                </Link>
+              </div>
+            </div>
           </div>
         </Container>
       </section>
