@@ -105,6 +105,20 @@ class Order extends Model
         return \App\Enums\PaymentMethod::tryFrom($this->payment_method)?->label() ?? ucfirst($this->payment_method);
     }
 
+    public function estimatedDelivery(): ?\Carbon\Carbon
+    {
+        if ($this->dispatched_at) {
+            return $this->dispatched_at->copy()->addDays(3);
+        }
+
+        if ($this->status === OrderStatus::DELIVERED->value && $this->delivered_at) {
+            return $this->delivered_at;
+        }
+
+        // Default estimate for orders that have not yet shipped.
+        return $this->created_at?->copy()->addDays(7);
+    }
+
     public function timeline(): array
     {
         $events = [];

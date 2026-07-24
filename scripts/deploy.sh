@@ -31,7 +31,7 @@ MODE="${1:-}"
 log "Validating compose configuration..."
 $COMPOSE config --quiet || fail "Compose configuration is invalid."
 
-for VAR in APP_KEY APP_URL FRONTEND_URL CORS_ALLOWED_ORIGINS DB_PASSWORD \
+for VAR in APP_KEY APP_URL FRONTEND_URL ADMIN_DOMAIN CORS_ALLOWED_ORIGINS DB_PASSWORD \
            MYSQL_ROOT_PASSWORD REDIS_PASSWORD NEXT_PUBLIC_API_URL; do
     VALUE="$(grep -E "^${VAR}=" "$ENV_FILE" | cut -d= -f2- || true)"
     [ -n "$VALUE" ] || fail "$VAR is empty in $ENV_FILE."

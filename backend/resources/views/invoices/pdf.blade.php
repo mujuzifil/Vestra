@@ -22,12 +22,20 @@
         .status { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; }
         .status-paid { background: #dcfce7; color: #166534; }
         .status-pending { background: #fef3c7; color: #92400e; }
+        .status-failed { background: #fee2e2; color: #991b1b; }
+        .status-refunded { background: #f3f4f6; color: #374151; }
+        .company-logo { max-height: 60px; margin-bottom: 8px; }
+        .meta-grid { display: flex; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+        .meta-box { flex: 1; }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="company">
-            <h1>VESTRA</h1>
+            @if (!empty($company['logo']))
+                <img src="{{ $company['logo'] }}" alt="{{ $company['name'] }}" class="company-logo">
+            @endif
+            <h1>{{ $company['name'] }}</h1>
             <p>Professional Fabric Care</p>
             <p>{{ $company['address'] }}</p>
             <p>{{ $company['email'] }}</p>
@@ -37,16 +45,26 @@
             <h2>INVOICE</h2>
             <p><strong>{{ $order->invoice_number }}</strong></p>
             <p>Date: {{ $order->created_at->format('F j, Y') }}</p>
-            <p>Status: <span class="status status-{{ $order->payment_status }}">{{ ucfirst($order->payment_status) }}</span></p>
+            <p>Payment Status: <span class="status status-{{ $order->payment_status }}">{{ ucfirst($order->payment_status) }}</span></p>
+            <p>Order Status: <span class="status status-{{ $order->status }}">{{ ucfirst($order->status) }}</span></p>
         </div>
     </div>
 
-    <div class="section">
-        <h3>Bill To</h3>
-        <p><strong>{{ $order->user->name }}</strong></p>
-        <p>{{ $order->user->email }}</p>
-        <p>{{ $order->shipping_address['address_line'] ?? '' }}</p>
-        <p>{{ $order->shipping_address['city'] ?? '' }}</p>
+    <div class="meta-grid">
+        <div class="meta-box section">
+            <h3>Bill To</h3>
+            <p><strong>{{ $order->user->name }}</strong></p>
+            <p>{{ $order->user->email }}</p>
+            <p>{{ $order->shipping_address['address_line'] ?? '' }}</p>
+            <p>{{ $order->shipping_address['city'] ?? '' }}</p>
+        </div>
+        <div class="meta-box section">
+            <h3>Ship To</h3>
+            <p><strong>{{ $order->shipping_address['full_name'] ?? $order->user->name }}</strong></p>
+            <p>{{ $order->shipping_address['phone'] ?? '' }}</p>
+            <p>{{ $order->shipping_address['address_line'] ?? '' }}</p>
+            <p>{{ $order->shipping_address['city'] ?? '' }}</p>
+        </div>
     </div>
 
     <div class="section">
@@ -85,18 +103,31 @@
             <td style="text-align: right;">UGX {{ number_format($order->shipping_cost, 2) }}</td>
         </tr>
         <tr>
-            <td>Tax</td>
+            <td>VAT / Tax</td>
             <td style="text-align: right;">UGX {{ number_format($order->tax_amount, 2) }}</td>
         </tr>
         <tr class="grand">
-            <td>Total</td>
+            <td>Grand Total</td>
             <td style="text-align: right;">UGX {{ number_format($order->total_amount, 2) }}</td>
+        </tr>
+        <tr>
+            <td>Amount Paid</td>
+            <td style="text-align: right;">UGX {{ number_format($order->amountPaid(), 2) }}</td>
+        </tr>
+        <tr>
+            <td>Outstanding Balance</td>
+            <td style="text-align: right;">UGX {{ number_format($order->outstandingBalance(), 2) }}</td>
         </tr>
     </table>
 
+    <div class="section">
+        <h3>Terms & Support</h3>
+        <p>Payment is due according to the selected payment method. For questions about this invoice, contact us at {{ $company['email'] }} or {{ $company['phone'] }}.</p>
+    </div>
+
     <div class="footer">
         <p>Thank you for your business!</p>
-        <p>VESTRA — Professional Fabric Care Solutions</p>
+        <p>{{ $company['name'] }} — Professional Fabric Care Solutions</p>
     </div>
 </body>
 </html>

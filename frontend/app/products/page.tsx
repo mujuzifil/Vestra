@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Search, ShoppingCart, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
@@ -12,7 +12,42 @@ import { SkeletonGrid } from "@/components/ui/skeleton-grid";
 import { ApiError } from "@/components/ui/api-error";
 import { useProducts } from "@/hooks/use-products";
 import { useCategories } from "@/hooks/use-categories";
+import { useCartContext, toCartProduct } from "@/lib/cart-context";
+import { toastAddedToCart } from "@/lib/toast-utils";
+import type { Product } from "@/types";
 import { formatPrice, cn } from "@/lib/utils";
+
+function QuickAddButton({ product, disabled }: { product: Product; disabled?: boolean }) {
+  const { addItem } = useCartContext();
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <button
+      type="button"
+      disabled={disabled || loading}
+      onClick={async () => {
+        setLoading(true);
+        try {
+          await addItem(toCartProduct(product), 1);
+          toastAddedToCart(product.name, 1);
+        } finally {
+          setLoading(false);
+        }
+      }}
+      className={cn(
+        "inline-flex items-center justify-center w-10 h-10 rounded-full border border-[#e2e8f0] bg-white text-[#0a1628] hover:bg-[#f8fafc] hover:border-green-500 hover:text-green-600 transition-colors",
+        (disabled || loading) && "opacity-60 cursor-not-allowed"
+      )}
+      aria-label="Add to cart"
+    >
+      {loading ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : (
+        <ShoppingCart className="w-4 h-4" />
+      )}
+    </button>
+  );
+}
 
 export default function ProductsPage() {
   const [query, setQuery] = useState("");
@@ -171,12 +206,15 @@ export default function ProductsPage() {
                     <p className="text-xl font-extrabold text-[#0d3b66] mb-4">
                       {formatPrice(Number(product.price))}
                     </p>
-                    <Link
-                      href={`/products/${product.slug}`}
-                      className="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-full font-semibold text-sm bg-white border border-[#e2e8f0] text-[#0a1628] hover:bg-[#f8fafc] hover:border-[#4a90d9] hover:text-[#0d3b66] transition-colors"
-                    >
-                      View Details
-                    </Link>
+                    <div className="flex gap-3">
+                      <Link
+                        href={`/products/${product.slug}`}
+                        className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-full font-semibold text-sm bg-white border border-[#e2e8f0] text-[#0a1628] hover:bg-[#f8fafc] hover:border-[#4a90d9] hover:text-[#0d3b66] transition-colors"
+                      >
+                        View Details
+                      </Link>
+                      <QuickAddButton product={product} disabled={product.stock_quantity <= 0} />
+                    </div>
                   </div>
                 </motion.article>
               ))}

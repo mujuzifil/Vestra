@@ -88,6 +88,7 @@ class PaymentController extends Controller
             'status' => $transaction->status,
             'amount' => $transaction->amount,
             'paid_at' => $transaction->paid_at,
+            'order_id' => $transaction->order_id,
         ]);
     }
 }

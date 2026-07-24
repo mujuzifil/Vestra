@@ -146,9 +146,19 @@ export interface Address {
   updated_at: string;
 }
 
+export interface CartItemProduct {
+  id: number;
+  name: string;
+  slug: string;
+  sku: string;
+  price: string;
+  stock_quantity: number;
+  images: ProductImage[];
+}
+
 export interface CartItem {
   id: number;
-  product: Product;
+  product: CartItemProduct;
   quantity: number;
   line_total: string;
 }
@@ -183,8 +193,23 @@ export interface Order {
   total_amount: string;
   notes: string | null;
   payment_url?: string;
+  courier: string | null;
+  tracking_number: string | null;
+  dispatched_at: string | null;
+  delivered_at: string | null;
+  estimated_delivery: string | null;
+  timeline: TimelineEvent[];
   items: OrderItem[];
   created_at: string;
   updated_at: string;
+}
+
+export interface TimelineEvent {
+  icon?: string;
+  color?: string;
+  title: string;
+  description: string;
+  time: string;
+  actor: string;
 }
 

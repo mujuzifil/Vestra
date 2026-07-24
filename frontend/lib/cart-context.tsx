@@ -1,25 +1,39 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getCart, addToCart, updateCartItem, removeCartItem, clearCart, mergeCart } from "@/lib/api/cart";
 import { useAuth } from "@/lib/auth-context";
-import type { Cart, CartItem } from "@/types";
+import type { Cart, CartItem, CartItemProduct, Product } from "@/types";
+import { toastError, toastStockLimitReached } from "@/lib/toast-utils";
+
+export function toCartProduct(product: Product): CartItemProduct {
+  return {
+    id: product.id,
+    name: product.name,
+    slug: product.slug,
+    sku: product.sku,
+    price: product.price,
+    stock_quantity: product.stock_quantity,
+    images: product.images,
+  };
+}
 
 interface CartContextValue {
   cart: Cart | null;
   itemCount: number;
   isLoading: boolean;
-  addItem: (productId: number, quantity?: number) => Promise<void>;
+  addItem: (product: CartItemProduct, quantity?: number) => Promise<void>;
   updateItem: (itemId: number, quantity: number) => Promise<void>;
   removeItem: (itemId: number) => Promise<void>;
   clear: () => Promise<void>;
+  mergeGuestCart: () => Promise<void>;
 }
 
 const CART_STORAGE_KEY = "vestra_cart";
 
 interface GuestCartItem {
-  product_id: number;
+  product: CartItemProduct;
   quantity: number;
 }
 
@@ -27,7 +41,8 @@ function getGuestCart(): GuestCartItem[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(CART_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
   }
@@ -35,40 +50,35 @@ function getGuestCart(): GuestCartItem[] {
 
 function setGuestCart(items: GuestCartItem[]) {
   if (typeof window === "undefined") return;
-  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
-}
-
-function addToGuestCart(productId: number, quantity: number) {
-  const items = getGuestCart();
-  const existing = items.find((i) => i.product_id === productId);
-  if (existing) {
-    existing.quantity += quantity;
-  } else {
-    items.push({ product_id: productId, quantity });
+  try {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+  } catch {
+    toastError("Could not save your cart. Storage may be full.");
   }
-  setGuestCart(items);
 }
 
-function updateGuestCartItem(productId: number, quantity: number) {
-  const items = getGuestCart();
-  const existing = items.find((i) => i.product_id === productId);
-  if (existing) {
-    existing.quantity = quantity;
-    if (existing.quantity <= 0) {
-      setGuestCart(items.filter((i) => i.product_id !== productId));
-      return;
-    }
-  }
-  setGuestCart(items);
+function calculateLineTotal(price: string, quantity: number): string {
+  return (Number(price || 0) * quantity).toFixed(2);
 }
 
-function removeFromGuestCart(productId: number) {
-  const items = getGuestCart().filter((i) => i.product_id !== productId);
-  setGuestCart(items);
-}
+function buildGuestCart(items: GuestCartItem[]): Cart {
+  const cartItems: CartItem[] = items.map((item) => ({
+    id: item.product.id,
+    product: item.product,
+    quantity: item.quantity,
+    line_total: calculateLineTotal(item.product.price, item.quantity),
+  }));
 
-function clearGuestCart() {
-  setGuestCart([]);
+  const subtotal = items
+    .reduce((sum, item) => sum + Number(item.product.price || 0) * item.quantity, 0)
+    .toFixed(2);
+
+  return {
+    id: 0,
+    items: cartItems,
+    item_count: items.reduce((sum, item) => sum + item.quantity, 0),
+    subtotal,
+  };
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -77,6 +87,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuth();
   const [guestCart, setGuestCartState] = useState<GuestCartItem[]>(getGuestCart);
+  const mergeTriggeredRef = useRef(false);
 
   const { data: serverCart, isLoading } = useQuery({
     queryKey: ["cart"],
@@ -85,16 +96,38 @@ export function CartProvider({ children }: { children: ReactNode }) {
     staleTime: 0,
   });
 
-  // Merge guest cart on login
-  useEffect(() => {
-    if (isAuthenticated && guestCart.length > 0) {
-      mergeCart(guestCart).then(() => {
-        clearGuestCart();
-        setGuestCartState([]);
-        queryClient.invalidateQueries({ queryKey: ["cart"] });
-      });
+  const mergeGuestCart = useCallback(async () => {
+    if (mergeTriggeredRef.current) return;
+    const items = getGuestCart();
+    if (items.length === 0) return;
+
+    mergeTriggeredRef.current = true;
+    const itemsToMerge = items.map((item) => ({
+      product_id: item.product.id,
+      quantity: item.quantity,
+    }));
+
+    try {
+      await mergeCart(itemsToMerge);
+      setGuestCart([]);
+      setGuestCartState([]);
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    } catch {
+      mergeTriggeredRef.current = false;
+      toastError("Failed to merge your guest cart. Please try again.");
+      throw new Error("Merge failed");
     }
-  }, [isAuthenticated]);
+  }, [queryClient]);
+
+  // Merge guest cart on login exactly once
+  useEffect(() => {
+    if (isAuthenticated && guestCart.length > 0 && !mergeTriggeredRef.current) {
+      mergeGuestCart();
+    }
+    if (!isAuthenticated) {
+      mergeTriggeredRef.current = false;
+    }
+  }, [isAuthenticated, guestCart, mergeGuestCart]);
 
   const addMutation = useMutation({
     mutationFn: ({ productId, quantity }: { productId: number; quantity: number }) =>
@@ -115,13 +148,42 @@ export function CartProvider({ children }: { children: ReactNode }) {
   });
 
   const addItem = useCallback(
-    async (productId: number, quantity: number = 1) => {
+    async (product: CartItemProduct, quantity: number = 1) => {
+      const requestedQuantity = Math.max(1, quantity);
+
+      if (product.stock_quantity <= 0) {
+        toastError("This product is out of stock.");
+        throw new Error("Out of stock");
+      }
+
       if (isAuthenticated) {
-        await addMutation.mutateAsync({ productId, quantity });
-        queryClient.invalidateQueries({ queryKey: ["cart"] });
+        try {
+          await addMutation.mutateAsync({ productId: product.id, quantity: requestedQuantity });
+          queryClient.invalidateQueries({ queryKey: ["cart"] });
+        } catch (error) {
+          const message = error instanceof Error ? error.message : "Could not add item to cart.";
+          toastError(message);
+          throw error;
+        }
       } else {
-        addToGuestCart(productId, quantity);
-        setGuestCartState(getGuestCart());
+        const items = getGuestCart();
+        const existing = items.find((item) => item.product.id === product.id);
+        const currentQuantity = existing ? existing.quantity : 0;
+        const newQuantity = currentQuantity + requestedQuantity;
+
+        if (newQuantity > product.stock_quantity) {
+          toastStockLimitReached(product.stock_quantity);
+          throw new Error("Stock limit reached");
+        }
+
+        if (existing) {
+          existing.quantity = newQuantity;
+        } else {
+          items.push({ product, quantity: requestedQuantity });
+        }
+
+        setGuestCart(items);
+        setGuestCartState([...items]);
       }
     },
     [isAuthenticated, addMutation, queryClient]
@@ -129,16 +191,39 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const updateItem = useCallback(
     async (itemId: number, quantity: number) => {
+      const newQuantity = Math.max(0, quantity);
+
       if (isAuthenticated) {
-        await updateMutation.mutateAsync({ itemId, quantity });
+        if (newQuantity <= 0) {
+          await removeMutation.mutateAsync(itemId);
+        } else {
+          await updateMutation.mutateAsync({ itemId, quantity: newQuantity });
+        }
         queryClient.invalidateQueries({ queryKey: ["cart"] });
       } else {
-        // For guest, itemId is actually productId
-        updateGuestCartItem(itemId, quantity);
-        setGuestCartState(getGuestCart());
+        const items = getGuestCart();
+        const existing = items.find((item) => item.product.id === itemId);
+
+        if (!existing) return;
+
+        if (newQuantity <= 0) {
+          const filtered = items.filter((item) => item.product.id !== itemId);
+          setGuestCart(filtered);
+          setGuestCartState(filtered);
+          return;
+        }
+
+        if (newQuantity > existing.product.stock_quantity) {
+          toastStockLimitReached(existing.product.stock_quantity);
+          throw new Error("Stock limit reached");
+        }
+
+        existing.quantity = newQuantity;
+        setGuestCart(items);
+        setGuestCartState([...items]);
       }
     },
-    [isAuthenticated, updateMutation, queryClient]
+    [isAuthenticated, updateMutation, removeMutation, queryClient]
   );
 
   const removeItem = useCallback(
@@ -147,8 +232,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         await removeMutation.mutateAsync(itemId);
         queryClient.invalidateQueries({ queryKey: ["cart"] });
       } else {
-        removeFromGuestCart(itemId);
-        setGuestCartState(getGuestCart());
+        const items = getGuestCart().filter((item) => item.product.id !== itemId);
+        setGuestCart(items);
+        setGuestCartState(items);
       }
     },
     [isAuthenticated, removeMutation, queryClient]
@@ -159,26 +245,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       await clearMutation.mutateAsync();
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     } else {
-      clearGuestCart();
+      setGuestCart([]);
       setGuestCartState([]);
     }
   }, [isAuthenticated, clearMutation, queryClient]);
 
-  // Build a Cart-like object for guests
-  const cart: Cart | null = isAuthenticated
-    ? serverCart ?? null
-    : {
-        id: 0,
-        items: guestCart.map((g, index) => ({
-          id: index + 1,
-          product_id: g.product_id,
-          quantity: g.quantity,
-          line_total: "0",
-          product: null as unknown as CartItem["product"],
-        })),
-        item_count: guestCart.reduce((sum, g) => sum + g.quantity, 0),
-        subtotal: "0",
-      };
+  const cart: Cart | null = isAuthenticated ? serverCart ?? null : buildGuestCart(guestCart);
 
   const value: CartContextValue = {
     cart,
@@ -188,6 +260,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     updateItem,
     removeItem,
     clear,
+    mergeGuestCart,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

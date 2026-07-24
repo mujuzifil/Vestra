@@ -37,8 +37,12 @@ class OrderObserver
 
         match ($newStatus) {
             OrderStatus::PAID => $this->notificationService->sendPaymentConfirmation($order),
+            OrderStatus::PROCESSING => $this->notificationService->sendProcessingNotification($order),
+            OrderStatus::PACKED => $this->notificationService->sendPackedNotification($order),
             OrderStatus::SHIPPED => $this->notificationService->sendShippingNotification($order),
             OrderStatus::DELIVERED => $this->notificationService->sendDeliveryNotification($order),
+            OrderStatus::CANCELLED => $this->notificationService->sendCancelledNotification($order),
+            OrderStatus::REFUNDED => $this->notificationService->sendRefundedNotification($order),
             default => null,
         };
     }

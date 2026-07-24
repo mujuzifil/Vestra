@@ -1,15 +1,118 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { User, Package, MapPin, LogOut, ChevronRight, Loader2, MessageSquare } from "lucide-react";
+import {
+  User,
+  Package,
+  MapPin,
+  LogOut,
+  ChevronRight,
+  Loader2,
+  ShoppingBag,
+  CreditCard,
+  Truck,
+  CheckCircle2,
+  Search,
+  Settings,
+  ArrowRight,
+} from "lucide-react";
 import { FeedbackForm } from "@/components/feedback/feedback-form";
 import { submitFeedback } from "@/lib/api/feedback";
 import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
 import { useAuth } from "@/lib/auth-context";
 import { useOrders } from "@/hooks/use-orders";
+import type { Order } from "@/types";
+
+const statusColors: Record<string, string> = {
+  pending: "bg-amber-100 text-amber-700",
+  paid: "bg-emerald-100 text-emerald-700",
+  processing: "bg-blue-100 text-blue-700",
+  packed: "bg-indigo-100 text-indigo-700",
+  shipped: "bg-cyan-100 text-cyan-700",
+  delivered: "bg-green-100 text-green-700",
+  cancelled: "bg-red-100 text-red-700",
+  refunded: "bg-gray-100 text-gray-700",
+};
+
+function StatCard({
+  label,
+  value,
+  icon: Icon,
+  color,
+}: {
+  label: string;
+  value: number;
+  icon: React.ElementType;
+  color: string;
+}) {
+  return (
+    <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-5">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-sm text-[#64748b]">{label}</p>
+          <p className="text-3xl font-extrabold text-[#0a1628] mt-1">{value}</p>
+        </div>
+        <div className={`p-2.5 rounded-xl ${color}`}>
+          <Icon className="w-5 h-5 text-white" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function OrderRow({ order }: { order: Order }) {
+  const needsPayment = order.payment_status !== "paid" && order.status !== "cancelled" && order.status !== "refunded";
+  const isShipped = order.status === "shipped" || order.status === "delivered";
+
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-[#f8fafc]">
+      <div>
+        <p className="font-semibold text-[#0a1628]">{order.invoice_number}</p>
+        <p className="text-sm text-[#64748b]">{new Date(order.created_at).toLocaleDateString()}</p>
+      </div>
+      <div className="flex items-center gap-3">
+        <span
+          className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${
+            statusColors[order.status] || "bg-gray-100 text-gray-700"
+          }`}
+        >
+          {order.status}
+        </span>
+        <span className="font-bold text-[#0d3b66]">UGX {order.total_amount}</span>
+      </div>
+      <div className="flex items-center gap-2">
+        {needsPayment && (
+          <Link
+            href={`/account/orders/${order.id}`}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700"
+          >
+            <CreditCard className="w-3 h-3" />
+            Pay
+          </Link>
+        )}
+        {isShipped && (
+          <Link
+            href={`/track?invoice=${encodeURIComponent(order.invoice_number)}`}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-green-700 bg-green-100 rounded-lg hover:bg-green-200"
+          >
+            <Truck className="w-3 h-3" />
+            Track
+          </Link>
+        )}
+        <Link
+          href={`/account/orders/${order.id}`}
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-green-600 hover:text-green-700"
+        >
+          View
+          <ArrowRight className="w-3 h-3" />
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 export function AccountPageClient() {
   const router = useRouter();
@@ -21,6 +124,34 @@ export function AccountPageClient() {
       router.push("/auth/login");
     }
   }, [authLoading, isAuthenticated, router]);
+
+  const stats = useMemo(() => {
+    const all = orders || [];
+    return {
+      total: all.length,
+      pendingPayment: all.filter(
+        (o) => o.payment_status !== "paid" && o.status !== "cancelled" && o.status !== "refunded"
+      ).length,
+      processing: all.filter((o) => ["paid", "processing", "packed", "shipped"].includes(o.status)).length,
+      completed: all.filter((o) => o.status === "delivered").length,
+      cancelled: all.filter((o) => o.status === "cancelled" || o.status === "refunded").length,
+    };
+  }, [orders]);
+
+  const recentOrders = orders?.slice(0, 5) || [];
+
+  const menuItems = [
+    { icon: Package, label: "My Orders", href: "/account/orders", description: "View and track your orders" },
+    { icon: MapPin, label: "Addresses", href: "/account/addresses", description: "Manage delivery addresses" },
+    { icon: Settings, label: "Settings", href: "/account/settings", description: "Update profile and password" },
+  ];
+
+  const quickActions = [
+    { icon: ShoppingBag, label: "Continue Shopping", href: "/products", color: "bg-green-600" },
+    { icon: Search, label: "Track Order", href: "/track", color: "bg-[#0d3b66]" },
+    { icon: Package, label: "View Orders", href: "/account/orders", color: "bg-blue-600" },
+    { icon: Settings, label: "Update Profile", href: "/account/settings", color: "bg-slate-600" },
+  ];
 
   if (authLoading) {
     return (
@@ -34,24 +165,16 @@ export function AccountPageClient() {
     return null;
   }
 
-  const recentOrders = orders?.slice(0, 3) || [];
-
-  const menuItems = [
-    { icon: Package, label: "My Orders", href: "/account/orders", description: "View and track your orders" },
-    { icon: MapPin, label: "Addresses", href: "/account/addresses", description: "Manage delivery addresses" },
-    { icon: User, label: "Settings", href: "/account/settings", description: "Update profile and password" },
-  ];
-
   return (
     <>
       <PageHero title="My Account" subtitle={`Welcome back, ${user.name}`} breadcrumb={[{ label: "Account" }]} />
 
       <section className="py-12 lg:py-20 bg-[#f8fafc]">
         <Container>
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid lg:grid-cols-4 gap-8">
             {/* Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
+              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 sticky top-24">
                 <div className="flex items-center gap-4 mb-6 pb-6 border-b border-[#e2e8f0]">
                   <div className="w-12 h-12 rounded-full bg-green-500/10 text-green-600 flex items-center justify-center">
                     <User className="w-6 h-6" />
@@ -86,21 +209,34 @@ export function AccountPageClient() {
             </div>
 
             {/* Main Content */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* Account Summary */}
+            <div className="lg:col-span-3 space-y-8">
+              {/* Stats */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <StatCard label="Total Orders" value={stats.total} icon={Package} color="bg-[#0a1628]" />
+                <StatCard
+                  label="Pending Payment"
+                  value={stats.pendingPayment}
+                  icon={CreditCard}
+                  color="bg-amber-500"
+                />
+                <StatCard label="Processing" value={stats.processing} icon={Truck} color="bg-blue-500" />
+                <StatCard label="Completed" value={stats.completed} icon={CheckCircle2} color="bg-green-500" />
+              </div>
+
+              {/* Quick Actions */}
               <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
-                <h2 className="text-lg font-bold text-[#0a1628] mb-4">Account Summary</h2>
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-xl bg-[#f8fafc]">
-                    <p className="text-sm text-[#64748b]">Total Orders</p>
-                    <p className="text-2xl font-extrabold text-[#0a1628]">{orders?.length || 0}</p>
-                  </div>
-                  <div className="p-4 rounded-xl bg-[#f8fafc]">
-                    <p className="text-sm text-[#64748b]">Member Since</p>
-                    <p className="text-2xl font-extrabold text-[#0a1628]">
-                      {new Date(user.created_at).toLocaleDateString()}
-                    </p>
-                  </div>
+                <h2 className="text-lg font-bold text-[#0a1628] mb-4">Quick Actions</h2>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                  {quickActions.map((action) => (
+                    <Link
+                      key={action.label}
+                      href={action.href}
+                      className={`flex flex-col items-center gap-2 p-4 rounded-xl ${action.color} text-white hover:opacity-90 transition-opacity`}
+                    >
+                      <action.icon className="w-6 h-6" />
+                      <span className="text-sm font-semibold text-center">{action.label}</span>
+                    </Link>
+                  ))}
                 </div>
               </div>
 
@@ -128,22 +264,12 @@ export function AccountPageClient() {
                 ) : (
                   <div className="space-y-3">
                     {recentOrders.map((order) => (
-                      <div key={order.id} className="flex items-center justify-between p-4 rounded-xl bg-[#f8fafc]">
-                        <div>
-                          <p className="font-semibold text-[#0a1628]">{order.invoice_number}</p>
-                          <p className="text-sm text-[#64748b]">{new Date(order.created_at).toLocaleDateString()}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-bold text-[#0d3b66]">UGX {order.total_amount}</p>
-                          <span className="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 capitalize">
-                            {order.status}
-                          </span>
-                        </div>
-                      </div>
+                      <OrderRow key={order.id} order={order} />
                     ))}
                   </div>
                 )}
               </div>
+
               {/* Feedback */}
               <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
                 <h2 className="text-lg font-bold text-[#0a1628] mb-4">Send Feedback</h2>

@@ -37,7 +37,8 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('admin')
+            ->domain(config('app.admin_domain'))
+            ->path('')
             ->login()
             ->brandName('VESTRA')
             ->brandLogo(fn () => view('filament.components.vestra-logo'))

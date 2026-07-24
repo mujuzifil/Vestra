@@ -3,20 +3,29 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\Setting;
 use Illuminate\Support\Facades\View;
 
 class InvoicePdfService
 {
     public function generate(Order $order): string
     {
+        $settings = Setting::query()
+            ->whereIn('key', ['company_name', 'business_address', 'support_email', 'support_phone', 'company_logo'])
+            ->get()
+            ->keyBy('key');
+
+        $company = [
+            'name' => $settings->get('company_name')?->typedValue() ?? 'VESTRA',
+            'address' => $settings->get('business_address')?->typedValue() ?? 'Kampala, Uganda',
+            'email' => $settings->get('support_email')?->typedValue() ?? 'vestradetergent@gmail.com',
+            'phone' => $settings->get('support_phone')?->typedValue() ?? '+256 707 128 442',
+            'logo' => $settings->get('company_logo')?->typedValue() ?? null,
+        ];
+
         $html = View::make('invoices.pdf', [
             'order' => $order->load('items', 'user'),
-            'company' => [
-                'name' => 'VESTRA',
-                'address' => 'Kampala, Uganda',
-                'email' => 'vestradetergent@gmail.com',
-                'phone' => '+256 707 128 442',
-            ],
+            'company' => $company,
         ])->render();
 
         // If dompdf is available, use it; otherwise return HTML

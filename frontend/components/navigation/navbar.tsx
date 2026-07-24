@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -25,8 +25,10 @@ const navLinks = [
       { label: "Pro Finish", href: "/products/pro-finish" },
     ],
   },
-  { label: "Distributor", href: "/distributor" },
+  { label: "Bulk Orders", href: "/bulk-orders" },
+  { label: "Become a Distributor", href: "/distributor" },
   { label: "Contact Us", href: "/contact" },
+  { label: "Account", href: "/account" },
 ];
 
 export function Navbar() {
@@ -34,8 +36,19 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [badgeBump, setBadgeBump] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const { itemCount } = useCartContext();
+  const prevItemCountRef = useRef(itemCount);
+
+  useEffect(() => {
+    if (itemCount > prevItemCountRef.current) {
+      setBadgeBump(true);
+      const timer = setTimeout(() => setBadgeBump(false), 300);
+      return () => clearTimeout(timer);
+    }
+    prevItemCountRef.current = itemCount;
+  }, [itemCount]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -134,7 +147,12 @@ export function Navbar() {
           >
             <ShoppingCart className="w-5 h-5" aria-hidden="true" />
             {itemCount > 0 && (
-              <span className="absolute top-0 right-0 w-4 h-4 bg-green-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+              <span
+                className={cn(
+                  "absolute top-0 right-0 w-4 h-4 bg-green-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center transition-transform",
+                  badgeBump && "scale-150"
+                )}
+              >
                 {itemCount > 99 ? "99+" : itemCount}
               </span>
             )}

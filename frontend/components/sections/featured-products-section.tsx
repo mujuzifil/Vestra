@@ -2,12 +2,49 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { ShoppingCart, Loader2 } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { SkeletonGrid } from "@/components/ui/skeleton-grid";
 import { ApiError } from "@/components/ui/api-error";
 import { useProducts } from "@/hooks/use-products";
-import { formatPrice } from "@/lib/utils";
+import { useCartContext, toCartProduct } from "@/lib/cart-context";
+import { toastAddedToCart } from "@/lib/toast-utils";
+import type { Product } from "@/types";
+import { formatPrice, cn } from "@/lib/utils";
+
+function QuickAddButton({ product, disabled }: { product: Product; disabled?: boolean }) {
+  const { addItem } = useCartContext();
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <button
+      type="button"
+      disabled={disabled || loading}
+      onClick={async () => {
+        setLoading(true);
+        try {
+          await addItem(toCartProduct(product), 1);
+          toastAddedToCart(product.name, 1);
+        } finally {
+          setLoading(false);
+        }
+      }}
+      className={cn(
+        "inline-flex items-center justify-center w-10 h-10 rounded-full border border-[#e2e8f0] bg-white text-[#0a1628] hover:bg-[#f8fafc] hover:border-green-500 hover:text-green-600 transition-colors",
+        (disabled || loading) && "opacity-60 cursor-not-allowed"
+      )}
+      aria-label="Add to cart"
+    >
+      {loading ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : (
+        <ShoppingCart className="w-4 h-4" />
+      )}
+    </button>
+  );
+}
 
 export function FeaturedProductsSection() {
   const { data: products, isLoading, error, refetch } = useProducts();
@@ -74,6 +111,7 @@ export function FeaturedProductsSection() {
                     >
                       View Details
                     </Link>
+                    <QuickAddButton product={product} disabled={product.stock_quantity <= 0} />
                   </div>
                 </div>
               </motion.div>

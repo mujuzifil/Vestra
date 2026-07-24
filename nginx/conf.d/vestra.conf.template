@@ -4,9 +4,10 @@
 # Rendered from this template at container start; ${APP_DOMAIN} and
 # ${API_DOMAIN} come from .env.production via docker-compose.
 #
-# Two vhosts:
-#   ${APP_DOMAIN}  -> Next.js frontend
-#   ${API_DOMAIN}  -> Laravel backend (API, Filament admin, storage)
+# Three vhosts:
+#   ${APP_DOMAIN}   -> Next.js frontend
+#   ${API_DOMAIN}   -> Laravel REST API + storage
+#   ${ADMIN_DOMAIN} -> Laravel Filament admin panel
 # ==============================================================================
 
 upstream vestra_frontend {
@@ -142,11 +143,10 @@ server {
         proxy_read_timeout 60s;
     }
 
-    # Filament admin panel.
-    location /admin {
-        proxy_pass http://vestra_backend;
-        proxy_connect_timeout 30s;
-        proxy_read_timeout 120s;
+    # Filament admin has moved to ${ADMIN_DOMAIN}. Redirect old /admin URLs
+    # without preserving the /admin prefix, because Filament now uses ->path('').
+    location ~ ^/admin(/.*)?$ {
+        return 301 https://${ADMIN_DOMAIN}$1$is_args$args;
     }
 
     # Uploaded media, served via the public storage symlink.
@@ -165,5 +165,59 @@ server {
         proxy_pass http://vestra_backend;
         proxy_connect_timeout 30s;
         proxy_read_timeout 60s;
+    }
+}
+
+# ==============================================================================
+# Admin — https://${ADMIN_DOMAIN}
+# ==============================================================================
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name ${ADMIN_DOMAIN};
+
+    ssl_certificate     /etc/letsencrypt/live/${ADMIN_DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${ADMIN_DOMAIN}/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/${ADMIN_DOMAIN}/chain.pem;
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+
+    client_max_body_size 20M;
+    limit_conn conn_limit 50;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_http_version 1.1;
+
+    # Livewire is required by Filament; it must be served on the admin domain.
+    location /livewire/ {
+        proxy_pass http://vestra_backend;
+        proxy_read_timeout 120s;
+    }
+
+    # Filament build assets (Vite manifest).
+    location /build/ {
+        proxy_pass http://vestra_backend;
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        access_log off;
+    }
+
+    # Uploaded media, available for admin previews.
+    location /storage/ {
+        proxy_pass http://vestra_backend;
+        expires 30d;
+        add_header Cache-Control "public";
+        access_log off;
+    }
+
+    # Filament admin panel and all other Laravel routes.
+    location / {
+        proxy_pass http://vestra_backend;
+        proxy_connect_timeout 30s;
+        proxy_read_timeout 120s;
     }
 }

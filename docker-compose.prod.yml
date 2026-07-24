@@ -24,6 +24,7 @@ x-backend-env: &backend-env
   APP_KEY: ${APP_KEY:?APP_KEY is required — generate with php artisan key:generate --show}
   APP_URL: ${APP_URL:?APP_URL is required}
   FRONTEND_URL: ${FRONTEND_URL:?FRONTEND_URL is required}
+  ADMIN_DOMAIN: ${ADMIN_DOMAIN:-admin.${APP_DOMAIN}}
   TRUSTED_PROXIES: ${TRUSTED_PROXIES:-*}
 
   # Without this, CORS falls back to APP_URL and blocks the storefront.
@@ -91,6 +92,7 @@ services:
     environment:
       - APP_DOMAIN=${APP_DOMAIN:-vestra.com}
       - API_DOMAIN=${API_DOMAIN:-api.vestra.com}
+      - ADMIN_DOMAIN=${ADMIN_DOMAIN:-admin.vestra.com}
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/templates:ro
