@@ -24,9 +24,9 @@ Certify that the repository baseline accurately represents VESTRA Commerce Platf
 | Branch | HEAD | Description |
 |--------|------|-------------|
 | `master` | `5a740d2` | Stage 17.6 — unchanged |
-| `develop` | `[HASH]` | Version 1.0 baseline |
+| `develop` | `0d9d3f7` | Version 1.0 baseline |
 | `origin/master` | `5a740d2` | Mirrors local master |
-| `origin/develop` | `[HASH]` | Mirrors local develop |
+| `origin/develop` | `0d9d3f7` | Mirrors local develop |
 
 ## Deliverables
 

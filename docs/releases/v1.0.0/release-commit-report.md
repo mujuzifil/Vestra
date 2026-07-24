@@ -34,7 +34,7 @@ Includes:
 | Property | Value |
 |----------|-------|
 | Branch | `develop` |
-| Commit hash | `[TO BE FILLED AFTER COMMIT]` |
+| Commit hash | `0d9d3f7` |
 | Parent | `bdc4976` |
 | Author | |
 | Date | |
