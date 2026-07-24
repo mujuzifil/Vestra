@@ -61,6 +61,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Returning null makes the middleware throw AuthenticationException,
         // which the handler below renders as a proper 401.
         $middleware->redirectGuestsTo(fn ($request) => $request->is('api/*') ? null : route('filament.admin.auth.login'));
+
+        $middleware->alias([
+            'distributor' => \App\Http\Middleware\EnsureDistributor::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // Treat every /api/* request as a JSON client, regardless of whether it

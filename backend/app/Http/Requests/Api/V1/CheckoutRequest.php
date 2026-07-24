@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1;
 
+use App\Enums\DistributorChannel;
 use App\Enums\PaymentMethod;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -16,6 +17,12 @@ class CheckoutRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'channel' => ['sometimes', 'string', Rule::enum(DistributorChannel::class)],
+            'distributor_branch_id' => [
+                'nullable',
+                'integer',
+                'exists:distributor_branches,id',
+            ],
             'payment_method' => ['required', 'string', Rule::enum(PaymentMethod::class)],
             'shipping_address' => ['required', 'array'],
             'shipping_address.full_name' => ['required', 'string', 'min:2', 'max:255'],

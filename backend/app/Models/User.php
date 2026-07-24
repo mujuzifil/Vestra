@@ -56,6 +56,11 @@ class User extends Authenticatable
             || $this->hasRole('super-admin');
     }
 
+    public function isDistributor(): bool
+    {
+        return $this->hasRole('distributor') && $this->distributor?->isActive();
+    }
+
     public function isActive(): bool
     {
         return $this->status === 'active';
@@ -111,6 +116,11 @@ class User extends Authenticatable
     public function deletionRequests(): HasMany
     {
         return $this->hasMany(CustomerDeletionRequest::class);
+    }
+
+    public function distributor(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Distributor::class);
     }
 
     public function auditLogs(): HasMany

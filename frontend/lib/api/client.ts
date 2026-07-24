@@ -128,3 +128,21 @@ export async function apiUpload<T>(path: string, file: File, fieldName: string =
   });
   return handleResponse<T>(response);
 }
+
+export async function apiPostFormData<T>(path: string, formData: FormData): Promise<T> {
+  const response = await fetch(`${getApiUrl()}${path}`, {
+    method: "POST",
+    headers: buildHeaders(),
+    body: formData,
+  });
+  return handleResponse<T>(response);
+}
+
+export async function apiPutFormData<T>(path: string, formData: FormData): Promise<T> {
+  const response = await fetch(`${getApiUrl()}${path}`, {
+    method: "PUT",
+    headers: buildHeaders(),
+    body: formData,
+  });
+  return handleResponse<T>(response);
+}

@@ -16,6 +16,19 @@ use App\Http\Controllers\Api\V1\CheckoutController;
 use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\DistributorController;
 use App\Http\Controllers\Api\V1\OrderController;
+use App\Http\Controllers\Api\V1\Distributor\DashboardController as DistributorDashboardController;
+use App\Http\Controllers\Api\V1\Distributor\ProfileController as DistributorProfileController;
+use App\Http\Controllers\Api\V1\Distributor\BranchController as DistributorBranchController;
+use App\Http\Controllers\Api\V1\Distributor\ContactController as DistributorContactController;
+use App\Http\Controllers\Api\V1\Distributor\DocumentController as DistributorDocumentController;
+use App\Http\Controllers\Api\V1\Distributor\ProductController as DistributorProductController;
+use App\Http\Controllers\Api\V1\Distributor\OrderController as DistributorOrderController;
+use App\Http\Controllers\Api\V1\Distributor\QuotationController as DistributorQuotationController;
+use App\Http\Controllers\Api\V1\Distributor\InvoiceController as DistributorInvoiceController;
+use App\Http\Controllers\Api\V1\Distributor\StatementController as DistributorStatementController;
+use App\Http\Controllers\Api\V1\Distributor\PaymentUploadController as DistributorPaymentUploadController;
+use App\Http\Controllers\Api\V1\Distributor\AnalyticsController as DistributorAnalyticsController;
+use App\Http\Controllers\Api\V1\Distributor\NotificationController as DistributorNotificationController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\SettingController;
 use App\Http\Controllers\Api\V1\ReportController;
@@ -104,6 +117,43 @@ Route::prefix('v1')->group(function () {
         Route::post('/reviews', [ReviewController::class, 'store']);
         Route::put('/reviews/{review}', [ReviewController::class, 'update']);
         Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
+
+        // Distributor application status (any authenticated user)
+        Route::get('/distributor/application-status', [DistributorController::class, 'applicationStatus']);
+
+        // Distributor portal
+        Route::middleware('distributor')->prefix('distributor')->group(function () {
+            Route::get('/dashboard', [DistributorDashboardController::class, 'index']);
+            Route::get('/profile', [DistributorProfileController::class, 'show']);
+            Route::put('/profile', [DistributorProfileController::class, 'update']);
+            Route::post('/profile/logo', [DistributorProfileController::class, 'uploadLogo']);
+            Route::delete('/profile/logo', [DistributorProfileController::class, 'removeLogo']);
+
+            Route::apiResource('/branches', DistributorBranchController::class);
+            Route::apiResource('/contacts', DistributorContactController::class);
+            Route::apiResource('/documents', DistributorDocumentController::class)->only(['index', 'store', 'destroy']);
+
+            Route::get('/products', [DistributorProductController::class, 'index']);
+            Route::get('/products/{slug}', [DistributorProductController::class, 'show']);
+
+            Route::apiResource('/quotes', DistributorQuotationController::class);
+            Route::post('/quotes/{quote}/submit', [DistributorQuotationController::class, 'submit']);
+            Route::post('/quotes/{quote}/accept', [DistributorQuotationController::class, 'accept']);
+
+            Route::get('/orders', [DistributorOrderController::class, 'index']);
+            Route::get('/orders/{order}', [DistributorOrderController::class, 'show']);
+
+            Route::get('/invoices', [DistributorInvoiceController::class, 'index']);
+            Route::get('/invoices/{invoice}', [DistributorInvoiceController::class, 'show']);
+
+            Route::get('/statements', [DistributorStatementController::class, 'index']);
+
+            Route::get('/payments', [DistributorPaymentUploadController::class, 'index']);
+            Route::post('/payments', [DistributorPaymentUploadController::class, 'store']);
+
+            Route::get('/analytics', [DistributorAnalyticsController::class, 'index']);
+            Route::get('/notifications', [DistributorNotificationController::class, 'index']);
+        });
 
         // Admin-only routes
         Route::middleware([\App\Http\Middleware\RequireAdminPasswordChange::class])->group(function () {

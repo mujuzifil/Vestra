@@ -24,6 +24,7 @@ class Order extends Model
         'subtotal',
         'shipping_cost',
         'tax_amount',
+        'distributor_discount_amount',
         'total_amount',
         'notes',
         'courier',
@@ -31,6 +32,8 @@ class Order extends Model
         'dispatched_at',
         'delivered_at',
         'internal_notes',
+        'distributor_id',
+        'channel',
     ];
 
     protected function casts(): array
@@ -41,7 +44,9 @@ class Order extends Model
             'subtotal' => 'decimal:2',
             'shipping_cost' => 'decimal:2',
             'tax_amount' => 'decimal:2',
+            'distributor_discount_amount' => 'decimal:2',
             'total_amount' => 'decimal:2',
+            'channel' => \App\Enums\DistributorChannel::class,
             'dispatched_at' => 'datetime',
             'delivered_at' => 'datetime',
         ];
@@ -65,6 +70,11 @@ class Order extends Model
     public function statusHistory(): HasMany
     {
         return $this->hasMany(OrderStatusHistory::class)->orderBy('created_at');
+    }
+
+    public function distributor(): BelongsTo
+    {
+        return $this->belongsTo(Distributor::class);
     }
 
     public function latestPaymentTransaction(): ?PaymentTransaction

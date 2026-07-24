@@ -10,8 +10,14 @@ use App\Models\Category;
 use App\Models\ContactMessage;
 use App\Models\CustomerAddress;
 use App\Models\CustomerFeedback;
+use App\Models\Distributor;
+use App\Models\DistributorBranch;
+use App\Models\DistributorContact;
+use App\Models\DistributorDocument;
 use App\Models\DistributorRequest;
 use App\Models\LoginActivity;
+use App\Models\PaymentUpload;
+use App\Models\QuotationRequest;
 use App\Models\Order;
 use App\Models\PaymentTransaction;
 use App\Models\Product;
@@ -26,8 +32,14 @@ use App\Policies\CartPolicy;
 use App\Policies\CategoryPolicy;
 use App\Policies\ContactMessagePolicy;
 use App\Policies\CustomerFeedbackPolicy;
+use App\Policies\DistributorBranchPolicy;
+use App\Policies\DistributorContactPolicy;
+use App\Policies\DistributorDocumentPolicy;
+use App\Policies\DistributorPolicy;
 use App\Policies\DistributorRequestPolicy;
 use App\Policies\LoginActivityPolicy;
+use App\Policies\PaymentUploadPolicy;
+use App\Policies\QuotationRequestPolicy;
 use App\Policies\OrderPolicy;
 use App\Policies\PaymentTransactionPolicy;
 use App\Policies\ProductPolicy;
@@ -48,8 +60,14 @@ class AuthServiceProvider extends ServiceProvider
         ContactMessage::class => ContactMessagePolicy::class,
         CustomerAddress::class => CustomerAddressPolicy::class,
         CustomerFeedback::class => CustomerFeedbackPolicy::class,
+        Distributor::class => DistributorPolicy::class,
+        DistributorBranch::class => DistributorBranchPolicy::class,
+        DistributorContact::class => DistributorContactPolicy::class,
+        DistributorDocument::class => DistributorDocumentPolicy::class,
         DistributorRequest::class => DistributorRequestPolicy::class,
         LoginActivity::class => LoginActivityPolicy::class,
+        PaymentUpload::class => PaymentUploadPolicy::class,
+        QuotationRequest::class => QuotationRequestPolicy::class,
         Order::class => OrderPolicy::class,
         PaymentTransaction::class => PaymentTransactionPolicy::class,
         Product::class => ProductPolicy::class,
