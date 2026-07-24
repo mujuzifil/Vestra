@@ -139,7 +139,7 @@ export function PreferencesPageClient() {
   if (authLoading || isLoading) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-green-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-secondary-500" />
       </div>
     );
   }
@@ -154,25 +154,25 @@ export function PreferencesPageClient() {
         breadcrumb={[{ label: "Account", href: "/account" }, { label: "Settings", href: "/account/settings" }, { label: "Preferences" }]}
       />
 
-      <section className="py-12 lg:py-20 bg-[#f8fafc]">
+      <section className="py-12 lg:py-20 bg-surface-page">
         <Container>
           <Link
             href="/account/settings"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#64748b] hover:text-[#0a1628] mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Settings
           </Link>
 
           <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
-            <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 lg:p-8">
+            <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-xl bg-green-50 text-green-600">
+                <div className="p-2 rounded-xl bg-secondary-50 text-secondary-600">
                   <SlidersHorizontal className="w-5 h-5" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold text-[#0a1628]">Notification Preferences</h1>
-                  <p className="text-sm text-[#64748b]">Choose how VESTRA communicates with you.</p>
+                  <h1 className="text-lg font-bold text-primary-900">Notification Preferences</h1>
+                  <p className="text-sm text-muted">Choose how VESTRA communicates with you.</p>
                 </div>
               </div>
 
@@ -180,68 +180,68 @@ export function PreferencesPageClient() {
                 {NOTIFICATION_ITEMS.map(({ key, label, description, icon: Icon }) => (
                   <label
                     key={key}
-                    className="flex items-start gap-4 p-4 rounded-xl border border-[#e2e8f0] hover:border-green-200 hover:bg-green-50/30 transition-colors cursor-pointer"
+                    className="flex items-start gap-4 p-4 rounded-xl border border-default hover:border-secondary-200 hover:bg-secondary-50/30 transition-colors-base cursor-pointer"
                   >
-                    <div className="p-2 rounded-lg bg-[#f8fafc] text-[#0d3b66]">
+                    <div className="p-2 rounded-lg bg-surface-page text-primary-500">
                       <Icon className="w-4 h-4" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-[#0a1628]">{label}</p>
-                      <p className="text-sm text-[#64748b]">{description}</p>
+                      <p className="font-semibold text-primary-900">{label}</p>
+                      <p className="text-sm text-muted">{description}</p>
                     </div>
                     <input
                       type="checkbox"
                       checked={!!form.notification_preferences[key]}
                       onChange={() => toggleNotification(key)}
-                      className="w-5 h-5 rounded border-[#e2e8f0] text-green-600 focus:ring-green-500 mt-1"
+                      className="w-5 h-5 rounded border-default text-secondary-600 focus:ring-secondary-500 mt-1"
                     />
                   </label>
                 ))}
               </div>
             </div>
 
-            <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 lg:p-8">
+            <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-xl bg-red-50 text-red-600">
+                <div className="p-2 rounded-xl bg-danger-50 text-danger-600">
                   <ShieldAlert className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-[#0a1628]">Alert Preferences</h2>
-                  <p className="text-sm text-[#64748b]">Critical alerts bypass marketing preferences.</p>
+                  <h2 className="text-lg font-bold text-primary-900">Alert Preferences</h2>
+                  <p className="text-sm text-muted">Critical alerts bypass marketing preferences.</p>
                 </div>
               </div>
 
               <div className="space-y-4">
-                <label className="flex items-start gap-4 p-4 rounded-xl border border-[#e2e8f0] hover:border-green-200 hover:bg-green-50/30 transition-colors cursor-pointer">
+                <label className="flex items-start gap-4 p-4 rounded-xl border border-default hover:border-secondary-200 hover:bg-secondary-50/30 transition-colors-base cursor-pointer">
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-[#0a1628]">System Alerts</p>
-                    <p className="text-sm text-[#64748b]">Security, maintenance, and account alerts.</p>
+                    <p className="font-semibold text-primary-900">System Alerts</p>
+                    <p className="text-sm text-muted">Security, maintenance, and account alerts.</p>
                   </div>
                   <input
                     type="checkbox"
                     checked={form.system_alerts}
                     onChange={() => toggleAlert("system_alerts")}
-                    className="w-5 h-5 rounded border-[#e2e8f0] text-green-600 focus:ring-green-500 mt-1"
+                    className="w-5 h-5 rounded border-default text-secondary-600 focus:ring-secondary-500 mt-1"
                   />
                 </label>
 
-                <label className="flex items-start gap-4 p-4 rounded-xl border border-[#e2e8f0] hover:border-green-200 hover:bg-green-50/30 transition-colors cursor-pointer">
+                <label className="flex items-start gap-4 p-4 rounded-xl border border-default hover:border-secondary-200 hover:bg-secondary-50/30 transition-colors-base cursor-pointer">
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-[#0a1628]">Emergency Alerts</p>
-                    <p className="text-sm text-[#64748b]">Urgent platform and service alerts.</p>
+                    <p className="font-semibold text-primary-900">Emergency Alerts</p>
+                    <p className="text-sm text-muted">Urgent platform and service alerts.</p>
                   </div>
                   <input
                     type="checkbox"
                     checked={form.emergency_alerts}
                     onChange={() => toggleAlert("emergency_alerts")}
-                    className="w-5 h-5 rounded border-[#e2e8f0] text-green-600 focus:ring-green-500 mt-1"
+                    className="w-5 h-5 rounded border-default text-secondary-600 focus:ring-secondary-500 mt-1"
                   />
                 </label>
               </div>
             </div>
 
             {error && (
-              <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-xl">
+              <div className="flex items-center gap-2 text-sm text-danger-600 bg-danger-50 p-3 rounded-xl">
                 <AlertCircle className="w-4 h-4" />
                 {error}
               </div>
@@ -250,7 +250,7 @@ export function PreferencesPageClient() {
             <button
               type="submit"
               disabled={isUpdating}
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-secondary-600 text-white font-semibold rounded-xl hover:bg-secondary-600 transition-colors-base disabled:opacity-50"
             >
               {isUpdating ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
               Save Preferences

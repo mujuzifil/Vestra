@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Send, Loader2 } from "lucide-react";
+import { Send, Loader2 } from "lucide-react";
 import { StarRating } from "./star-rating";
 import { useAuth } from "@/lib/auth-context";
 
@@ -21,8 +21,8 @@ export function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
 
   if (!isAuthenticated) {
     return (
-      <div className="p-4 rounded-xl bg-[#f8fafc] text-center">
-        <p className="text-sm text-[#64748b]">Please sign in to leave a review.</p>
+      <div className="p-4 rounded-xl bg-surface-page text-center">
+        <p className="text-sm text-muted">Please sign in to leave a review.</p>
       </div>
     );
   }
@@ -51,8 +51,8 @@ export function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
 
   if (success) {
     return (
-      <div className="p-4 rounded-xl bg-emerald-50 text-center">
-        <p className="text-sm font-medium text-emerald-700">
+      <div className="p-4 rounded-xl bg-success-50 text-center">
+        <p className="text-sm font-medium text-success-600">
           Thank you! Your review has been submitted and will be visible after moderation.
         </p>
       </div>
@@ -62,41 +62,41 @@ export function ReviewForm({ productId, onSubmit }: ReviewFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-[#0a1628] mb-2">Your Rating</label>
+        <label className="block text-sm font-medium text-primary-900 mb-2">Your Rating</label>
         <StarRating rating={rating} interactive size="lg" onChange={setRating} />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-[#0a1628] mb-1">Title (optional)</label>
+        <label className="block text-sm font-medium text-primary-900 mb-1">Title (optional)</label>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           maxLength={255}
           placeholder="Summarize your experience"
-          className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+          className="w-full px-4 py-2.5 rounded-xl border border-border focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-[#0a1628] mb-1">Review</label>
+        <label className="block text-sm font-medium text-primary-900 mb-1">Review</label>
         <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}
           maxLength={1000}
           rows={4}
           placeholder="Share your experience with this product..."
-          className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none resize-none"
+          className="w-full px-4 py-2.5 rounded-xl border border-border focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none resize-none"
         />
-        <p className="text-xs text-[#94a3b8] mt-1">{comment.length}/1000</p>
+        <p className="text-xs text-neutral-400 mt-1">{comment.length}/1000</p>
       </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-danger-600">{error}</p>}
 
       <button
         type="submit"
         disabled={submitting}
-        className="inline-flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors disabled:opacity-50"
+        className="inline-flex items-center gap-2 px-6 py-2.5 bg-secondary-600 text-white font-semibold rounded-xl hover:bg-secondary-600/90 transition-colors-base disabled:opacity-50"
       >
         {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
         Submit Review

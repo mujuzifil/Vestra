@@ -22,10 +22,10 @@ export function ProductDetailPageClient({ slug }: Props) {
 
   if (!product) {
     return (
-      <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-8 text-center">
-        <AlertCircle className="w-10 h-10 mx-auto mb-3 text-[#94a3b8]" />
-        <h2 className="text-lg font-bold text-[#0a1628]">Product not found</h2>
-        <p className="text-sm text-[#64748b] mb-4">The product you are looking for does not exist.</p>
+      <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-8 text-center">
+        <AlertCircle className="w-10 h-10 mx-auto mb-3 text-placeholder" />
+        <h2 className="text-lg font-bold text-primary-900">Product not found</h2>
+        <p className="text-sm text-muted mb-4">The product you are looking for does not exist.</p>
         <Link href="/distributor/products" className="text-green-600 font-semibold hover:text-green-700">
           Back to Products
         </Link>
@@ -40,19 +40,19 @@ export function ProductDetailPageClient({ slug }: Props) {
     <div className="space-y-6">
       <Link
         href="/distributor/products"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-[#64748b] hover:text-[#0a1628]"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900"
       >
         <ChevronLeft className="w-4 h-4" />
         Back to Products
       </Link>
 
-      <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm overflow-hidden">
+      <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm overflow-hidden">
         <div className="grid lg:grid-cols-2 gap-8 p-6 lg:p-10">
-          <div className="relative aspect-square bg-[#f8fafc] rounded-[20px] overflow-hidden">
+          <div className="relative aspect-square bg-neutral-50 rounded-[20px] overflow-hidden">
             {image ? (
               <Image src={image.image} alt={image.alt_text || product.name} fill className="object-cover" />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-[#94a3b8]">
+              <div className="absolute inset-0 flex items-center justify-center text-placeholder">
                 <Package className="w-20 h-20" />
               </div>
             )}
@@ -61,14 +61,14 @@ export function ProductDetailPageClient({ slug }: Props) {
           <div className="space-y-6">
             <div>
               <p className="text-sm font-semibold text-green-600 uppercase tracking-wider mb-2">{product.category?.name}</p>
-              <h1 className="text-2xl lg:text-3xl font-extrabold text-[#0a1628]">{product.name}</h1>
-              <p className="text-sm text-[#64748b] mt-2">SKU: {product.sku}</p>
+              <h1 className="text-2xl lg:text-3xl font-extrabold text-primary-900">{product.name}</h1>
+              <p className="text-sm text-muted mt-2">SKU: {product.sku}</p>
             </div>
 
             <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-extrabold text-[#0a1628]">UGX {price}</span>
+              <span className="text-3xl font-extrabold text-primary-900">UGX {price}</span>
               {product.distributor_price && product.distributor_price !== product.price && (
-                <span className="text-lg text-[#94a3b8] line-through">UGX {product.price}</span>
+                <span className="text-lg text-placeholder line-through">UGX {product.price}</span>
               )}
             </div>
 
@@ -79,14 +79,14 @@ export function ProductDetailPageClient({ slug }: Props) {
               </div>
             )}
 
-            <p className="text-[#475569] leading-relaxed">{product.description}</p>
+            <p className="text-body leading-relaxed">{product.description}</p>
 
             {product.features && product.features.length > 0 && (
               <div>
-                <h3 className="font-bold text-[#0a1628] mb-3">Features</h3>
+                <h3 className="font-bold text-primary-900 mb-3">Features</h3>
                 <ul className="space-y-2">
                   {product.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-2 text-[#475569]">
+                    <li key={i} className="flex items-start gap-2 text-body">
                       <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
                       {feature}
                     </li>
@@ -97,12 +97,12 @@ export function ProductDetailPageClient({ slug }: Props) {
 
             {product.specifications && Object.keys(product.specifications).length > 0 && (
               <div>
-                <h3 className="font-bold text-[#0a1628] mb-3">Specifications</h3>
+                <h3 className="font-bold text-primary-900 mb-3">Specifications</h3>
                 <dl className="grid grid-cols-2 gap-3 text-sm">
                   {Object.entries(product.specifications).map(([key, value]) => (
-                    <div key={key} className="p-3 rounded-xl bg-[#f8fafc]">
-                      <dt className="text-[#94a3b8] capitalize">{key}</dt>
-                      <dd className="font-medium text-[#0a1628]">{value}</dd>
+                    <div key={key} className="p-3 rounded-xl bg-neutral-50">
+                      <dt className="text-placeholder capitalize">{key}</dt>
+                      <dd className="font-medium text-primary-900">{value}</dd>
                     </div>
                   ))}
                 </dl>
@@ -111,7 +111,7 @@ export function ProductDetailPageClient({ slug }: Props) {
 
             <Link
               href="/distributor/quotes/new"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors-base"
             >
               Request Quote
             </Link>

@@ -62,7 +62,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
       {/* Overlay */}
       <div
         className={cn(
-          "fixed inset-0 bg-black/50 z-[60] transition-opacity",
+          "fixed inset-0 bg-black/50 z-[60] transition-opacity-base",
           open ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
         onClick={onClose}
@@ -72,24 +72,24 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
       <div
         ref={drawerRef}
         className={cn(
-          "fixed top-0 right-0 h-full w-full sm:max-w-md bg-white z-[70] shadow-2xl transition-transform duration-300 flex flex-col",
+          "fixed top-0 right-0 h-full w-full sm:max-w-md bg-surface-card z-[70] shadow-2xl transition-transform-base duration-300 flex flex-col",
           open ? "translate-x-0" : "translate-x-full"
         )}
         role="dialog"
         aria-modal="true"
         aria-label="Shopping cart"
       >
-        <div className="flex items-center justify-between p-5 border-b border-[#e2e8f0]">
-          <h2 className="text-lg font-bold text-[#0a1628] flex items-center gap-2">
+        <div className="flex items-center justify-between p-5 border-b border-border">
+          <h2 className="text-lg font-bold text-primary-900 flex items-center gap-2">
             <ShoppingBag className="w-5 h-5" />
             Your Cart ({itemCount})
           </h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-[#f8fafc] transition-colors"
+            className="p-2 rounded-full hover:bg-surface-page transition-colors-base"
             aria-label="Close cart"
           >
-            <X className="w-5 h-5 text-[#64748b]" />
+            <X className="w-5 h-5 text-muted" />
           </button>
         </div>
 
@@ -105,8 +105,8 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                 const isLowStock = product.stock_quantity > 0 && product.stock_quantity <= 5;
 
                 return (
-                  <div key={item.id} className="flex gap-4 p-3 rounded-xl bg-[#f8fafc]">
-                    <div className="relative w-20 h-20 rounded-lg bg-white border border-[#e2e8f0] overflow-hidden flex-shrink-0">
+                  <div key={item.id} className="flex gap-4 p-3 rounded-xl bg-surface-page">
+                    <div className="relative w-20 h-20 rounded-lg bg-surface-card border border-border overflow-hidden flex-shrink-0">
                       <Image
                         src={image}
                         alt={product.name}
@@ -118,21 +118,21 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                       <Link
                         href={`/products/${product.slug}`}
                         onClick={onClose}
-                        className="font-semibold text-[#0a1628] text-sm truncate hover:text-green-600 transition-colors"
+                        className="font-semibold text-primary-900 text-sm truncate hover:text-secondary-600 transition-colors-base"
                       >
                         {product.name}
                       </Link>
-                      <p className="text-xs text-[#64748b] mt-0.5">SKU: {product.sku}</p>
-                      <p className="text-xs font-semibold text-[#0d3b66] mt-0.5">
+                      <p className="text-xs text-muted mt-0.5">SKU: {product.sku}</p>
+                      <p className="text-xs font-semibold text-primary-500 mt-0.5">
                         {formatPrice(Number(product.price || 0))}
                       </p>
 
                       {outOfStock ? (
-                        <span className="inline-flex items-center gap-1 mt-1 text-xs font-semibold text-red-600">
+                        <span className="inline-flex items-center gap-1 mt-1 text-xs font-semibold text-danger-600">
                           <AlertCircle className="w-3 h-3" /> Out of stock
                         </span>
                       ) : isLowStock ? (
-                        <span className="inline-flex items-center gap-1 mt-1 text-xs font-semibold text-amber-600">
+                        <span className="inline-flex items-center gap-1 mt-1 text-xs font-semibold text-warning-600">
                           <AlertCircle className="w-3 h-3" /> Only {product.stock_quantity} left
                         </span>
                       ) : null}
@@ -141,7 +141,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                         <button
                           onClick={() => handleQuantityChange(item.id, item.quantity - 1, product.name)}
                           disabled={item.quantity <= 1}
-                          className="w-8 h-8 rounded-full bg-white border border-[#e2e8f0] flex items-center justify-center hover:border-green-500 transition-colors disabled:opacity-40"
+                          className="w-8 h-8 rounded-full bg-surface-card border border-border flex items-center justify-center hover:border-secondary-500 transition-colors-base disabled:opacity-40"
                           aria-label="Decrease quantity"
                         >
                           <Minus className="w-3 h-3" />
@@ -157,20 +157,20 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                               handleQuantityChange(item.id, value, product.name);
                             }
                           }}
-                          className="w-10 text-center text-sm font-semibold text-[#0a1628] bg-transparent border-none focus:ring-0 p-0"
+                          className="w-10 text-center text-sm font-semibold text-primary-900 bg-transparent border-none focus:ring-0 p-0"
                           aria-label="Quantity"
                         />
                         <button
                           onClick={() => handleQuantityChange(item.id, item.quantity + 1, product.name)}
                           disabled={item.quantity >= (product.stock_quantity || 999)}
-                          className="w-8 h-8 rounded-full bg-white border border-[#e2e8f0] flex items-center justify-center hover:border-green-500 transition-colors disabled:opacity-40"
+                          className="w-8 h-8 rounded-full bg-surface-card border border-border flex items-center justify-center hover:border-secondary-500 transition-colors-base disabled:opacity-40"
                           aria-label="Increase quantity"
                         >
                           <Plus className="w-3 h-3" />
                         </button>
                         <button
                           onClick={() => handleRemove(item.id, product.name)}
-                          className="ml-auto p-1.5 text-[#94a3b8] hover:text-red-500 transition-colors"
+                          className="ml-auto p-1.5 text-neutral-400 hover:text-danger-500 transition-colors-base"
                           aria-label={`Remove ${product.name}`}
                         >
                           <Trash2 className="w-4 h-4" />
@@ -185,16 +185,16 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
         </div>
 
         {cart && cart.items.length > 0 && (
-          <div className="p-5 border-t border-[#e2e8f0] space-y-4">
+          <div className="p-5 border-t border-border space-y-4">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-[#64748b]">Subtotal</span>
-              <span className="font-bold text-[#0a1628]">{formatPrice(Number(cart.subtotal || 0))}</span>
+              <span className="text-muted">Subtotal</span>
+              <span className="font-bold text-primary-900">{formatPrice(Number(cart.subtotal || 0))}</span>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Link
                 href="/cart"
                 onClick={onClose}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm text-[#0a1628] bg-white border border-[#e2e8f0] hover:bg-[#f8fafc] transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm text-primary-900 bg-surface-card border border-border hover:bg-surface-page transition-colors-base"
               >
                 View Cart
               </Link>
@@ -203,7 +203,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                   onClose();
                   router.push("/checkout");
                 }}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg shadow-green-500/30 hover:-translate-y-0.5 transition-all"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm bg-gradient-to-br from-secondary-500 to-secondary-600 text-white shadow-lg shadow-secondary-500/30 hover:-translate-y-0.5 transition-all-base"
               >
                 Checkout
                 <ArrowRight className="w-4 h-4" />

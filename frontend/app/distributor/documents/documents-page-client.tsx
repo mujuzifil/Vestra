@@ -41,8 +41,8 @@ export function DocumentsPageClient() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-[#0a1628]">Documents</h1>
-        <p className="text-[#64748b]">Upload and manage company documents.</p>
+        <h1 className="text-2xl font-extrabold text-primary-900">Documents</h1>
+        <p className="text-muted">Upload and manage company documents.</p>
       </div>
 
       <DocumentUploader onUpload={handleUpload} types={documentTypes} />
@@ -54,30 +54,30 @@ export function DocumentsPageClient() {
       ) : !documents || documents.length === 0 ? (
         <EmptyState title="No documents yet" description="Upload your first document above." />
       ) : (
-        <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm overflow-hidden">
+        <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-[#f8fafc]">
+              <thead className="bg-neutral-50">
                 <tr>
-                  <th className="px-6 py-4 font-semibold text-[#0a1628]">Title</th>
-                  <th className="px-6 py-4 font-semibold text-[#0a1628]">Type</th>
-                  <th className="px-6 py-4 font-semibold text-[#0a1628]">Version</th>
-                  <th className="px-6 py-4 font-semibold text-[#0a1628]">Uploaded</th>
+                  <th className="px-6 py-4 font-semibold text-primary-900">Title</th>
+                  <th className="px-6 py-4 font-semibold text-primary-900">Type</th>
+                  <th className="px-6 py-4 font-semibold text-primary-900">Version</th>
+                  <th className="px-6 py-4 font-semibold text-primary-900">Uploaded</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {documents.map((doc) => (
-                  <tr key={doc.id} className="border-t border-[#f1f5f9]">
+                  <tr key={doc.id} className="border-t border-neutral-100">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <FileText className="w-4 h-4 text-green-600" />
-                        <span className="font-medium text-[#0a1628]">{doc.title}</span>
+                        <span className="font-medium text-primary-900">{doc.title}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-[#64748b] capitalize">{doc.type.replace(/_/g, " ")}</td>
-                    <td className="px-6 py-4 text-[#64748b]">{doc.version}</td>
-                    <td className="px-6 py-4 text-[#64748b]">{new Date(doc.created_at).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-muted capitalize">{doc.type.replace(/_/g, " ")}</td>
+                    <td className="px-6 py-4 text-muted">{doc.version}</td>
+                    <td className="px-6 py-4 text-muted">{new Date(doc.created_at).toLocaleDateString()}</td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <a

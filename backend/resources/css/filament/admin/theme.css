@@ -26,6 +26,9 @@
 @import "./components/tables.css";
 @import "./components/cards.css";
 @import "./components/notifications.css";
+@import "./components/empty-state.css";
+@import "./components/charts.css";
+@import "./components/login.css";
 @import "./components/dashboard.css";
 @import "./components/products.css";
 @import "./components/orders.css";

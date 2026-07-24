@@ -34,14 +34,14 @@ import { useActivity } from "@/hooks/use-activity";
 import type { Order, Address } from "@/types";
 
 const statusColors: Record<string, string> = {
-  pending: "bg-amber-100 text-amber-700",
-  paid: "bg-emerald-100 text-emerald-700",
-  processing: "bg-blue-100 text-blue-700",
+  pending: "bg-warning-100 text-warning-600",
+  paid: "bg-success-100 text-success-600",
+  processing: "bg-info-100 text-info-600",
   packed: "bg-indigo-100 text-indigo-700",
   shipped: "bg-cyan-100 text-cyan-700",
-  delivered: "bg-green-100 text-green-700",
-  cancelled: "bg-red-100 text-red-700",
-  refunded: "bg-gray-100 text-gray-700",
+  delivered: "bg-secondary-100 text-secondary-600",
+  cancelled: "bg-danger-100 text-danger-600",
+  refunded: "bg-neutral-100 text-neutral-600",
 };
 
 function StatCard({
@@ -56,11 +56,11 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-5">
+    <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-5">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-[#64748b]">{label}</p>
-          <p className="text-3xl font-extrabold text-[#0a1628] mt-1">{value}</p>
+          <p className="text-sm text-muted">{label}</p>
+          <p className="text-3xl font-extrabold text-primary-900 mt-1">{value}</p>
         </div>
         <div className={`p-2.5 rounded-xl ${color}`}>
           <Icon className="w-5 h-5 text-white" />
@@ -75,26 +75,26 @@ function OrderRow({ order }: { order: Order }) {
   const isShipped = order.status === "shipped" || order.status === "delivered";
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-[#f8fafc]">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-surface-page">
       <div>
-        <p className="font-semibold text-[#0a1628]">{order.invoice_number}</p>
-        <p className="text-sm text-[#64748b]">{new Date(order.created_at).toLocaleDateString()}</p>
+        <p className="font-semibold text-primary-900">{order.invoice_number}</p>
+        <p className="text-sm text-muted">{new Date(order.created_at).toLocaleDateString()}</p>
       </div>
       <div className="flex items-center gap-3">
         <span
           className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${
-            statusColors[order.status] || "bg-gray-100 text-gray-700"
+            statusColors[order.status] || "bg-neutral-100 text-neutral-600"
           }`}
         >
           {order.status}
         </span>
-        <span className="font-bold text-[#0d3b66]">UGX {order.total_amount}</span>
+        <span className="font-bold text-primary-500">UGX {order.total_amount}</span>
       </div>
       <div className="flex items-center gap-2">
         {needsPayment && (
           <Link
             href={`/account/orders/${order.id}`}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-secondary-600 rounded-lg hover:bg-secondary-600"
           >
             <CreditCard className="w-3 h-3" />
             Pay
@@ -103,7 +103,7 @@ function OrderRow({ order }: { order: Order }) {
         {isShipped && (
           <Link
             href={`/track?invoice=${encodeURIComponent(order.invoice_number)}`}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-green-700 bg-green-100 rounded-lg hover:bg-green-200"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-secondary-600 bg-secondary-100 rounded-lg hover:bg-secondary-200"
           >
             <Truck className="w-3 h-3" />
             Track
@@ -111,7 +111,7 @@ function OrderRow({ order }: { order: Order }) {
         )}
         <Link
           href={`/account/orders/${order.id}`}
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-green-600 hover:text-green-700"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-secondary-600 hover:text-secondary-600"
         >
           View
           <ArrowRight className="w-3 h-3" />
@@ -174,16 +174,16 @@ export function AccountPageClient() {
   ];
 
   const quickActions = [
-    { icon: ShoppingBag, label: "Continue Shopping", href: "/products", color: "bg-green-600" },
-    { icon: Search, label: "Track Order", href: "/track", color: "bg-[#0d3b66]" },
-    { icon: Package, label: "View Orders", href: "/account/orders", color: "bg-blue-600" },
-    { icon: Settings, label: "Update Profile", href: "/account/settings", color: "bg-slate-600" },
+    { icon: ShoppingBag, label: "Continue Shopping", href: "/products", color: "bg-secondary-600" },
+    { icon: Search, label: "Track Order", href: "/track", color: "bg-primary-500" },
+    { icon: Package, label: "View Orders", href: "/account/orders", color: "bg-info-600" },
+    { icon: Settings, label: "Update Profile", href: "/account/settings", color: "bg-neutral-600" },
   ];
 
   if (authLoading) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-green-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-secondary-500" />
       </div>
     );
   }
@@ -196,19 +196,19 @@ export function AccountPageClient() {
     <>
       <PageHero title="My Account" subtitle={`Welcome back, ${user.name}`} breadcrumb={[{ label: "Account" }]} />
 
-      <section className="py-12 lg:py-20 bg-[#f8fafc]">
+      <section className="py-12 lg:py-20 bg-surface-page">
         <Container>
           <div className="grid lg:grid-cols-4 gap-8">
             {/* Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 sticky top-24">
-                <div className="flex items-center gap-4 mb-6 pb-6 border-b border-[#e2e8f0]">
-                  <div className="w-12 h-12 rounded-full bg-green-500/10 text-green-600 flex items-center justify-center">
+              <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 sticky top-24">
+                <div className="flex items-center gap-4 mb-6 pb-6 border-b border-default">
+                  <div className="w-12 h-12 rounded-full bg-secondary-500/10 text-secondary-600 flex items-center justify-center">
                     <User className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="font-bold text-[#0a1628]">{user.name}</p>
-                    <p className="text-sm text-[#64748b]">{user.email}</p>
+                    <p className="font-bold text-primary-900">{user.name}</p>
+                    <p className="text-sm text-muted">{user.email}</p>
                   </div>
                 </div>
 
@@ -217,7 +217,7 @@ export function AccountPageClient() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="flex items-center gap-3 p-3 rounded-xl text-[#475569] hover:bg-[#f8fafc] hover:text-[#0a1628] transition-colors"
+                      className="flex items-center gap-3 p-3 rounded-xl text-body hover:bg-surface-page hover:text-primary-900 transition-colors-base"
                     >
                       <item.icon className="w-5 h-5" />
                       <span className="font-medium">{item.label}</span>
@@ -226,7 +226,7 @@ export function AccountPageClient() {
                   ))}
                   <button
                     onClick={() => logout().then(() => router.push("/"))}
-                    className="w-full flex items-center gap-3 p-3 rounded-xl text-red-600 hover:bg-red-50 transition-colors"
+                    className="w-full flex items-center gap-3 p-3 rounded-xl text-danger-600 hover:bg-danger-50 transition-colors-base"
                   >
                     <LogOut className="w-5 h-5" />
                     <span className="font-medium">Sign Out</span>
@@ -238,24 +238,24 @@ export function AccountPageClient() {
             {/* Main Content */}
             <div className="lg:col-span-3 space-y-8">
               {/* Welcome + Profile Completion */}
-              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
+              <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
-                  <div className="relative w-16 h-16 rounded-full overflow-hidden bg-green-50 border-2 border-white shadow-md flex-shrink-0">
+                  <div className="relative w-16 h-16 rounded-full overflow-hidden bg-secondary-50 border-2 border-surface-card shadow-md flex-shrink-0">
                     {user.avatar_url ? (
                       <Image src={user.avatar_url} alt={user.name} fill className="object-cover" sizes="64px" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-green-600">
+                      <div className="w-full h-full flex items-center justify-center text-secondary-600">
                         <User className="w-8 h-8" />
                       </div>
                     )}
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-lg font-bold text-[#0a1628]">Welcome back, {user.name}</h2>
-                    <p className="text-sm text-[#64748b]">{user.email}</p>
+                    <h2 className="text-lg font-bold text-primary-900">Welcome back, {user.name}</h2>
+                    <p className="text-sm text-muted">{user.email}</p>
                   </div>
                   <Link
                     href="/account/profile/photo"
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-green-600 bg-green-50 rounded-xl hover:bg-green-100 transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-secondary-600 bg-secondary-50 rounded-xl hover:bg-secondary-100 transition-colors-base"
                   >
                     <Camera className="w-4 h-4" />
                     {user.avatar_url ? "Change Photo" : "Add Photo"}
@@ -264,16 +264,16 @@ export function AccountPageClient() {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-[#0a1628]">Profile Completion</span>
-                    <span className="font-bold text-green-600">{profileCompletion}%</span>
+                    <span className="font-medium text-primary-900">Profile Completion</span>
+                    <span className="font-bold text-secondary-600">{profileCompletion}%</span>
                   </div>
-                  <div className="h-2.5 bg-[#f1f5f9] rounded-full overflow-hidden">
+                  <div className="h-2.5 bg-neutral-100 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full transition-all"
+                      className="h-full bg-gradient-to-r from-secondary-500 to-secondary-600 rounded-full transition-all-base"
                       style={{ width: `${profileCompletion}%` }}
                     />
                   </div>
-                  <p className="text-xs text-[#94a3b8]">
+                  <p className="text-xs text-placeholder">
                     Complete your profile for a faster checkout experience.
                   </p>
                 </div>
@@ -281,27 +281,27 @@ export function AccountPageClient() {
 
               {/* Stats */}
               <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-                <StatCard label="Total Orders" value={stats.total} icon={Package} color="bg-[#0a1628]" />
+                <StatCard label="Total Orders" value={stats.total} icon={Package} color="bg-primary-900" />
                 <StatCard
                   label="Pending Payment"
                   value={stats.pendingPayment}
                   icon={CreditCard}
-                  color="bg-amber-500"
+                  color="bg-warning-500"
                 />
-                <StatCard label="Processing" value={stats.processing} icon={Truck} color="bg-blue-500" />
-                <StatCard label="Completed" value={stats.completed} icon={CheckCircle2} color="bg-green-500" />
-                <StatCard label="Cancelled" value={stats.cancelled} icon={AlertCircle} color="bg-slate-500" />
+                <StatCard label="Processing" value={stats.processing} icon={Truck} color="bg-info-500" />
+                <StatCard label="Completed" value={stats.completed} icon={CheckCircle2} color="bg-secondary-500" />
+                <StatCard label="Cancelled" value={stats.cancelled} icon={AlertCircle} color="bg-neutral-500" />
               </div>
 
               {/* Quick Actions */}
-              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
-                <h2 className="text-lg font-bold text-[#0a1628] mb-4">Quick Actions</h2>
+              <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
+                <h2 className="text-lg font-bold text-primary-900 mb-4">Quick Actions</h2>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                   {quickActions.map((action) => (
                     <Link
                       key={action.label}
                       href={action.href}
-                      className={`flex flex-col items-center gap-2 p-4 rounded-xl ${action.color} text-white hover:opacity-90 transition-opacity`}
+                      className={`flex flex-col items-center gap-2 p-4 rounded-xl ${action.color} text-white hover:opacity-90 transition-opacity-base`}
                     >
                       <action.icon className="w-6 h-6" />
                       <span className="text-sm font-semibold text-center">{action.label}</span>
@@ -312,23 +312,23 @@ export function AccountPageClient() {
 
               <div className="grid lg:grid-cols-2 gap-6">
                 {/* Recent Orders */}
-                <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
+                <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-bold text-[#0a1628]">Recent Orders</h2>
-                    <Link href="/account/orders" className="text-sm font-semibold text-green-600 hover:text-green-700">
+                    <h2 className="text-lg font-bold text-primary-900">Recent Orders</h2>
+                    <Link href="/account/orders" className="text-sm font-semibold text-secondary-600 hover:text-secondary-600">
                       View All
                     </Link>
                   </div>
 
                   {ordersLoading ? (
                     <div className="py-8 text-center">
-                      <Loader2 className="w-6 h-6 animate-spin text-green-500 mx-auto" />
+                      <Loader2 className="w-6 h-6 animate-spin text-secondary-500 mx-auto" />
                     </div>
                   ) : recentOrders.length === 0 ? (
-                    <div className="py-8 text-center text-[#64748b]">
-                      <Package className="w-10 h-10 mx-auto mb-2 text-[#94a3b8]" />
+                    <div className="py-8 text-center text-muted">
+                      <Package className="w-10 h-10 mx-auto mb-2 text-placeholder" />
                       <p>No orders yet.</p>
-                      <Link href="/products" className="text-green-600 font-semibold hover:text-green-700">
+                      <Link href="/products" className="text-secondary-600 font-semibold hover:text-secondary-600">
                         Start Shopping
                       </Link>
                     </div>
@@ -342,42 +342,42 @@ export function AccountPageClient() {
                 </div>
 
                 {/* Saved Addresses Preview */}
-                <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
+                <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-bold text-[#0a1628]">Saved Addresses</h2>
-                    <Link href="/account/addresses" className="text-sm font-semibold text-green-600 hover:text-green-700">
+                    <h2 className="text-lg font-bold text-primary-900">Saved Addresses</h2>
+                    <Link href="/account/addresses" className="text-sm font-semibold text-secondary-600 hover:text-secondary-600">
                       Manage
                     </Link>
                   </div>
 
                   {addressesLoading ? (
                     <div className="py-8 text-center">
-                      <Loader2 className="w-6 h-6 animate-spin text-green-500 mx-auto" />
+                      <Loader2 className="w-6 h-6 animate-spin text-secondary-500 mx-auto" />
                     </div>
                   ) : savedAddresses.length === 0 ? (
-                    <div className="py-8 text-center text-[#64748b]">
-                      <MapPin className="w-10 h-10 mx-auto mb-2 text-[#94a3b8]" />
+                    <div className="py-8 text-center text-muted">
+                      <MapPin className="w-10 h-10 mx-auto mb-2 text-placeholder" />
                       <p>No addresses saved.</p>
-                      <Link href="/account/addresses" className="text-green-600 font-semibold hover:text-green-700">
+                      <Link href="/account/addresses" className="text-secondary-600 font-semibold hover:text-secondary-600">
                         Add Address
                       </Link>
                     </div>
                   ) : (
                     <div className="space-y-3">
                       {savedAddresses.map((addr: Address) => (
-                        <div key={addr.id} className="p-4 rounded-xl bg-[#f8fafc]">
+                        <div key={addr.id} className="p-4 rounded-xl bg-surface-page">
                           <div className="flex items-center gap-2 mb-1">
-                            <Home className="w-4 h-4 text-green-600" />
-                            <span className="font-semibold text-[#0a1628]">{addr.label}</span>
+                            <Home className="w-4 h-4 text-secondary-600" />
+                            <span className="font-semibold text-primary-900">{addr.label}</span>
                             {addr.is_default && (
-                              <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                              <span className="px-2 py-0.5 bg-secondary-100 text-secondary-600 text-xs font-medium rounded-full">
                                 Default
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-[#64748b]">{addr.full_name}</p>
-                          <p className="text-sm text-[#64748b]">{addr.address_line}</p>
-                          <p className="text-sm text-[#64748b]">
+                          <p className="text-sm text-muted">{addr.full_name}</p>
+                          <p className="text-sm text-muted">{addr.address_line}</p>
+                          <p className="text-sm text-muted">
                             {addr.city}
                             {addr.region ? `, ${addr.region}` : ""}
                           </p>
@@ -389,31 +389,31 @@ export function AccountPageClient() {
               </div>
 
               {/* Recent Activity Preview */}
-              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
+              <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-[#0a1628]">Recent Activity</h2>
-                  <Link href="/account/activity" className="text-sm font-semibold text-green-600 hover:text-green-700">
+                  <h2 className="text-lg font-bold text-primary-900">Recent Activity</h2>
+                  <Link href="/account/activity" className="text-sm font-semibold text-secondary-600 hover:text-secondary-600">
                     View All
                   </Link>
                 </div>
 
                 {activityLoading ? (
                   <div className="py-8 text-center">
-                    <Loader2 className="w-6 h-6 animate-spin text-green-500 mx-auto" />
+                    <Loader2 className="w-6 h-6 animate-spin text-secondary-500 mx-auto" />
                   </div>
                 ) : recentActivity.length === 0 ? (
-                  <div className="py-8 text-center text-[#64748b]">
-                    <Activity className="w-10 h-10 mx-auto mb-2 text-[#94a3b8]" />
+                  <div className="py-8 text-center text-muted">
+                    <Activity className="w-10 h-10 mx-auto mb-2 text-placeholder" />
                     <p>No recent activity.</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {recentActivity.map((item) => (
-                      <div key={item.id} className="flex items-start gap-3 p-4 rounded-xl bg-[#f8fafc]">
-                        <Activity className="w-4 h-4 text-green-600 mt-0.5" />
+                      <div key={item.id} className="flex items-start gap-3 p-4 rounded-xl bg-surface-page">
+                        <Activity className="w-4 h-4 text-secondary-600 mt-0.5" />
                         <div>
-                          <p className="text-sm font-medium text-[#0a1628]">{item.description}</p>
-                          <p className="text-xs text-[#64748b]">{new Date(item.created_at).toLocaleString()}</p>
+                          <p className="text-sm font-medium text-primary-900">{item.description}</p>
+                          <p className="text-xs text-muted">{new Date(item.created_at).toLocaleString()}</p>
                         </div>
                       </div>
                     ))}
@@ -422,9 +422,9 @@ export function AccountPageClient() {
               </div>
 
               {/* Feedback */}
-              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
-                <h2 className="text-lg font-bold text-[#0a1628] mb-4">Send Feedback</h2>
-                <p className="text-sm text-[#64748b] mb-4">
+              <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
+                <h2 className="text-lg font-bold text-primary-900 mb-4">Send Feedback</h2>
+                <p className="text-sm text-muted mb-4">
                   We value your opinion. Let us know how we can improve your experience.
                 </p>
                 <FeedbackForm

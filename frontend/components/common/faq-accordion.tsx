@@ -22,8 +22,8 @@ export function FAQAccordion({ items, className }: FAQAccordionProps) {
           <div
             key={index}
             className={cn(
-              "rounded-[16px] border bg-white overflow-hidden transition-all",
-              isOpen ? "border-[#7db8ec] shadow-md" : "border-[#e2e8f0] shadow-sm"
+              "rounded-[16px] border bg-surface-card overflow-hidden transition-all-base",
+              isOpen ? "border-primary-300 shadow-md" : "border-border shadow-sm"
             )}
           >
             <button
@@ -31,11 +31,11 @@ export function FAQAccordion({ items, className }: FAQAccordionProps) {
               className="w-full flex items-center justify-between gap-4 p-5 lg:p-6 text-left"
               aria-expanded={isOpen}
             >
-              <span className="font-semibold text-[#0a1628] text-base lg:text-lg">{item.question}</span>
+              <span className="font-semibold text-primary-900 text-base lg:text-lg">{item.question}</span>
               <span
                 className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors",
-                  isOpen ? "bg-green-500 text-white" : "bg-[#f1f5f9] text-[#64748b]"
+                  "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors-base",
+                  isOpen ? "bg-secondary-500 text-white" : "bg-neutral-100 text-muted"
                 )}
               >
                 {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
@@ -49,7 +49,7 @@ export function FAQAccordion({ items, className }: FAQAccordionProps) {
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <p className="px-5 lg:px-6 pb-5 lg:pb-6 text-[#475569] leading-relaxed">{item.answer}</p>
+                  <p className="px-5 lg:px-6 pb-5 lg:pb-6 text-neutral-600 leading-relaxed">{item.answer}</p>
                 </motion.div>
               )}
             </AnimatePresence>

@@ -1,0 +1,176 @@
+/**
+ * VESTRA Motion System
+ * --------------------
+ * Shared animation tokens and utilities derived from Filament admin tokens.
+ * All durations respect prefers-reduced-motion.
+ */
+
+@custom-variant motion-safe (&:not([data-reduced-motion="true"]));
+@custom-variant motion-reduce (&:is([data-reduced-motion="true"], .reduce-motion));
+
+/* Keyframes */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes scale-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.96); }
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes spinner {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 0.4; }
+  100% { transform: translateY(-120px) translateX(40px); opacity: 0; }
+}
+
+@keyframes rise-bubble {
+  0% { transform: translateY(0) scale(0.8); opacity: 0; }
+  15% { opacity: 0.7; }
+  85% { opacity: 0.3; }
+  100% { transform: translateY(-180px) scale(1.2); opacity: 0; }
+}
+
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-left {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-right {
+  from { opacity: 0; transform: translateX(-100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Utility classes */
+.animate-fade-in {
+  animation: fade-in var(--duration-base) var(--ease-out) forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up var(--duration-slow) var(--ease-out) forwards;
+}
+
+.animate-slide-down {
+  animation: slide-down var(--duration-slow) var(--ease-out) forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in var(--duration-base) var(--ease-out) forwards;
+}
+
+.animate-skeleton {
+  animation: skeleton-pulse var(--duration-slower) var(--ease-base) infinite;
+}
+
+.animate-spinner {
+  animation: spinner 0.8s linear infinite;
+}
+
+.animate-float-particle {
+  animation: float-particle 12s infinite ease-in-out;
+}
+
+.animate-rise-bubble {
+  animation: rise-bubble 10s infinite ease-in;
+}
+
+.animate-reveal-up {
+  animation: reveal-up 0.8s ease forwards;
+}
+
+.animate-slide-left {
+  animation: slide-left var(--duration-slow) var(--ease-out) forwards;
+}
+
+.animate-slide-right {
+  animation: slide-right var(--duration-slow) var(--ease-out) forwards;
+}
+
+/* Transition utilities */
+.transition-colors-fast {
+  transition: color var(--duration-fast) var(--ease-base),
+    background-color var(--duration-fast) var(--ease-base),
+    border-color var(--duration-fast) var(--ease-base);
+}
+
+.transition-transform-fast {
+  transition: transform var(--duration-fast) var(--ease-base);
+}
+
+.transition-shadow-fast {
+  transition: box-shadow var(--duration-fast) var(--ease-base);
+}
+
+.transition-opacity-fast {
+  transition: opacity var(--duration-fast) var(--ease-base);
+}
+
+.transition-all-base {
+  transition: all var(--duration-base) var(--ease-base);
+}
+
+.transition-colors-base {
+  transition: color var(--duration-base) var(--ease-base),
+    background-color var(--duration-base) var(--ease-base),
+    border-color var(--duration-base) var(--ease-base);
+}
+
+.transition-transform-base {
+  transition: transform var(--duration-base) var(--ease-base);
+}
+
+.transition-shadow-base {
+  transition: box-shadow var(--duration-base) var(--ease-base);
+}
+
+.transition-opacity-base {
+  transition: opacity var(--duration-base) var(--ease-base);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

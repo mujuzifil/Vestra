@@ -14,14 +14,14 @@ interface InputFieldProps extends BaseProps, Omit<InputHTMLAttributes<HTMLInputE
 export function InputField({ label, error, id, className, ...props }: InputFieldProps) {
   return (
     <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-sm font-semibold text-[#0a1628]">
+      <label htmlFor={id} className="block text-sm font-semibold text-text-heading">
         {label}
       </label>
       <input
         id={id}
         className={cn(
-          "w-full px-4 py-3 rounded-xl border bg-[#f8fafc] text-[#0a1628] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all",
-          error ? "border-red-400 focus:ring-red-400" : "border-[#e2e8f0]",
+          "w-full px-4 py-3 rounded-xl border bg-neutral-50 text-text-heading placeholder:text-text-placeholder focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent transition-all-base",
+          error ? "border-danger-400 focus:ring-danger-400" : "border-border-default",
           className
         )}
         aria-invalid={error ? "true" : "false"}
@@ -29,7 +29,7 @@ export function InputField({ label, error, id, className, ...props }: InputField
         {...props}
       />
       {error && (
-        <p id={`${id}-error`} className="text-sm text-red-500" role="alert">
+        <p id={`${id}-error`} className="text-sm text-danger-500" role="alert">
           {error}
         </p>
       )}
@@ -42,14 +42,14 @@ interface TextareaFieldProps extends BaseProps, Omit<TextareaHTMLAttributes<HTML
 export function TextareaField({ label, error, id, className, ...props }: TextareaFieldProps) {
   return (
     <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-sm font-semibold text-[#0a1628]">
+      <label htmlFor={id} className="block text-sm font-semibold text-text-heading">
         {label}
       </label>
       <textarea
         id={id}
         className={cn(
-          "w-full px-4 py-3 rounded-xl border bg-[#f8fafc] text-[#0a1628] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all resize-none",
-          error ? "border-red-400 focus:ring-red-400" : "border-[#e2e8f0]",
+          "w-full px-4 py-3 rounded-xl border bg-neutral-50 text-text-heading placeholder:text-text-placeholder focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent transition-all-base resize-none",
+          error ? "border-danger-400 focus:ring-danger-400" : "border-border-default",
           className
         )}
         aria-invalid={error ? "true" : "false"}
@@ -57,7 +57,7 @@ export function TextareaField({ label, error, id, className, ...props }: Textare
         {...props}
       />
       {error && (
-        <p id={`${id}-error`} className="text-sm text-red-500" role="alert">
+        <p id={`${id}-error`} className="text-sm text-danger-500" role="alert">
           {error}
         </p>
       )}
@@ -72,14 +72,14 @@ interface SelectFieldProps extends BaseProps, Omit<SelectHTMLAttributes<HTMLSele
 export function SelectField({ label, error, id, options, className, ...props }: SelectFieldProps) {
   return (
     <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-sm font-semibold text-[#0a1628]">
+      <label htmlFor={id} className="block text-sm font-semibold text-text-heading">
         {label}
       </label>
       <select
         id={id}
         className={cn(
-          "w-full px-4 py-3 rounded-xl border bg-[#f8fafc] text-[#0a1628] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all",
-          error ? "border-red-400 focus:ring-red-400" : "border-[#e2e8f0]",
+          "w-full px-4 py-3 rounded-xl border bg-neutral-50 text-text-heading focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent transition-all-base",
+          error ? "border-danger-400 focus:ring-danger-400" : "border-border-default",
           className
         )}
         aria-invalid={error ? "true" : "false"}
@@ -93,7 +93,7 @@ export function SelectField({ label, error, id, options, className, ...props }: 
         ))}
       </select>
       {error && (
-        <p id={`${id}-error`} className="text-sm text-red-500" role="alert">
+        <p id={`${id}-error`} className="text-sm text-danger-500" role="alert">
           {error}
         </p>
       )}

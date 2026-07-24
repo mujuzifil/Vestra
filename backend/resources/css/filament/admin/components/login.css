@@ -1,0 +1,100 @@
+/* VESTRA Admin Login / Auth pages */
+
+.fi-simple-layout {
+    background: linear-gradient(135deg, var(--primary-900) 0%, var(--primary-700) 50%, var(--primary-500) 100%);
+}
+
+.fi-simple-main {
+    background-color: var(--surface-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--border-default);
+    padding: var(--space-8);
+}
+
+.fi-simple-header {
+    margin-bottom: var(--space-6);
+}
+
+.fi-simple-header-heading {
+    color: var(--text-heading);
+    font-size: var(--text-h1);
+    font-weight: var(--font-bold);
+    text-align: center;
+}
+
+.fi-simple-header-subheading {
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: var(--space-2);
+}
+
+.fi-simple-footer {
+    color: var(--text-muted);
+    font-size: var(--text-caption);
+    text-align: center;
+    margin-top: var(--space-6);
+}
+
+/* Brand logo on login */
+.fi-simple-header-logo {
+    height: 3rem;
+    width: auto;
+    margin: 0 auto var(--space-4);
+}
+
+/* Login form inputs */
+.fi-simple-main .fi-input {
+    background-color: var(--neutral-50);
+    border-color: var(--border-default);
+    border-radius: var(--radius-md);
+    color: var(--text-body);
+}
+
+.fi-simple-main .fi-input:focus,
+.fi-simple-main .fi-input:focus-within {
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-focus);
+    background-color: var(--surface-card);
+}
+
+.fi-simple-main .fi-input::placeholder {
+    color: var(--text-placeholder);
+}
+
+/* Login buttons */
+.fi-simple-main .fi-btn-color-primary {
+    background-color: var(--secondary-500);
+    border-color: var(--secondary-500);
+    color: white;
+    border-radius: var(--radius-md);
+}
+
+.fi-simple-main .fi-btn-color-primary:hover {
+    background-color: var(--secondary-600);
+    border-color: var(--secondary-600);
+}
+
+/* Remember me & links */
+.fi-simple-main .fi-fo-checkbox-label {
+    color: var(--text-body);
+}
+
+.fi-simple-main a {
+    color: var(--primary-500);
+    transition: color var(--duration-fast) var(--ease-base);
+}
+
+.fi-simple-main a:hover {
+    color: var(--primary-600);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .fi-simple-main,
+    .fi-simple-main .fi-input,
+    .fi-simple-main .fi-btn-color-primary,
+    .fi-simple-main a {
+        transition: none !important;
+    }
+}

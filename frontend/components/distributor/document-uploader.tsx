@@ -57,8 +57,8 @@ export function DocumentUploader({ onUpload, types = defaultTypes }: DocumentUpl
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
-      <h3 className="text-lg font-bold text-[#0a1628] mb-4">Upload Document</h3>
+    <form onSubmit={handleSubmit} className="bg-surface-card rounded-[20px] border border-border shadow-sm p-6">
+      <h3 className="text-lg font-bold text-primary-900 mb-4">Upload Document</h3>
       <div className="grid sm:grid-cols-2 gap-5 mb-4">
         <InputField
           id="doc-title"
@@ -77,17 +77,17 @@ export function DocumentUploader({ onUpload, types = defaultTypes }: DocumentUpl
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-semibold text-[#0a1628] mb-1.5">File</label>
+        <label className="block text-sm font-semibold text-primary-900 mb-1.5">File</label>
         <div
           onClick={() => inputRef.current?.click()}
-          className="cursor-pointer border-2 border-dashed border-[#e2e8f0] rounded-xl p-6 hover:border-green-500 hover:bg-green-50/30 transition-colors"
+          className="cursor-pointer border-2 border-dashed border-border rounded-xl p-6 hover:border-secondary-500 hover:bg-secondary-50/30 transition-colors-base"
         >
           <div className="flex flex-col items-center text-center">
-            <Upload className="w-8 h-8 text-[#94a3b8] mb-2" />
-            <p className="text-sm font-medium text-[#0a1628]">
+            <Upload className="w-8 h-8 text-neutral-400 mb-2" />
+            <p className="text-sm font-medium text-primary-900">
               {file ? file.name : "Click to upload or drag and drop"}
             </p>
-            <p className="text-xs text-[#94a3b8] mt-1">PDF, JPG, PNG up to 10MB</p>
+            <p className="text-xs text-neutral-400 mt-1">PDF, JPG, PNG up to 10MB</p>
           </div>
           <input
             ref={inputRef}
@@ -98,8 +98,8 @@ export function DocumentUploader({ onUpload, types = defaultTypes }: DocumentUpl
           />
         </div>
         {file && (
-          <div className="flex items-center gap-2 mt-3 p-2 rounded-lg bg-[#f8fafc] text-sm text-[#0a1628]">
-            <FileText className="w-4 h-4 text-green-600" />
+          <div className="flex items-center gap-2 mt-3 p-2 rounded-lg bg-surface-page text-sm text-primary-900">
+            <FileText className="w-4 h-4 text-secondary-600" />
             <span className="flex-1 truncate">{file.name}</span>
             <button
               type="button"
@@ -107,7 +107,7 @@ export function DocumentUploader({ onUpload, types = defaultTypes }: DocumentUpl
                 setFile(null);
                 if (inputRef.current) inputRef.current.value = "";
               }}
-              className="p-1 text-[#94a3b8] hover:text-red-600"
+              className="p-1 text-neutral-400 hover:text-danger-600"
               aria-label="Remove file"
             >
               <X className="w-4 h-4" />
@@ -119,7 +119,7 @@ export function DocumentUploader({ onUpload, types = defaultTypes }: DocumentUpl
       <button
         type="submit"
         disabled={isUploading || !title || !type || !file}
-        className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+        className="inline-flex items-center gap-2 px-6 py-3 bg-secondary-600 text-white font-semibold rounded-xl hover:bg-secondary-600/90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors-base"
       >
         {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
         {isUploading ? "Uploading..." : "Upload Document"}

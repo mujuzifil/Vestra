@@ -32,7 +32,7 @@ export function SectionHeader({
         id={id}
         className={cn(
           "text-3xl sm:text-4xl lg:text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold tracking-tight mb-4",
-          light ? "text-white" : "text-[#0a1628]"
+          light ? "text-white" : "text-text-heading"
         )}
       >
         {title}
@@ -42,8 +42,8 @@ export function SectionHeader({
           className={cn(
             "w-20 h-1 rounded-full mx-auto",
             light
-              ? "bg-gradient-to-r from-green-500 to-[#7db8ec]"
-              : "bg-gradient-to-r from-[#0d3b66] to-green-500"
+              ? "bg-gradient-to-r from-secondary-500 to-primary-400"
+              : "bg-gradient-to-r from-primary-500 to-secondary-500"
           )}
         />
       )}
@@ -52,7 +52,7 @@ export function SectionHeader({
           className={cn(
             "text-base lg:text-lg max-w-2xl mt-5 leading-relaxed",
             centered && "mx-auto",
-            light ? "text-white/75" : "text-[#64748b]"
+            light ? "text-white/75" : "text-text-muted"
           )}
         >
           {subtitle}

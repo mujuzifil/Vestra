@@ -44,19 +44,19 @@ const distributorFaqs = [
 function ApplicationStatusCard({ status }: { status: string }) {
   if (status === "approved") {
     return (
-      <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-[#e2e8f0] shadow-lg">
+      <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-neutral-200 shadow-lg">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-full bg-green-100">
             <CheckCircle2 className="w-6 h-6 text-green-600" />
           </div>
-          <h2 className="text-xl lg:text-2xl font-bold text-[#0a1628]">Application Approved</h2>
+          <h2 className="text-xl lg:text-2xl font-bold text-primary-900">Application Approved</h2>
         </div>
-        <p className="text-[#64748b] mb-6">
+        <p className="text-muted mb-6">
           Congratulations! Your distributor application has been approved. You can now access the distributor portal.
         </p>
         <Link
           href="/distributor/dashboard"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors-base"
         >
           Go to Dashboard
           <ArrowRight className="w-4 h-4" />
@@ -67,19 +67,19 @@ function ApplicationStatusCard({ status }: { status: string }) {
 
   if (status === "rejected") {
     return (
-      <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-[#e2e8f0] shadow-lg">
+      <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-neutral-200 shadow-lg">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-full bg-red-100">
             <XCircle className="w-6 h-6 text-red-600" />
           </div>
-          <h2 className="text-xl lg:text-2xl font-bold text-[#0a1628]">Application Not Approved</h2>
+          <h2 className="text-xl lg:text-2xl font-bold text-primary-900">Application Not Approved</h2>
         </div>
-        <p className="text-[#64748b] mb-6">
+        <p className="text-muted mb-6">
           Thank you for your interest. Unfortunately, your application was not approved at this time. Please contact our partnership team for more information.
         </p>
         <Link
           href="/contact"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-[#0a1628] text-white font-semibold rounded-xl hover:bg-[#1a2638] transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-primary-900 text-white font-semibold rounded-xl hover:bg-primary-900 transition-colors-base"
         >
           Contact Us
           <ArrowRight className="w-4 h-4" />
@@ -89,14 +89,14 @@ function ApplicationStatusCard({ status }: { status: string }) {
   }
 
   return (
-    <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-[#e2e8f0] shadow-lg">
+    <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-neutral-200 shadow-lg">
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 rounded-full bg-amber-100">
           <Clock className="w-6 h-6 text-amber-600" />
         </div>
-        <h2 className="text-xl lg:text-2xl font-bold text-[#0a1628]">Application Pending</h2>
+        <h2 className="text-xl lg:text-2xl font-bold text-primary-900">Application Pending</h2>
       </div>
-      <p className="text-[#64748b] mb-6">
+      <p className="text-muted mb-6">
         Your distributor application is currently under review. Our team will get back to you within 5-7 business days.
       </p>
       <Link
@@ -148,7 +148,7 @@ export default function DistributorPage() {
       </section>
 
       {/* Opportunities & Form */}
-      <section className="py-20 lg:py-28 bg-[#f8fafc]" aria-labelledby="application-heading">
+      <section className="py-20 lg:py-28 bg-neutral-50" aria-labelledby="application-heading">
         <Container>
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <AnimatedSection direction="left">
@@ -165,7 +165,7 @@ export default function DistributorPage() {
                   "Regional wholesale partnerships",
                   "Bulk corporate and institutional contracts",
                 ].map((item, index) => (
-                  <li key={item} className="flex items-start gap-4 text-[#475569] text-base lg:text-lg">
+                  <li key={item} className="flex items-start gap-4 text-body text-base lg:text-lg">
                     <span className="w-7 h-7 rounded-full bg-green-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
                       {index + 1}
                     </span>
@@ -177,15 +177,15 @@ export default function DistributorPage() {
 
             <AnimatedSection direction="right">
               {isLoading ? (
-                <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-[#e2e8f0] shadow-lg flex items-center justify-center min-h-[300px]">
+                <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-neutral-200 shadow-lg flex items-center justify-center min-h-[300px]">
                   <Loader2 className="w-8 h-8 animate-spin text-green-500" />
                 </div>
               ) : isAuthenticated && application ? (
                 <ApplicationStatusCard status={application.status} />
               ) : (
-                <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-[#e2e8f0] shadow-lg">
-                  <h2 className="text-xl lg:text-2xl font-bold text-[#0a1628] mb-2">Distributor Application</h2>
-                  <p className="text-[#64748b] mb-6">Complete the form below to start your partnership journey.</p>
+                <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-neutral-200 shadow-lg">
+                  <h2 className="text-xl lg:text-2xl font-bold text-primary-900 mb-2">Distributor Application</h2>
+                  <p className="text-muted mb-6">Complete the form below to start your partnership journey.</p>
                   <DistributorForm />
                 </div>
               )}

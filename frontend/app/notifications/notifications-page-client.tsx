@@ -35,23 +35,23 @@ function NotificationItem({ notification }: { notification: Notification }) {
 
   return (
     <div
-      className={`p-4 rounded-xl border transition-colors ${
-        isUnread ? "bg-green-50/30 border-green-200" : "bg-white border-[#e2e8f0]"
+      className={`p-4 rounded-xl border transition-colors-base ${
+        isUnread ? "bg-secondary-50/30 border-secondary-200" : "bg-surface-card border-border-default"
       }`}
     >
       <div className="flex items-start gap-3">
-        <div className={`w-2 h-2 mt-2 rounded-full ${isUnread ? "bg-green-600" : "bg-gray-300"}`} />
+        <div className={`w-2 h-2 mt-2 rounded-full ${isUnread ? "bg-secondary-600" : "bg-neutral-300"}`} />
         <div className="flex-1 min-w-0">
-          <p className={`font-semibold ${isUnread ? "text-[#0a1628]" : "text-[#64748b]"}`}>
+          <p className={`font-semibold ${isUnread ? "text-text-heading" : "text-text-muted"}`}>
             {notification.title || "Notification"}
           </p>
           {notification.message && (
             <div
-              className="text-sm text-[#64748b] mt-1 prose prose-sm max-w-none"
+              className="text-sm text-text-muted mt-1 prose prose-sm max-w-none"
               dangerouslySetInnerHTML={{ __html: notification.message }}
             />
           )}
-          <p className="text-xs text-[#94a3b8] mt-2">
+          <p className="text-xs text-text-placeholder mt-2">
             {new Date(notification.created_at).toLocaleString()}
           </p>
         </div>
@@ -60,7 +60,7 @@ function NotificationItem({ notification }: { notification: Notification }) {
             <button
               onClick={handleMarkAsRead}
               disabled={markAsRead.isPending}
-              className="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors"
+              className="p-2 text-secondary-600 hover:bg-secondary-100 rounded-lg transition-colors-base"
               title="Mark as read"
             >
               <CheckCheck className="w-4 h-4" />
@@ -69,7 +69,7 @@ function NotificationItem({ notification }: { notification: Notification }) {
           <button
             onClick={handleDelete}
             disabled={deleteNotification.isPending}
-            className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+            className="p-2 text-danger-600 hover:bg-danger-100 rounded-lg transition-colors-base"
             title="Delete"
           >
             <Trash2 className="w-4 h-4" />
@@ -105,7 +105,7 @@ export function NotificationsPageClient() {
   if (authLoading || isLoading) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-green-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-secondary-500" />
       </div>
     );
   }
@@ -120,12 +120,12 @@ export function NotificationsPageClient() {
         breadcrumb={[{ label: "Account", href: "/account" }, { label: "Notifications" }]}
       />
 
-      <section className="py-12 lg:py-20 bg-[#f8fafc]">
+      <section className="py-12 lg:py-20 bg-neutral-50">
         <Container>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <Link
               href="/account"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#64748b] hover:text-[#0a1628]"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-text-muted hover:text-text-heading"
             >
               <ChevronLeft className="w-4 h-4" />
               Back to Account
@@ -134,7 +134,7 @@ export function NotificationsPageClient() {
             <div className="flex items-center gap-3">
               <Link
                 href="/notifications/preferences"
-                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-[#0a1628] bg-white border border-[#e2e8f0] rounded-xl hover:border-green-500 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-text-heading bg-surface-card border border-border-default rounded-xl hover:border-secondary-500 transition-colors-base"
               >
                 <Bell className="w-4 h-4" />
                 Preferences
@@ -142,7 +142,7 @@ export function NotificationsPageClient() {
               <button
                 onClick={handleMarkAllAsRead}
                 disabled={markAllAsRead.isPending || !data?.notifications.some((n) => !n.read_at)}
-                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-green-700 bg-green-50 rounded-xl hover:bg-green-100 transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-secondary-600 bg-secondary-50 rounded-xl hover:bg-secondary-100 transition-colors-base disabled:opacity-50"
               >
                 <CheckCheck className="w-4 h-4" />
                 Mark all read
@@ -151,19 +151,19 @@ export function NotificationsPageClient() {
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-4 rounded-xl mb-6">
+            <div className="flex items-center gap-2 text-sm text-danger-600 bg-danger-50 p-4 rounded-xl mb-6">
               <AlertCircle className="w-4 h-4" />
               {error.message}
             </div>
           )}
 
-          <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 lg:p-8">
-            <h1 className="text-lg font-bold text-[#0a1628] mb-6">Your Notifications</h1>
+          <div className="bg-surface-card rounded-[20px] border border-border-default shadow-sm p-6 lg:p-8">
+            <h1 className="text-lg font-bold text-text-heading mb-6">Your Notifications</h1>
 
             {!data || data.notifications.length === 0 ? (
               <div className="text-center py-12">
-                <Bell className="w-12 h-12 mx-auto text-[#cbd5e1] mb-4" />
-                <p className="text-[#64748b]">No notifications yet.</p>
+                <Bell className="w-12 h-12 mx-auto text-neutral-300 mb-4" />
+                <p className="text-text-muted">No notifications yet.</p>
               </div>
             ) : (
               <>
@@ -177,7 +177,7 @@ export function NotificationsPageClient() {
                   <div className="mt-6 text-center">
                     <button
                       onClick={() => setPage((p) => p + 1)}
-                      className="inline-flex items-center gap-2 px-6 py-2.5 bg-white border border-[#e2e8f0] text-[#0a1628] font-semibold rounded-xl hover:border-green-500 transition-colors"
+                      className="inline-flex items-center gap-2 px-6 py-2.5 bg-surface-card border border-border-default text-text-heading font-semibold rounded-xl hover:border-secondary-500 transition-colors-base"
                     >
                       Load more
                     </button>

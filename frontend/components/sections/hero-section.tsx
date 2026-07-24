@@ -17,7 +17,7 @@ export function HeroSection() {
   return (
     <section
       id="home"
-      className="relative min-h-[600px] lg:min-h-[calc(100vh-88px)] flex items-center bg-[#031128] overflow-hidden pt-28 lg:pt-0"
+      className="relative min-h-[600px] lg:min-h-[calc(100vh-88px)] flex items-center bg-primary-900 overflow-hidden pt-28 lg:pt-0"
     >
       {/* Background effects */}
       <div className="absolute inset-0 z-0">
@@ -79,17 +79,17 @@ export function HeroSection() {
             <div className="flex flex-wrap gap-4 mb-10">
               <Link
                 href="/products"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-1 transition-transform group"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-1 transition-transform-base group"
               >
                 Explore Products
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" />
               </Link>
               <Link
                 href="/distributor"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white border border-white/40 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:-translate-y-1 transition-all group"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white border border-white/40 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:-translate-y-1 transition-all-base group"
               >
                 Become a Distributor
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" />
               </Link>
             </div>
 

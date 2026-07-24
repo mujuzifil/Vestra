@@ -1,0 +1,30 @@
+/* Empty states */
+
+.fi-empty-state {
+    background-color: var(--surface-card);
+    border: 1px dashed var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-10) var(--space-8);
+    text-align: center;
+}
+
+.fi-empty-state-icon {
+    color: var(--text-muted);
+    width: 48px;
+    height: 48px;
+    margin: 0 auto var(--space-4);
+}
+
+.fi-empty-state-heading {
+    color: var(--text-heading);
+    font-size: var(--text-h2);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-2);
+}
+
+.fi-empty-state-description {
+    color: var(--text-muted);
+    font-size: var(--text-body);
+    max-width: 420px;
+    margin: 0 auto var(--space-5);
+}

@@ -46,12 +46,12 @@ export function PaymentsPageClient() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-[#0a1628]">Payments</h1>
-        <p className="text-[#64748b]">Upload proof of payment and view history.</p>
+        <h1 className="text-2xl font-extrabold text-primary-900">Payments</h1>
+        <p className="text-muted">Upload proof of payment and view history.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 space-y-5">
-        <h2 className="text-lg font-bold text-[#0a1628]">Submit Payment Proof</h2>
+      <form onSubmit={handleSubmit} className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-6 space-y-5">
+        <h2 className="text-lg font-bold text-primary-900">Submit Payment Proof</h2>
         <div className="grid sm:grid-cols-2 gap-5">
           <InputField
             id="amount"
@@ -78,14 +78,14 @@ export function PaymentsPageClient() {
           rows={3}
         />
         <div>
-          <label className="block text-sm font-semibold text-[#0a1628] mb-1.5">Receipt</label>
+          <label className="block text-sm font-semibold text-primary-900 mb-1.5">Receipt</label>
           <div
             onClick={() => document.getElementById("payment-receipt")?.click()}
-            className="cursor-pointer border-2 border-dashed border-[#e2e8f0] rounded-xl p-6 hover:border-green-500 hover:bg-green-50/30 transition-colors"
+            className="cursor-pointer border-2 border-dashed border-neutral-200 rounded-xl p-6 hover:border-green-500 hover:bg-green-50/30 transition-colors-base"
           >
             <div className="flex flex-col items-center text-center">
-              <Upload className="w-8 h-8 text-[#94a3b8] mb-2" />
-              <p className="text-sm font-medium text-[#0a1628]">{file ? file.name : "Click to upload receipt"}</p>
+              <Upload className="w-8 h-8 text-placeholder mb-2" />
+              <p className="text-sm font-medium text-primary-900">{file ? file.name : "Click to upload receipt"}</p>
             </div>
             <input
               id="payment-receipt"
@@ -99,7 +99,7 @@ export function PaymentsPageClient() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 disabled:opacity-60 transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 disabled:opacity-60 transition-colors-base"
         >
           {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
           {isSubmitting ? "Submitting..." : "Submit Payment"}
@@ -113,23 +113,23 @@ export function PaymentsPageClient() {
       ) : !payments || payments.length === 0 ? (
         <EmptyState title="No payment uploads" description="Your payment submissions will appear here." />
       ) : (
-        <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm overflow-hidden">
+        <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-[#f8fafc]">
+              <thead className="bg-neutral-50">
                 <tr>
-                  <th className="px-6 py-4 font-semibold text-[#0a1628]">Reference</th>
-                  <th className="px-6 py-4 font-semibold text-[#0a1628]">Amount</th>
-                  <th className="px-6 py-4 font-semibold text-[#0a1628]">Status</th>
-                  <th className="px-6 py-4 font-semibold text-[#0a1628]">Date</th>
+                  <th className="px-6 py-4 font-semibold text-primary-900">Reference</th>
+                  <th className="px-6 py-4 font-semibold text-primary-900">Amount</th>
+                  <th className="px-6 py-4 font-semibold text-primary-900">Status</th>
+                  <th className="px-6 py-4 font-semibold text-primary-900">Date</th>
                   <th className="px-6 py-4 text-right">Receipt</th>
                 </tr>
               </thead>
               <tbody>
                 {payments.map((payment) => (
-                  <tr key={payment.id} className="border-t border-[#f1f5f9]">
-                    <td className="px-6 py-4 font-medium text-[#0a1628]">{payment.reference_number}</td>
-                    <td className="px-6 py-4 text-[#64748b]">UGX {payment.amount}</td>
+                  <tr key={payment.id} className="border-t border-neutral-100">
+                    <td className="px-6 py-4 font-medium text-primary-900">{payment.reference_number}</td>
+                    <td className="px-6 py-4 text-muted">UGX {payment.amount}</td>
                     <td className="px-6 py-4">
                       <span
                         className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${
@@ -143,7 +143,7 @@ export function PaymentsPageClient() {
                         {payment.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-[#64748b]">{new Date(payment.created_at).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-muted">{new Date(payment.created_at).toLocaleDateString()}</td>
                     <td className="px-6 py-4 text-right">
                       {payment.file_url && (
                         <a

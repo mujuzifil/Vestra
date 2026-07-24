@@ -69,7 +69,7 @@ export function PhotoPageClient() {
   if (authLoading) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-green-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-secondary-500" />
       </div>
     );
   }
@@ -84,29 +84,29 @@ export function PhotoPageClient() {
         breadcrumb={[{ label: "Account", href: "/account" }, { label: "Settings", href: "/account/settings" }, { label: "Photo" }]}
       />
 
-      <section className="py-12 lg:py-20 bg-[#f8fafc]">
+      <section className="py-12 lg:py-20 bg-surface-page">
         <Container>
           <Link
             href="/account/settings"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#64748b] hover:text-[#0a1628] mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Settings
           </Link>
 
-          <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 lg:p-8 max-w-xl">
+          <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8 max-w-xl">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-xl bg-green-50 text-green-600">
+              <div className="p-2 rounded-xl bg-secondary-50 text-secondary-600">
                 <Camera className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-[#0a1628]">Profile Photo</h1>
-                <p className="text-sm text-[#64748b]">A photo helps personalize your account.</p>
+                <h1 className="text-lg font-bold text-primary-900">Profile Photo</h1>
+                <p className="text-sm text-muted">A photo helps personalize your account.</p>
               </div>
             </div>
 
             <div className="flex flex-col items-center gap-6">
-              <div className="relative w-32 h-32 rounded-full overflow-hidden bg-green-50 border-4 border-white shadow-lg">
+              <div className="relative w-32 h-32 rounded-full overflow-hidden bg-secondary-50 border-4 border-surface-card shadow-lg">
                 {user.avatar_url ? (
                   <Image
                     src={user.avatar_url}
@@ -116,15 +116,15 @@ export function PhotoPageClient() {
                     sizes="128px"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-green-600 text-3xl font-bold">
+                  <div className="w-full h-full flex items-center justify-center text-secondary-600 text-3xl font-bold">
                     <User className="w-12 h-12" />
                   </div>
                 )}
               </div>
 
               <div className="text-center">
-                <p className="font-semibold text-[#0a1628]">{user.name}</p>
-                <p className="text-sm text-[#64748b]">{user.email}</p>
+                <p className="font-semibold text-primary-900">{user.name}</p>
+                <p className="text-sm text-muted">{user.email}</p>
               </div>
 
               <input
@@ -140,7 +140,7 @@ export function PhotoPageClient() {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploading || isDeleting}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-secondary-600 text-white font-semibold rounded-xl hover:bg-secondary-600 transition-colors-base disabled:opacity-50"
                 >
                   {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
                   {isUploading ? "Uploading..." : user.avatar_url ? "Change Photo" : "Upload Photo"}
@@ -150,7 +150,7 @@ export function PhotoPageClient() {
                     type="button"
                     onClick={handleDelete}
                     disabled={isUploading || isDeleting}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 border border-red-200 text-red-600 font-semibold rounded-xl hover:bg-red-50 transition-colors disabled:opacity-50"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 border border-danger-200 text-danger-600 font-semibold rounded-xl hover:bg-danger-50 transition-colors-base disabled:opacity-50"
                   >
                     {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                     {isDeleting ? "Removing..." : "Remove Photo"}
@@ -159,13 +159,13 @@ export function PhotoPageClient() {
               </div>
 
               {error && (
-                <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-xl w-full">
+                <div className="flex items-center gap-2 text-sm text-danger-600 bg-danger-50 p-3 rounded-xl w-full">
                   <AlertCircle className="w-4 h-4" />
                   {error}
                 </div>
               )}
 
-              <div className="text-xs text-[#94a3b8] text-center">
+              <div className="text-xs text-placeholder text-center">
                 Recommended: square image, at least 400×400px. Max {MAX_SIZE_MB}MB. JPG, PNG, or WebP.
               </div>
             </div>

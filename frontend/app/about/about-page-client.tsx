@@ -56,7 +56,7 @@ export function AboutPageClient() {
         <section className="py-20 lg:py-28 bg-white">
           <Container>
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-              <div className="relative aspect-[4/3] rounded-[24px] bg-gradient-to-br from-[#0d3b66] to-[#0a1628] overflow-hidden flex items-center justify-center p-8">
+              <div className="relative aspect-[4/3] rounded-[24px] bg-gradient-to-br from-primary-500 to-primary-900 overflow-hidden flex items-center justify-center p-8">
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{
@@ -72,26 +72,26 @@ export function AboutPageClient() {
                 <span className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-green-500/10 text-green-600 mb-4">
                   Company Introduction
                 </span>
-                <h2 className="text-2xl lg:text-4xl font-extrabold text-[#0a1628] mb-6 tracking-tight">
+                <h2 className="text-2xl lg:text-4xl font-extrabold text-primary-900 mb-6 tracking-tight">
                   Professional Fabric Care,
                   <br />
                   <span className="text-green-600">Engineered for Excellence</span>
                 </h2>
                 {isLoading ? (
                   <div className="space-y-4">
-                    <div className="h-5 w-full rounded bg-[#e2e8f0] animate-pulse" />
-                    <div className="h-5 w-5/6 rounded bg-[#e2e8f0] animate-pulse" />
+                    <div className="h-5 w-full rounded bg-neutral-200 animate-pulse" />
+                    <div className="h-5 w-5/6 rounded bg-neutral-200 animate-pulse" />
                   </div>
                 ) : error ? (
                   <ApiError onRetry={() => window.location.reload()} />
                 ) : (
                   <>
-                    <p className="text-[#475569] text-base lg:text-lg leading-relaxed mb-5">
+                    <p className="text-body text-base lg:text-lg leading-relaxed mb-5">
                       Founded in {companyInfo?.founded || "2020"} and headquartered in {companyInfo?.headquarters || "Kampala, Uganda"},
                       VESTRA was created to meet the growing demand for professional-grade fabric care
                       solutions across Africa.
                     </p>
-                    <p className="text-[#475569] text-base lg:text-lg leading-relaxed">
+                    <p className="text-body text-base lg:text-lg leading-relaxed">
                       We combine advanced chemistry with practical garment care knowledge to deliver
                       products that clean powerfully while preserving the fabrics people value most.
                     </p>
@@ -103,13 +103,13 @@ export function AboutPageClient() {
         </section>
 
         {/* Mission & Vision */}
-        <section className="py-20 lg:py-28 bg-[#f8fafc]">
+        <section className="py-20 lg:py-28 bg-surface-page">
           <Container>
             <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
               {isLoading ? (
                 <>
-                  <div className="h-64 rounded-[20px] bg-[#e2e8f0] animate-pulse" />
-                  <div className="h-64 rounded-[20px] bg-[#e2e8f0] animate-pulse" />
+                  <div className="h-64 rounded-[20px] bg-neutral-200 animate-pulse" />
+                  <div className="h-64 rounded-[20px] bg-neutral-200 animate-pulse" />
                 </>
               ) : (
                 <>
@@ -150,7 +150,7 @@ export function AboutPageClient() {
         </section>
 
         {/* Brand Philosophy */}
-        <section className="py-20 lg:py-28 bg-[#0a1628] text-white">
+        <section className="py-20 lg:py-28 bg-primary-900 text-white">
           <Container>
             <div className="max-w-4xl mx-auto text-center">
               <span className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white/10 text-green-400 mb-6">
@@ -179,7 +179,7 @@ export function AboutPageClient() {
                   subtitle="Our roadmap for growth and innovation across Africa."
                   centered={false}
                 />
-                <p className="text-[#475569] text-base lg:text-lg leading-relaxed mb-6">
+                <p className="text-body text-base lg:text-lg leading-relaxed mb-6">
                   As we grow, VESTRA remains committed to expanding our product line, strengthening
                   our distribution network, and building partnerships that bring premium fabric care
                   to more homes and businesses.
@@ -191,7 +191,7 @@ export function AboutPageClient() {
                     "Invest in sustainable packaging and formulations",
                     "Build a stronger community of professional partners",
                   ].map((item) => (
-                    <li key={item} className="flex items-start gap-3 text-[#475569]">
+                    <li key={item} className="flex items-start gap-3 text-body">
                       <span className="w-2 h-2 rounded-full bg-green-500 mt-2 flex-shrink-0" />
                       {item}
                     </li>

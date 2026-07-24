@@ -28,13 +28,13 @@ const ACTIVITY_ICONS: Record<string, string> = {
 function ActivityRow({ item }: { item: ActivityItem }) {
   const icon = ACTIVITY_ICONS[item.type] || "📝";
   return (
-    <div className="flex items-start gap-4 p-4 rounded-xl bg-[#f8fafc] border border-[#e2e8f0]">
-      <div className="w-10 h-10 rounded-full bg-white border border-[#e2e8f0] flex items-center justify-center text-lg flex-shrink-0">
+    <div className="flex items-start gap-4 p-4 rounded-xl bg-surface-page border border-default">
+      <div className="w-10 h-10 rounded-full bg-surface-card border border-default flex items-center justify-center text-lg flex-shrink-0">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-[#0a1628]">{item.description}</p>
-        <p className="text-sm text-[#64748b]">
+        <p className="font-semibold text-primary-900">{item.description}</p>
+        <p className="text-sm text-muted">
           {new Date(item.created_at).toLocaleString()}
           {item.ip_address && ` · IP ${item.ip_address}`}
         </p>
@@ -58,7 +58,7 @@ export function ActivityPageClient() {
   if (authLoading || isLoading) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-green-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-secondary-500" />
       </div>
     );
   }
@@ -76,30 +76,30 @@ export function ActivityPageClient() {
         breadcrumb={[{ label: "Account", href: "/account" }, { label: "Settings", href: "/account/settings" }, { label: "Activity" }]}
       />
 
-      <section className="py-12 lg:py-20 bg-[#f8fafc]">
+      <section className="py-12 lg:py-20 bg-surface-page">
         <Container>
           <Link
             href="/account/settings"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#64748b] hover:text-[#0a1628] mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Settings
           </Link>
 
-          <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 lg:p-8">
+          <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-xl bg-green-50 text-green-600">
+              <div className="p-2 rounded-xl bg-secondary-50 text-secondary-600">
                 <Activity className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-[#0a1628]">Recent Activity</h1>
-                <p className="text-sm text-[#64748b]">A timeline of events related to your account.</p>
+                <h1 className="text-lg font-bold text-primary-900">Recent Activity</h1>
+                <p className="text-sm text-muted">A timeline of events related to your account.</p>
               </div>
             </div>
 
             {items.length === 0 ? (
-              <div className="py-16 text-center text-[#64748b]">
-                <Activity className="w-12 h-12 mx-auto mb-3 text-[#94a3b8]" />
+              <div className="py-16 text-center text-muted">
+                <Activity className="w-12 h-12 mx-auto mb-3 text-placeholder" />
                 <p>No activity recorded yet.</p>
               </div>
             ) : (
@@ -111,22 +111,22 @@ export function ActivityPageClient() {
             )}
 
             {hasPages && (
-              <div className="flex items-center justify-between mt-6 pt-6 border-t border-[#e2e8f0]">
+              <div className="flex items-center justify-between mt-6 pt-6 border-t border-default">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page <= 1}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-[#e2e8f0] text-sm font-medium text-[#475569] hover:bg-[#f8fafc] disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-default text-sm font-medium text-body hover:bg-surface-page disabled:opacity-50"
                 >
                   <PrevIcon className="w-4 h-4" />
                   Previous
                 </button>
-                <span className="text-sm text-[#64748b]">
+                <span className="text-sm text-muted">
                   Page {page} of {data.last_page}
                 </span>
                 <button
                   onClick={() => setPage((p) => Math.min(data.last_page, p + 1))}
                   disabled={page >= data.last_page}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-[#e2e8f0] text-sm font-medium text-[#475569] hover:bg-[#f8fafc] disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-default text-sm font-medium text-body hover:bg-surface-page disabled:opacity-50"
                 >
                   Next
                   <NextIcon className="w-4 h-4" />

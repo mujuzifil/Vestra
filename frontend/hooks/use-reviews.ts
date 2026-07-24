@@ -16,7 +16,7 @@ export function useSubmitReview() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: submitReview,
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       // Invalidate reviews for the product
       queryClient.invalidateQueries({ queryKey: [REVIEWS_KEY] });
     },

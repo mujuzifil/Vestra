@@ -86,12 +86,12 @@ export function PaymentReturnClient({ status, txRef, transactionId }: Props) {
 
   if (returnStatus === "verifying") {
     return (
-      <div className="min-h-[calc(100vh-88px)] flex items-center justify-center bg-[#f8fafc] py-12">
+      <div className="min-h-[calc(100vh-88px)] flex items-center justify-center bg-neutral-50 py-12">
         <Container className="max-w-md w-full text-center">
-          <div className="bg-white rounded-[24px] border border-[#e2e8f0] shadow-lg p-8 lg:p-10">
-            <Loader2 className="w-16 h-16 text-green-500 mx-auto mb-6 animate-spin" />
-            <h1 className="text-2xl font-extrabold text-[#0a1628] mb-2">Verifying Payment...</h1>
-            <p className="text-[#64748b]">{message}</p>
+          <div className="bg-surface-card rounded-[24px] border border-border-default shadow-lg p-8 lg:p-10">
+            <Loader2 className="w-16 h-16 text-secondary-500 mx-auto mb-6 animate-spin" />
+            <h1 className="text-2xl font-extrabold text-text-heading mb-2">Verifying Payment...</h1>
+            <p className="text-text-muted">{message}</p>
           </div>
         </Container>
       </div>
@@ -100,26 +100,26 @@ export function PaymentReturnClient({ status, txRef, transactionId }: Props) {
 
   if (returnStatus === "success") {
     return (
-      <div className="min-h-[calc(100vh-88px)] flex items-center justify-center bg-[#f8fafc] py-12">
+      <div className="min-h-[calc(100vh-88px)] flex items-center justify-center bg-neutral-50 py-12">
         <Container className="max-w-md w-full text-center">
-          <div className="bg-white rounded-[24px] border border-[#e2e8f0] shadow-lg p-8 lg:p-10">
-            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-6" />
-            <h1 className="text-2xl lg:text-3xl font-extrabold text-[#0a1628] mb-2">Payment Successful!</h1>
-            <p className="text-[#64748b] mb-6">
+          <div className="bg-surface-card rounded-[24px] border border-border-default shadow-lg p-8 lg:p-10">
+            <CheckCircle className="w-16 h-16 text-secondary-500 mx-auto mb-6" />
+            <h1 className="text-2xl lg:text-3xl font-extrabold text-text-heading mb-2">Payment Successful!</h1>
+            <p className="text-text-muted mb-6">
               {message || "Your payment has been confirmed and your order is being processed."}
             </p>
 
             <div className="space-y-3">
               <Link
                 href="/account/orders"
-                className="w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-1 transition-all"
+                className="w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-lg shadow-secondary-500/30 hover:-translate-y-1 transition-all-base"
               >
                 <Package className="w-4 h-4" />
                 View My Orders
               </Link>
               <Link
                 href="/products"
-                className="w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-[#0a1628] bg-white border border-[#e2e8f0] hover:bg-[#f8fafc] transition-colors"
+                className="w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-text-heading bg-surface-card border border-border-default hover:bg-neutral-50 transition-colors-base"
               >
                 <ShoppingBag className="w-4 h-4" />
                 Continue Shopping
@@ -136,19 +136,19 @@ export function PaymentReturnClient({ status, txRef, transactionId }: Props) {
   const isPending = returnStatus === "pending";
 
   return (
-    <div className="min-h-[calc(100vh-88px)] flex items-center justify-center bg-[#f8fafc] py-12">
+    <div className="min-h-[calc(100vh-88px)] flex items-center justify-center bg-neutral-50 py-12">
       <Container className="max-w-md w-full text-center">
-        <div className="bg-white rounded-[24px] border border-[#e2e8f0] shadow-lg p-8 lg:p-10">
+        <div className="bg-surface-card rounded-[24px] border border-border-default shadow-lg p-8 lg:p-10">
           {isPending ? (
-            <AlertCircle className="w-16 h-16 text-amber-500 mx-auto mb-6" />
+            <AlertCircle className="w-16 h-16 text-warning-500 mx-auto mb-6" />
           ) : (
-            <XCircle className="w-16 h-16 text-red-500 mx-auto mb-6" />
+            <XCircle className="w-16 h-16 text-danger-500 mx-auto mb-6" />
           )}
-          <h1 className="text-2xl lg:text-3xl font-extrabold text-[#0a1628] mb-2">
+          <h1 className="text-2xl lg:text-3xl font-extrabold text-text-heading mb-2">
             {isPending ? "Payment Pending" : isCancelled ? "Payment Cancelled" : "Payment Issue"}
           </h1>
-          <p className="text-[#64748b] mb-2">{message}</p>
-          <p className="text-sm text-[#94a3b8] mb-6">
+          <p className="text-text-muted mb-2">{message}</p>
+          <p className="text-sm text-text-placeholder mb-6">
             Reference: {txRef || "N/A"}
             {transactionId && <br />}
             {transactionId && `Transaction ID: ${transactionId}`}
@@ -159,7 +159,7 @@ export function PaymentReturnClient({ status, txRef, transactionId }: Props) {
               <button
                 onClick={handleRetry}
                 disabled={isRetrying}
-                className="w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed transition-all"
+                className="w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-lg shadow-secondary-500/30 hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed transition-all-base"
               >
                 {isRetrying ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -171,14 +171,14 @@ export function PaymentReturnClient({ status, txRef, transactionId }: Props) {
             )}
             <Link
               href="/account/orders"
-              className="w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-[#0a1628] bg-white border border-[#e2e8f0] hover:bg-[#f8fafc] transition-colors"
+              className="w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-text-heading bg-surface-card border border-border-default hover:bg-neutral-50 transition-colors-base"
             >
               <Package className="w-4 h-4" />
               View My Orders
             </Link>
             <Link
               href="/checkout"
-              className="w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-[#0a1628] bg-white border border-[#e2e8f0] hover:bg-[#f8fafc] transition-colors"
+              className="w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-text-heading bg-surface-card border border-border-default hover:bg-neutral-50 transition-colors-base"
             >
               <ArrowRight className="w-4 h-4" />
               Return to Checkout

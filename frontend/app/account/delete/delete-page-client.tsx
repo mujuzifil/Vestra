@@ -62,7 +62,7 @@ export function DeletePageClient() {
   if (authLoading) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-green-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-secondary-500" />
       </div>
     );
   }
@@ -77,30 +77,30 @@ export function DeletePageClient() {
         breadcrumb={[{ label: "Account", href: "/account" }, { label: "Settings", href: "/account/settings" }, { label: "Delete" }]}
       />
 
-      <section className="py-12 lg:py-20 bg-[#f8fafc]">
+      <section className="py-12 lg:py-20 bg-surface-page">
         <Container>
           <Link
             href="/account/settings"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#64748b] hover:text-[#0a1628] mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Settings
           </Link>
 
-          <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 lg:p-8 max-w-2xl">
+          <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8 max-w-2xl">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-xl bg-red-50 text-red-600">
+              <div className="p-2 rounded-xl bg-danger-50 text-danger-600">
                 <Trash2 className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-[#0a1628]">Delete Account</h1>
-                <p className="text-sm text-[#64748b]">This action cannot be undone.</p>
+                <h1 className="text-lg font-bold text-primary-900">Delete Account</h1>
+                <p className="text-sm text-muted">This action cannot be undone.</p>
               </div>
             </div>
 
             {step === "confirm" && (
               <form onSubmit={handleFirstConfirm} className="space-y-5">
-                <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm space-y-2">
+                <div className="p-4 rounded-xl bg-danger-50 border border-danger-100 text-danger-600 text-sm space-y-2">
                   <div className="flex items-start gap-2">
                     <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                     <p className="font-semibold">Warning</p>
@@ -113,18 +113,18 @@ export function DeletePageClient() {
                   </ul>
                 </div>
 
-                <label className="flex items-start gap-3 text-sm text-[#475569]">
+                <label className="flex items-start gap-3 text-sm text-body">
                   <input
                     type="checkbox"
                     checked={confirmed}
                     onChange={(e) => setConfirmed(e.target.checked)}
-                    className="w-4 h-4 rounded border-[#e2e8f0] text-green-600 focus:ring-green-500 mt-0.5"
+                    className="w-4 h-4 rounded border-default text-secondary-600 focus:ring-secondary-500 mt-0.5"
                   />
                   I understand that deleting my account is permanent and will remove my data.
                 </label>
 
                 {error && (
-                  <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-xl">
+                  <div className="flex items-center gap-2 text-sm text-danger-600 bg-danger-50 p-3 rounded-xl">
                     <AlertCircle className="w-4 h-4" />
                     {error}
                   </div>
@@ -132,7 +132,7 @@ export function DeletePageClient() {
 
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-danger-600 text-white font-semibold rounded-xl hover:bg-danger-600 transition-colors-base"
                 >
                   Continue
                   <ChevronLeft className="w-4 h-4 rotate-180" />
@@ -143,41 +143,41 @@ export function DeletePageClient() {
             {step === "reason" && (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-[#0a1628] mb-1">
-                    Reason for leaving <span className="text-[#94a3b8]">(optional)</span>
+                  <label className="block text-sm font-medium text-primary-900 mb-1">
+                    Reason for leaving <span className="text-placeholder">(optional)</span>
                   </label>
                   <textarea
                     rows={3}
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                     placeholder="Tell us why you're leaving..."
-                    className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none resize-none"
+                    className="w-full px-4 py-2.5 rounded-xl border border-default focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none resize-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#0a1628] mb-1">Password</label>
+                  <label className="block text-sm font-medium text-primary-900 mb-1">Password</label>
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full px-4 py-2.5 pr-10 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+                      className="w-full px-4 py-2.5 pr-10 rounded-xl border border-default focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword((s) => !s)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94a3b8] hover:text-[#64748b]"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-placeholder hover:text-muted"
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
-                  <p className="text-xs text-[#94a3b8] mt-1">Enter your password to confirm this request.</p>
+                  <p className="text-xs text-placeholder mt-1">Enter your password to confirm this request.</p>
                 </div>
 
                 {error && (
-                  <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-xl">
+                  <div className="flex items-center gap-2 text-sm text-danger-600 bg-danger-50 p-3 rounded-xl">
                     <AlertCircle className="w-4 h-4" />
                     {error}
                   </div>
@@ -187,14 +187,14 @@ export function DeletePageClient() {
                   <button
                     type="button"
                     onClick={() => setStep("confirm")}
-                    className="px-6 py-2.5 border border-[#e2e8f0] text-[#64748b] font-semibold rounded-xl hover:bg-[#f8fafc] transition-colors"
+                    className="px-6 py-2.5 border border-default text-muted font-semibold rounded-xl hover:bg-surface-page transition-colors-base"
                   >
                     Back
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50"
+                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-danger-600 text-white font-semibold rounded-xl hover:bg-danger-600 transition-colors-base disabled:opacity-50"
                   >
                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                     Submit Deletion Request

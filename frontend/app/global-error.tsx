@@ -31,10 +31,10 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#f8fafc",
+          backgroundColor: "var(--neutral-50)",
           fontFamily:
             "system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-          color: "#0a1628",
+          color: "var(--primary-900)",
           padding: "1.5rem",
         }}
       >
@@ -44,8 +44,8 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
               width: "5rem",
               height: "5rem",
               borderRadius: "9999px",
-              backgroundColor: "#fee2e2",
-              color: "#dc2626",
+              backgroundColor: "var(--danger-100)",
+              color: "var(--danger-600)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -70,7 +70,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
 
           <p
             style={{
-              color: "#64748b",
+              color: "var(--text-muted)",
               fontSize: "1.0625rem",
               lineHeight: 1.6,
               margin: "0 0 2rem",
@@ -83,7 +83,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           {error.digest ? (
             <p
               style={{
-                color: "#94a3b8",
+                color: "var(--text-placeholder)",
                 fontSize: "0.8125rem",
                 margin: "0 0 2rem",
                 fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
@@ -108,8 +108,8 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                 borderRadius: "9999px",
                 fontWeight: 600,
                 fontSize: "1rem",
-                color: "#ffffff",
-                background: "linear-gradient(to bottom right, #22c55e, #16a34a)",
+                color: "var(--surface-card)",
+                background: "linear-gradient(to bottom right, var(--secondary-500), var(--secondary-600))",
                 border: "none",
                 cursor: "pointer",
               }}
@@ -129,9 +129,9 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
                 borderRadius: "9999px",
                 fontWeight: 600,
                 fontSize: "1rem",
-                color: "#0a1628",
-                backgroundColor: "#ffffff",
-                border: "1px solid #e2e8f0",
+                color: "var(--primary-900)",
+                backgroundColor: "var(--surface-card)",
+                border: "1px solid var(--neutral-200)",
                 textDecoration: "none",
                 display: "inline-block",
               }}

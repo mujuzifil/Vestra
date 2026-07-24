@@ -38,7 +38,7 @@ export function CartPageClient() {
     return (
       <main>
         <PageHero title="Shopping Cart" breadcrumb={[{ label: "Cart" }]} />
-        <section className="py-12 lg:py-20 bg-white">
+        <section className="py-12 lg:py-20 bg-surface-card">
           <Container>
             <EmptyCart />
           </Container>
@@ -89,21 +89,21 @@ export function CartPageClient() {
     <main>
       <PageHero title="Shopping Cart" breadcrumb={[{ label: "Cart" }]} />
 
-      <section className="py-12 lg:py-20 bg-[#f8fafc]">
+      <section className="py-12 lg:py-20 bg-neutral-50">
         <Container>
           <div className="grid lg:grid-cols-3 gap-8 lg:gap-10 items-start">
             {/* Cart items */}
             <div className="lg:col-span-2 space-y-4">
-              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm overflow-hidden">
+              <div className="bg-surface-card rounded-[20px] border border-border-default shadow-sm overflow-hidden">
                 {/* Desktop header */}
-                <div className="hidden md:grid grid-cols-12 gap-4 p-5 border-b border-[#e2e8f0] text-sm font-semibold text-[#64748b]">
+                <div className="hidden md:grid grid-cols-12 gap-4 p-5 border-b border-border-default text-sm font-semibold text-text-muted">
                   <div className="col-span-6">Product</div>
                   <div className="col-span-2 text-center">Price</div>
                   <div className="col-span-2 text-center">Quantity</div>
                   <div className="col-span-2 text-right">Total</div>
                 </div>
 
-                <div className="divide-y divide-[#f1f5f9]">
+                <div className="divide-y divide-neutral-100">
                   {cart.items.map((item) => {
                     const product = item.product;
                     const image = product.images?.[0]?.image || "/assets/images/products/placeholder.png";
@@ -117,7 +117,7 @@ export function CartPageClient() {
                       >
                         {/* Product info */}
                         <div className="md:col-span-6 flex gap-4">
-                          <div className="relative w-20 h-20 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] overflow-hidden flex-shrink-0">
+                          <div className="relative w-20 h-20 rounded-xl bg-neutral-50 border border-border-default overflow-hidden flex-shrink-0">
                             <Image
                               src={image}
                               alt={product.name}
@@ -128,17 +128,17 @@ export function CartPageClient() {
                           <div className="flex-1 min-w-0">
                             <Link
                               href={`/products/${product.slug}`}
-                              className="font-bold text-[#0a1628] hover:text-green-600 transition-colors line-clamp-2"
+                              className="font-bold text-text-heading hover:text-secondary-600 transition-colors-base line-clamp-2"
                             >
                               {product.name}
                             </Link>
-                            <p className="text-xs text-[#64748b] mt-1">SKU: {product.sku}</p>
+                            <p className="text-xs text-text-muted mt-1">SKU: {product.sku}</p>
                             {outOfStock ? (
-                              <span className="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-red-600">
+                              <span className="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-danger-600">
                                 <AlertCircle className="w-3 h-3" /> Out of stock
                               </span>
                             ) : isLowStock ? (
-                              <span className="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-amber-600">
+                              <span className="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-warning-600">
                                 <AlertCircle className="w-3 h-3" /> Only {product.stock_quantity} left
                               </span>
                             ) : null}
@@ -146,7 +146,7 @@ export function CartPageClient() {
                               <button
                                 onClick={() => handleRemove(item.id, product.name)}
                                 disabled={removingId === item.id}
-                                className="inline-flex items-center gap-1 text-xs font-medium text-[#94a3b8] hover:text-red-500 transition-colors"
+                                className="inline-flex items-center gap-1 text-xs font-medium text-text-placeholder hover:text-danger-500 transition-colors-base"
                               >
                                 {removingId === item.id ? (
                                   <Loader2 className="w-3 h-3 animate-spin" />
@@ -157,7 +157,7 @@ export function CartPageClient() {
                               </button>
                               <button
                                 disabled
-                                className="inline-flex items-center gap-1 text-xs font-medium text-[#94a3b8] cursor-not-allowed"
+                                className="inline-flex items-center gap-1 text-xs font-medium text-text-placeholder cursor-not-allowed"
                                 title="Save for later coming soon"
                               >
                                 <Heart className="w-3 h-3" /> Save for later
@@ -168,20 +168,20 @@ export function CartPageClient() {
 
                         {/* Price */}
                         <div className="md:col-span-2 md:text-center">
-                          <span className="md:hidden text-sm text-[#64748b]">Price: </span>
-                          <span className="font-semibold text-[#0a1628]">
+                          <span className="md:hidden text-sm text-text-muted">Price: </span>
+                          <span className="font-semibold text-text-heading">
                             {formatPrice(Number(product.price || 0))}
                           </span>
                         </div>
 
                         {/* Quantity */}
                         <div className="md:col-span-2 md:text-center">
-                          <div className="inline-flex items-center border border-[#e2e8f0] rounded-full bg-white">
+                          <div className="inline-flex items-center border border-border-default rounded-full bg-surface-card">
                             <button
                               type="button"
                               onClick={() => handleQuantityChange(item.id, item.quantity - 1, product.name)}
                               disabled={item.quantity <= 1}
-                              className="w-10 h-10 flex items-center justify-center text-[#475569] hover:text-[#0a1628] disabled:opacity-40"
+                              className="w-10 h-10 flex items-center justify-center text-text-body hover:text-text-heading disabled:opacity-40"
                               aria-label="Decrease quantity"
                             >
                               <Minus className="w-4 h-4" />
@@ -197,14 +197,14 @@ export function CartPageClient() {
                                   handleQuantityChange(item.id, value, product.name);
                                 }
                               }}
-                              className="w-12 text-center text-sm font-semibold text-[#0a1628] bg-transparent border-none focus:ring-0 p-0"
+                              className="w-12 text-center text-sm font-semibold text-text-heading bg-transparent border-none focus:ring-0 p-0"
                               aria-label="Quantity"
                             />
                             <button
                               type="button"
                               onClick={() => handleQuantityChange(item.id, item.quantity + 1, product.name)}
                               disabled={item.quantity >= (product.stock_quantity || 999)}
-                              className="w-10 h-10 flex items-center justify-center text-[#475569] hover:text-[#0a1628] disabled:opacity-40"
+                              className="w-10 h-10 flex items-center justify-center text-text-body hover:text-text-heading disabled:opacity-40"
                               aria-label="Increase quantity"
                             >
                               <Plus className="w-4 h-4" />
@@ -214,8 +214,8 @@ export function CartPageClient() {
 
                         {/* Total */}
                         <div className="md:col-span-2 md:text-right">
-                          <span className="md:hidden text-sm text-[#64748b]">Total: </span>
-                          <span className="font-bold text-[#0d3b66]">
+                          <span className="md:hidden text-sm text-text-muted">Total: </span>
+                          <span className="font-bold text-primary-500">
                             {formatPrice(Number(item.line_total || 0))}
                           </span>
                         </div>
@@ -225,7 +225,7 @@ export function CartPageClient() {
                           <button
                             onClick={() => handleRemove(item.id, product.name)}
                             disabled={removingId === item.id}
-                            className="inline-flex items-center gap-1.5 text-sm font-medium text-[#64748b] hover:text-red-500 transition-colors"
+                            className="inline-flex items-center gap-1.5 text-sm font-medium text-text-muted hover:text-danger-500 transition-colors-base"
                           >
                             {removingId === item.id ? (
                               <Loader2 className="w-4 h-4 animate-spin" />
@@ -236,7 +236,7 @@ export function CartPageClient() {
                           </button>
                           <button
                             disabled
-                            className="inline-flex items-center gap-1.5 text-sm font-medium text-[#94a3b8] cursor-not-allowed"
+                            className="inline-flex items-center gap-1.5 text-sm font-medium text-text-placeholder cursor-not-allowed"
                             title="Save for later coming soon"
                           >
                             <Heart className="w-4 h-4" /> Save for later
@@ -251,7 +251,7 @@ export function CartPageClient() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
                   href="/products"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-[#0a1628] bg-white border border-[#e2e8f0] hover:bg-[#f8fafc] transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-text-heading bg-surface-card border border-border-default hover:bg-neutral-50 transition-colors-base"
                 >
                   <ShoppingBag className="w-4 h-4" />
                   Continue Shopping
@@ -259,7 +259,7 @@ export function CartPageClient() {
                 <button
                   onClick={handleClear}
                   disabled={clearing}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-[#64748b] bg-white border border-[#e2e8f0] hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors disabled:opacity-60"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-text-muted bg-surface-card border border-border-default hover:bg-danger-50 hover:text-danger-600 hover:border-danger-200 transition-colors-base disabled:opacity-60"
                 >
                   {clearing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                   Clear Cart
@@ -269,30 +269,30 @@ export function CartPageClient() {
 
             {/* Order summary */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 lg:p-8 sticky top-24">
-                <h2 className="text-lg font-bold text-[#0a1628] mb-6">Order Summary</h2>
+              <div className="bg-surface-card rounded-[20px] border border-border-default shadow-sm p-6 lg:p-8 sticky top-24">
+                <h2 className="text-lg font-bold text-text-heading mb-6">Order Summary</h2>
 
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#64748b]">Subtotal</span>
-                    <span className="font-semibold text-[#0a1628]">{formatPrice(Number(cart.subtotal || 0))}</span>
+                    <span className="text-text-muted">Subtotal</span>
+                    <span className="font-semibold text-text-heading">{formatPrice(Number(cart.subtotal || 0))}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#64748b] flex items-center gap-1.5">
+                    <span className="text-text-muted flex items-center gap-1.5">
                       <Truck className="w-4 h-4" /> Shipping
                     </span>
-                    <span className="font-medium text-[#94a3b8]">Calculated at checkout</span>
+                    <span className="font-medium text-text-placeholder">Calculated at checkout</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#64748b] flex items-center gap-1.5">
+                    <span className="text-text-muted flex items-center gap-1.5">
                       <Receipt className="w-4 h-4" /> Tax
                     </span>
-                    <span className="font-medium text-[#94a3b8]">Calculated at checkout</span>
+                    <span className="font-medium text-text-placeholder">Calculated at checkout</span>
                   </div>
                 </div>
 
-                <div className="border-t border-[#e2e8f0] pt-4 mb-6">
-                  <div className="flex justify-between text-lg font-bold text-[#0a1628]">
+                <div className="border-t border-border-default pt-4 mb-6">
+                  <div className="flex justify-between text-lg font-bold text-text-heading">
                     <span>Estimated Total</span>
                     <span>{formatPrice(estimatedTotal)}</span>
                   </div>
@@ -301,14 +301,14 @@ export function CartPageClient() {
                 <button
                   onClick={() => router.push("/checkout")}
                   className={cn(
-                    "w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-0.5 transition-all"
+                    "w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-lg shadow-secondary-500/30 hover:-translate-y-0.5 transition-all-base"
                   )}
                 >
                   Proceed to Checkout
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
-                <p className="text-xs text-[#94a3b8] text-center mt-4">
+                <p className="text-xs text-text-placeholder text-center mt-4">
                   Shipping, taxes, and discounts will be calculated at checkout.
                 </p>
               </div>

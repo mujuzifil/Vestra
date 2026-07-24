@@ -80,7 +80,7 @@ export function ProfilePageClient() {
   if (authLoading || profileLoading) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-green-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-secondary-500" />
       </div>
     );
   }
@@ -95,87 +95,87 @@ export function ProfilePageClient() {
         breadcrumb={[{ label: "Account", href: "/account" }, { label: "Settings", href: "/account/settings" }, { label: "Profile" }]}
       />
 
-      <section className="py-12 lg:py-20 bg-[#f8fafc]">
+      <section className="py-12 lg:py-20 bg-surface-page">
         <Container>
           <Link
             href="/account/settings"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#64748b] hover:text-[#0a1628] mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Settings
           </Link>
 
-          <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 lg:p-8">
+          <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-xl bg-green-50 text-green-600">
+              <div className="p-2 rounded-xl bg-secondary-50 text-secondary-600">
                 <User className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-[#0a1628]">Profile Information</h1>
-                <p className="text-sm text-[#64748b]">Manage your name, contact details, and preferences.</p>
+                <h1 className="text-lg font-bold text-primary-900">Profile Information</h1>
+                <p className="text-sm text-muted">Manage your name, contact details, and preferences.</p>
               </div>
             </div>
 
             <form onSubmit={handleSubmit} className="max-w-2xl space-y-5">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#0a1628] mb-1">First Name</label>
+                  <label className="block text-sm font-medium text-primary-900 mb-1">First Name</label>
                   <input
                     type="text"
                     value={form.first_name}
                     onChange={(e) => handleChange("first_name", e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+                    className="w-full px-4 py-2.5 rounded-xl border border-default focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#0a1628] mb-1">Last Name</label>
+                  <label className="block text-sm font-medium text-primary-900 mb-1">Last Name</label>
                   <input
                     type="text"
                     value={form.last_name}
                     onChange={(e) => handleChange("last_name", e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+                    className="w-full px-4 py-2.5 rounded-xl border border-default focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#0a1628] mb-1">Email</label>
+                  <label className="block text-sm font-medium text-primary-900 mb-1">Email</label>
                   <input
                     type="email"
                     disabled
                     value={form.email}
-                    className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] bg-[#f8fafc] text-[#94a3b8] cursor-not-allowed"
+                    className="w-full px-4 py-2.5 rounded-xl border border-default bg-surface-page text-placeholder cursor-not-allowed"
                   />
-                  <p className="text-xs text-[#94a3b8] mt-1">Email cannot be changed here.</p>
+                  <p className="text-xs text-placeholder mt-1">Email cannot be changed here.</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#0a1628] mb-1">Phone</label>
+                  <label className="block text-sm font-medium text-primary-900 mb-1">Phone</label>
                   <input
                     type="tel"
                     value={form.phone}
                     onChange={(e) => handleChange("phone", e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+                    className="w-full px-4 py-2.5 rounded-xl border border-default focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#0a1628] mb-1">Date of Birth</label>
+                  <label className="block text-sm font-medium text-primary-900 mb-1">Date of Birth</label>
                   <input
                     type="date"
                     value={form.date_of_birth}
                     onChange={(e) => handleChange("date_of_birth", e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+                    className="w-full px-4 py-2.5 rounded-xl border border-default focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#0a1628] mb-1">Gender</label>
+                  <label className="block text-sm font-medium text-primary-900 mb-1">Gender</label>
                   <select
                     value={form.gender}
                     onChange={(e) => handleChange("gender", e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none bg-white"
+                    className="w-full px-4 py-2.5 rounded-xl border border-default focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none bg-surface-card"
                   >
                     <option value="">Select gender</option>
                     {GENDER_OPTIONS.map((opt) => (
@@ -188,7 +188,7 @@ export function ProfilePageClient() {
               </div>
 
               {error && (
-                <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-xl">
+                <div className="flex items-center gap-2 text-sm text-danger-600 bg-danger-50 p-3 rounded-xl">
                   <AlertCircle className="w-4 h-4" />
                   {error}
                 </div>
@@ -197,7 +197,7 @@ export function ProfilePageClient() {
               <button
                 type="submit"
                 disabled={isUpdating}
-                className="inline-flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-secondary-600 text-white font-semibold rounded-xl hover:bg-secondary-600 transition-colors-base disabled:opacity-50"
               >
                 {isUpdating ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                 Save Changes

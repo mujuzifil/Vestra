@@ -55,16 +55,16 @@ export function NewQuoteClient() {
     <div className="space-y-6">
       <Link
         href="/distributor/quotes"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-[#64748b] hover:text-[#0a1628]"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900"
       >
         <ChevronLeft className="w-4 h-4" />
         Back to Quotes
       </Link>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 lg:p-8 space-y-6">
+      <form onSubmit={handleSubmit} className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-6 lg:p-8 space-y-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#0a1628]">New Quote Request</h1>
-          <p className="text-[#64748b]">Build your quote from distributor-priced products.</p>
+          <h1 className="text-2xl font-extrabold text-primary-900">New Quote Request</h1>
+          <p className="text-muted">Build your quote from distributor-priced products.</p>
         </div>
 
         <TextareaField
@@ -77,7 +77,7 @@ export function NewQuoteClient() {
         />
 
         <div>
-          <h3 className="text-lg font-bold text-[#0a1628] mb-4">Products</h3>
+          <h3 className="text-lg font-bold text-primary-900 mb-4">Products</h3>
           {products && <BulkOrderTable products={products} lines={lines} onChange={setLines} />}
         </div>
 
@@ -85,7 +85,7 @@ export function NewQuoteClient() {
           <button
             type="submit"
             disabled={isSubmitting || lines.length === 0}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 disabled:opacity-60 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 disabled:opacity-60 transition-colors-base"
           >
             {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
             {isSubmitting ? "Creating..." : "Create Quote Request"}

@@ -62,7 +62,7 @@ export function PasswordPageClient() {
   if (authLoading) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-green-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-secondary-500" />
       </div>
     );
   }
@@ -77,42 +77,42 @@ export function PasswordPageClient() {
         breadcrumb={[{ label: "Account", href: "/account" }, { label: "Settings", href: "/account/settings" }, { label: "Password" }]}
       />
 
-      <section className="py-12 lg:py-20 bg-[#f8fafc]">
+      <section className="py-12 lg:py-20 bg-surface-page">
         <Container>
           <Link
             href="/account/settings"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#64748b] hover:text-[#0a1628] mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Settings
           </Link>
 
-          <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 lg:p-8 max-w-2xl">
+          <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8 max-w-2xl">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-xl bg-green-50 text-green-600">
+              <div className="p-2 rounded-xl bg-secondary-50 text-secondary-600">
                 <Lock className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-[#0a1628]">Change Password</h1>
-                <p className="text-sm text-[#64748b]">Update the password you use to sign in.</p>
+                <h1 className="text-lg font-bold text-primary-900">Change Password</h1>
+                <p className="text-sm text-muted">Update the password you use to sign in.</p>
               </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-[#0a1628] mb-1">Current Password</label>
+                <label className="block text-sm font-medium text-primary-900 mb-1">Current Password</label>
                 <div className="relative">
                   <input
                     type={show.current ? "text" : "password"}
                     required
                     value={form.current_password}
                     onChange={(e) => setForm({ ...form, current_password: e.target.value })}
-                    className="w-full px-4 py-2.5 pr-10 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+                    className="w-full px-4 py-2.5 pr-10 rounded-xl border border-default focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none"
                   />
                   <button
                     type="button"
                     onClick={() => setShow((s) => ({ ...s, current: !s.current }))}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94a3b8] hover:text-[#64748b]"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-placeholder hover:text-muted"
                   >
                     {show.current ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -120,7 +120,7 @@ export function PasswordPageClient() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#0a1628] mb-1">New Password</label>
+                <label className="block text-sm font-medium text-primary-900 mb-1">New Password</label>
                 <div className="relative">
                   <input
                     type={show.new ? "text" : "password"}
@@ -128,12 +128,12 @@ export function PasswordPageClient() {
                     minLength={8}
                     value={form.password}
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    className="w-full px-4 py-2.5 pr-10 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+                    className="w-full px-4 py-2.5 pr-10 rounded-xl border border-default focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none"
                   />
                   <button
                     type="button"
                     onClick={() => setShow((s) => ({ ...s, new: !s.new }))}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94a3b8] hover:text-[#64748b]"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-placeholder hover:text-muted"
                   >
                     {show.new ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -141,19 +141,19 @@ export function PasswordPageClient() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#0a1628] mb-1">Confirm New Password</label>
+                <label className="block text-sm font-medium text-primary-900 mb-1">Confirm New Password</label>
                 <div className="relative">
                   <input
                     type={show.confirm ? "text" : "password"}
                     required
                     value={form.password_confirmation}
                     onChange={(e) => setForm({ ...form, password_confirmation: e.target.value })}
-                    className="w-full px-4 py-2.5 pr-10 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+                    className="w-full px-4 py-2.5 pr-10 rounded-xl border border-default focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none"
                   />
                   <button
                     type="button"
                     onClick={() => setShow((s) => ({ ...s, confirm: !s.confirm }))}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94a3b8] hover:text-[#64748b]"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-placeholder hover:text-muted"
                   >
                     {show.confirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -161,13 +161,13 @@ export function PasswordPageClient() {
               </div>
 
               {success && (
-                <div className="flex items-center gap-2 text-sm text-emerald-600 bg-emerald-50 p-3 rounded-xl">
+                <div className="flex items-center gap-2 text-sm text-success-600 bg-success-50 p-3 rounded-xl">
                   <CheckCircle2 className="w-4 h-4" />
                   Password changed successfully.
                 </div>
               )}
               {error && (
-                <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-xl">
+                <div className="flex items-center gap-2 text-sm text-danger-600 bg-danger-50 p-3 rounded-xl">
                   <AlertCircle className="w-4 h-4" />
                   {error}
                 </div>
@@ -176,7 +176,7 @@ export function PasswordPageClient() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-secondary-600 text-white font-semibold rounded-xl hover:bg-secondary-600 transition-colors-base disabled:opacity-50"
               >
                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
                 Change Password

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { login, register, logout, changePassword } from "@/lib/api/auth";
+import { changePassword } from "@/lib/api/auth";
 import { useAuth } from "@/lib/auth-context";
 
 export function useLogin() {

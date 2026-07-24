@@ -125,10 +125,10 @@ export function BulkOrdersPageClient() {
       </section>
 
       {/* Quote Form */}
-      <section className="py-20 lg:py-28 bg-[#f8fafc]" aria-labelledby="quote-heading">
+      <section className="py-20 lg:py-28 bg-surface-page" aria-labelledby="quote-heading">
         <Container>
           <div className="max-w-3xl mx-auto">
-            <div className="bg-white rounded-[24px] border border-[#e2e8f0] shadow-lg p-6 lg:p-10">
+            <div className="bg-white rounded-[24px] border border-default shadow-lg p-6 lg:p-10">
               {!submitted ? (
                 <>
                   <SectionHeader
@@ -201,7 +201,7 @@ export function BulkOrdersPageClient() {
                       type="submit"
                       disabled={loading}
                       className={cn(
-                        "w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-1 transition-all",
+                        "w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-1 transition-all-base",
                         loading && "opacity-70 cursor-not-allowed"
                       )}
                     >
@@ -217,7 +217,7 @@ export function BulkOrdersPageClient() {
                         </>
                       )}
                     </button>
-                    <p className="text-xs text-[#94a3b8] text-center">
+                    <p className="text-xs text-placeholder text-center">
                       This is a quotation request only. You will not be charged now.
                     </p>
                   </form>
@@ -227,22 +227,22 @@ export function BulkOrdersPageClient() {
                   <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
                     <CheckCircle className="w-8 h-8 text-green-600" aria-hidden="true" />
                   </div>
-                  <h2 className="text-2xl font-bold text-[#0a1628] mb-2">Quote Request Received</h2>
-                  <p className="text-[#64748b] mb-8">
+                  <h2 className="text-2xl font-bold text-primary-900 mb-2">Quote Request Received</h2>
+                  <p className="text-muted mb-8">
                     Thank you for your enquiry. Our sales team will review your requirements and send
                     a tailored quotation within 1-2 business days.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <Link
                       href="/"
-                      className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-[#0a1628] bg-white border border-[#e2e8f0] hover:bg-[#f8fafc] transition-colors"
+                      className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-primary-900 bg-white border border-default hover:bg-surface-page transition-colors-base"
                     >
                       <Home className="w-4 h-4" />
                       Return Home
                     </Link>
                     <Link
                       href="/products"
-                      className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-0.5 transition-all"
+                      className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-0.5 transition-all-base"
                     >
                       <ShoppingBag className="w-4 h-4" />
                       Continue Shopping

@@ -71,7 +71,7 @@ export function BulkOrderTable({ products, lines, onChange }: BulkOrderTableProp
         <select
           value={selectedProductId}
           onChange={(e) => setSelectedProductId(e.target.value)}
-          className="flex-1 px-4 py-3 rounded-xl border border-[#e2e8f0] text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
+          className="flex-1 px-4 py-3 rounded-xl border border-border text-sm focus:outline-none focus:ring-2 focus:ring-secondary-500 bg-surface-card"
         >
           <option value="">Select a product</option>
           {products.map((product) => (
@@ -84,7 +84,7 @@ export function BulkOrderTable({ products, lines, onChange }: BulkOrderTableProp
           type="button"
           onClick={addLine}
           disabled={!selectedProductId}
-          className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 disabled:opacity-60 transition-colors"
+          className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-secondary-600 text-white font-semibold rounded-xl hover:bg-secondary-600/90 disabled:opacity-60 transition-colors-base"
         >
           <Plus className="w-4 h-4" />
           Add Product
@@ -92,34 +92,34 @@ export function BulkOrderTable({ products, lines, onChange }: BulkOrderTableProp
       </div>
 
       {lines.length === 0 ? (
-        <div className="text-center py-8 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] text-[#64748b] text-sm">
+        <div className="text-center py-8 rounded-xl bg-surface-page border border-border text-muted text-sm">
           No products added yet.
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-[20px] border border-[#e2e8f0]">
+        <div className="overflow-x-auto rounded-[20px] border border-border">
           <table className="w-full text-left text-sm">
-            <thead className="bg-[#f8fafc]">
+            <thead className="bg-surface-page">
               <tr>
-                <th className="px-4 py-3 font-semibold text-[#0a1628]">Product</th>
-                <th className="px-4 py-3 font-semibold text-[#0a1628]">SKU</th>
-                <th className="px-4 py-3 font-semibold text-[#0a1628]">Unit Price</th>
-                <th className="px-4 py-3 font-semibold text-[#0a1628]">Qty</th>
-                <th className="px-4 py-3 font-semibold text-[#0a1628]">Total</th>
+                <th className="px-4 py-3 font-semibold text-primary-900">Product</th>
+                <th className="px-4 py-3 font-semibold text-primary-900">SKU</th>
+                <th className="px-4 py-3 font-semibold text-primary-900">Unit Price</th>
+                <th className="px-4 py-3 font-semibold text-primary-900">Qty</th>
+                <th className="px-4 py-3 font-semibold text-primary-900">Total</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody>
               {lines.map((line) => (
-                <tr key={line.product_id} className="border-t border-[#f1f5f9]">
-                  <td className="px-4 py-3 font-medium text-[#0a1628]">{line.product_name}</td>
-                  <td className="px-4 py-3 text-[#64748b]">{line.product_sku}</td>
-                  <td className="px-4 py-3 text-[#64748b]">UGX {line.unit_price}</td>
+                <tr key={line.product_id} className="border-t border-neutral-100">
+                  <td className="px-4 py-3 font-medium text-primary-900">{line.product_name}</td>
+                  <td className="px-4 py-3 text-muted">{line.product_sku}</td>
+                  <td className="px-4 py-3 text-muted">UGX {line.unit_price}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => updateQuantity(line.product_id, line.quantity - 1)}
-                        className="p-1 rounded-lg border border-[#e2e8f0] hover:bg-[#f8fafc]"
+                        className="p-1 rounded-lg border border-border hover:bg-surface-page transition-colors-base"
                         aria-label="Decrease quantity"
                       >
                         <Minus className="w-3.5 h-3.5" />
@@ -128,19 +128,19 @@ export function BulkOrderTable({ products, lines, onChange }: BulkOrderTableProp
                       <button
                         type="button"
                         onClick={() => updateQuantity(line.product_id, line.quantity + 1)}
-                        className="p-1 rounded-lg border border-[#e2e8f0] hover:bg-[#f8fafc]"
+                        className="p-1 rounded-lg border border-border hover:bg-surface-page transition-colors-base"
                         aria-label="Increase quantity"
                       >
                         <Plus className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-bold text-[#0a1628]">UGX {line.line_total}</td>
+                  <td className="px-4 py-3 font-bold text-primary-900">UGX {line.line_total}</td>
                   <td className="px-4 py-3">
                     <button
                       type="button"
                       onClick={() => removeLine(line.product_id)}
-                      className="p-1.5 text-[#94a3b8] hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      className="p-1.5 text-neutral-400 hover:text-danger-600 hover:bg-danger-50 rounded-lg transition-colors-base"
                       aria-label="Remove product"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -149,12 +149,12 @@ export function BulkOrderTable({ products, lines, onChange }: BulkOrderTableProp
                 </tr>
               ))}
             </tbody>
-            <tfoot className="bg-[#f8fafc]">
+            <tfoot className="bg-surface-page">
               <tr>
-                <td colSpan={4} className="px-4 py-3 text-right font-bold text-[#0a1628]">
+                <td colSpan={4} className="px-4 py-3 text-right font-bold text-primary-900">
                   Total
                 </td>
-                <td className="px-4 py-3 font-extrabold text-green-600">UGX {total.toFixed(2)}</td>
+                <td className="px-4 py-3 font-extrabold text-secondary-600">UGX {total.toFixed(2)}</td>
                 <td></td>
               </tr>
             </tfoot>

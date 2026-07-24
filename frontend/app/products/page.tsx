@@ -35,7 +35,7 @@ function QuickAddButton({ product, disabled }: { product: Product; disabled?: bo
         }
       }}
       className={cn(
-        "inline-flex items-center justify-center w-10 h-10 rounded-full border border-[#e2e8f0] bg-white text-[#0a1628] hover:bg-[#f8fafc] hover:border-green-500 hover:text-green-600 transition-colors",
+        "inline-flex items-center justify-center w-10 h-10 rounded-full border border-default bg-white text-primary-900 hover:bg-surface-page hover:border-green-500 hover:text-green-600 transition-colors-base",
         (disabled || loading) && "opacity-60 cursor-not-allowed"
       )}
       aria-label="Add to cart"
@@ -110,7 +110,7 @@ export default function ProductsPage() {
                 Search products
               </label>
               <Search
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94a3b8]"
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-placeholder"
                 aria-hidden="true"
               />
               <input
@@ -119,7 +119,7 @@ export default function ProductsPage() {
                 placeholder="Search products..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 rounded-full border border-[#e2e8f0] bg-[#f8fafc] text-[#0a1628] placeholder:text-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+                className="w-full pl-12 pr-4 py-3 rounded-full border border-default bg-surface-page text-primary-900 placeholder:text-placeholder focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all-base"
               />
             </div>
 
@@ -127,7 +127,7 @@ export default function ProductsPage() {
               {isLoading ? (
                 <div className="flex gap-2">
                   {Array.from({ length: 4 }).map((_, i) => (
-                    <div key={i} className="w-24 h-9 rounded-full bg-[#e2e8f0] animate-pulse" />
+                    <div key={i} className="w-24 h-9 rounded-full bg-neutral-200 animate-pulse" />
                   ))}
                 </div>
               ) : (
@@ -138,10 +138,10 @@ export default function ProductsPage() {
                     aria-selected={activeCategory === category.slug}
                     onClick={() => setActiveCategory(category.slug)}
                     className={cn(
-                      "px-4 py-2 rounded-full text-sm font-semibold transition-all",
+                      "px-4 py-2 rounded-full text-sm font-semibold transition-all-base",
                       activeCategory === category.slug
                         ? "bg-green-500 text-white shadow-md shadow-green-500/25"
-                        : "bg-[#f1f5f9] text-[#475569] hover:bg-[#e2e8f0]"
+                        : "bg-neutral-100 text-body hover:bg-neutral-200"
                     )}
                   >
                     {category.name}
@@ -175,11 +175,11 @@ export default function ProductsPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.5, delay: (index % 6) * 0.08 }}
-                  className="group bg-white rounded-[20px] overflow-hidden border border-[#e2e8f0] shadow-sm hover:-translate-y-2 hover:shadow-xl hover:border-[#7db8ec] transition-all flex flex-col"
+                  className="group bg-white rounded-[20px] overflow-hidden border border-default shadow-sm hover:-translate-y-2 hover:shadow-xl hover:border-primary-300 transition-all-base flex flex-col"
                 >
                   <Link
                     href={`/products/${product.slug}`}
-                    className="relative p-6 lg:p-8 min-h-[240px] lg:min-h-[260px] flex items-center justify-center bg-gradient-to-b from-[#f8fafc] to-white overflow-hidden"
+                    className="relative p-6 lg:p-8 min-h-[240px] lg:min-h-[260px] flex items-center justify-center bg-gradient-to-b from-neutral-50 to-white overflow-hidden"
                   >
                     <div className="absolute w-44 h-44 rounded-full bg-[radial-gradient(circle,rgba(13,59,102,0.05)_0%,transparent_70%)]" />
                     <Image
@@ -195,21 +195,21 @@ export default function ProductsPage() {
                     <span className="text-xs font-semibold text-green-600 uppercase tracking-wider mb-2">
                       {product.category.name}
                     </span>
-                    <h3 className="text-lg font-bold text-[#0a1628] mb-2">
-                      <Link href={`/products/${product.slug}`} className="hover:text-green-600 transition-colors">
+                    <h3 className="text-lg font-bold text-primary-900 mb-2">
+                      <Link href={`/products/${product.slug}`} className="hover:text-green-600 transition-colors-base">
                         {product.name}
                       </Link>
                     </h3>
-                    <p className="text-sm text-[#64748b] mb-4 flex-1 line-clamp-2 leading-relaxed">
+                    <p className="text-sm text-muted mb-4 flex-1 line-clamp-2 leading-relaxed">
                       {product.short_description}
                     </p>
-                    <p className="text-xl font-extrabold text-[#0d3b66] mb-4">
+                    <p className="text-xl font-extrabold text-primary-500 mb-4">
                       {formatPrice(Number(product.price))}
                     </p>
                     <div className="flex gap-3">
                       <Link
                         href={`/products/${product.slug}`}
-                        className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-full font-semibold text-sm bg-white border border-[#e2e8f0] text-[#0a1628] hover:bg-[#f8fafc] hover:border-[#4a90d9] hover:text-[#0d3b66] transition-colors"
+                        className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-full font-semibold text-sm bg-white border border-default text-primary-900 hover:bg-surface-page hover:border-primary-400 hover:text-primary-500 transition-colors-base"
                       >
                         View Details
                       </Link>

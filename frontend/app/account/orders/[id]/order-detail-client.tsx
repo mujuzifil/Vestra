@@ -26,12 +26,12 @@ import { toastError } from "@/lib/toast-utils";
 import type { TimelineEvent } from "@/types";
 
 const statusColors: Record<string, string> = {
-  primary: "bg-blue-500",
-  success: "bg-green-500",
+  primary: "bg-info-500",
+  success: "bg-secondary-500",
   info: "bg-cyan-500",
-  warning: "bg-amber-500",
-  danger: "bg-red-500",
-  gray: "bg-gray-400",
+  warning: "bg-warning-500",
+  danger: "bg-danger-500",
+  gray: "bg-neutral-400",
 };
 
 interface Props {
@@ -92,7 +92,7 @@ export function OrderDetailPageClient({ orderId }: Props) {
   if (authLoading || orderLoading) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-green-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-secondary-500" />
       </div>
     );
   }
@@ -102,12 +102,12 @@ export function OrderDetailPageClient({ orderId }: Props) {
   if (!order) {
     return (
       <Container className="py-20 text-center">
-        <AlertCircle className="w-12 h-12 mx-auto mb-4 text-[#94a3b8]" />
-        <h2 className="text-xl font-bold text-[#0a1628] mb-2">Order not found</h2>
-        <p className="text-[#64748b] mb-6">The order you are looking for does not exist.</p>
+        <AlertCircle className="w-12 h-12 mx-auto mb-4 text-placeholder" />
+        <h2 className="text-xl font-bold text-primary-900 mb-2">Order not found</h2>
+        <p className="text-muted mb-6">The order you are looking for does not exist.</p>
         <Link
           href="/account/orders"
-          className="inline-flex items-center gap-2 text-green-600 font-semibold hover:text-green-700"
+          className="inline-flex items-center gap-2 text-secondary-600 font-semibold hover:text-secondary-600"
         >
           <ChevronLeft className="w-4 h-4" />
           Back to Orders
@@ -141,46 +141,46 @@ export function OrderDetailPageClient({ orderId }: Props) {
         ]}
       />
 
-      <section className="py-12 lg:py-20 bg-[#f8fafc]">
+      <section className="py-12 lg:py-20 bg-surface-page">
         <Container>
           <Link
             href="/account/orders"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#64748b] hover:text-[#0a1628] mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Orders
           </Link>
 
           {/* Order Metadata */}
-          <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 mb-8">
+          <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 mb-8">
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-[#94a3b8] mb-1">Invoice Number</p>
-                <p className="text-lg font-bold text-[#0a1628]">{order.invoice_number}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-placeholder mb-1">Invoice Number</p>
+                <p className="text-lg font-bold text-primary-900">{order.invoice_number}</p>
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-[#94a3b8] mb-1">Order Date</p>
-                <p className="text-base font-semibold text-[#0a1628]">{formatDate(order.created_at)}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-placeholder mb-1">Order Date</p>
+                <p className="text-base font-semibold text-primary-900">{formatDate(order.created_at)}</p>
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-[#94a3b8] mb-1">Payment Method</p>
-                <p className="text-base font-semibold text-[#0a1628] capitalize">{order.payment_method.replace(/_/g, " ")}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-placeholder mb-1">Payment Method</p>
+                <p className="text-base font-semibold text-primary-900 capitalize">{order.payment_method.replace(/_/g, " ")}</p>
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-[#94a3b8] mb-1">Total</p>
-                <p className="text-lg font-bold text-[#0d3b66]">UGX {order.total_amount}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-placeholder mb-1">Total</p>
+                <p className="text-lg font-bold text-primary-500">UGX {order.total_amount}</p>
               </div>
             </div>
-            <div className="mt-6 pt-6 border-t border-[#e2e8f0] flex flex-wrap gap-3">
+            <div className="mt-6 pt-6 border-t border-default flex flex-wrap gap-3">
               <span
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold capitalize ${
                   order.status === "delivered"
-                    ? "bg-green-100 text-green-700"
+                    ? "bg-secondary-100 text-secondary-600"
                     : order.status === "cancelled" || order.status === "refunded"
-                    ? "bg-red-100 text-red-700"
+                    ? "bg-danger-100 text-danger-600"
                     : order.status === "pending"
-                    ? "bg-amber-100 text-amber-700"
-                    : "bg-blue-100 text-blue-700"
+                    ? "bg-warning-100 text-warning-600"
+                    : "bg-info-100 text-info-600"
                 }`}
               >
                 {order.status}
@@ -188,10 +188,10 @@ export function OrderDetailPageClient({ orderId }: Props) {
               <span
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold capitalize ${
                   order.payment_status === "paid"
-                    ? "bg-emerald-100 text-emerald-700"
+                    ? "bg-success-100 text-success-600"
                     : order.payment_status === "failed"
-                    ? "bg-red-100 text-red-700"
-                    : "bg-amber-100 text-amber-700"
+                    ? "bg-danger-100 text-danger-600"
+                    : "bg-warning-100 text-warning-600"
                 }`}
               >
                 Payment: {order.payment_status}
@@ -204,14 +204,14 @@ export function OrderDetailPageClient({ orderId }: Props) {
             <div className="lg:col-span-2 space-y-6">
               {/* Order Timeline */}
               {order.status !== "cancelled" && order.status !== "refunded" && (
-                <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
-                  <h2 className="text-lg font-bold text-[#0a1628] mb-6">Order Timeline</h2>
+                <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
+                  <h2 className="text-lg font-bold text-primary-900 mb-6">Order Timeline</h2>
                   <div className="relative">
-                    <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-[#e2e8f0]" />
+                    <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-default" />
                     <div className="space-y-6">
                       {timeline.map((event, index) => {
                         const isLast = index === timeline.length - 1;
-                        const colorClass = statusColors[event.color || "gray"] || "bg-gray-400";
+                        const colorClass = statusColors[event.color || "gray"] || "bg-neutral-400";
                         return (
                           <div key={index} className="relative flex items-start gap-4">
                             <div
@@ -220,9 +220,9 @@ export function OrderDetailPageClient({ orderId }: Props) {
                               <Clock className="w-4 h-4" />
                             </div>
                             <div className="pt-1 flex-1">
-                              <p className="font-semibold text-[#0a1628]">{event.title}</p>
-                              <p className="text-sm text-[#64748b]">{event.description}</p>
-                              <div className="flex items-center gap-2 mt-1 text-xs text-[#94a3b8]">
+                              <p className="font-semibold text-primary-900">{event.title}</p>
+                              <p className="text-sm text-muted">{event.description}</p>
+                              <div className="flex items-center gap-2 mt-1 text-xs text-placeholder">
                                 <Calendar className="w-3 h-3" />
                                 <span>{formatDateTime(event.time)}</span>
                                 <span>•</span>
@@ -230,7 +230,7 @@ export function OrderDetailPageClient({ orderId }: Props) {
                               </div>
                             </div>
                             {isLast && order.status !== "delivered" && (
-                              <span className="text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
+                              <span className="text-xs font-semibold text-warning-600 bg-warning-50 px-2 py-1 rounded-full">
                                 Current
                               </span>
                             )}
@@ -244,12 +244,12 @@ export function OrderDetailPageClient({ orderId }: Props) {
 
               {/* Cancelled / Refunded Message */}
               {(order.status === "cancelled" || order.status === "refunded") && (
-                <div className="bg-red-50 rounded-[20px] border border-red-200 p-6">
+                <div className="bg-danger-50 rounded-[20px] border border-danger-200 p-6">
                   <div className="flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
+                    <AlertCircle className="w-5 h-5 text-danger-600 mt-0.5" />
                     <div>
-                      <h2 className="text-lg font-bold text-red-800 capitalize">Order {order.status}</h2>
-                      <p className="text-sm text-red-700 mt-1">
+                      <h2 className="text-lg font-bold text-danger-600 capitalize">Order {order.status}</h2>
+                      <p className="text-sm text-danger-600 mt-1">
                         This order has been {order.status}. If you have any questions, please contact support.
                       </p>
                     </div>
@@ -258,15 +258,15 @@ export function OrderDetailPageClient({ orderId }: Props) {
               )}
 
               {/* Order Items */}
-              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
-                <h2 className="text-lg font-bold text-[#0a1628] mb-4">Order Items</h2>
+              <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
+                <h2 className="text-lg font-bold text-primary-900 mb-4">Order Items</h2>
                 <div className="space-y-4">
                   {order.items.map((item) => (
                     <div
                       key={item.id}
-                      className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl bg-[#f8fafc]"
+                      className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl bg-surface-page"
                     >
-                      <div className="relative w-16 h-16 rounded-lg bg-white overflow-hidden flex-shrink-0">
+                      <div className="relative w-16 h-16 rounded-lg bg-surface-card overflow-hidden flex-shrink-0">
                         <Image
                           src="/assets/images/products/placeholder.png"
                           alt={item.product_name}
@@ -275,13 +275,13 @@ export function OrderDetailPageClient({ orderId }: Props) {
                         />
                       </div>
                       <div className="flex-1">
-                        <p className="font-semibold text-[#0a1628]">{item.product_name}</p>
-                        <p className="text-sm text-[#64748b]">SKU: {item.product_sku}</p>
-                        <p className="text-sm text-[#64748b]">Qty: {item.quantity}</p>
+                        <p className="font-semibold text-primary-900">{item.product_name}</p>
+                        <p className="text-sm text-muted">SKU: {item.product_sku}</p>
+                        <p className="text-sm text-muted">Qty: {item.quantity}</p>
                       </div>
                       <div className="text-left sm:text-right">
-                        <p className="font-bold text-[#0d3b66]">UGX {item.line_total}</p>
-                        <p className="text-sm text-[#64748b]">UGX {item.unit_price} each</p>
+                        <p className="font-bold text-primary-500">UGX {item.line_total}</p>
+                        <p className="text-sm text-muted">UGX {item.unit_price} each</p>
                       </div>
                     </div>
                   ))}
@@ -292,36 +292,36 @@ export function OrderDetailPageClient({ orderId }: Props) {
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Order Summary */}
-              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
-                <h2 className="text-lg font-bold text-[#0a1628] mb-4">Order Summary</h2>
+              <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
+                <h2 className="text-lg font-bold text-primary-900 mb-4">Order Summary</h2>
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#64748b]">Subtotal</span>
-                    <span className="font-medium text-[#0a1628]">UGX {order.subtotal}</span>
+                    <span className="text-muted">Subtotal</span>
+                    <span className="font-medium text-primary-900">UGX {order.subtotal}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#64748b]">Shipping</span>
-                    <span className="font-medium text-[#0a1628]">UGX {order.shipping_cost}</span>
+                    <span className="text-muted">Shipping</span>
+                    <span className="font-medium text-primary-900">UGX {order.shipping_cost}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-[#64748b]">Tax</span>
-                    <span className="font-medium text-[#0a1628]">UGX {order.tax_amount}</span>
+                    <span className="text-muted">Tax</span>
+                    <span className="font-medium text-primary-900">UGX {order.tax_amount}</span>
                   </div>
-                  <div className="pt-3 border-t border-[#e2e8f0] flex justify-between">
-                    <span className="font-bold text-[#0a1628]">Total</span>
-                    <span className="font-bold text-[#0d3b66]">UGX {order.total_amount}</span>
+                  <div className="pt-3 border-t border-default flex justify-between">
+                    <span className="font-bold text-primary-900">Total</span>
+                    <span className="font-bold text-primary-500">UGX {order.total_amount}</span>
                   </div>
                 </div>
               </div>
 
               {/* Shipping Address */}
-              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
+              <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <MapPin className="w-5 h-5 text-green-600" />
-                  <h2 className="text-lg font-bold text-[#0a1628]">Shipping Address</h2>
+                  <MapPin className="w-5 h-5 text-secondary-600" />
+                  <h2 className="text-lg font-bold text-primary-900">Shipping Address</h2>
                 </div>
-                <div className="text-sm text-[#64748b] space-y-1">
-                  <p className="font-medium text-[#0a1628]">{order.shipping_address?.full_name}</p>
+                <div className="text-sm text-muted space-y-1">
+                  <p className="font-medium text-primary-900">{order.shipping_address?.full_name}</p>
                   <p>{order.shipping_address?.phone}</p>
                   <p>{order.shipping_address?.address_line}</p>
                   <p>
@@ -332,32 +332,32 @@ export function OrderDetailPageClient({ orderId }: Props) {
               </div>
 
               {/* Tracking */}
-              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
+              <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <Truck className="w-5 h-5 text-green-600" />
-                  <h2 className="text-lg font-bold text-[#0a1628]">Tracking</h2>
+                  <Truck className="w-5 h-5 text-secondary-600" />
+                  <h2 className="text-lg font-bold text-primary-900">Tracking</h2>
                 </div>
-                <div className="text-sm text-[#64748b] space-y-2">
+                <div className="text-sm text-muted space-y-2">
                   <div className="flex justify-between">
                     <span>Courier</span>
-                    <span className="font-medium text-[#0a1628]">{order.courier || "—"}</span>
+                    <span className="font-medium text-primary-900">{order.courier || "—"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Tracking Number</span>
-                    <span className="font-medium text-[#0a1628]">{order.tracking_number || "—"}</span>
+                    <span className="font-medium text-primary-900">{order.tracking_number || "—"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Dispatched</span>
-                    <span className="font-medium text-[#0a1628]">{formatDate(order.dispatched_at)}</span>
+                    <span className="font-medium text-primary-900">{formatDate(order.dispatched_at)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Estimated Delivery</span>
-                    <span className="font-medium text-[#0a1628]">{formatDate(order.estimated_delivery)}</span>
+                    <span className="font-medium text-primary-900">{formatDate(order.estimated_delivery)}</span>
                   </div>
                 </div>
                 <Link
                   href={`/track?invoice=${encodeURIComponent(order.invoice_number)}`}
-                  className="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-green-700 bg-green-50 hover:bg-green-100 transition-colors"
+                  className="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-secondary-600 bg-secondary-50 hover:bg-secondary-100 transition-colors-base"
                 >
                   <Search className="w-4 h-4" />
                   Track Order
@@ -365,15 +365,15 @@ export function OrderDetailPageClient({ orderId }: Props) {
               </div>
 
               {/* Payment Info */}
-              <div className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6">
+              <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <CreditCard className="w-5 h-5 text-green-600" />
-                  <h2 className="text-lg font-bold text-[#0a1628]">Payment</h2>
+                  <CreditCard className="w-5 h-5 text-secondary-600" />
+                  <h2 className="text-lg font-bold text-primary-900">Payment</h2>
                 </div>
-                <div className="text-sm text-[#64748b] space-y-1">
+                <div className="text-sm text-muted space-y-1">
                   <p>
                     Method:{" "}
-                    <span className="font-medium text-[#0a1628] capitalize">
+                    <span className="font-medium text-primary-900 capitalize">
                       {order.payment_method}
                     </span>
                   </p>
@@ -382,10 +382,10 @@ export function OrderDetailPageClient({ orderId }: Props) {
                     <span
                       className={`font-medium capitalize ${
                         order.payment_status === "paid"
-                          ? "text-emerald-600"
+                          ? "text-success-600"
                           : order.payment_status === "failed"
-                          ? "text-red-600"
-                          : "text-amber-600"
+                          ? "text-danger-600"
+                          : "text-warning-600"
                       }`}
                     >
                       {order.payment_status}
@@ -397,7 +397,7 @@ export function OrderDetailPageClient({ orderId }: Props) {
                   <button
                     onClick={handleRetryPayment}
                     disabled={isRetrying}
-                    className="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-white bg-green-600 hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                    className="mt-4 w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-white bg-secondary-600 hover:bg-secondary-600 disabled:opacity-60 disabled:cursor-not-allowed transition-colors-base"
                   >
                     {isRetrying ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -414,7 +414,7 @@ export function OrderDetailPageClient({ orderId }: Props) {
                 href={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/orders/${order.id}/invoice`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-[#0a1628] text-white font-semibold rounded-xl hover:bg-[#1a2638] transition-colors"
+                className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-primary-900 text-white font-semibold rounded-xl hover:bg-primary-800 transition-colors-base"
               >
                 <FileText className="w-4 h-4" />
                 Download Invoice

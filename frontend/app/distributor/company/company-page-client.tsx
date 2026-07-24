@@ -67,23 +67,23 @@ export function CompanyPageClient() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-[#0a1628]">Company Profile</h1>
-        <p className="text-[#64748b]">Manage your distributor company information.</p>
+        <h1 className="text-2xl font-extrabold text-primary-900">Company Profile</h1>
+        <p className="text-muted">Manage your distributor company information.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 lg:p-8 space-y-6">
-        <div className="flex flex-col sm:flex-row items-start gap-6 pb-6 border-b border-[#e2e8f0]">
-          <div className="relative w-24 h-24 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0] overflow-hidden flex items-center justify-center">
+      <form onSubmit={handleSubmit} className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-6 lg:p-8 space-y-6">
+        <div className="flex flex-col sm:flex-row items-start gap-6 pb-6 border-b border-neutral-200">
+          <div className="relative w-24 h-24 rounded-2xl bg-neutral-50 border border-neutral-200 overflow-hidden flex items-center justify-center">
             {distributor.logo_url && !logoFile ? (
               <Image src={distributor.logo_url} alt={distributor.company_name} fill className="object-cover" />
             ) : (
-              <Building2 className="w-10 h-10 text-[#94a3b8]" />
+              <Building2 className="w-10 h-10 text-placeholder" />
             )}
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-bold text-[#0a1628] mb-2">Company Logo</h3>
+            <h3 className="text-lg font-bold text-primary-900 mb-2">Company Logo</h3>
             <div className="flex flex-wrap items-center gap-3">
-              <label className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 cursor-pointer transition-colors">
+              <label className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 cursor-pointer transition-colors-base">
                 <Upload className="w-4 h-4" />
                 {logoFile ? logoFile.name : "Upload Logo"}
                 <input type="file" accept="image/*" className="hidden" onChange={handleLogoChange} />
@@ -92,7 +92,7 @@ export function CompanyPageClient() {
                 <button
                   type="button"
                   onClick={() => removeLogo()}
-                  className="inline-flex items-center gap-2 px-4 py-2 text-red-600 bg-red-50 font-semibold rounded-xl hover:bg-red-100 transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 text-red-600 bg-red-50 font-semibold rounded-xl hover:bg-red-100 transition-colors-base"
                 >
                   <X className="w-4 h-4" />
                   Remove
@@ -156,8 +156,8 @@ export function CompanyPageClient() {
           />
         </div>
 
-        <div className="border-t border-[#e2e8f0] pt-6">
-          <h3 className="text-lg font-bold text-[#0a1628] mb-4">Contact Information</h3>
+        <div className="border-t border-neutral-200 pt-6">
+          <h3 className="text-lg font-bold text-primary-900 mb-4">Contact Information</h3>
           <div className="grid sm:grid-cols-2 gap-5">
             <InputField
               id="primary_contact_name"
@@ -182,8 +182,8 @@ export function CompanyPageClient() {
           </div>
         </div>
 
-        <div className="border-t border-[#e2e8f0] pt-6">
-          <h3 className="text-lg font-bold text-[#0a1628] mb-4">Address</h3>
+        <div className="border-t border-neutral-200 pt-6">
+          <h3 className="text-lg font-bold text-primary-900 mb-4">Address</h3>
           <div className="grid sm:grid-cols-2 gap-5">
             <InputField
               id="country"
@@ -224,7 +224,7 @@ export function CompanyPageClient() {
             type="submit"
             disabled={isSaving}
             className={cn(
-              "inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors",
+              "inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors-base",
               isSaving && "opacity-70 cursor-not-allowed"
             )}
           >

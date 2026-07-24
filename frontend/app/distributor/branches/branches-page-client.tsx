@@ -83,13 +83,13 @@ export function BranchesPageClient() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-[#0a1628]">Branches</h1>
-          <p className="text-[#64748b]">Manage distribution branches and locations.</p>
+          <h1 className="text-2xl font-extrabold text-primary-900">Branches</h1>
+          <p className="text-muted">Manage distribution branches and locations.</p>
         </div>
         <button
           type="button"
           onClick={openCreate}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors-base"
         >
           <Plus className="w-4 h-4" />
           Add Branch
@@ -97,8 +97,8 @@ export function BranchesPageClient() {
       </div>
 
       {isEditing && (
-        <form onSubmit={handleSubmit} className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-6 space-y-5">
-          <h2 className="text-lg font-bold text-[#0a1628]">{form.id ? "Edit Branch" : "New Branch"}</h2>
+        <form onSubmit={handleSubmit} className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-6 space-y-5">
+          <h2 className="text-lg font-bold text-primary-900">{form.id ? "Edit Branch" : "New Branch"}</h2>
           <div className="grid sm:grid-cols-2 gap-5">
             <InputField
               id="name"
@@ -164,12 +164,12 @@ export function BranchesPageClient() {
             value={form.delivery_notes ?? ""}
             onChange={(e) => setForm((f) => ({ ...f, delivery_notes: e.target.value }))}
           />
-          <label className="flex items-center gap-2 text-sm text-[#0a1628]">
+          <label className="flex items-center gap-2 text-sm text-primary-900">
             <input
               type="checkbox"
               checked={form.is_default ?? false}
               onChange={(e) => setForm((f) => ({ ...f, is_default: e.target.checked }))}
-              className="w-4 h-4 rounded border-[#e2e8f0] text-green-600 focus:ring-green-500"
+              className="w-4 h-4 rounded border-neutral-200 text-green-600 focus:ring-green-500"
             />
             Set as default branch
           </label>
@@ -178,7 +178,7 @@ export function BranchesPageClient() {
               type="submit"
               disabled={isSubmitting}
               className={cn(
-                "inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors",
+                "inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors-base",
                 isSubmitting && "opacity-70 cursor-not-allowed"
               )}
             >
@@ -188,7 +188,7 @@ export function BranchesPageClient() {
             <button
               type="button"
               onClick={() => setIsEditing(false)}
-              className="px-5 py-2.5 text-[#64748b] font-semibold hover:text-[#0a1628]"
+              className="px-5 py-2.5 text-muted font-semibold hover:text-primary-900"
             >
               Cancel
             </button>
@@ -204,11 +204,11 @@ export function BranchesPageClient() {
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {branches.map((branch) => (
-            <div key={branch.id} className="bg-white rounded-[20px] border border-[#e2e8f0] shadow-sm p-5">
+            <div key={branch.id} className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-5">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-green-600" />
-                  <h3 className="font-bold text-[#0a1628]">{branch.name}</h3>
+                  <h3 className="font-bold text-primary-900">{branch.name}</h3>
                 </div>
                 {branch.is_default && (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold text-green-700 bg-green-100 rounded-full">
@@ -217,7 +217,7 @@ export function BranchesPageClient() {
                   </span>
                 )}
               </div>
-              <div className="text-sm text-[#64748b] space-y-1 mb-4">
+              <div className="text-sm text-muted space-y-1 mb-4">
                 <p>{branch.manager_name || "No manager assigned"}</p>
                 <p>{branch.phone || branch.email || "—"}</p>
                 <p>{[branch.address, branch.city, branch.district].filter(Boolean).join(", ")}</p>

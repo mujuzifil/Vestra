@@ -59,14 +59,14 @@ export function NotificationBell() {
 
       {open && (
         <div className="absolute top-full right-0 pt-2 z-50 w-80 sm:w-96">
-          <div className="bg-[#0a1628] border border-white/10 rounded-lg shadow-xl overflow-hidden">
+          <div className="bg-primary-900 border border-white/10 rounded-lg shadow-xl overflow-hidden">
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
               <h3 className="text-white font-semibold text-sm">Notifications</h3>
               {unreadCount > 0 && (
                 <button
                   onClick={handleMarkAllAsRead}
                   disabled={markAllAsRead.isPending}
-                  className="text-xs text-green-400 hover:text-green-300 flex items-center gap-1 disabled:opacity-50"
+                  className="text-xs text-secondary-400 hover:text-secondary-300 flex items-center gap-1 disabled:opacity-50"
                 >
                   {markAllAsRead.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCheck className="w-3 h-3" />}
                   Mark all read
@@ -77,7 +77,7 @@ export function NotificationBell() {
             <div className="max-h-[360px] overflow-y-auto">
               {isLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-5 h-5 animate-spin text-green-500" />
+                  <Loader2 className="w-5 h-5 animate-spin text-secondary-500" />
                 </div>
               ) : !data || data.notifications.length === 0 ? (
                 <div className="text-center py-8 text-white/60 text-sm">
@@ -86,9 +86,9 @@ export function NotificationBell() {
               ) : (
                 <ul className="divide-y divide-white/10">
                   {data.notifications.slice(0, 5).map((notification) => (
-                    <li key={notification.id} className="px-4 py-3 hover:bg-white/5 transition-colors">
+                    <li key={notification.id} className="px-4 py-3 hover:bg-white/5 transition-colors-base">
                       <div className="flex items-start gap-3">
-                        <div className="w-2 h-2 mt-1.5 rounded-full bg-green-500 flex-shrink-0" />
+                        <div className="w-2 h-2 mt-1.5 rounded-full bg-secondary-500 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm text-white font-medium truncate">
                             {notification.title || "Notification"}
@@ -106,7 +106,7 @@ export function NotificationBell() {
                         <button
                           onClick={() => handleMarkAsRead(notification.id)}
                           disabled={markAsRead.isPending}
-                          className="text-xs text-green-400 hover:text-green-300 flex-shrink-0"
+                          className="text-xs text-secondary-400 hover:text-secondary-300 flex-shrink-0"
                         >
                           Read
                         </button>
@@ -121,7 +121,7 @@ export function NotificationBell() {
               <Link
                 href="/notifications"
                 onClick={() => setOpen(false)}
-                className="block text-center text-xs text-green-400 hover:text-green-300 py-1"
+                className="block text-center text-xs text-secondary-400 hover:text-secondary-300 py-1"
               >
                 View all notifications
               </Link>
