@@ -8,6 +8,7 @@ import { Menu, X, Search, User, ShoppingCart, ChevronDown, LogIn } from "lucide-
 import { useAuth } from "@/lib/auth-context";
 import { useCartContext } from "@/lib/cart-context";
 import { CartDrawer } from "@/components/cart/cart-drawer";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 import { cn } from "@/lib/utils";
 
 const adminDashboardUrl = "/admin";
@@ -140,6 +141,8 @@ export function Navbar() {
             <Search className="w-5 h-5" aria-hidden="true" />
           </button>
 
+          {isAuthenticated && <NotificationBell />}
+
           <button
             onClick={() => setCartOpen(!cartOpen)}
             aria-label={`Shopping cart (${itemCount} items)`}
@@ -181,6 +184,9 @@ export function Navbar() {
                       </Link>
                       <Link href="/account/orders" className="block px-4 py-2 text-sm text-white/90 hover:text-green-400 hover:bg-white/5">
                         My Orders
+                      </Link>
+                      <Link href="/notifications" className="block px-4 py-2 text-sm text-white/90 hover:text-green-400 hover:bg-white/5">
+                        Notifications
                       </Link>
                     </>
                   )}

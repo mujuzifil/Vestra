@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\Notification\DistributorApplicationSubmitted;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\StoreDistributorRequest;
 use App\Http\Resources\V1\DistributorResource;
@@ -20,6 +21,8 @@ class DistributorController extends Controller
     public function store(StoreDistributorRequest $request): JsonResponse
     {
         $request = $this->service->submit($request->validated());
+
+        event(new DistributorApplicationSubmitted($request));
 
         return $this->successResponse(
             new DistributorResource($request),

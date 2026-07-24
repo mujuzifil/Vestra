@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             ProductSeeder::class,
             SettingSeeder::class,
+            NotificationTemplateSeeder::class,
         ]);
 
         if (filter_var(config('app.demo_data', false), FILTER_VALIDATE_BOOLEAN)) {

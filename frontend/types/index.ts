@@ -4,6 +4,14 @@ export interface ApiResponse<T> {
   message: string;
 }
 
+export interface PaginatedResponse<T> {
+  data: T[];
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
 export interface Category {
   id: number;
   name: string;
@@ -111,17 +119,28 @@ export interface DistributorFormData {
   experience: string;
 }
 
+export interface NotificationPreferences {
+  email_notifications?: boolean;
+  sms_notifications?: boolean;
+  push_notifications?: boolean;
+  order_updates?: boolean;
+  marketing_emails?: boolean;
+  promotional_sms?: boolean;
+  newsletter?: boolean;
+}
+
+export interface UpdateNotificationPreferencesData {
+  notification_preferences?: NotificationPreferences;
+  system_alerts?: boolean;
+  emergency_alerts?: boolean;
+}
+
 export interface CustomerPreferences {
-  email_marketing: boolean;
-  sms_notifications: boolean;
-  order_updates_email: boolean;
-  order_updates_sms: boolean;
-  promotional_emails: boolean;
-  two_factor_enabled: boolean;
-  login_alerts: boolean;
-  profile_visibility: "public" | "private" | "friends";
-  language: string;
-  currency: string;
+  notification_preferences: NotificationPreferences;
+  account_preferences?: Record<string, unknown> | null;
+  system_alerts: boolean;
+  emergency_alerts: boolean;
+  updated_at?: string;
 }
 
 export interface Customer {

@@ -34,7 +34,13 @@ use App\Http\Controllers\Api\V1\SettingController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\InvoiceController;
 use App\Http\Controllers\Api\V1\PaymentController;
+use App\Http\Controllers\Api\V1\Admin\AnnouncementController as AdminAnnouncementController;
+use App\Http\Controllers\Api\V1\Admin\NotificationDashboardController;
+use App\Http\Controllers\Api\V1\Admin\NotificationTemplateController;
+use App\Http\Controllers\Api\V1\AnnouncementController;
 use App\Http\Controllers\Api\V1\HealthController;
+use App\Http\Controllers\Api\V1\NotificationController;
+use App\Http\Controllers\Api\V1\NotificationPreferenceController;
 use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\FeedbackController;
 use Illuminate\Support\Facades\Route;
@@ -118,6 +124,18 @@ Route::prefix('v1')->group(function () {
         Route::put('/reviews/{review}', [ReviewController::class, 'update']);
         Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
 
+        // Notifications
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::get('/notifications/unread', [NotificationController::class, 'unread']);
+        Route::put('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+        Route::put('/notifications/{id}', [NotificationController::class, 'markAsRead']);
+        Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
+        Route::get('/notifications/preferences', [NotificationPreferenceController::class, 'show']);
+        Route::put('/notifications/preferences', [NotificationPreferenceController::class, 'update']);
+
+        // Announcements
+        Route::get('/announcements', [AnnouncementController::class, 'index']);
+
         // Distributor application status (any authenticated user)
         Route::get('/distributor/application-status', [DistributorController::class, 'applicationStatus']);
 
@@ -161,6 +179,11 @@ Route::prefix('v1')->group(function () {
             Route::put('/admin/reviews/{review}/status', [ReviewController::class, 'updateStatus']);
             Route::get('/admin/feedback', [FeedbackController::class, 'adminIndex']);
             Route::put('/admin/feedback/{feedback}/status', [FeedbackController::class, 'updateStatus']);
+
+            // Notification management
+            Route::get('/admin/notification-dashboard', [NotificationDashboardController::class, 'index']);
+            Route::apiResource('/admin/notifications/templates', NotificationTemplateController::class);
+            Route::apiResource('/admin/announcements', AdminAnnouncementController::class);
         });
     });
 

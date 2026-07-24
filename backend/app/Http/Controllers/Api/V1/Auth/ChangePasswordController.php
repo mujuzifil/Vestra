@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Events\Notification\PasswordChanged;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\ChangePasswordRequest;
 use App\Services\AuditService;
@@ -35,6 +36,8 @@ class ChangePasswordController extends Controller
 
         $hadRequiredChange = $user->mustChangePassword();
         $user->clearPasswordChangeRequired();
+
+        event(new PasswordChanged($user));
 
         AuditService::log(
             $user,

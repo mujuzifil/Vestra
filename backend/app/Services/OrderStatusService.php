@@ -3,6 +3,10 @@
 namespace App\Services;
 
 use App\Enums\OrderStatus;
+use App\Events\Notification\OrderCancelled;
+use App\Events\Notification\OrderDelivered;
+use App\Events\Notification\OrderPacked;
+use App\Events\Notification\OrderShipped;
 use App\Models\Order;
 use App\Models\OrderStatusHistory;
 use App\Models\Product;
@@ -74,8 +78,21 @@ class OrderStatusService
             // Refresh the in-memory order so callers see current state.
             $order->refresh();
 
+            $this->fireStatusEvent($order, $toStatus, $notes);
+
             return true;
         });
+    }
+
+    private function fireStatusEvent(Order $order, OrderStatus $status, ?string $notes): void
+    {
+        match ($status) {
+            OrderStatus::CANCELLED => event(new OrderCancelled($order, $notes)),
+            OrderStatus::PACKED => event(new OrderPacked($order)),
+            OrderStatus::SHIPPED => event(new OrderShipped($order)),
+            OrderStatus::DELIVERED => event(new OrderDelivered($order)),
+            default => null,
+        };
     }
 
     private function restoreStock(Order $order): void

@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Enums\DistributorAccountStatus;
 use App\Enums\DistributorStatus;
+use App\Events\Notification\DistributorApplicationApproved;
+use App\Events\Notification\DistributorApplicationRejected;
 use App\Models\CreditAccount;
 use App\Models\Distributor;
 use App\Models\DistributorBranch;
@@ -53,6 +55,8 @@ class DistributorOnboardingService
 
             $user->notify(new DistributorApprovedNotification($distributor));
 
+            event(new DistributorApplicationApproved($distributor));
+
             $this->auditService::log(
                 $admin ?? $user,
                 'distributor_approved',
@@ -69,6 +73,8 @@ class DistributorOnboardingService
     public function reject(DistributorRequest $request, ?string $reason = null, ?User $admin = null): DistributorRequest
     {
         $request->update(['status' => DistributorStatus::REJECTED]);
+
+        event(new DistributorApplicationRejected($request, $reason));
 
         $this->auditService::log(
             $admin,

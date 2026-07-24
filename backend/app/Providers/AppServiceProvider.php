@@ -67,6 +67,16 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Contracts\PaymentGatewayInterface::class, function ($app) {
             return new \App\Services\FlutterwaveGateway();
         });
+
+        $this->app->singleton(\App\Contracts\SmsProviderInterface::class, function ($app) {
+            $configured = config('services.sms.provider', 'log');
+
+            return match ($configured) {
+                'twilio' => new \App\Services\Sms\LogSmsProvider(), // replace with Twilio provider when available
+                'sns' => new \App\Services\Sms\LogSmsProvider(), // replace with AWS SNS provider when available
+                default => new \App\Services\Sms\LogSmsProvider(),
+            };
+        });
     }
 
     public function boot(): void

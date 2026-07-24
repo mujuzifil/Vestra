@@ -44,6 +44,7 @@ const navItems: NavItem[] = [
   { label: "Statements", href: "/distributor/statements", icon: CreditCard },
   { label: "Payments", href: "/distributor/payments", icon: CreditCard },
   { label: "Analytics", href: "/distributor/analytics", icon: BarChart3 },
+  { label: "Notifications", href: "/notifications", icon: Bell },
   { label: "Settings", href: "/distributor/settings", icon: Settings },
 ];
 

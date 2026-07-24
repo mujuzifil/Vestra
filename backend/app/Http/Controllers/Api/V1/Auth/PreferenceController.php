@@ -32,11 +32,22 @@ class PreferenceController extends Controller
         $validated = $request->validated();
 
         if (isset($validated['notification_preferences'])) {
-            $preference->notification_preferences = $validated['notification_preferences'];
+            $preference->notification_preferences = array_merge(
+                $preference->notification_preferences ?? [],
+                $validated['notification_preferences']
+            );
         }
 
         if (isset($validated['account_preferences'])) {
             $preference->account_preferences = $validated['account_preferences'];
+        }
+
+        if (isset($validated['system_alerts'])) {
+            $preference->system_alerts = $validated['system_alerts'];
+        }
+
+        if (isset($validated['emergency_alerts'])) {
+            $preference->emergency_alerts = $validated['emergency_alerts'];
         }
 
         $preference->save();

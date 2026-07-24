@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\QuotationStatus;
+use App\Events\Notification\QuotationSubmitted;
 use App\Models\Distributor;
 use App\Models\Product;
 use App\Models\QuotationItem;
@@ -72,6 +73,8 @@ class QuotationService
             'status' => QuotationStatus::SUBMITTED->value,
             'submitted_at' => now(),
         ]);
+
+        event(new QuotationSubmitted($quotation));
 
         return $quotation->load('items');
     }

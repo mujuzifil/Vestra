@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Events\Notification\ProfileUpdated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\UpdateProfileRequest;
 use App\Http\Resources\V1\CustomerResource;
@@ -44,6 +45,8 @@ class ProfileController extends Controller
         }
 
         $user->update($validated);
+
+        event(new ProfileUpdated($user));
 
         AuditService::log(
             $user,

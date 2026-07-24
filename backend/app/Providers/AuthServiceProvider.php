@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\AdminSession;
+use App\Models\Announcement;
 use App\Models\AuditLog;
 use App\Models\Cart;
 use App\Models\CartItem;
@@ -16,6 +17,7 @@ use App\Models\DistributorContact;
 use App\Models\DistributorDocument;
 use App\Models\DistributorRequest;
 use App\Models\LoginActivity;
+use App\Models\NotificationTemplate;
 use App\Models\PaymentUpload;
 use App\Models\QuotationRequest;
 use App\Models\Order;
@@ -25,6 +27,7 @@ use App\Models\Review;
 use App\Models\Setting;
 use App\Models\User;
 use App\Policies\AdminSessionPolicy;
+use App\Policies\AnnouncementPolicy;
 use App\Policies\CustomerAddressPolicy;
 use App\Policies\AuditLogPolicy;
 use App\Policies\CartItemPolicy;
@@ -38,6 +41,8 @@ use App\Policies\DistributorDocumentPolicy;
 use App\Policies\DistributorPolicy;
 use App\Policies\DistributorRequestPolicy;
 use App\Policies\LoginActivityPolicy;
+use App\Policies\NotificationPolicy;
+use App\Policies\NotificationTemplatePolicy;
 use App\Policies\PaymentUploadPolicy;
 use App\Policies\QuotationRequestPolicy;
 use App\Policies\OrderPolicy;
@@ -46,6 +51,7 @@ use App\Policies\ProductPolicy;
 use App\Policies\ReviewPolicy;
 use App\Policies\SettingPolicy;
 use App\Policies\UserPolicy;
+use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -53,6 +59,7 @@ class AuthServiceProvider extends ServiceProvider
 {
     protected $policies = [
         AdminSession::class => AdminSessionPolicy::class,
+        Announcement::class => AnnouncementPolicy::class,
         AuditLog::class => AuditLogPolicy::class,
         Cart::class => CartPolicy::class,
         CartItem::class => CartItemPolicy::class,
@@ -66,6 +73,7 @@ class AuthServiceProvider extends ServiceProvider
         DistributorDocument::class => DistributorDocumentPolicy::class,
         DistributorRequest::class => DistributorRequestPolicy::class,
         LoginActivity::class => LoginActivityPolicy::class,
+        NotificationTemplate::class => NotificationTemplatePolicy::class,
         PaymentUpload::class => PaymentUploadPolicy::class,
         QuotationRequest::class => QuotationRequestPolicy::class,
         Order::class => OrderPolicy::class,
@@ -74,6 +82,7 @@ class AuthServiceProvider extends ServiceProvider
         Review::class => ReviewPolicy::class,
         Setting::class => SettingPolicy::class,
         User::class => UserPolicy::class,
+        DatabaseNotification::class => NotificationPolicy::class,
     ];
 
     public function boot(): void

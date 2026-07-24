@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Distributor;
 
+use App\Events\Notification\PaymentUploaded;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Distributor\StorePaymentUploadRequest;
 use App\Http\Resources\V1\Distributor\PaymentUploadResource;
@@ -54,6 +55,8 @@ class PaymentUploadController extends Controller
             $request->ip(),
             $request->userAgent()
         );
+
+        event(new PaymentUploaded($upload));
 
         return $this->successResponse(
             new PaymentUploadResource($upload),

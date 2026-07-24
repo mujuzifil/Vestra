@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\CreditTransactionType;
+use App\Events\Notification\CreditLimitUpdated;
 use App\Models\CreditAccount;
 use App\Models\CreditTransaction;
 use App\Models\Distributor;
@@ -122,6 +123,8 @@ class CreditAccountService
             'limit' => $limit,
             'status' => 'active',
         ]);
+
+        event(new CreditLimitUpdated($account, "Credit limit changed from {$oldLimit} to {$limit}"));
 
         CreditTransaction::create([
             'credit_account_id' => $account->id,
