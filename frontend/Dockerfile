@@ -6,11 +6,13 @@ FROM node:22-bookworm-slim AS base
 FROM base AS deps
 WORKDIR /app
 
-# `npm ci` installs exactly the committed lockfile and fails if package.json and
-# package-lock.json have drifted. `npm install` would silently resolve new
-# versions, so two builds of the same commit could ship different dependencies.
+# `npm ci` is ideal for reproducibility, but platform-specific optional
+# dependencies (e.g. lightningcss native binaries) are locked for the platform
+# that generated the lockfile. Inside a Linux container the required binary may
+# differ, so `npm install` is used here to resolve the correct native package
+# for the build architecture while still respecting the committed lockfile.
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm install
 
 # --- Build stage ---
 FROM base AS builder
