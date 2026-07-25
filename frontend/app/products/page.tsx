@@ -11,7 +11,7 @@ import { PageHero } from "@/components/common/page-hero";
 import { EmptyProducts } from "@/components/ui/empty-products";
 import { SkeletonGrid } from "@/components/ui/skeleton-grid";
 import { ApiError } from "@/components/ui/api-error";
-import { useProductSearch, usePopularSearches } from "@/hooks/use-products";
+import { useProductSearch } from "@/hooks/use-products";
 import { useCategories } from "@/hooks/use-categories";
 import { useCartContext, toCartProduct } from "@/lib/cart-context";
 import { toastAddedToCart } from "@/lib/toast-utils";
@@ -95,8 +95,6 @@ export default function ProductsPage() {
     error: categoriesError,
     refetch: refetchCategories,
   } = useCategories();
-
-  const { data: popularSearches } = usePopularSearches(6);
 
   const allCategories = useMemo(() => {
     if (!categories) return [{ id: 0, name: "All Products", slug: "all" }];
@@ -202,7 +200,7 @@ export default function ProductsPage() {
           </div>
 
           {/* Category tabs */}
-          <div className="flex flex-wrap gap-2 mb-6" role="tablist" aria-label="Product categories">
+          <div className="flex flex-wrap gap-2 mb-10" role="tablist" aria-label="Product categories">
             {categoriesLoading ? (
               <div className="flex gap-2">
                 {Array.from({ length: 4 }).map((_, i) => (
@@ -278,23 +276,6 @@ export default function ProductsPage() {
             </div>
           )}
 
-          {/* Popular searches */}
-          {!query && popularSearches && popularSearches.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2 mb-8 text-sm">
-              <span className="text-muted">Popular:</span>
-              {popularSearches.map((item) => (
-                <button
-                  key={item.term}
-                  type="button"
-                  onClick={() => setQuery(item.term)}
-                  className="px-3 py-1 rounded-full bg-surface-page border border-default text-body hover:border-green-500 hover:text-green-600 transition-colors-base"
-                >
-                  {item.term}
-                </button>
-              ))}
-            </div>
-          )}
-
           {/* Error state */}
           {hasError && (
             <ApiError
@@ -308,13 +289,6 @@ export default function ProductsPage() {
 
           {/* Loading state */}
           {isLoading && !hasError && <SkeletonGrid count={6} />}
-
-          {/* Results count */}
-          {!isLoading && !hasError && meta && (
-            <p className="text-sm text-muted mb-4">
-              Showing {meta.from ?? 0}–{meta.to ?? 0} of {meta.total} products
-            </p>
-          )}
 
           {/* Product grid */}
           {!isLoading && !hasError && products.length > 0 && (
