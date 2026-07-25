@@ -218,4 +218,27 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /*
+    Tailwind v4 maps text-* utilities to --color-* variables.
+    The design tokens define --color-text-muted, but the class text-muted
+    resolves to --color-muted, which is currently mapped to the muted
+    background colour (neutral-100). These overrides restore the intended
+    semantic text colours so labels remain readable on white card surfaces.
+  */
+  .text-muted {
+    color: var(--text-muted);
+  }
+
+  .text-placeholder {
+    color: var(--text-placeholder);
+  }
+
+  .text-body {
+    color: var(--text-body);
+  }
+
+  .text-heading {
+    color: var(--text-heading);
+  }
 }

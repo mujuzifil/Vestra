@@ -53,7 +53,7 @@ export function InvoiceDetailPageClient({ invoiceId }: Props) {
             </div>
           </div>
           <a
-            href={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/invoices/${invoice.id}/download`}
+            href={`${process.env.NEXT_PUBLIC_API_URL}/invoices/${invoice.id}/download`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-900 text-white font-semibold rounded-xl hover:bg-primary-900 transition-colors-base"
