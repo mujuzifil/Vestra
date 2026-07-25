@@ -5,7 +5,10 @@ namespace App\Filament\Resources;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Filament\Resources\CustomerResource\Pages;
+use App\Filament\Resources\CustomerResource\RelationManagers;
+use App\Models\CustomerTag;
 use App\Models\User;
+use App\Services\AuditService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -20,7 +23,7 @@ class CustomerResource extends Resource
 {
     protected static ?string $model = User::class;
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup = 'E-Commerce';
+    protected static ?string $navigationGroup = 'CRM';
     protected static ?string $navigationLabel = 'Customers';
     protected static ?string $label = 'Customer';
     protected static ?int $navigationSort = 2;
@@ -132,6 +135,13 @@ class CustomerResource extends Resource
                         'inactive' => 'Inactive',
                     ]),
 
+                Tables\Filters\SelectFilter::make('tags')
+                    ->label('Tag')
+                    ->relationship('customerTags', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->native(false),
+
                 Tables\Filters\Filter::make('registered_at')
                     ->label('Registration Date')
                     ->form([
@@ -229,14 +239,71 @@ class CustomerResource extends Resource
                         }),
 
                     Tables\Actions\BulkAction::make('assignTags')
-                        ->label('Assign Tags')
+                        ->label('Assign Tag')
                         ->icon('heroicon-o-tag')
                         ->color('gray')
-                        ->requiresConfirmation()
-                        ->modalHeading('Assign Tags')
-                        ->modalDescription('Customer tagging will be available in a future release. This action is a placeholder.')
-                        ->action(function (): void {
-                            Notification::make()->title('Tagging integration is planned')->info()->send();
+                        ->form([
+                            Forms\Components\Select::make('tag_id')
+                                ->label('Tag')
+                                ->options(fn (): array => CustomerTag::active()->pluck('name', 'id')->toArray())
+                                ->searchable()
+                                ->preload()
+                                ->required(),
+                        ])
+                        ->action(function (Collection $records, array $data): void {
+                            $tag = CustomerTag::find($data['tag_id']);
+
+                            if (! $tag) {
+                                Notification::make()->title('Tag not found')->danger()->send();
+                                return;
+                            }
+
+                            foreach ($records as $record) {
+                                $record->customerTags()->syncWithoutDetaching([$tag->id]);
+
+                                AuditService::log(
+                                    auth()->user(),
+                                    'customer.tag_assigned',
+                                    $record,
+                                    ['tag' => $tag->name]
+                                );
+                            }
+
+                            Notification::make()->title("Tag '{$tag->name}' assigned to {$records->count()} customer(s)")->success()->send();
+                        }),
+
+                    Tables\Actions\BulkAction::make('removeTags')
+                        ->label('Remove Tag')
+                        ->icon('heroicon-o-minus-circle')
+                        ->color('danger')
+                        ->form([
+                            Forms\Components\Select::make('tag_id')
+                                ->label('Tag')
+                                ->options(fn (): array => CustomerTag::active()->pluck('name', 'id')->toArray())
+                                ->searchable()
+                                ->preload()
+                                ->required(),
+                        ])
+                        ->action(function (Collection $records, array $data): void {
+                            $tag = CustomerTag::find($data['tag_id']);
+
+                            if (! $tag) {
+                                Notification::make()->title('Tag not found')->danger()->send();
+                                return;
+                            }
+
+                            foreach ($records as $record) {
+                                $record->customerTags()->detach($tag->id);
+
+                                AuditService::log(
+                                    auth()->user(),
+                                    'customer.tag_removed',
+                                    $record,
+                                    ['tag' => $tag->name]
+                                );
+                            }
+
+                            Notification::make()->title("Tag '{$tag->name}' removed from {$records->count()} customer(s)")->success()->send();
                         }),
 
                     Tables\Actions\DeleteBulkAction::make(),
@@ -264,7 +331,32 @@ class CustomerResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            RelationManagers\CustomerNotesRelationManager::class,
+            RelationManagers\CustomerTagsRelationManager::class,
+            RelationManagers\AddressesRelationManager::class,
+            RelationManagers\OrdersRelationManager::class,
+            RelationManagers\PaymentsRelationManager::class,
+            RelationManagers\AuditLogsRelationManager::class,
+        ];
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'email', 'phone'];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return $record->name;
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Email' => $record->email,
+            'Phone' => $record->phone ?? '—',
+        ];
     }
 
     public static function getPages(): array

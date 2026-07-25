@@ -45,15 +45,15 @@ class GlobalSearchCommandPalette extends Component
     {
         $demoResults = [
             'Orders' => [
-                ['title' => 'Order #10042', 'subtitle' => 'Clarissa Mraz — $106.00', 'url' => '/admin/orders/1', 'icon' => 'heroicon-o-shopping-cart'],
-                ['title' => 'Order #10041', 'subtitle' => 'Terence O\'Kon — $62.00', 'url' => '/admin/orders/2', 'icon' => 'heroicon-o-shopping-cart'],
+                ['title' => 'Order #10042', 'subtitle' => 'Clarissa Mraz — $106.00', 'url' => route('filament.admin.resources.orders.edit', ['record' => 1]), 'icon' => 'heroicon-o-shopping-cart'],
+                ['title' => 'Order #10041', 'subtitle' => 'Terence O\'Kon — $62.00', 'url' => route('filament.admin.resources.orders.edit', ['record' => 2]), 'icon' => 'heroicon-o-shopping-cart'],
             ],
             'Products' => [
-                ['title' => 'EcoSuit Cleaner', 'subtitle' => 'SKU: ESC-001', 'url' => '/admin/products/1', 'icon' => 'heroicon-o-shopping-bag'],
-                ['title' => 'Heavy Duty Detergent', 'subtitle' => 'SKU: HDD-002', 'url' => '/admin/products/2', 'icon' => 'heroicon-o-shopping-bag'],
+                ['title' => 'EcoSuit Cleaner', 'subtitle' => 'SKU: ESC-001', 'url' => route('filament.admin.resources.products.edit', ['record' => 1]), 'icon' => 'heroicon-o-shopping-bag'],
+                ['title' => 'Heavy Duty Detergent', 'subtitle' => 'SKU: HDD-002', 'url' => route('filament.admin.resources.products.edit', ['record' => 2]), 'icon' => 'heroicon-o-shopping-bag'],
             ],
             'Customers' => [
-                ['title' => 'Clarissa Mraz', 'subtitle' => 'clarissa@example.com', 'url' => '/admin/customers/1', 'icon' => 'heroicon-o-users'],
+                ['title' => 'Clarissa Mraz', 'subtitle' => 'clarissa@example.com', 'url' => route('filament.admin.resources.customers.edit', ['record' => 1]), 'icon' => 'heroicon-o-users'],
             ],
         ];
 

@@ -6,6 +6,7 @@ use App\Enums\DistributorStatus;
 use App\Enums\Priority;
 use App\Filament\Resources\DistributorRequestResource\Pages;
 use App\Models\DistributorRequest;
+use App\Services\DistributorOnboardingService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -260,7 +261,10 @@ class DistributorRequestResource extends Resource
                     ->color('success')
                     ->requiresConfirmation()
                     ->visible(fn (DistributorRequest $record): bool => $record->status !== DistributorStatus::APPROVED)
-                    ->action(fn (DistributorRequest $record) => $record->update(['status' => DistributorStatus::APPROVED])),
+                    ->action(function (DistributorRequest $record) {
+                        app(DistributorOnboardingService::class)->approve($record, auth()->user());
+                        Notification::make()->title('Application approved and distributor account created.')->success()->send();
+                    }),
                 Tables\Actions\Action::make('reject')
                     ->label('Reject')
                     ->icon('heroicon-o-x-mark')
@@ -292,8 +296,9 @@ class DistributorRequestResource extends Resource
                         ->color('success')
                         ->requiresConfirmation()
                         ->action(function (Collection $records): void {
-                            $records->each->update(['status' => DistributorStatus::APPROVED->value]);
-                            Notification::make()->title('Applications approved')->success()->send();
+                            $service = app(DistributorOnboardingService::class);
+                            $records->each(fn (DistributorRequest $record) => $service->approve($record, auth()->user()));
+                            Notification::make()->title('Applications approved and distributor accounts created.')->success()->send();
                         }),
                     Tables\Actions\BulkAction::make('reject')
                         ->label('Reject')

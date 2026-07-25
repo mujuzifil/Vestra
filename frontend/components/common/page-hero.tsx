@@ -20,7 +20,8 @@ export function PageHero({ title, subtitle, breadcrumb, className }: PageHeroPro
         className
       )}
       style={{
-        background: "linear-gradient(135deg, #050d18 0%, #0d1f33 50%, #0d3b66 100%)",
+        background:
+          "linear-gradient(135deg, var(--primary-900) 0%, var(--primary-700) 50%, var(--primary-500) 100%)",
       }}
     >
       <div
@@ -48,7 +49,7 @@ export function PageHero({ title, subtitle, breadcrumb, className }: PageHeroPro
               {subtitle}
             </p>
           )}
-          <div className="w-20 h-1 bg-gradient-to-r from-green-500 to-[#7db8ec] rounded-full mx-auto mt-6" />
+          <div className="w-20 h-1 bg-gradient-to-r from-secondary-500 to-primary-400 rounded-full mx-auto mt-6" />
         </motion.div>
       </Container>
     </section>

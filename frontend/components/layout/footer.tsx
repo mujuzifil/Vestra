@@ -34,7 +34,7 @@ export function Footer() {
   const location = contactInfo?.location || "Kampala, Uganda";
 
   return (
-    <footer className="bg-[#050d18] text-white pt-20 pb-8">
+    <footer className="bg-primary-900 text-white pt-20 pb-8">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div>
@@ -55,7 +55,7 @@ export function Footer() {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-green-500 hover:-translate-y-1 transition-all"
+                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-secondary-500 hover:-translate-y-1 transition-all-base"
                 >
                   <Icon className="w-4 h-4" />
                 </a>
@@ -70,7 +70,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-white/70 hover:text-green-400 hover:translate-x-1 inline-block transition-all"
+                    className="text-white/70 hover:text-secondary-400 hover:translate-x-1 inline-block transition-all-base"
                   >
                     {link.label}
                   </Link>
@@ -86,7 +86,7 @@ export function Footer() {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-white/70 hover:text-green-400 hover:translate-x-1 inline-block transition-all"
+                    className="text-white/70 hover:text-secondary-400 hover:translate-x-1 inline-block transition-all-base"
                   >
                     {link.label}
                   </Link>
@@ -99,15 +99,15 @@ export function Footer() {
             <h4 className="text-lg font-bold mb-6">Contact Us</h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-white/80">
-                <MapPin className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                <MapPin className="w-5 h-5 text-secondary-500 mt-0.5 flex-shrink-0" />
                 <span>{location}</span>
               </li>
               <li className="flex items-start gap-3 text-white/80">
-                <Phone className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                <Phone className="w-5 h-5 text-secondary-500 mt-0.5 flex-shrink-0" />
                 <span>{phone}</span>
               </li>
               <li className="flex items-start gap-3 text-white/80">
-                <Mail className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                <Mail className="w-5 h-5 text-secondary-500 mt-0.5 flex-shrink-0" />
                 <span>{email}</span>
               </li>
             </ul>
@@ -119,10 +119,10 @@ export function Footer() {
             &copy; {new Date().getFullYear()} VESTRA. All rights reserved.
           </p>
           <div className="flex gap-7">
-            <Link href="/privacy-policy" className="text-white/55 text-sm hover:text-green-400 transition-colors">
+            <Link href="/privacy-policy" className="text-white/55 text-sm hover:text-secondary-400 transition-colors-base">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-white/55 text-sm hover:text-green-400 transition-colors">
+            <Link href="/terms" className="text-white/55 text-sm hover:text-secondary-400 transition-colors-base">
               Terms & Conditions
             </Link>
           </div>

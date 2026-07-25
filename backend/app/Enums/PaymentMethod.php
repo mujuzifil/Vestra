@@ -8,6 +8,7 @@ enum PaymentMethod: string
     case MTN_MOMO = 'mtn_momo';
     case AIRTEL_MONEY = 'airtel_money';
     case CARD = 'card';
+    case CREDIT = 'credit';
 
     public function label(): string
     {
@@ -16,6 +17,7 @@ enum PaymentMethod: string
             self::MTN_MOMO => 'MTN Mobile Money',
             self::AIRTEL_MONEY => 'Airtel Money',
             self::CARD => 'Card Payment',
+            self::CREDIT => 'Credit Account',
         };
     }
 }

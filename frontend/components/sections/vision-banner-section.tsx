@@ -9,7 +9,7 @@ export function VisionBannerSection() {
     <section
       className="relative py-24 lg:py-36 overflow-hidden"
       style={{
-        background: "linear-gradient(135deg, #050d18 0%, #0d1f33 100%)",
+        background: "linear-gradient(135deg, var(--primary-900) 0%, var(--primary-700) 100%)",
       }}
     >
       <div
@@ -44,7 +44,7 @@ export function VisionBannerSection() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="relative flex justify-center items-end min-h-[180px] lg:min-h-[220px]"
           >
-            <div className="w-44 h-14 rounded-xl bg-gradient-to-b from-white to-[#e2e8f0] shadow-2xl -translate-y-6 -rotate-6 z-10" />
+            <div className="w-44 h-14 rounded-xl bg-gradient-to-b from-white to-neutral-200 shadow-2xl -translate-y-6 -rotate-6 z-10" />
             <div className="absolute w-44 h-14 rounded-xl bg-gradient-to-b from-green-500 to-green-600 shadow-2xl -rotate-2 z-0" />
             <span className="absolute top-0 right-[15%] text-5xl lg:text-6xl text-white/85 animate-bounce">
               &#10047;

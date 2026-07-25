@@ -18,11 +18,17 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
+        'first_name',
+        'last_name',
         'email',
         'phone',
         'password',
         'status',
         'force_password_change_at',
+        'date_of_birth',
+        'gender',
+        'avatar_path',
+        'preferences_json',
     ];
 
     protected $hidden = [
@@ -38,6 +44,8 @@ class User extends Authenticatable
             'is_admin' => 'boolean',
             'force_password_change_at' => 'datetime',
             'last_login_at' => 'datetime',
+            'date_of_birth' => 'date',
+            'preferences_json' => 'array',
         ];
     }
 
@@ -46,6 +54,11 @@ class User extends Authenticatable
         return $this->is_admin
             || $this->hasRole('Super Administrator')
             || $this->hasRole('super-admin');
+    }
+
+    public function isDistributor(): bool
+    {
+        return $this->hasRole('distributor') && $this->distributor?->isActive();
     }
 
     public function isActive(): bool
@@ -95,6 +108,41 @@ class User extends Authenticatable
         return $this->hasOne(Cart::class);
     }
 
+    public function preferences(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(CustomerPreference::class);
+    }
+
+    public function deletionRequests(): HasMany
+    {
+        return $this->hasMany(CustomerDeletionRequest::class);
+    }
+
+    public function customerNotes(): HasMany
+    {
+        return $this->hasMany(CustomerNote::class, 'customer_id');
+    }
+
+    public function customerTags(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(CustomerTag::class, 'customer_tag', 'customer_id', 'customer_tag_id');
+    }
+
+    public function distributor(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Distributor::class);
+    }
+
+    public function auditLogs(): HasMany
+    {
+        return $this->hasMany(AuditLog::class);
+    }
+
+    public function paymentTransactions(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(PaymentTransaction::class, Order::class);
+    }
+
     public function lifetimeOrderCount(): int
     {
         return cache()->remember("user.{$this->id}.lifetime_order_count", 300, fn (): int => $this->orders()->count());
@@ -120,7 +168,11 @@ class User extends Authenticatable
 
     public function avatarUrl(): ?string
     {
-        return null;
+        if (empty($this->avatar_path)) {
+            return null;
+        }
+
+        return asset($this->avatar_path);
     }
 
     public function lastOrder(): ?Order

@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
 use App\Enums\ProductStatus;
+use App\Events\Notification\OrderCreated;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Setting;
@@ -101,6 +102,8 @@ class OrderService
             $cart->items()->delete();
 
             $order->load('items');
+
+            event(new OrderCreated($order));
 
             // Initiate digital payment
             if (! $isCod) {

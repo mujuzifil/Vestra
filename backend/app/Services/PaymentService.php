@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Contracts\PaymentGatewayInterface;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
+use App\Events\Notification\OrderPaid;
 use App\Models\Order;
 use App\Models\PaymentTransaction;
 use App\Models\Product;
@@ -116,6 +117,8 @@ class PaymentService
 
             // Update status to paid
             $this->orderStatusService->transition($order, OrderStatus::PAID, 'Payment confirmed via Flutterwave.');
+
+            event(new OrderPaid($order));
 
             return ['success' => true, 'message' => 'Payment verified and order updated.'];
         });

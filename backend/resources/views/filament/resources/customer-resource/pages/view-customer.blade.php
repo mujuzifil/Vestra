@@ -352,5 +352,13 @@
             @endif
         </x-filament::section>
 
+        {{-- Relation Managers --}}
+        <x-filament-panels::resources.relation-managers
+            :active-manager="$this->activeRelationManager"
+            :managers="$this->getRelationManagers()"
+            :owner-record="$record"
+            :page-class="static::class"
+        />
+
     </div>
 </x-filament-panels::page>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Send, Loader2, MessageSquare, CheckCircle2 } from "lucide-react";
+import { Send, Loader2, CheckCircle2 } from "lucide-react";
 
 const categories = [
   { value: "general", label: "General Feedback" },
@@ -57,11 +57,11 @@ export function FeedbackForm({ onSubmit }: FeedbackFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-[#0a1628] mb-1">Category</label>
+        <label className="block text-sm font-medium text-primary-900 mb-1">Category</label>
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none bg-white"
+          className="w-full px-4 py-2.5 rounded-xl border border-border focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none bg-surface-card"
         >
           {categories.map((c) => (
             <option key={c.value} value={c.value}>
@@ -72,36 +72,36 @@ export function FeedbackForm({ onSubmit }: FeedbackFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-[#0a1628] mb-1">Subject</label>
+        <label className="block text-sm font-medium text-primary-900 mb-1">Subject</label>
         <input
           type="text"
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
           maxLength={255}
           placeholder="Brief subject of your feedback"
-          className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none"
+          className="w-full px-4 py-2.5 rounded-xl border border-border focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-[#0a1628] mb-1">Message</label>
+        <label className="block text-sm font-medium text-primary-900 mb-1">Message</label>
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           maxLength={2000}
           rows={4}
           placeholder="Describe your feedback in detail..."
-          className="w-full px-4 py-2.5 rounded-xl border border-[#e2e8f0] focus:border-green-500 focus:ring-1 focus:ring-green-500 outline-none resize-none"
+          className="w-full px-4 py-2.5 rounded-xl border border-border focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none resize-none"
         />
-        <p className="text-xs text-[#94a3b8] mt-1">{message.length}/2000</p>
+        <p className="text-xs text-neutral-400 mt-1">{message.length}/2000</p>
       </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-danger-600">{error}</p>}
 
       <button
         type="submit"
         disabled={submitting}
-        className="w-full inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-colors disabled:opacity-50"
+        className="w-full inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-secondary-600 text-white font-semibold rounded-xl hover:bg-secondary-600/90 transition-colors-base disabled:opacity-50"
       >
         {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
         Submit Feedback

@@ -430,29 +430,4 @@ class OrderResource extends Resource
             });
     }
 
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->with(['user'])
-            ->withCount('items');
-    }
-
-    public static function getRelations(): array
-    {
-        return [];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListOrders::route('/'),
-            'view' => Pages\ViewOrder::route('/{record}'),
-            'edit' => Pages\EditOrder::route('/{record}/edit'),
-        ];
-    }
-
-    public static function canAccess(): bool
-    {
-        return auth()->user()?->isAdmin() ?? false;
-    }
 }

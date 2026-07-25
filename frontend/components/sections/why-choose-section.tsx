@@ -18,7 +18,7 @@ export function WhyChooseSection() {
       id="why-choose"
       className="relative py-24 lg:py-36 overflow-hidden"
       style={{
-        background: "linear-gradient(135deg, #050d18 0%, #0d1f33 50%, #0d3b66 100%)",
+        background: "linear-gradient(135deg, var(--primary-900) 0%, var(--primary-700) 50%, var(--primary-500) 100%)",
       }}
     >
       <div
@@ -39,7 +39,7 @@ export function WhyChooseSection() {
         >
           Why Choose VESTRA
         </motion.h2>
-        <div className="w-20 h-1 bg-gradient-to-r from-green-500 to-[#7db8ec] rounded-full mx-auto mb-16" />
+        <div className="w-20 h-1 bg-gradient-to-r from-green-500 to-primary-300 rounded-full mx-auto mb-16" />
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {whyChooseFeatures.map((feature, index) => (
@@ -49,9 +49,9 @@ export function WhyChooseSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: index * 0.08 }}
-              className="text-center text-white p-8 lg:p-9 rounded-[20px] bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-xl transition-all"
+              className="text-center text-white p-8 lg:p-9 rounded-[20px] bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 hover:-translate-y-2 hover:border-green-500/40 hover:shadow-xl transition-all-base"
             >
-              <div className="w-16 h-16 lg:w-[72px] lg:h-[72px] rounded-full border-2 border-white/25 flex items-center justify-center mx-auto mb-5 text-green-500 group-hover:border-green-500 group-hover:bg-green-500/10 transition-colors">
+              <div className="w-16 h-16 lg:w-[72px] lg:h-[72px] rounded-full border-2 border-white/25 flex items-center justify-center mx-auto mb-5 text-green-500 group-hover:border-green-500 group-hover:bg-green-500/10 transition-colors-base">
                 <Icon name={feature.icon} className="w-7 h-7 lg:w-8 lg:h-8" />
               </div>
               <h3 className="text-base lg:text-lg font-semibold mb-2 leading-snug">{feature.title}</h3>

@@ -25,6 +25,7 @@ class Product extends Model
         'specifications',
         'sku',
         'price',
+        'distributor_price',
         'featured',
         'status',
         'stock_quantity',
@@ -36,6 +37,7 @@ class Product extends Model
     {
         return [
             'price' => 'decimal:2',
+            'distributor_price' => 'decimal:2',
             'featured' => 'boolean',
             'stock_quantity' => 'integer',
             'status' => ProductStatus::class,
@@ -63,6 +65,31 @@ class Product extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function distributorPriceTiers(): HasMany
+    {
+        return $this->hasMany(DistributorPriceTier::class);
+    }
+
+    public function distributorProductPrices(): HasMany
+    {
+        return $this->hasMany(DistributorProductPrice::class);
+    }
+
+    public function warehouseStocks(): HasMany
+    {
+        return $this->hasMany(ProductWarehouseStock::class);
+    }
+
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+    public function purchaseOrderItems(): HasMany
+    {
+        return $this->hasMany(PurchaseOrderItem::class);
     }
 
     public function averageRating(): float

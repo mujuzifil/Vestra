@@ -133,6 +133,14 @@ return [
     // Seed demonstration data. Never enable in production.
     'demo_data' => env('DEMO_DATA', false),
 
+    // Frontend URL used for payment redirects and external links.
+    // Defaults to APP_URL so local/admin links keep working when not set.
+    'frontend_url' => env('FRONTEND_URL', env('APP_URL', 'http://localhost')),
+
+    // Admin domain used by the Filament panel provider. When empty, Filament
+    // falls back to serving on the application domain (legacy behaviour).
+    'admin_domain' => env('ADMIN_DOMAIN', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver

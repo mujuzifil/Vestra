@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Events\Notification\CustomerRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\RegisterRequest;
 use App\Http\Resources\V1\CustomerResource;
@@ -53,6 +54,8 @@ class RegisterController extends Controller
         // Assign customer role
         $customerRole = Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'web']);
         $user->assignRole($customerRole);
+
+        event(new CustomerRegistered($user));
 
         $token = $user->createToken('customer-token', ['customer'])->plainTextToken;
 

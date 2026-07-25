@@ -84,9 +84,9 @@ export function ContactForm() {
   if (submitted) {
     return (
       <div className="text-center py-12">
-        <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" aria-hidden="true" />
-        <h3 className="text-2xl font-bold text-[#0a1628] mb-2">Message Sent</h3>
-        <p className="text-[#64748b]">
+        <CheckCircle className="w-16 h-16 text-success-500 mx-auto mb-4" aria-hidden="true" />
+        <h3 className="text-2xl font-bold text-primary-900 mb-2">Message Sent</h3>
+        <p className="text-muted">
           Thank you for reaching out. We will respond as soon as possible.
         </p>
       </div>
@@ -96,7 +96,7 @@ export function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-5" noValidate>
       {errors._server && (
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 text-red-600 text-sm">
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-danger-50 text-danger-600 text-sm">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           {errors._server}
         </div>
@@ -131,7 +131,7 @@ export function ContactForm() {
         type="submit"
         disabled={mutation.isPending}
         className={cn(
-          "w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-1 transition-all",
+          "w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-lg shadow-secondary-500/30 hover:-translate-y-1 transition-all-base",
           mutation.isPending && "opacity-70 cursor-not-allowed"
         )}
       >

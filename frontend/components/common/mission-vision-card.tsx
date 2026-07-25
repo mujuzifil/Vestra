@@ -26,12 +26,9 @@ export function MissionVisionCard({
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.7 }}
       className={cn(
-        "relative p-8 lg:p-10 rounded-[24px] overflow-hidden text-white",
+        "relative p-8 lg:p-10 rounded-[24px] overflow-hidden text-white bg-gradient-to-br from-primary-500 to-primary-900",
         className
       )}
-      style={{
-        background: "linear-gradient(135deg, #0d3b66 0%, #0a1628 100%)",
-      }}
     >
       <div
         className="absolute inset-0 pointer-events-none opacity-30"

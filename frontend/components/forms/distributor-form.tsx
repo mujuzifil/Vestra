@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { CheckCircle, Loader2, Send, AlertCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Loader2, Send, AlertCircle } from "lucide-react";
 import { InputField, TextareaField, SelectField } from "@/components/common/form-field";
 import { useDistributorMutation } from "@/hooks/use-distributor";
 import { cn } from "@/lib/utils";
@@ -26,8 +27,8 @@ const businessTypeOptions = [
 ];
 
 export function DistributorForm() {
-  const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
+  const router = useRouter();
 
   const mutation = useDistributorMutation();
 
@@ -58,7 +59,6 @@ export function DistributorForm() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(false);
     const formData = new FormData(e.currentTarget);
     const validationErrors = validate(formData);
 
@@ -80,9 +80,10 @@ export function DistributorForm() {
     };
 
     mutation.mutate(data, {
-      onSuccess: () => {
-        setSubmitted(true);
+      onSuccess: (response) => {
         e.currentTarget.reset();
+        const ref = response.id ? `VESTRA-DIST-${response.id}` : "VESTRA-DIST-0000";
+        router.push(`/distributor/success?ref=${encodeURIComponent(ref)}`);
       },
       onError: (error) => {
         if (error instanceof Error && "errors" in error) {
@@ -103,19 +104,6 @@ export function DistributorForm() {
       },
     });
   };
-
-  if (submitted) {
-    return (
-      <div className="text-center py-10">
-        <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" aria-hidden="true" />
-        <h3 className="text-2xl font-bold text-[#0a1628] mb-2">Application Received</h3>
-        <p className="text-[#64748b]">
-          Thank you for your interest. Our team will review your application and contact you within
-          5-7 business days.
-        </p>
-      </div>
-    );
-  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5" noValidate>

@@ -16,7 +16,7 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
       <Container>
         <ol className="flex flex-wrap items-center gap-2 text-sm text-white/70">
           <li>
-            <Link href="/" className="flex items-center gap-1 hover:text-green-400 transition-colors">
+            <Link href="/" className="flex items-center gap-1 hover:text-secondary-400 transition-colors-base">
               <Home className="w-4 h-4" />
               <span className="hidden sm:inline">Home</span>
             </Link>
@@ -25,7 +25,7 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
             <li key={item.label} className="flex items-center gap-2">
               <ChevronRight className="w-4 h-4 text-white/50" />
               {item.href && index < items.length - 1 ? (
-                <Link href={item.href} className="hover:text-green-400 transition-colors">
+                <Link href={item.href} className="hover:text-secondary-400 transition-colors-base">
                   {item.label}
                 </Link>
               ) : (

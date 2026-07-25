@@ -94,7 +94,7 @@ export function DistributorPageClient() {
         </section>
 
         {/* Opportunities & Form */}
-        <section className="py-20 lg:py-28 bg-[#f8fafc]" aria-labelledby="application-heading">
+        <section className="py-20 lg:py-28 bg-neutral-50" aria-labelledby="application-heading">
           <Container>
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <AnimatedSection direction="left">
@@ -113,7 +113,7 @@ export function DistributorPageClient() {
                   ].map((item, index) => (
                     <li
                       key={item}
-                      className="flex items-start gap-4 text-[#475569] text-base lg:text-lg"
+                      className="flex items-start gap-4 text-body text-base lg:text-lg"
                     >
                       <span className="w-7 h-7 rounded-full bg-green-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
                         {index + 1}
@@ -126,12 +126,12 @@ export function DistributorPageClient() {
 
               <AnimatedSection
                 direction="right"
-                className="p-6 lg:p-10 rounded-[24px] bg-white border border-[#e2e8f0] shadow-lg"
+                className="p-6 lg:p-10 rounded-[24px] bg-white border border-neutral-200 shadow-lg"
               >
-                <h2 className="text-xl lg:text-2xl font-bold text-[#0a1628] mb-2">
+                <h2 className="text-xl lg:text-2xl font-bold text-primary-900 mb-2">
                   Distributor Application
                 </h2>
-                <p className="text-[#64748b] mb-6">
+                <p className="text-muted mb-6">
                   Complete the form below to start your partnership journey.
                 </p>
                 <DistributorForm />

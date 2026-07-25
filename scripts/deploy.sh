@@ -31,8 +31,10 @@ MODE="${1:-}"
 log "Validating compose configuration..."
 $COMPOSE config --quiet || fail "Compose configuration is invalid."
 
-for VAR in APP_KEY APP_URL FRONTEND_URL CORS_ALLOWED_ORIGINS DB_PASSWORD \
-           MYSQL_ROOT_PASSWORD REDIS_PASSWORD NEXT_PUBLIC_API_URL; do
+for VAR in APP_DOMAIN API_DOMAIN ADMIN_DOMAIN APP_KEY APP_URL FRONTEND_URL \
+           CORS_ALLOWED_ORIGINS DB_PASSWORD MYSQL_ROOT_PASSWORD REDIS_PASSWORD \
+           NEXT_PUBLIC_API_URL NEXT_PUBLIC_SITE_URL NEXT_PUBLIC_BACKEND_URL \
+           CERTBOT_EMAIL; do
     VALUE="$(grep -E "^${VAR}=" "$ENV_FILE" | cut -d= -f2- || true)"
     [ -n "$VALUE" ] || fail "$VAR is empty in $ENV_FILE."
 done
@@ -46,6 +48,24 @@ log "Taking a pre-deployment backup..."
 ok "Backup complete."
 
 # ------------------------------------------------------------------------------
+# Start persistent infrastructure first
+# ------------------------------------------------------------------------------
+log "Starting database and cache..."
+$COMPOSE up -d db redis || fail "Could not start database or cache."
+
+for svc in db redis; do
+    log "Waiting for ${svc} to be healthy..."
+    for i in $(seq 1 30); do
+        if $COMPOSE ps "$svc" | grep -q "healthy"; then
+            ok "${svc} healthy after ${i} attempt(s)."
+            break
+        fi
+        [ "$i" -eq 30 ] && fail "${svc} did not become healthy."
+        sleep 2
+    done
+done
+
+# ------------------------------------------------------------------------------
 # Record the outgoing tag, then move to the new one
 # ------------------------------------------------------------------------------
 CURRENT_TAG="$(grep -E '^IMAGE_TAG=' "$ENV_FILE" | cut -d= -f2- || echo '')"
@@ -54,7 +74,7 @@ if [ "$MODE" = "--build" ]; then
     NEW_TAG="local-$(date +%Y%m%d%H%M%S)"
     log "Building images locally as ${NEW_TAG}..."
     sed -i "s|^IMAGE_TAG=.*|IMAGE_TAG=${NEW_TAG}|" "$ENV_FILE"
-    $COMPOSE build
+    $COMPOSE build || fail "Image build failed."
 else
     NEW_TAG="$MODE"
     log "Deploying published tag ${NEW_TAG}..."
@@ -63,7 +83,7 @@ else
 fi
 
 # Only record PREVIOUS_TAG once the new tag is committed to the env file, so a
-# failed pull does not destroy the rollback target.
+# failed pull/build does not destroy the rollback target.
 if [ -n "$CURRENT_TAG" ] && [ "$CURRENT_TAG" != "$NEW_TAG" ]; then
     sed -i "s|^PREVIOUS_TAG=.*|PREVIOUS_TAG=${CURRENT_TAG}|" "$ENV_FILE"
     log "Rollback target recorded: ${CURRENT_TAG}"
@@ -78,10 +98,60 @@ $COMPOSE run --rm --entrypoint php backend artisan migrate --force \
 ok "Migrations applied."
 
 # ------------------------------------------------------------------------------
-# Cutover
+# Bootstrap nginx so ACME challenges can be served
 # ------------------------------------------------------------------------------
-log "Starting services..."
-$COMPOSE up -d
+# At this point the full SSL vhost is not rendered yet. Nginx starts using the
+# HTTP-only bootstrap configuration (default.conf.template), which serves
+# /.well-known/acme-challenge/ and returns a 503 placeholder for everything else.
+log "Bootstrapping nginx for certificate provisioning..."
+$COMPOSE up -d nginx certbot || fail "Could not start nginx/certbot."
+
+log "Waiting for nginx to be healthy..."
+for i in $(seq 1 30); do
+    if $COMPOSE exec -T nginx wget --no-verbose --tries=1 --spider \
+         http://127.0.0.1/nginx-health >/dev/null 2>&1; then
+        ok "Nginx healthy after ${i} attempt(s)."
+        break
+    fi
+    [ "$i" -eq 30 ] && fail "Nginx did not become healthy."
+    sleep 2
+done
+
+# ------------------------------------------------------------------------------
+# Issue any missing certificates
+# ------------------------------------------------------------------------------
+APP_DOMAIN="$(grep -E '^APP_DOMAIN=' "$ENV_FILE" | cut -d= -f2- || true)"
+API_DOMAIN="$(grep -E '^API_DOMAIN=' "$ENV_FILE" | cut -d= -f2- || true)"
+ADMIN_DOMAIN="$(grep -E '^ADMIN_DOMAIN=' "$ENV_FILE" | cut -d= -f2- || true)"
+CERT_DIR="${ROOT_DIR}/certbot/conf"
+
+MISSING=false
+for domain in "$APP_DOMAIN" "$API_DOMAIN" "$ADMIN_DOMAIN"; do
+    if [ ! -f "${CERT_DIR}/live/${domain}/fullchain.pem" ]; then
+        MISSING=true
+        break
+    fi
+done
+
+if [ "$MISSING" = "true" ]; then
+    log "Missing SSL certificates detected; provisioning..."
+    ./scripts/init-certs.sh || fail "Certificate provisioning failed."
+else
+    ok "All SSL certificates are present."
+fi
+
+# ------------------------------------------------------------------------------
+# Render full SSL configuration and reload nginx
+# ------------------------------------------------------------------------------
+log "Rendering full SSL nginx configuration..."
+./scripts/render-nginx.sh || fail "Could not render SSL nginx configuration."
+ok "Nginx serving HTTPS."
+
+# ------------------------------------------------------------------------------
+# Cutover — start the remaining application services
+# ------------------------------------------------------------------------------
+log "Starting application services..."
+$COMPOSE up -d backend queue scheduler frontend || fail "Could not start application services."
 
 # ------------------------------------------------------------------------------
 # Health gate
@@ -122,6 +192,9 @@ $COMPOSE ps
 
 log "Verifying the scheduler is registered..."
 $COMPOSE exec -T scheduler php artisan schedule:list || log "WARNING: could not list the schedule."
+
+log "Testing certificate renewal dry-run..."
+$COMPOSE exec -T certbot certbot renew --dry-run || log "WARNING: certbot renewal dry-run failed."
 
 echo ""
 ok "Deployment complete — now running ${NEW_TAG}."

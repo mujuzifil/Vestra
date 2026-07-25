@@ -62,8 +62,32 @@ class ReviewResource extends Resource
                         Forms\Components\Toggle::make('is_hidden')
                             ->label('Hidden')
                             ->helperText('Hidden reviews remain in the system but are not displayed publicly.'),
+                        Forms\Components\Toggle::make('is_featured')
+                            ->label('Featured')
+                            ->helperText('Featured reviews are highlighted on the product page.'),
+                        Forms\Components\Toggle::make('is_pinned')
+                            ->label('Pinned')
+                            ->helperText('Pinned reviews appear first on the product page.'),
                     ])
                     ->columns(2),
+
+                Forms\Components\Section::make('Admin Reply')
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->schema([
+                        Forms\Components\Textarea::make('admin_reply')
+                            ->label('Reply')
+                            ->placeholder('Enter a public response to this review...')
+                            ->rows(4)
+                            ->columnSpanFull(),
+                        Forms\Components\TextInput::make('adminReplier.name')
+                            ->label('Replied By')
+                            ->disabled(),
+                        Forms\Components\DateTimePicker::make('admin_reply_at')
+                            ->label('Replied At')
+                            ->disabled(),
+                    ])
+                    ->columns(2)
+                    ->collapsed(fn (string $operation): bool => $operation === 'edit' && ! filled($form->getRecord()?->admin_reply)),
             ]);
     }
 
@@ -99,6 +123,20 @@ class ReviewResource extends Resource
                     ->label('Visibility')
                     ->formatStateUsing(fn (bool $state): string => $state ? 'Hidden' : 'Visible')
                     ->color(fn (bool $state): string => $state ? 'danger' : 'success'),
+
+                Tables\Columns\IconColumn::make('is_featured')
+                    ->label('Featured')
+                    ->boolean(),
+
+                Tables\Columns\IconColumn::make('is_pinned')
+                    ->label('Pinned')
+                    ->boolean(),
+
+                Tables\Columns\TextColumn::make('reported_count')
+                    ->label('Reports')
+                    ->sortable()
+                    ->badge()
+                    ->color(fn (int $state): string => $state > 0 ? 'danger' : 'gray'),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Submitted')
@@ -166,6 +204,25 @@ class ReviewResource extends Resource
             ->filtersFormColumns(3)
             ->actions([
                 Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make('reply')
+                    ->label('Reply')
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->color('info')
+                    ->modalHeading('Reply to Review')
+                    ->form([
+                        Forms\Components\Textarea::make('admin_reply')
+                            ->label('Reply')
+                            ->required()
+                            ->rows(4),
+                    ])
+                    ->action(function (Review $record, array $data): void {
+                        $record->update([
+                            'admin_reply' => $data['admin_reply'],
+                            'admin_reply_at' => now(),
+                            'admin_reply_by' => auth()->id(),
+                        ]);
+                        Notification::make()->title('Reply posted')->success()->send();
+                    }),
                 Tables\Actions\Action::make('approve')
                     ->label('Approve')
                     ->icon('heroicon-o-check')
@@ -194,6 +251,34 @@ class ReviewResource extends Resource
                     ->requiresConfirmation()
                     ->visible(fn (Review $record): bool => $record->is_hidden)
                     ->action(fn (Review $record) => $record->forceFill(['is_hidden' => false])->save()),
+                Tables\Actions\Action::make('feature')
+                    ->label('Feature')
+                    ->icon('heroicon-o-star')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->visible(fn (Review $record): bool => ! $record->is_featured)
+                    ->action(fn (Review $record) => $record->forceFill(['is_featured' => true])->save()),
+                Tables\Actions\Action::make('unfeature')
+                    ->label('Unfeature')
+                    ->icon('heroicon-o-star')
+                    ->color('gray')
+                    ->requiresConfirmation()
+                    ->visible(fn (Review $record): bool => $record->is_featured)
+                    ->action(fn (Review $record) => $record->forceFill(['is_featured' => false])->save()),
+                Tables\Actions\Action::make('pin')
+                    ->label('Pin')
+                    ->icon('heroicon-o-arrow-up-circle')
+                    ->color('info')
+                    ->requiresConfirmation()
+                    ->visible(fn (Review $record): bool => ! $record->is_pinned)
+                    ->action(fn (Review $record) => $record->forceFill(['is_pinned' => true])->save()),
+                Tables\Actions\Action::make('unpin')
+                    ->label('Unpin')
+                    ->icon('heroicon-o-arrow-down-circle')
+                    ->color('gray')
+                    ->requiresConfirmation()
+                    ->visible(fn (Review $record): bool => $record->is_pinned)
+                    ->action(fn (Review $record) => $record->forceFill(['is_pinned' => false])->save()),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

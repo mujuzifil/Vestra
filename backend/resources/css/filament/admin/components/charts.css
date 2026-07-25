@@ -1,0 +1,36 @@
+/* Chart widgets */
+
+.fi-wi-chart canvas,
+.fi-wi-chart svg {
+    max-height: 320px;
+}
+
+.fi-wi-chart text {
+    font-family: var(--font-ui) !important;
+    font-size: var(--text-caption) !important;
+    fill: var(--text-muted) !important;
+}
+
+.fi-wi-chart .apexcharts-tooltip {
+    background-color: var(--surface-card) !important;
+    border-color: var(--border-default) !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-lg) !important;
+    color: var(--text-heading) !important;
+}
+
+.fi-wi-chart .apexcharts-tooltip-title {
+    background-color: var(--neutral-50) !important;
+    border-bottom-color: var(--border-default) !important;
+    color: var(--text-heading) !important;
+    font-family: var(--font-ui) !important;
+}
+
+.fi-wi-chart .apexcharts-legend-text {
+    color: var(--text-body) !important;
+    font-family: var(--font-ui) !important;
+}
+
+.fi-wi-chart .apexcharts-gridline {
+    stroke: var(--border-default) !important;
+}

@@ -7,16 +7,29 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Review extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'product_id',
         'rating',
         'title',
         'comment',
+        'pros',
+        'cons',
+        'status',
+        'is_hidden',
+        'is_featured',
+        'is_pinned',
+        'helpful_count',
+        'reported_count',
+        'admin_reply',
+        'admin_reply_at',
+        'admin_reply_by',
     ];
 
     protected function casts(): array
@@ -24,6 +37,13 @@ class Review extends Model
         return [
             'rating' => 'integer',
             'is_hidden' => 'boolean',
+            'is_featured' => 'boolean',
+            'is_pinned' => 'boolean',
+            'helpful_count' => 'integer',
+            'reported_count' => 'integer',
+            'pros' => 'array',
+            'cons' => 'array',
+            'admin_reply_at' => 'datetime',
         ];
     }
 
@@ -35,6 +55,26 @@ class Review extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(ReviewImage::class)->orderBy('sort_order');
+    }
+
+    public function helpfulVotes(): HasMany
+    {
+        return $this->hasMany(ReviewHelpfulVote::class);
+    }
+
+    public function reports(): HasMany
+    {
+        return $this->hasMany(ReviewReport::class);
+    }
+
+    public function adminReplier(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'admin_reply_by');
     }
 
     public function scopePending(Builder $query): Builder
