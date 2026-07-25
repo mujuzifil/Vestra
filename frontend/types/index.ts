@@ -232,6 +232,7 @@ export interface OrderItem {
   unit_price: string;
   quantity: number;
   line_total: string;
+  product?: Product;
 }
 
 export interface Order {

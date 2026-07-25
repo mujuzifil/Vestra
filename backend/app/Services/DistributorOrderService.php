@@ -26,7 +26,7 @@ class DistributorOrderService
     public function createOrder(User $user, Distributor $distributor, array $data): Order
     {
         return DB::transaction(function () use ($user, $distributor, $data) {
-            $cart = $user->cart?->load('items.product');
+            $cart = $user->cart?->load('items.product.images');
 
             if (! $cart || $cart->items->isEmpty()) {
                 throw ValidationException::withMessages([
@@ -118,14 +118,14 @@ class DistributorOrderService
 
             $cart->items()->delete();
 
-            return $order->load('items');
+            return $order->load('items.product.images');
         });
     }
 
     public function getDistributorOrders(Distributor $distributor)
     {
         return $distributor->orders()
-            ->with('items')
+            ->with('items.product.images')
             ->orderByDesc('created_at')
             ->get();
     }
@@ -133,7 +133,7 @@ class DistributorOrderService
     public function getDistributorOrder(Distributor $distributor, int $orderId): ?Order
     {
         return $distributor->orders()
-            ->with('items')
+            ->with('items.product.images')
             ->find($orderId);
     }
 

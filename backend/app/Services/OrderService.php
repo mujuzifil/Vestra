@@ -26,7 +26,7 @@ class OrderService
     public function createOrder(User $user, array $data): Order
     {
         return DB::transaction(function () use ($user, $data) {
-            $cart = $user->cart?->load('items.product');
+            $cart = $user->cart?->load('items.product.images');
 
             if (! $cart || $cart->items->isEmpty()) {
                 throw ValidationException::withMessages([
@@ -101,7 +101,7 @@ class OrderService
             // Clear cart
             $cart->items()->delete();
 
-            $order->load('items');
+            $order->load('items.product.images');
 
             event(new OrderCreated($order));
 
@@ -119,12 +119,12 @@ class OrderService
 
     public function getUserOrders(User $user): \Illuminate\Database\Eloquent\Collection
     {
-        return $user->orders()->with('items')->orderBy('created_at', 'desc')->get();
+        return $user->orders()->with('items.product.images')->orderBy('created_at', 'desc')->get();
     }
 
     public function getOrder(User $user, int $orderId): ?Order
     {
-        return $user->orders()->with('items')->find($orderId);
+        return $user->orders()->with('items.product.images')->find($orderId);
     }
 
     /**

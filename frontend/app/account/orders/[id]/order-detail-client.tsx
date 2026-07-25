@@ -261,30 +261,33 @@ export function OrderDetailPageClient({ orderId }: Props) {
               <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
                 <h2 className="text-lg font-bold text-primary-900 mb-4">Order Items</h2>
                 <div className="space-y-4">
-                  {order.items.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl bg-surface-page"
-                    >
-                      <div className="relative w-16 h-16 rounded-lg bg-surface-card overflow-hidden flex-shrink-0">
-                        <Image
-                          src="/assets/images/products/placeholder.png"
-                          alt={item.product_name}
-                          fill
-                          className="object-contain p-2"
-                        />
+                  {order.items.map((item) => {
+                    const image = item.product?.images?.[0]?.image || "/assets/images/products/placeholder.png";
+                    return (
+                      <div
+                        key={item.id}
+                        className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl bg-surface-page"
+                      >
+                        <div className="relative w-16 h-16 rounded-lg bg-surface-card overflow-hidden flex-shrink-0">
+                          <Image
+                            src={image}
+                            alt={item.product_name}
+                            fill
+                            className="object-contain p-2"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-semibold text-primary-900">{item.product_name}</p>
+                          <p className="text-sm text-muted">SKU: {item.product_sku}</p>
+                          <p className="text-sm text-muted">Qty: {item.quantity}</p>
+                        </div>
+                        <div className="text-left sm:text-right">
+                          <p className="font-bold text-primary-500">UGX {item.line_total}</p>
+                          <p className="text-sm text-muted">UGX {item.unit_price} each</p>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <p className="font-semibold text-primary-900">{item.product_name}</p>
-                        <p className="text-sm text-muted">SKU: {item.product_sku}</p>
-                        <p className="text-sm text-muted">Qty: {item.quantity}</p>
-                      </div>
-                      <div className="text-left sm:text-right">
-                        <p className="font-bold text-primary-500">UGX {item.line_total}</p>
-                        <p className="text-sm text-muted">UGX {item.unit_price} each</p>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>

@@ -14,8 +14,10 @@ class TemplateMailable extends Mailable
         public string $subjectLine,
         public string $htmlBody,
         public string $plainBody = '',
-        public array $metadata = []
-    ) {}
+        array $metadata = []
+    ) {
+        $this->metadata = $metadata;
+    }
 
     public function build(): self
     {

@@ -68,6 +68,6 @@ class CartRepository
 
     public function getCartWithItems(Cart $cart): Cart
     {
-        return Cart::with(['items.product'])->find($cart->id);
+        return Cart::with(['items.product.images'])->find($cart->id);
     }
 }
