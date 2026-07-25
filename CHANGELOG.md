@@ -171,4 +171,6 @@
 ### Production Deployment — 25 July 2026
 - Deployed all services to production VPS at 187.77.84.119
 - Verified live URLs: https://vestradetergents.com, https://api.vestradetergents.com, https://admin.vestradetergents.com
-- Provisioned Let\s Encrypt certificates for all three domains
+- Provisioned Let's Encrypt certificates for all three domains
+- Resolved nginx bootstrap, duplicate default_server, and frontend health probe issues
+- Merged develop into master and tagged v1.0.0
