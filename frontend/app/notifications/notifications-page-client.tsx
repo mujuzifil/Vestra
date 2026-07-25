@@ -86,12 +86,15 @@ export function NotificationsPageClient() {
   const [page, setPage] = useState(1);
   const { data, isLoading, error } = useNotifications(page);
   const markAllAsRead = useMarkAllNotificationsAsRead();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
       router.push("/auth/login");
     }
   }, [authLoading, isAuthenticated, router]);
+  if (!mounted) return null;
 
   const handleMarkAllAsRead = async () => {
     try {
