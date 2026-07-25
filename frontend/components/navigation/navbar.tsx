@@ -8,7 +8,6 @@ import { Menu, X, Search, User, ShoppingCart, ChevronDown, LogIn } from "lucide-
 import { useAuth } from "@/lib/auth-context";
 import { useCartContext } from "@/lib/cart-context";
 import { useSearchSuggestions } from "@/hooks/use-products";
-import { CartDrawer } from "@/components/cart/cart-drawer";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { cn } from "@/lib/utils";
 
@@ -38,7 +37,6 @@ export function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
   const [badgeBump, setBadgeBump] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -159,8 +157,8 @@ export function Navbar() {
 
           {isAuthenticated && <NotificationBell />}
 
-          <button
-            onClick={() => setCartOpen(!cartOpen)}
+          <Link
+            href="/cart"
             aria-label={`Shopping cart (${itemCount} items)`}
             className="relative text-white hover:text-secondary-400 transition-colors-base p-2 rounded-full focus-visible:ring-2 focus-visible:ring-secondary-500"
           >
@@ -175,7 +173,7 @@ export function Navbar() {
                 {itemCount > 99 ? "99+" : itemCount}
               </span>
             )}
-          </button>
+          </Link>
 
           {isAuthenticated ? (
             <div className="group relative">
@@ -342,8 +340,6 @@ export function Navbar() {
           </div>
         </div>
       )}
-
-      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
     </header>
   );
 }
