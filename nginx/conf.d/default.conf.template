@@ -1,0 +1,48 @@
+# ==============================================================================
+# VESTRA — HTTP bootstrap configuration
+# ==============================================================================
+# Rendered automatically at container start. This configuration is used before
+# SSL certificates exist. It only serves ACME HTTP-01 challenges and the nginx
+# health probe. Once certificates are provisioned, scripts/render-nginx.sh
+# generates the full vestra.conf from vestra.conf.ssl.template.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Default server: health probe and ACME challenge handling.
+# ------------------------------------------------------------------------------
+server {
+    listen 80 default_server;
+    server_name _;
+
+    location /nginx-health {
+        access_log off;
+        add_header Content-Type text/plain;
+        return 200 "healthy\n";
+    }
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 503 "VESTRA is being provisioned. HTTPS will be available shortly.\n";
+    }
+}
+
+# ------------------------------------------------------------------------------
+# Domain-specific ACME challenge endpoints.
+# These exist so certbot can validate each domain even before the full SSL
+# vhosts are rendered.
+# ------------------------------------------------------------------------------
+server {
+    listen 80;
+    server_name ${APP_DOMAIN} www.${APP_DOMAIN} ${API_DOMAIN} ${ADMIN_DOMAIN};
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 503 "VESTRA is being provisioned. HTTPS will be available shortly.\n";
+    }
+}
