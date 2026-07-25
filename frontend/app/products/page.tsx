@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, ShoppingCart, Loader2, SlidersHorizontal, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ShoppingCart, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
@@ -48,11 +48,11 @@ function QuickAddButton({ product, disabled }: { product: Product; disabled?: bo
 
 const sortOptions = [
   { value: "", label: "Featured" },
-  { value: "price_asc", label: "Price: Low to High" },
-  { value: "price_desc", label: "Price: High to Low" },
-  { value: "name_asc", label: "Name: A-Z" },
-  { value: "name_desc", label: "Name: Z-A" },
   { value: "newest", label: "Newest" },
+  { value: "price_asc", label: "Price — Low to High" },
+  { value: "price_desc", label: "Price — High to Low" },
+  { value: "name_asc", label: "Name — A-Z" },
+  { value: "name_desc", label: "Name — Z-A" },
 ];
 
 export default function ProductsPage() {
@@ -62,10 +62,6 @@ export default function ProductsPage() {
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
   const [activeCategory, setActiveCategory] = useState(searchParams.get("category") ?? "all");
   const [sort, setSort] = useState(searchParams.get("sort") ?? "");
-  const [minPrice, setMinPrice] = useState(searchParams.get("min_price") ?? "");
-  const [maxPrice, setMaxPrice] = useState(searchParams.get("max_price") ?? "");
-  const [inStockOnly, setInStockOnly] = useState(searchParams.get("in_stock") === "1");
-  const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(Number(searchParams.get("page") ?? 1));
 
   const filters = useMemo(
@@ -75,11 +71,8 @@ export default function ProductsPage() {
       search: query.trim() || undefined,
       category: activeCategory === "all" ? undefined : activeCategory,
       sort: sort || undefined,
-      min_price: minPrice ? Number(minPrice) : undefined,
-      max_price: maxPrice ? Number(maxPrice) : undefined,
-      in_stock: inStockOnly || undefined,
     }),
-    [page, query, activeCategory, sort, minPrice, maxPrice, inStockOnly]
+    [page, query, activeCategory, sort]
   );
 
   const {
@@ -103,20 +96,17 @@ export default function ProductsPage() {
 
   useEffect(() => {
     setPage(1);
-  }, [query, activeCategory, sort, minPrice, maxPrice, inStockOnly]);
+  }, [query, activeCategory, sort]);
 
   const updateUrl = useCallback(() => {
     const params = new URLSearchParams();
     if (query.trim()) params.set("q", query.trim());
     if (activeCategory !== "all") params.set("category", activeCategory);
     if (sort) params.set("sort", sort);
-    if (minPrice) params.set("min_price", minPrice);
-    if (maxPrice) params.set("max_price", maxPrice);
-    if (inStockOnly) params.set("in_stock", "1");
     if (page > 1) params.set("page", String(page));
     const qs = params.toString();
     router.replace(`/products${qs ? `?${qs}` : ""}`, { scroll: false });
-  }, [router, page, query, activeCategory, sort, minPrice, maxPrice, inStockOnly]);
+  }, [router, page, query, activeCategory, sort]);
 
   useEffect(() => {
     updateUrl();
@@ -126,19 +116,6 @@ export default function ProductsPage() {
   const hasError = productsError || categoriesError;
   const products = searchResult?.data ?? [];
   const meta = searchResult?.meta;
-
-  const hasActiveFilters =
-    query.trim() || activeCategory !== "all" || sort || minPrice || maxPrice || inStockOnly;
-
-  const clearFilters = () => {
-    setQuery("");
-    setActiveCategory("all");
-    setSort("");
-    setMinPrice("");
-    setMaxPrice("");
-    setInStockOnly(false);
-    setPage(1);
-  };
 
   return (
     <main>
@@ -154,7 +131,7 @@ export default function ProductsPage() {
             Product Listing
           </h2>
 
-          {/* Search and filters */}
+          {/* Search and sort */}
           <div className="flex flex-col lg:flex-row gap-4 lg:items-center justify-between mb-10">
             <div className="relative max-w-md w-full">
               <label htmlFor="product-search" className="sr-only">
@@ -172,20 +149,11 @@ export default function ProductsPage() {
             </div>
 
             <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setShowFilters((s) => !s)}
-                className={cn(
-                  "inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold border transition-colors-base",
-                  showFilters
-                    ? "bg-green-500 text-white border-green-500"
-                    : "bg-white text-primary-900 border-default hover:bg-surface-page"
-                )}
-              >
-                <SlidersHorizontal className="w-4 h-4" />
-                Filters
-              </button>
+              <label htmlFor="sort-select" className="text-sm font-semibold text-primary-900">
+                Filter:
+              </label>
               <select
+                id="sort-select"
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
                 className="px-4 py-2.5 rounded-full text-sm font-semibold border border-default bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -226,55 +194,6 @@ export default function ProductsPage() {
               ))
             )}
           </div>
-
-          {/* Advanced filters panel */}
-          {showFilters && (
-            <div className="bg-surface-page rounded-[20px] border border-default p-5 mb-8">
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-                <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Min Price</label>
-                  <input
-                    type="number"
-                    min={0}
-                    value={minPrice}
-                    onChange={(e) => setMinPrice(e.target.value)}
-                    placeholder="UGX"
-                    className="w-full px-4 py-2 rounded-xl border border-default focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Max Price</label>
-                  <input
-                    type="number"
-                    min={0}
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(e.target.value)}
-                    placeholder="UGX"
-                    className="w-full px-4 py-2 rounded-xl border border-default focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-                <label className="inline-flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={inStockOnly}
-                    onChange={(e) => setInStockOnly(e.target.checked)}
-                    className="w-5 h-5 rounded border-default text-green-500 focus:ring-green-500"
-                  />
-                  <span className="text-sm font-medium text-primary-900">In stock only</span>
-                </label>
-                {hasActiveFilters && (
-                  <button
-                    type="button"
-                    onClick={clearFilters}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold text-danger-600 bg-danger-50 rounded-xl hover:bg-danger-100"
-                  >
-                    <X className="w-4 h-4" />
-                    Clear Filters
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
 
           {/* Error state */}
           {hasError && (
