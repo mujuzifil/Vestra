@@ -12,7 +12,7 @@ WORKDIR /app
 # differ, so `npm install` is used here to resolve the correct native package
 # for the build architecture while still respecting the committed lockfile.
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm install && npm install lightningcss-linux-x64-gnu --no-save
 
 # --- Build stage ---
 FROM base AS builder
