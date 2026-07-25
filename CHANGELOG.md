@@ -167,3 +167,8 @@
 - Filament 3 admin panel
 - MySQL database
 - Product, category, settings management
+
+### Production Deployment — 25 July 2026
+- Deployed all services to production VPS at 187.77.84.119
+- Verified live URLs: https://vestradetergents.com, https://api.vestradetergents.com, https://admin.vestradetergents.com
+- Provisioned Let\s Encrypt certificates for all three domains
