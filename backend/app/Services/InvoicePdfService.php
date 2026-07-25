@@ -63,4 +63,13 @@ class InvoicePdfService
 
         return $path;
     }
+
+    /**
+     * Generate the invoice PDF content in memory without writing to disk.
+     * This avoids storage permission issues and leaves no temporary files.
+     */
+    public function generateBinary(Order $order): string
+    {
+        return $this->generate($order);
+    }
 }

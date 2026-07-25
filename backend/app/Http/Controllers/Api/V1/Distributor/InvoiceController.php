@@ -40,10 +40,10 @@ class InvoiceController extends Controller
         }
 
         if ($request->boolean('download')) {
-            $path = $this->service->save($invoice);
+            $content = $this->service->generateBinary($invoice);
 
-            return response()->streamDownload(function () use ($path) {
-                echo file_get_contents($path);
+            return response()->streamDownload(function () use ($content) {
+                echo $content;
             }, "{$invoice->invoice_number}.pdf", [
                 'Content-Type' => 'application/pdf',
             ]);
