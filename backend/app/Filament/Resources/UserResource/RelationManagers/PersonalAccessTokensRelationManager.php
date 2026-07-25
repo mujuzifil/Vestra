@@ -7,7 +7,7 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Database\Eloquent\Model;
 
 class PersonalAccessTokensRelationManager extends RelationManager
 {
@@ -98,7 +98,7 @@ class PersonalAccessTokensRelationManager extends RelationManager
             ]);
     }
 
-    public static function canViewForRecord(PersonalAccessToken $ownerRecord, string $pageClass): bool
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         return auth()->user()?->isAdmin() ?? false;
     }
