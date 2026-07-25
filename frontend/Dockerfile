@@ -6,13 +6,13 @@ FROM node:22-bookworm-slim AS base
 FROM base AS deps
 WORKDIR /app
 
-# `npm ci` is ideal for reproducibility, but platform-specific optional
-# dependencies (e.g. lightningcss native binaries) are locked for the platform
-# that generated the lockfile. Inside a Linux container the required binary may
-# differ, so `npm install` is used here to resolve the correct native package
-# for the build architecture while still respecting the committed lockfile.
-COPY package.json package-lock.json ./
-RUN npm install && npm install lightningcss-linux-x64-gnu --no-save
+# The committed package-lock.json is generated for the local development
+# platform and may not include Linux native binaries required by Tailwind v4
+# (e.g. @tailwindcss/oxide, lightningcss). Inside the container we install from
+# package.json only so npm resolves the correct optional dependencies for the
+# build architecture.
+COPY package.json ./
+RUN npm install
 
 # --- Build stage ---
 FROM base AS builder
