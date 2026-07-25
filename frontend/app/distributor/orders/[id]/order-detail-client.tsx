@@ -275,7 +275,7 @@ export function OrderDetailPageClient({ orderId }: Props) {
           </div>
 
           <a
-            href={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/orders/${order.id}/invoice`}
+            href={`${process.env.NEXT_PUBLIC_API_URL}/orders/${order.id}/invoice`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-primary-900 text-white font-semibold rounded-xl hover:bg-primary-900 transition-colors-base"

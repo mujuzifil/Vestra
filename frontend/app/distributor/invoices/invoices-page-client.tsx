@@ -36,7 +36,7 @@ function InvoiceCard({ invoice }: { invoice: DistributorInvoice }) {
           <ArrowRight className="w-3 h-3" />
         </Link>
         <a
-          href={`${process.env.NEXT_PUBLIC_API_URL}/api/v1/invoices/${invoice.id}/download`}
+          href={`${process.env.NEXT_PUBLIC_API_URL}/invoices/${invoice.id}/download`}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-sm font-semibold text-muted hover:text-primary-900"
