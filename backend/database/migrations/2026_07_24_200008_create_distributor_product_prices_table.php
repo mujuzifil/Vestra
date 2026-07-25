@@ -17,8 +17,8 @@ return new class extends Migration
             $table->date('effective_until')->nullable();
             $table->timestamps();
 
-            $table->unique(['distributor_id', 'product_id', 'effective_from']);
-            $table->index(['distributor_id', 'product_id']);
+            $table->unique(['distributor_id', 'product_id', 'effective_from'], 'dist_prod_prices_dist_prod_effective_unique');
+            $table->index(['distributor_id', 'product_id'], 'dist_prod_prices_dist_prod_index');
         });
     }
 
