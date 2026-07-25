@@ -61,7 +61,7 @@ class AnnouncementResource extends Resource
                             ->label('End At'),
 
                         Forms\Components\DateTimePicker::make('scheduled_at')
-                            ->label('Schedule For'),
+                            ->label('Schedule For')
                             ->helperText('Leave blank to publish immediately when saved as sent.'),
 
                         Forms\Components\Toggle::make('is_published')
