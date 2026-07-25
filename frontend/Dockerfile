@@ -1,10 +1,9 @@
 # Multi-stage Dockerfile for Next.js frontend
 
-FROM node:22-alpine AS base
+FROM node:22-bookworm-slim AS base
 
 # --- Dependencies stage ---
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # `npm ci` installs exactly the committed lockfile and fails if package.json and
@@ -55,8 +54,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN groupadd --system --gid 1001 nodejs
+RUN useradd --system --uid 1001 --gid nodejs nextjs
 
 # Copy standalone output
 COPY --from=builder /app/public ./public
