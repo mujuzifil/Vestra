@@ -21,6 +21,8 @@ use App\Repositories\DistributorRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\SettingRepository;
 use App\Services\AuditService;
+use App\Services\Search\DatabaseSearchProvider;
+use App\Services\Search\SearchProviderInterface;
 use Database\Seeders\AdminUserSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -66,6 +68,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(\App\Contracts\PaymentGatewayInterface::class, function ($app) {
             return new \App\Services\FlutterwaveGateway();
+        });
+
+        $this->app->singleton(SearchProviderInterface::class, function ($app) {
+            return new DatabaseSearchProvider();
         });
 
         $this->app->singleton(\App\Contracts\SmsProviderInterface::class, function ($app) {

@@ -6,7 +6,9 @@ use App\Enums\NotificationChannel;
 use App\Events\Notification\*;
 use App\Models\DistributorRequest;
 use App\Models\PaymentUpload;
+use App\Models\SavedItem;
 use App\Models\User;
+use App\Models\Wishlist;
 use App\Services\NotificationDispatcherService;
 use Illuminate\Support\Facades\Log;
 
@@ -290,8 +292,66 @@ class DispatchNotificationListener
                     'description' => $event->description,
                 ],
             ],
+            $event instanceof ReviewApproved => [
+                'users' => [$event->review->user],
+                'template' => 'review.approved',
+                'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                'topic' => 'order_updates',
+                'variables' => [
+                    'customer_name' => $event->review->user?->name,
+                    'product_name' => $event->review->product?->name,
+                    'review_title' => $event->review->title,
+                ],
+            ],
+            $event instanceof ReviewReplied => [
+                'users' => [$event->review->user],
+                'template' => 'review.replied',
+                'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                'topic' => 'order_updates',
+                'variables' => [
+                    'customer_name' => $event->review->user?->name,
+                    'product_name' => $event->review->product?->name,
+                    'review_title' => $event->review->title,
+                ],
+            ],
+            $event instanceof PriceDropped => [
+                'users' => $this->usersInterestedInProduct($event->product),
+                'template' => 'product.price_dropped',
+                'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                'topic' => 'promotions',
+                'variables' => [
+                    'product_name' => $event->product->name,
+                    'old_price' => number_format($event->oldPrice, 2),
+                    'new_price' => number_format($event->newPrice, 2),
+                ],
+            ],
+            $event instanceof BackInStock => [
+                'users' => $this->usersInterestedInProduct($event->product),
+                'template' => 'product.back_in_stock',
+                'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                'topic' => 'order_updates',
+                'variables' => [
+                    'product_name' => $event->product->name,
+                    'product_url' => route('products.show', $event->product->slug),
+                ],
+            ],
             default => null,
         };
+    }
+
+    /**
+     * Resolve user(s) who have saved or wishlisted a product.
+     *
+     * @return array<int, User>
+     */
+    protected function usersInterestedInProduct(\App\Models\Product $product): array
+    {
+        $wishlistUserIds = Wishlist::where('product_id', $product->id)->pluck('user_id');
+        $savedUserIds = SavedItem::where('product_id', $product->id)->pluck('user_id');
+
+        $userIds = $wishlistUserIds->merge($savedUserIds)->unique()->values();
+
+        return User::whereIn('id', $userIds)->get()->all();
     }
 
     /**

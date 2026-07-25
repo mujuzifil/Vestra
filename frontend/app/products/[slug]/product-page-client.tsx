@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { notFound, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,6 +12,9 @@ import {
   Zap,
   Package,
   Loader2,
+  Heart,
+  Bookmark,
+  Scale,
 } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
@@ -20,13 +23,17 @@ import { ProductGallery } from "@/components/common/product-gallery";
 import { CTASection } from "@/components/common/cta-section";
 import { ApiError } from "@/components/ui/api-error";
 import { useProduct } from "@/hooks/use-products";
-import { useProducts } from "@/hooks/use-products";
+import { useProductRecommendations } from "@/hooks/use-recommendations";
+import { useAuth } from "@/lib/auth-context";
 import { useCartContext, toCartProduct } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
+import { useCompare } from "@/lib/compare-context";
 import { toastAddedToCart } from "@/lib/toast-utils";
 import { formatPrice, cn } from "@/lib/utils";
 import { ReviewList } from "@/components/reviews/review-list";
 import { ReviewForm } from "@/components/reviews/review-form";
 import { useProductReviews, useSubmitReview } from "@/hooks/use-reviews";
+import { useRecordProductView } from "@/hooks/use-recently-viewed";
 import { StarRating } from "@/components/reviews/star-rating";
 import { JsonLd, productSchema, breadcrumbSchema } from "@/lib/structured-data";
 
@@ -79,15 +86,20 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
     refetch,
   } = useProduct(slug);
 
-  const { data: allProducts } = useProducts();
+  const { data: recommendations } = useProductRecommendations(slug);
   const { data: reviewsData } = useProductReviews(slug);
   const submitReviewMutation = useSubmitReview();
   const { addItem } = useCartContext();
+  const { isAuthenticated } = useAuth();
+  const { addToWishlist, addToSavedItems, isInWishlist, isSavedForLater } = useWishlist();
+  const { addToCompare, isInCompare, canAddMore } = useCompare();
 
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
   const [buying, setBuying] = useState(false);
   const [recentlyViewed, setRecentlyViewed] = useState<RecentProduct[]>([]);
+  const recordView = useRecordProductView();
+  const viewRecordedRef = useRef(false);
 
   useEffect(() => {
     setRecentlyViewed(getRecentlyViewed(slug));
@@ -105,6 +117,14 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
       });
     }
   }, [product]);
+
+  // Record view on the server for authenticated users
+  useEffect(() => {
+    if (product && isAuthenticated && !viewRecordedRef.current) {
+      viewRecordedRef.current = true;
+      recordView.mutate(product.id);
+    }
+  }, [product, isAuthenticated, recordView]);
 
   if (isLoading) {
     return (
@@ -142,9 +162,8 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
     notFound();
   }
 
-  const relatedProducts = (allProducts || [])
-    .filter((p) => p.category_id === product.category_id && p.id !== product.id)
-    .slice(0, 3);
+  const relatedProducts = recommendations?.related ?? [];
+  const frequentlyBoughtTogether = recommendations?.frequently_bought_together ?? [];
 
   const productImages = product.images.length > 0
     ? product.images.map((img) => img.image)
@@ -343,6 +362,47 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                     </button>
                   </div>
 
+                  {/* Wishlist / Save for later / Compare */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await addToWishlist(product);
+                        } catch {
+                          // error already toasted
+                        }
+                      }}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-primary-900 bg-surface-card border border-default hover:bg-surface-page transition-colors-base"
+                    >
+                      <Heart className={`w-4 h-4 ${isInWishlist(product.id) ? "fill-danger-500 text-danger-500" : ""}`} />
+                      {isInWishlist(product.id) ? "In Wishlist" : "Add to Wishlist"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await addToSavedItems(product);
+                        } catch {
+                          // error already toasted
+                        }
+                      }}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-primary-900 bg-surface-card border border-default hover:bg-surface-page transition-colors-base"
+                    >
+                      <Bookmark className={`w-4 h-4 ${isSavedForLater(product.id) ? "fill-secondary-500 text-secondary-500" : ""}`} />
+                      {isSavedForLater(product.id) ? "Saved for Later" : "Save for Later"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => addToCompare(product)}
+                      disabled={!canAddMore && !isInCompare(product.id)}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-primary-900 bg-surface-card border border-default hover:bg-surface-page transition-colors-base disabled:opacity-50"
+                    >
+                      <Scale className={`w-4 h-4 ${isInCompare(product.id) ? "text-secondary-500" : ""}`} />
+                      {isInCompare(product.id) ? "In Compare" : "Compare"}
+                    </button>
+                  </div>
+
                   {/* Secondary distributor prompt */}
                   <p className="text-sm text-muted">
                     Interested in reseller or bulk pricing?{" "}
@@ -382,6 +442,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                     reviews={reviewsData.reviews}
                     averageRating={reviewsData.average_rating}
                     reviewCount={reviewsData.review_count}
+                    ratingDistribution={reviewsData.rating_distribution}
                   />
                 )}
               </div>
@@ -414,6 +475,38 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                       <span className="text-xs font-semibold text-green-600 uppercase tracking-wider">{recent.category}</span>
                       <h3 className="text-base font-bold text-primary-900 mt-1 mb-1">{recent.name}</h3>
                       <p className="text-primary-500 font-extrabold">{formatPrice(Number(recent.price))}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </Container>
+          </section>
+        )}
+
+        {/* Frequently Bought Together */}
+        {frequentlyBoughtTogether.length > 0 && (
+          <section className="py-16 lg:py-24 bg-white">
+            <Container>
+              <SectionHeader title="Frequently Bought Together" subtitle="Customers often purchase these together." />
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                {frequentlyBoughtTogether.map((related) => (
+                  <Link
+                    key={related.id}
+                    href={`/products/${related.slug}`}
+                    className="group bg-white rounded-[20px] overflow-hidden border border-default shadow-sm hover:-translate-y-2 hover:shadow-xl hover:border-primary-300 transition-all-base"
+                  >
+                    <div className="relative p-6 min-h-[200px] flex items-center justify-center bg-gradient-to-b from-neutral-50 to-white">
+                      <Image
+                        src={related.images[0]?.image || "/assets/images/products/placeholder.png"}
+                        alt={related.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="p-6">
+                      <h3 className="text-lg font-bold text-primary-900 mb-1">{related.name}</h3>
+                      <p className="text-primary-500 font-extrabold">{formatPrice(Number(related.price))}</p>
                     </div>
                   </Link>
                 ))}

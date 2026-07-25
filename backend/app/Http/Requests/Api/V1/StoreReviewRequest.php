@@ -18,6 +18,12 @@ class StoreReviewRequest extends FormRequest
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
             'title' => ['nullable', 'string', 'max:255'],
             'comment' => ['nullable', 'string', 'max:1000'],
+            'pros' => ['nullable', 'array'],
+            'pros.*' => ['string', 'max:255'],
+            'cons' => ['nullable', 'array'],
+            'cons.*' => ['string', 'max:255'],
+            'images' => ['nullable', 'array'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
     }
 

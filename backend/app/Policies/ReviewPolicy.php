@@ -36,4 +36,14 @@ class ReviewPolicy
     {
         return $user->isAdmin();
     }
+
+    public function vote(User $user): bool
+    {
+        return auth()->check();
+    }
+
+    public function report(User $user, Review $review): bool
+    {
+        return auth()->check() && $user->id !== $review->user_id;
+    }
 }

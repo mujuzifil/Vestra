@@ -123,6 +123,22 @@ class EventServiceProvider extends ServiceProvider
             DispatchNotificationListener::class,
             LogNotificationDeliveryListener::class,
         ],
+        ReviewApproved::class => [
+            DispatchNotificationListener::class,
+            LogNotificationDeliveryListener::class,
+        ],
+        ReviewReplied::class => [
+            DispatchNotificationListener::class,
+            LogNotificationDeliveryListener::class,
+        ],
+        PriceDropped::class => [
+            DispatchNotificationListener::class,
+            LogNotificationDeliveryListener::class,
+        ],
+        BackInStock::class => [
+            DispatchNotificationListener::class,
+            LogNotificationDeliveryListener::class,
+        ],
     ];
 
     public function boot(): void

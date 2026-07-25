@@ -20,18 +20,23 @@ import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
 import { EmptyCart } from "@/components/cart/empty-cart";
 import { useCartContext } from "@/lib/cart-context";
+import { useWishlist } from "@/lib/wishlist-context";
 import { formatPrice, cn } from "@/lib/utils";
 import {
   toastUpdatedQuantity,
   toastRemovedFromCart,
   toastCartCleared,
   toastError,
+  toastSuccess,
 } from "@/lib/toast-utils";
+import type { Product } from "@/types";
 
 export function CartPageClient() {
   const router = useRouter();
   const { cart, updateItem, removeItem, clear } = useCartContext();
+  const { addToSavedItems } = useWishlist();
   const [removingId, setRemovingId] = useState<number | null>(null);
+  const [savingId, setSavingId] = useState<number | null>(null);
   const [clearing, setClearing] = useState(false);
 
   if (!cart || cart.items.length === 0) {
@@ -67,6 +72,19 @@ export function CartPageClient() {
       toastError("Could not remove item.");
     } finally {
       setRemovingId(null);
+    }
+  };
+
+  const handleSaveForLater = async (itemId: number, product: Product) => {
+    setSavingId(itemId);
+    try {
+      await addToSavedItems(product);
+      await removeItem(itemId);
+      toastSuccess(`${product.name} saved for later.`);
+    } catch {
+      toastError("Could not save item.");
+    } finally {
+      setSavingId(null);
     }
   };
 
@@ -156,11 +174,16 @@ export function CartPageClient() {
                                 Remove
                               </button>
                               <button
-                                disabled
-                                className="inline-flex items-center gap-1 text-xs font-medium text-text-placeholder cursor-not-allowed"
-                                title="Save for later coming soon"
+                                onClick={() => handleSaveForLater(item.id, item.product as Product)}
+                                disabled={savingId === item.id}
+                                className="inline-flex items-center gap-1 text-xs font-medium text-text-muted hover:text-secondary-600 transition-colors-base disabled:opacity-50"
                               >
-                                <Heart className="w-3 h-3" /> Save for later
+                                {savingId === item.id ? (
+                                  <Loader2 className="w-3 h-3 animate-spin" />
+                                ) : (
+                                  <Heart className="w-3 h-3" />
+                                )}
+                                Save for later
                               </button>
                             </div>
                           </div>
@@ -235,11 +258,16 @@ export function CartPageClient() {
                             Remove
                           </button>
                           <button
-                            disabled
-                            className="inline-flex items-center gap-1.5 text-sm font-medium text-text-placeholder cursor-not-allowed"
-                            title="Save for later coming soon"
+                            onClick={() => handleSaveForLater(item.id, item.product as Product)}
+                            disabled={savingId === item.id}
+                            className="inline-flex items-center gap-1.5 text-sm font-medium text-text-muted hover:text-secondary-600 transition-colors-base disabled:opacity-50"
                           >
-                            <Heart className="w-4 h-4" /> Save for later
+                            {savingId === item.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Heart className="w-4 h-4" />
+                            )}
+                            Save for later
                           </button>
                         </div>
                       </div>

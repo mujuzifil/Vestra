@@ -22,6 +22,8 @@ import {
   Activity,
   Home,
   AlertCircle,
+  Star,
+  Heart,
 } from "lucide-react";
 import { FeedbackForm } from "@/components/feedback/feedback-form";
 import { submitFeedback } from "@/lib/api/feedback";
@@ -169,6 +171,8 @@ export function AccountPageClient() {
 
   const menuItems = [
     { icon: Package, label: "My Orders", href: "/account/orders", description: "View and track your orders" },
+    { icon: Star, label: "My Reviews", href: "/account/reviews", description: "Manage your product reviews" },
+    { icon: Heart, label: "Wishlist", href: "/account/wishlist", description: "Saved products and lists" },
     { icon: MapPin, label: "Addresses", href: "/account/addresses", description: "Manage delivery addresses" },
     { icon: Settings, label: "Settings", href: "/account/settings", description: "Update profile and password" },
   ];

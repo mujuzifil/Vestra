@@ -2,6 +2,8 @@
 
 import { AuthProvider } from "@/lib/auth-context";
 import { CartProvider } from "@/lib/cart-context";
+import { WishlistProvider } from "@/lib/wishlist-context";
+import { CompareProvider } from "@/lib/compare-context";
 import { Navbar } from "@/components/navigation/navbar";
 import { Footer } from "@/components/layout/footer";
 import { WhatsAppFloat } from "@/components/common/whatsapp-float";
@@ -10,8 +12,10 @@ import { Toaster } from "sonner";
 export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
-      <CartProvider>
-        <div className="relative flex min-h-screen flex-col">
+      <WishlistProvider>
+        <CompareProvider>
+          <CartProvider>
+            <div className="relative flex min-h-screen flex-col">
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
@@ -27,7 +31,9 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
             }}
           />
         </div>
-      </CartProvider>
+          </CartProvider>
+        </CompareProvider>
+      </WishlistProvider>
     </AuthProvider>
   );
 }

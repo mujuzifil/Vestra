@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\V1\Distributor\PaymentUploadController as Distribut
 use App\Http\Controllers\Api\V1\Distributor\AnalyticsController as DistributorAnalyticsController;
 use App\Http\Controllers\Api\V1\Distributor\NotificationController as DistributorNotificationController;
 use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\RecommendationController;
 use App\Http\Controllers\Api\V1\SettingController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\InvoiceController;
@@ -46,7 +47,11 @@ use App\Http\Controllers\Api\V1\AnnouncementController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\NotificationController;
 use App\Http\Controllers\Api\V1\NotificationPreferenceController;
+use App\Http\Controllers\Api\V1\RecentlyViewedController;
 use App\Http\Controllers\Api\V1\ReviewController;
+use App\Http\Controllers\Api\V1\SearchController;
+use App\Http\Controllers\Api\V1\SavedItemController;
+use App\Http\Controllers\Api\V1\WishlistController;
 use App\Http\Controllers\Api\V1\FeedbackController;
 use Illuminate\Support\Facades\Route;
 
@@ -61,6 +66,11 @@ Route::prefix('v1')->group(function () {
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/{slug}', [ProductController::class, 'show']);
     Route::get('/products/{slug}/reviews', [ReviewController::class, 'index']);
+
+    Route::get('/search/autocomplete', [SearchController::class, 'autocomplete']);
+    Route::get('/search/popular', [SearchController::class, 'popular']);
+    Route::get('/recommendations', [RecommendationController::class, 'index']);
+    Route::get('/products/{slug}/recommendations', [RecommendationController::class, 'forProduct']);
     Route::get('/settings', [SettingController::class, 'index']);
 
     Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:contact');
@@ -125,9 +135,32 @@ Route::prefix('v1')->group(function () {
         });
 
         // Reviews
+        Route::get('/auth/reviews', [ReviewController::class, 'myReviews']);
         Route::post('/reviews', [ReviewController::class, 'store']);
         Route::put('/reviews/{review}', [ReviewController::class, 'update']);
         Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
+        Route::post('/reviews/{review}/helpful', [ReviewController::class, 'helpful']);
+        Route::post('/reviews/{review}/report', [ReviewController::class, 'report']);
+
+        // Wishlist
+        Route::get('/auth/wishlist', [WishlistController::class, 'index']);
+        Route::post('/auth/wishlist', [WishlistController::class, 'store']);
+        Route::post('/auth/wishlist/merge', [WishlistController::class, 'merge']);
+        Route::delete('/auth/wishlist/{product}', [WishlistController::class, 'destroy']);
+        Route::post('/auth/wishlist/{product}/move-to-cart', [WishlistController::class, 'moveToCart']);
+
+        // Saved for later
+        Route::get('/auth/saved-for-later', [SavedItemController::class, 'index']);
+        Route::post('/auth/saved-for-later', [SavedItemController::class, 'store']);
+        Route::post('/auth/saved-for-later/merge', [SavedItemController::class, 'merge']);
+        Route::delete('/auth/saved-for-later/{product}', [SavedItemController::class, 'destroy']);
+        Route::post('/auth/saved-for-later/{product}/move-to-cart', [SavedItemController::class, 'moveToCart']);
+
+        // Recently viewed
+        Route::get('/auth/recently-viewed', [RecentlyViewedController::class, 'index']);
+        Route::post('/auth/recently-viewed', [RecentlyViewedController::class, 'store']);
+        Route::delete('/auth/recently-viewed/{product}', [RecentlyViewedController::class, 'destroy']);
+        Route::delete('/auth/recently-viewed', [RecentlyViewedController::class, 'clear']);
 
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index']);
@@ -182,8 +215,12 @@ Route::prefix('v1')->group(function () {
         Route::middleware([\App\Http\Middleware\RequireAdminPasswordChange::class])->group(function () {
             Route::get('/admin/reviews', [ReviewController::class, 'adminIndex']);
             Route::put('/admin/reviews/{review}/status', [ReviewController::class, 'updateStatus']);
+            Route::post('/admin/reviews/{review}/reply', [ReviewController::class, 'reply']);
             Route::get('/admin/feedback', [FeedbackController::class, 'adminIndex']);
             Route::put('/admin/feedback/{feedback}/status', [FeedbackController::class, 'updateStatus']);
+
+            // Search analytics
+            Route::get('/admin/search-analytics', [SearchController::class, 'analytics']);
 
             // Notification management
             Route::get('/admin/notification-dashboard', [NotificationDashboardController::class, 'index']);

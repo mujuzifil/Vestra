@@ -3,10 +3,11 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, Search, User, ShoppingCart, ChevronDown, LogIn } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useCartContext } from "@/lib/cart-context";
+import { useSearchSuggestions } from "@/hooks/use-products";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { cn } from "@/lib/utils";
@@ -33,14 +34,19 @@ const navLinks = [
 ];
 
 export function Navbar() {
+  const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [badgeBump, setBadgeBump] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { user, isAuthenticated, logout } = useAuth();
   const { itemCount } = useCartContext();
   const prevItemCountRef = useRef(itemCount);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const { data: suggestions } = useSearchSuggestions(searchQuery);
 
   useEffect(() => {
     if (itemCount > prevItemCountRef.current) {
@@ -60,6 +66,12 @@ export function Navbar() {
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (searchOpen) {
+      searchInputRef.current?.focus();
+    }
+  }, [searchOpen]);
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -137,7 +149,11 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2 ml-auto">
-          <button aria-label="Search products" className="text-white hover:text-secondary-400 transition-colors-base p-2 rounded-full focus-visible:ring-2 focus-visible:ring-secondary-500">
+          <button
+            aria-label="Search products"
+            onClick={() => setSearchOpen(true)}
+            className="text-white hover:text-secondary-400 transition-colors-base p-2 rounded-full focus-visible:ring-2 focus-visible:ring-secondary-500"
+          >
             <Search className="w-5 h-5" aria-hidden="true" />
           </button>
 
@@ -265,6 +281,67 @@ export function Navbar() {
           </Link>
         )}
       </div>
+
+      {/* Search overlay */}
+      {searchOpen && (
+        <div className="fixed inset-0 z-[60] bg-primary-900/95 backdrop-blur-sm flex items-start justify-center pt-24 px-4">
+          <div className="w-full max-w-2xl bg-white rounded-[20px] shadow-2xl overflow-hidden">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (searchQuery.trim()) {
+                  router.push(`/products?q=${encodeURIComponent(searchQuery.trim())}`);
+                  setSearchOpen(false);
+                  setSearchQuery("");
+                }
+              }}
+              className="flex items-center gap-3 p-4 border-b border-default"
+            >
+              <Search className="w-5 h-5 text-placeholder" />
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search products..."
+                className="flex-1 text-lg text-primary-900 placeholder:text-placeholder outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setSearchOpen(false)}
+                className="p-2 text-muted hover:text-primary-900"
+                aria-label="Close search"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </form>
+            <div className="max-h-[60vh] overflow-y-auto p-2">
+              {suggestions && suggestions.length > 0 && (
+                <div className="py-2">
+                  <p className="px-4 text-xs font-semibold text-muted uppercase tracking-wider mb-1">Suggestions</p>
+                  {suggestions.map((suggestion) => (
+                    <Link
+                      key={suggestion.id}
+                      href={`/products/${suggestion.slug}`}
+                      onClick={() => {
+                        setSearchOpen(false);
+                        setSearchQuery("");
+                      }}
+                      className="flex items-center gap-3 px-4 py-3 hover:bg-surface-page rounded-xl transition-colors-base"
+                    >
+                      <Search className="w-4 h-4 text-muted" />
+                      <span className="text-sm font-medium text-primary-900">{suggestion.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+              {searchQuery.trim().length >= 2 && (!suggestions || suggestions.length === 0) && (
+                <div className="px-4 py-6 text-center text-sm text-muted">No products found.</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
     </header>

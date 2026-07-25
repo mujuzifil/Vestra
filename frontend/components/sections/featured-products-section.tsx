@@ -8,7 +8,7 @@ import { ShoppingCart, Loader2 } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { SkeletonGrid } from "@/components/ui/skeleton-grid";
 import { ApiError } from "@/components/ui/api-error";
-import { useProducts } from "@/hooks/use-products";
+import { useHomeRecommendations } from "@/hooks/use-recommendations";
 import { useCartContext, toCartProduct } from "@/lib/cart-context";
 import { toastAddedToCart } from "@/lib/toast-utils";
 import type { Product } from "@/types";
@@ -47,9 +47,9 @@ function QuickAddButton({ product, disabled }: { product: Product; disabled?: bo
 }
 
 export function FeaturedProductsSection() {
-  const { data: products, isLoading, error, refetch } = useProducts();
+  const { data: recommendations, isLoading, error, refetch } = useHomeRecommendations(6);
 
-  const featured = products?.filter((p) => p.featured).slice(0, 3) || products?.slice(0, 3) || [];
+  const featured = recommendations?.best_sellers?.slice(0, 3) || [];
 
   return (
     <section id="products" className="py-24 lg:py-36 bg-white">
