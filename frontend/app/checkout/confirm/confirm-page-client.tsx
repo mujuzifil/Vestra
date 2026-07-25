@@ -132,32 +132,35 @@ export function ConfirmPageClient() {
               Items Ordered
             </h2>
             <div className="space-y-3">
-              {order.items.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex gap-4 p-4 rounded-xl border border-border-default bg-surface-card"
-                >
-                  <div className="relative w-16 h-16 rounded-lg bg-neutral-50 overflow-hidden flex-shrink-0">
-                    <Image
-                      src="/assets/images/products/placeholder.png"
-                      alt={item.product_name}
-                      fill
-                      className="object-contain p-2"
-                    />
+              {order.items.map((item) => {
+                const image = item.product?.images?.[0]?.image || "/assets/images/products/placeholder.png";
+                return (
+                  <div
+                    key={item.id}
+                    className="flex gap-4 p-4 rounded-xl border border-border-default bg-surface-card"
+                  >
+                    <div className="relative w-16 h-16 rounded-lg bg-neutral-50 overflow-hidden flex-shrink-0">
+                      <Image
+                        src={image}
+                        alt={item.product_name}
+                        fill
+                        className="object-contain p-2"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-text-heading">{item.product_name}</p>
+                      <p className="text-xs text-text-muted">SKU: {item.product_sku}</p>
+                      <p className="text-xs text-text-muted">Qty: {item.quantity}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-text-heading">{formatPrice(Number(item.line_total || 0))}</p>
+                      <p className="text-xs text-text-muted">
+                        {formatPrice(Number(item.unit_price || 0))} each
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-text-heading">{item.product_name}</p>
-                    <p className="text-xs text-text-muted">SKU: {item.product_sku}</p>
-                    <p className="text-xs text-text-muted">Qty: {item.quantity}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-text-heading">{formatPrice(Number(item.line_total || 0))}</p>
-                    <p className="text-xs text-text-muted">
-                      {formatPrice(Number(item.unit_price || 0))} each
-                    </p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -269,5 +272,3 @@ export function ConfirmPageClient() {
     </div>
   );
 }
-
-

@@ -59,7 +59,7 @@ class NotificationDispatcherService
                 match ($channel) {
                     NotificationChannel::EMAIL => $this->sendEmail($user, $templateKey, $variables, $metadata, $delivery),
                     NotificationChannel::SMS => $this->sendSms($user, $templateKey, $variables, $metadata, $delivery),
-                    NotificationChannel::IN_APP => $this->sendInApp($user, $rendered, $metadata, $delivery),
+                    NotificationChannel::IN_APP => $this->sendInApp($user, $rendered, $variables, $metadata, $delivery),
                     NotificationChannel::PUSH => $this->sendPush($user, $templateKey, $variables, $metadata, $delivery),
                 };
             } catch (\Throwable $e) {
@@ -117,7 +117,7 @@ class NotificationDispatcherService
     /**
      * Dispatch an in-app/database notification.
      */
-    protected function sendInApp(User $user, array $rendered, array $metadata, $delivery): void
+    protected function sendInApp(User $user, array $rendered, array $variables, array $metadata, $delivery): void
     {
         $notification = new SystemNotification(
             templateKey: $metadata['template_key'] ?? 'system.notification',

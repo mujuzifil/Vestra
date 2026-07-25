@@ -17,6 +17,7 @@ class OrderItemResource extends JsonResource
             'unit_price' => number_format($this->unit_price, 2),
             'quantity' => $this->quantity,
             'line_total' => number_format($this->line_total, 2),
+            'product' => new ProductResource($this->whenLoaded('product')),
         ];
     }
 }
