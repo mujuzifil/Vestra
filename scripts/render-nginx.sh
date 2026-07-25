@@ -42,6 +42,11 @@ COMPOSE="docker compose -f docker-compose.prod.yml --env-file ${ENV_FILE}"
 
 log "Rendering full SSL nginx configuration..."
 
+# The bootstrap default.conf also declares listen 80 default_server. Remove it
+# before rendering the full SSL vhost so nginx does not see two default servers.
+$COMPOSE exec -T nginx rm -f /etc/nginx/conf.d/default.conf \
+    || log "WARNING: could not remove bootstrap default.conf."
+
 # Render the template inside the nginx container using the same envsubst the
 # official image uses. Output goes to /etc/nginx/conf.d/vestra.conf.
 $COMPOSE exec -T nginx sh -c "envsubst '\${APP_DOMAIN} \${API_DOMAIN} \${ADMIN_DOMAIN}' < /etc/nginx/templates/vestra.conf.ssl.tmpl > /etc/nginx/conf.d/vestra.conf" \

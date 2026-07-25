@@ -84,7 +84,7 @@ class ApiAnalyticsService
             $current = $start->copy();
             while ($current <= $end) {
                 $dateKey = $current->toDateString();
-                $row = $rows[$dateKey];
+                $row = $rows->get($dateKey);
                 $labels[] = $current->format('M d');
                 $total = (int) ($row?->total ?? 0);
                 $errors = (int) ($row?->errors ?? 0);

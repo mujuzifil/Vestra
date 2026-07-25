@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\NotificationChannel;
 use App\Enums\NotificationStatus;
+use App\Filament\Resources\NotificationDeliveryResource\Pages;
 use App\Models\NotificationDelivery;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -76,6 +77,13 @@ class NotificationDeliveryResource extends Resource
             ])
             ->bulkActions([])
             ->defaultSort('created_at', 'desc');
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListNotificationDeliveries::route('/'),
+        ];
     }
 
     public static function canCreate(): bool

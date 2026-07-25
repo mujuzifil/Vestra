@@ -402,6 +402,15 @@ class OrderResource extends Resource
             });
     }
 
+    public static function getPages(): array
+    {
+        return [
+            'edit' => Pages\EditOrder::route('/{record}/edit'),
+            'index' => Pages\ListOrders::route('/'),
+            'view' => Pages\ViewOrder::route('/{record}'),
+        ];
+    }
+
     private static function getMarkAsRefundedAction(): Tables\Actions\Action
     {
         return Tables\Actions\Action::make('markAsRefunded')
