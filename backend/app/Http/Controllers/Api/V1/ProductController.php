@@ -43,7 +43,7 @@ class ProductController extends Controller
             );
         }
 
-        return $this->successResponse(ProductResource::collection($products));
+        return $this->successResponse(ProductResource::collection($products)->response()->getData(true));
     }
 
     public function show(string $slug): JsonResponse
