@@ -118,6 +118,16 @@ class User extends Authenticatable
         return $this->hasMany(CustomerDeletionRequest::class);
     }
 
+    public function customerNotes(): HasMany
+    {
+        return $this->hasMany(CustomerNote::class, 'customer_id');
+    }
+
+    public function customerTags(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(CustomerTag::class, 'customer_tag', 'customer_id', 'customer_tag_id');
+    }
+
     public function distributor(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Distributor::class);
@@ -126,6 +136,11 @@ class User extends Authenticatable
     public function auditLogs(): HasMany
     {
         return $this->hasMany(AuditLog::class);
+    }
+
+    public function paymentTransactions(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(PaymentTransaction::class, Order::class);
     }
 
     public function lifetimeOrderCount(): int

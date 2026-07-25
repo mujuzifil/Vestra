@@ -69,6 +69,7 @@ class RoleResource extends Resource
                             ])->toArray())
                             ->columns(2)
                             ->gridDirection('row')
+                            ->searchable()
                             ->bulkToggleable(),
                     ]),
             ]);

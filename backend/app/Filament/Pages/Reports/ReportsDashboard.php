@@ -77,6 +77,20 @@ class ReportsDashboard extends Page
                 'route' => DistributorReport::getUrl(),
                 'color' => 'primary',
             ],
+            [
+                'label' => 'Procurement Report',
+                'description' => 'Purchase orders, suppliers, and committed spend.',
+                'icon' => 'heroicon-o-clipboard-document-list',
+                'route' => ProcurementReport::getUrl(),
+                'color' => 'info',
+            ],
+            [
+                'label' => 'Credit Report',
+                'description' => 'Distributor credit limits, utilization, and transactions.',
+                'icon' => 'heroicon-o-credit-card',
+                'route' => CreditReport::getUrl(),
+                'color' => 'warning',
+            ],
         ];
     }
 }

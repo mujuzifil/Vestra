@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\ProductStatus;
 use App\Filament\Resources\ProductResource\Pages;
+use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Category;
 use App\Models\Product;
 use App\Services\AuditService;
@@ -540,7 +541,9 @@ class ProductResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            RelationManagers\ProductWarehouseStocksRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

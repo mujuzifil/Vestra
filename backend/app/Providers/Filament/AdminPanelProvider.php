@@ -131,6 +131,11 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 'E-Commerce',
                 'Catalog',
+                'Inventory',
+                'Distributors',
+                'Finance',
+                'CRM',
+                'Operations',
                 'Requests',
                 'Reports',
                 'Administration',

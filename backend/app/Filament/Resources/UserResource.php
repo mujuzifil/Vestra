@@ -3,10 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use App\Services\AuditService;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -68,6 +70,10 @@ class UserResource extends Resource
                             ->default(true)
                             ->required()
                             ->disabled(),
+
+                        Forms\Components\TextInput::make('department')
+                            ->maxLength(255)
+                            ->placeholder('e.g. Sales, Operations'),
                     ])
                     ->columns(2),
 
@@ -120,6 +126,10 @@ class UserResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->copyable(),
+
+                Tables\Columns\TextColumn::make('department')
+                    ->placeholder('—')
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('roles.name')
                     ->badge()
@@ -261,6 +271,25 @@ class UserResource extends Resource
                         );
                     })
                     ->hidden(fn (User $record): bool => $record->id === auth()->id()),
+
+                Tables\Actions\Action::make('sendInvitation')
+                    ->label('Send invitation')
+                    ->icon('heroicon-o-envelope')
+                    ->color('info')
+                    ->requiresConfirmation()
+                    ->modalHeading('Send Invitation')
+                    ->modalDescription('Email invitation integration will be available in a future release. This action is a placeholder.')
+                    ->action(function (User $record): void {
+                        AuditService::log(
+                            auth()->user(),
+                            'administrator.invitation_sent',
+                            $record,
+                            ['email' => $record->email]
+                        );
+
+                        Notification::make()->title('Invitation integration is planned')->info()->send();
+                    })
+                    ->hidden(fn (User $record): bool => $record->id === auth()->id()),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -342,7 +371,27 @@ class UserResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            RelationManagers\PersonalAccessTokensRelationManager::class,
+        ];
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'email', 'department'];
+    }
+
+    public static function getGlobalSearchResultTitle(\Illuminate\Database\Eloquent\Model $record): string
+    {
+        return $record->name;
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Email' => $record->email,
+            'Department' => $record->department ?? '—',
+        ];
     }
 
     public static function getPages(): array

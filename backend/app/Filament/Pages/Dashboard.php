@@ -4,13 +4,16 @@ namespace App\Filament\Pages;
 
 use App\Filament\Widgets\AlertsWidget;
 use App\Filament\Widgets\ExecutiveKpiWidget;
+use App\Filament\Widgets\InventoryValueWidget;
 use App\Filament\Widgets\LowStockWidget;
 use App\Filament\Widgets\OperationalKpiWidget;
 use App\Filament\Widgets\OrderStatusChartWidget;
+use App\Filament\Widgets\OutstandingCreditWidget;
 use App\Filament\Widgets\QuickActionsWidget;
 use App\Filament\Widgets\RecentActivityWidget;
 use App\Filament\Widgets\RecentOrdersWidget;
 use App\Filament\Widgets\RevenueChartWidget;
+use App\Filament\Widgets\TopDistributorsWidget;
 use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
@@ -32,7 +35,10 @@ class Dashboard extends BaseDashboard
             QuickActionsWidget::class,
             RevenueChartWidget::class,
             OrderStatusChartWidget::class,
+            InventoryValueWidget::class,
+            OutstandingCreditWidget::class,
             RecentOrdersWidget::class,
+            TopDistributorsWidget::class,
             LowStockWidget::class,
             AlertsWidget::class,
             RecentActivityWidget::class,

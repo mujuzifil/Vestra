@@ -77,6 +77,21 @@ class Product extends Model
         return $this->hasMany(DistributorProductPrice::class);
     }
 
+    public function warehouseStocks(): HasMany
+    {
+        return $this->hasMany(ProductWarehouseStock::class);
+    }
+
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+    public function purchaseOrderItems(): HasMany
+    {
+        return $this->hasMany(PurchaseOrderItem::class);
+    }
+
     public function averageRating(): float
     {
         return (float) $this->reviews()

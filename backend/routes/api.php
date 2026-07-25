@@ -35,8 +35,13 @@ use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\InvoiceController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\Admin\AnnouncementController as AdminAnnouncementController;
+use App\Http\Controllers\Api\V1\Admin\AutomatedWorkflowController as AdminAutomatedWorkflowController;
+use App\Http\Controllers\Api\V1\Admin\CreditAccountController as AdminCreditAccountController;
 use App\Http\Controllers\Api\V1\Admin\NotificationDashboardController;
 use App\Http\Controllers\Api\V1\Admin\NotificationTemplateController;
+use App\Http\Controllers\Api\V1\Admin\PurchaseOrderController as AdminPurchaseOrderController;
+use App\Http\Controllers\Api\V1\Admin\SupplierController as AdminSupplierController;
+use App\Http\Controllers\Api\V1\Admin\WarehouseController as AdminWarehouseController;
 use App\Http\Controllers\Api\V1\AnnouncementController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\NotificationController;
@@ -184,6 +189,20 @@ Route::prefix('v1')->group(function () {
             Route::get('/admin/notification-dashboard', [NotificationDashboardController::class, 'index']);
             Route::apiResource('/admin/notifications/templates', NotificationTemplateController::class);
             Route::apiResource('/admin/announcements', AdminAnnouncementController::class);
+
+            // Inventory & Procurement
+            Route::apiResource('/admin/warehouses', AdminWarehouseController::class)->only(['index', 'show']);
+            Route::apiResource('/admin/suppliers', AdminSupplierController::class)->only(['index', 'show']);
+            Route::apiResource('/admin/purchase-orders', AdminPurchaseOrderController::class)->only(['index', 'show']);
+            Route::get('/admin/purchase-orders/status-counts', [AdminPurchaseOrderController::class, 'statusCounts']);
+
+            // Finance
+            Route::apiResource('/admin/credit-accounts', AdminCreditAccountController::class)->only(['index', 'show']);
+            Route::get('/admin/credit-accounts/summary', [AdminCreditAccountController::class, 'summary']);
+
+            // Workflow automation
+            Route::apiResource('/admin/automated-workflows', AdminAutomatedWorkflowController::class)->only(['index', 'show']);
+            Route::get('/admin/automated-workflows/events', [AdminAutomatedWorkflowController::class, 'events']);
         });
     });
 
