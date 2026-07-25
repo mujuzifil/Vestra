@@ -126,12 +126,26 @@ Route::prefix('v1')->group(function () {
         Route::get('/payments/{reference}', [PaymentController::class, 'getTransaction']);
 
         // Reports (admin only)
-        Route::middleware(['can:view reports'])->group(function () {
+        Route::middleware(['can:view reports', 'log.api'])->group(function () {
             Route::get('/reports/dashboard', [ReportController::class, 'dashboard']);
+            Route::get('/reports/executive', [ReportController::class, 'executive']);
+            Route::get('/reports/revenue', [ReportController::class, 'revenue']);
+            Route::get('/reports/sales', [ReportController::class, 'sales']);
             Route::get('/reports/sales-trend', [ReportController::class, 'salesTrend']);
             Route::get('/reports/best-sellers', [ReportController::class, 'bestSellers']);
+            Route::get('/reports/inventory', [ReportController::class, 'inventory']);
             Route::get('/reports/inventory-value', [ReportController::class, 'inventoryValue']);
+            Route::get('/reports/customers', [ReportController::class, 'customers']);
             Route::get('/reports/customer-growth', [ReportController::class, 'customerGrowth']);
+            Route::get('/reports/customer-intelligence', [ReportController::class, 'customerIntelligence']);
+            Route::get('/reports/distributors', [ReportController::class, 'distributors']);
+            Route::get('/reports/distributor-intelligence', [ReportController::class, 'distributorIntelligence']);
+            Route::get('/reports/inventory-intelligence', [ReportController::class, 'inventoryIntelligence']);
+            Route::get('/reports/engagement', [ReportController::class, 'engagement']);
+            Route::get('/reports/search-analytics', [ReportController::class, 'searchAnalytics']);
+            Route::get('/reports/forecast', [ReportController::class, 'forecast']);
+            Route::get('/reports/api-analytics', [ReportController::class, 'apiAnalytics']);
+            Route::get('/reports/operational', [ReportController::class, 'operational']);
         });
 
         // Reviews

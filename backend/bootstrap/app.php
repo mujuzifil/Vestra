@@ -64,6 +64,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'distributor' => \App\Http\Middleware\EnsureDistributor::class,
+            'log.api' => \App\Http\Middleware\LogApiRequest::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

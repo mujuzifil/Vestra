@@ -1,5 +1,35 @@
 # VESTRA Changelog
 
+## [1.0.0] — VESTRA Commerce Platform General Availability
+
+### Analytics, Reporting & Business Intelligence
+- Added executive KPI aggregate across revenue, sales, customers, inventory, engagement, distributors, and finance
+- Added customer intelligence: segmentation, lifetime value, retention, churn, regional analysis
+- Added distributor intelligence: revenue, credit utilization, outstanding balances, performance trends
+- Added inventory intelligence: turnover, category valuation, warehouse utilization, dead stock
+- Added search, engagement, wishlist, and recommendation analytics
+- Added API analytics with request logging middleware, volume, endpoints, latency, errors, and auth failures
+- Added operational monitoring: queue health, failed jobs, scheduler status, storage, cache, notifications
+- Added forecasting engine for revenue, orders, inventory stockouts, customer growth, and distributor growth
+- Added scheduled analytics jobs for daily snapshots and forecast snapshots
+
+### Reporting
+- Added new Filament report pages: Forecasting, Customer Intelligence, Distributor Intelligence, Inventory Intelligence, API Analytics, Operational Monitoring
+- Added branded PDF export via `laravel-dompdf`
+- Added Excel export via `maatwebsite/excel`
+- Added printable HTML export
+
+### Admin Dashboard
+- Added Forecast, Customer Intelligence, Distributor Intelligence, Inventory Intelligence, Search Analytics, and API Health widgets
+
+### API
+- Added 13 new report endpoints under `/api/v1/reports/*`
+
+### Release
+- Prepared Version 1.0.0 release
+- Documented production deployment runbook
+- Documented validation checklist
+
 ## [4.0.0] — Production Release Candidate
 
 ### Security

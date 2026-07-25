@@ -91,6 +91,48 @@ class ReportsDashboard extends Page
                 'route' => CreditReport::getUrl(),
                 'color' => 'warning',
             ],
+            [
+                'label' => 'Forecasting',
+                'description' => 'Revenue, order, inventory, and growth forecasts.',
+                'icon' => 'heroicon-o-arrow-trending-up',
+                'route' => ForecastReport::getUrl(),
+                'color' => 'success',
+            ],
+            [
+                'label' => 'Customer Intelligence',
+                'description' => 'Segments, lifetime value, retention, churn, and regions.',
+                'icon' => 'heroicon-o-user-group',
+                'route' => CustomerIntelligenceReport::getUrl(),
+                'color' => 'primary',
+            ],
+            [
+                'label' => 'Distributor Intelligence',
+                'description' => 'Wholesale revenue, credit utilization, and performance.',
+                'icon' => 'heroicon-o-building-office',
+                'route' => DistributorIntelligenceReport::getUrl(),
+                'color' => 'info',
+            ],
+            [
+                'label' => 'Inventory Intelligence',
+                'description' => 'Turnover, category valuation, warehouses, and dead stock.',
+                'icon' => 'heroicon-o-cube-transparent',
+                'route' => InventoryIntelligenceReport::getUrl(),
+                'color' => 'warning',
+            ],
+            [
+                'label' => 'API Analytics',
+                'description' => 'Request volume, endpoints, latency, errors, and auth failures.',
+                'icon' => 'heroicon-o-signal',
+                'route' => ApiAnalyticsReport::getUrl(),
+                'color' => 'primary',
+            ],
+            [
+                'label' => 'Operational Monitoring',
+                'description' => 'Queue health, scheduler, storage, cache, and notifications.',
+                'icon' => 'heroicon-o-server-stack',
+                'route' => OperationalMonitoringReport::getUrl(),
+                'color' => 'danger',
+            ],
         ];
     }
 }

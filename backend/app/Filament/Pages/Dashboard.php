@@ -3,7 +3,12 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\AlertsWidget;
+use App\Filament\Widgets\ApiHealthWidget;
+use App\Filament\Widgets\CustomerIntelligenceWidget;
+use App\Filament\Widgets\DistributorIntelligenceWidget;
 use App\Filament\Widgets\ExecutiveKpiWidget;
+use App\Filament\Widgets\ForecastWidget;
+use App\Filament\Widgets\InventoryIntelligenceWidget;
 use App\Filament\Widgets\InventoryValueWidget;
 use App\Filament\Widgets\LowStockWidget;
 use App\Filament\Widgets\OperationalKpiWidget;
@@ -13,6 +18,7 @@ use App\Filament\Widgets\QuickActionsWidget;
 use App\Filament\Widgets\RecentActivityWidget;
 use App\Filament\Widgets\RecentOrdersWidget;
 use App\Filament\Widgets\RevenueChartWidget;
+use App\Filament\Widgets\SearchAnalyticsWidget;
 use App\Filament\Widgets\TopDistributorsWidget;
 use Filament\Pages\Dashboard as BaseDashboard;
 
@@ -35,6 +41,12 @@ class Dashboard extends BaseDashboard
             QuickActionsWidget::class,
             RevenueChartWidget::class,
             OrderStatusChartWidget::class,
+            ForecastWidget::class,
+            CustomerIntelligenceWidget::class,
+            DistributorIntelligenceWidget::class,
+            InventoryIntelligenceWidget::class,
+            SearchAnalyticsWidget::class,
+            ApiHealthWidget::class,
             InventoryValueWidget::class,
             OutstandingCreditWidget::class,
             RecentOrdersWidget::class,

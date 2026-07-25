@@ -22,6 +22,26 @@
             @livewire(\App\Filament\Widgets\QuickActionsWidget::class)
         </section>
 
+        {{-- Intelligence Overview --}}
+        <section class="dashboard-section" aria-labelledby="intelligence-heading">
+            <h2 id="intelligence-heading" class="sr-only">Business Intelligence</h2>
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                @livewire(\App\Filament\Widgets\ForecastWidget::class)
+                @livewire(\App\Filament\Widgets\CustomerIntelligenceWidget::class)
+                @livewire(\App\Filament\Widgets\DistributorIntelligenceWidget::class)
+                @livewire(\App\Filament\Widgets\InventoryIntelligenceWidget::class)
+            </div>
+        </section>
+
+        {{-- Search & API Health --}}
+        <section class="dashboard-section" aria-labelledby="platform-health-heading">
+            <h2 id="platform-health-heading" class="sr-only">Platform Health</h2>
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                @livewire(\App\Filament\Widgets\SearchAnalyticsWidget::class)
+                @livewire(\App\Filament\Widgets\ApiHealthWidget::class)
+            </div>
+        </section>
+
         {{-- Charts --}}
         <section class="dashboard-section" aria-labelledby="charts-heading">
             <h2 id="charts-heading" class="sr-only">Charts</h2>

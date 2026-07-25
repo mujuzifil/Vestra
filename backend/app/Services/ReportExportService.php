@@ -2,9 +2,12 @@
 
 namespace App\Services;
 
+use App\Exports\ArrayExport;
 use Filament\Notifications\Notification;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Response as ResponseFacade;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportExportService
@@ -53,30 +56,68 @@ class ReportExportService
     }
 
     /**
-     * Placeholder for PDF export.
+     * Export a report as a branded PDF document.
+     *
+     * @param  string  $filename
+     * @param  string  $title
+     * @param  array<int, array{name: string, label: string}>  $columns
+     * @param  array<int, array<string, mixed>>  $rows
+     * @param  string|null  $period
      */
-    public function pdf(): Response
+    public function pdf(string $filename, string $title, array $columns, array $rows, ?string $period = null): Response
     {
-        Notification::make()
-            ->title('PDF export')
-            ->body('PDF report export will be available in a future release.')
-            ->info()
-            ->send();
+        $pdf = app('dompdf.wrapper');
+        $pdf->loadView('reports.pdf.default', [
+            'title' => $title,
+            'columns' => $columns,
+            'rows' => $rows,
+            'period' => $period,
+        ]);
 
-        return ResponseFacade::noContent();
+        return $pdf->download("{$filename}.pdf");
     }
 
     /**
-     * Placeholder for Excel export.
+     * Export a report as an Excel workbook.
+     *
+     * @param  string  $filename
+     * @param  array<int, array{name: string, label: string}>  $columns
+     * @param  array<int, array<string, mixed>>  $rows
      */
-    public function excel(): Response
+    public function excel(string $filename, array $columns, array $rows): BinaryFileResponse
     {
-        Notification::make()
-            ->title('Excel export')
-            ->body('Excel report export will be available in a future release.')
-            ->info()
-            ->send();
+        $headings = array_map(fn (array $column): string => $column['label'] ?? $column['name'] ?? '', $columns);
 
-        return ResponseFacade::noContent();
+        $data = [];
+        foreach ($rows as $row) {
+            $line = [];
+            foreach ($columns as $column) {
+                $key = $column['name'] ?? $column['key'] ?? null;
+                $value = $key ? data_get($row, $key) : null;
+                $line[] = is_array($value) ? json_encode($value) : ($value ?? '');
+            }
+            $data[] = $line;
+        }
+
+        return Excel::download(new ArrayExport($headings, $data), "{$filename}.xlsx");
+    }
+
+    /**
+     * Export a report as printable HTML.
+     *
+     * @param  string  $filename
+     * @param  string  $title
+     * @param  array<int, array{name: string, label: string}>  $columns
+     * @param  array<int, array<string, mixed>>  $rows
+     * @param  string|null  $period
+     */
+    public function printable(string $filename, string $title, array $columns, array $rows, ?string $period = null): Response
+    {
+        return ResponseFacade::view('reports.pdf.default', [
+            'title' => $title,
+            'columns' => $columns,
+            'rows' => $rows,
+            'period' => $period,
+        ]);
     }
 }

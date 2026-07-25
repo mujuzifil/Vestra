@@ -3,6 +3,8 @@
 namespace App\Filament\Pages\Reports;
 
 use App\Filament\Concerns\HasReportFilters;
+use App\Services\ApiAnalyticsService;
+use App\Services\ForecastingService;
 use App\Services\ReportExportService;
 use App\Services\ReportService;
 use Filament\Actions\Action;
@@ -20,11 +22,17 @@ abstract class ReportPage extends Page implements HasForms
 
     protected ReportService $reportService;
 
+    protected ForecastingService $forecastingService;
+
+    protected ApiAnalyticsService $apiAnalyticsService;
+
     protected ReportExportService $exportService;
 
     public function mount(): void
     {
         $this->reportService = app(ReportService::class);
+        $this->forecastingService = app(ForecastingService::class);
+        $this->apiAnalyticsService = app(ApiAnalyticsService::class);
         $this->exportService = app(ReportExportService::class);
 
         $this->mountFiltersForm();
@@ -53,13 +61,13 @@ abstract class ReportPage extends Page implements HasForms
                 ->label('Export PDF')
                 ->icon('heroicon-o-document-arrow-down')
                 ->color('gray')
-                ->action(fn () => $this->exportService->pdf()),
+                ->action(fn () => $this->exportPdf()),
 
             Action::make('exportExcel')
                 ->label('Export Excel')
                 ->icon('heroicon-o-table-cells')
                 ->color('gray')
-                ->action(fn () => $this->exportService->excel()),
+                ->action(fn () => $this->exportExcel()),
         ];
     }
 
@@ -76,5 +84,37 @@ abstract class ReportPage extends Page implements HasForms
             $this->getExportColumns(),
             $this->getExportRows()
         );
+    }
+
+    protected function exportPdf()
+    {
+        return $this->exportService->pdf(
+            $this->getExportFilename($this->getReportSlug()),
+            $this->getTitle(),
+            $this->getExportColumns(),
+            $this->getExportRows(),
+            $this->getFilterPeriodLabel()
+        );
+    }
+
+    protected function exportExcel()
+    {
+        return $this->exportService->excel(
+            $this->getExportFilename($this->getReportSlug()),
+            $this->getExportColumns(),
+            $this->getExportRows()
+        );
+    }
+
+    protected function getFilterPeriodLabel(): ?string
+    {
+        $start = $this->getStartDate()?->format('M d, Y');
+        $end = $this->getEndDate()?->format('M d, Y');
+
+        if ($start && $end) {
+            return "{$start} - {$end}";
+        }
+
+        return null;
     }
 }
