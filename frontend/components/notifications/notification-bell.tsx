@@ -8,11 +8,16 @@ import { toastError, toastSuccess } from "@/lib/toast-utils";
 
 export function NotificationBell() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const { data, isLoading } = useUnreadNotifications();
   const markAsRead = useMarkNotificationAsRead();
   const markAllAsRead = useMarkAllNotificationsAsRead();
   const unreadCount = data?.total ?? 0;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -50,7 +55,7 @@ export function NotificationBell() {
         className="relative text-white hover:text-green-400 transition-colors p-2 rounded-full focus-visible:ring-2 focus-visible:ring-green-500"
       >
         <Bell className="w-5 h-5" aria-hidden="true" />
-        {unreadCount > 0 && (
+        {mounted && unreadCount > 0 && (
           <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>

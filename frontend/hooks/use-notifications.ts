@@ -27,6 +27,7 @@ export function useNotifications(page: number = 1) {
         hasMore: response.current_page < response.last_page,
       };
     },
+    enabled: typeof window !== "undefined",
   });
 }
 
@@ -40,6 +41,7 @@ export function useUnreadNotifications() {
         total: response.total,
       };
     },
+    enabled: typeof window !== "undefined",
   });
 }
 

@@ -141,7 +141,7 @@ export function NotificationsPageClient() {
               </Link>
               <button
                 onClick={handleMarkAllAsRead}
-                disabled={markAllAsRead.isPending || !data?.notifications.some((n) => !n.read_at)}
+                disabled={markAllAsRead.isPending || !data?.notifications?.some((n) => !n.read_at)}
                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-secondary-600 bg-secondary-50 rounded-xl hover:bg-secondary-100 transition-colors-base disabled:opacity-50"
               >
                 <CheckCheck className="w-4 h-4" />

@@ -19,9 +19,15 @@ class NotificationController extends Controller
             ->latest()
             ->paginate($request->integer('per_page', 15));
 
-        return $this->successResponse(
-            NotificationResource::collection($notifications)
-        );
+        $resource = NotificationResource::collection($notifications)->response()->getData(true);
+
+        return $this->successResponse([
+            'data' => $resource['data'],
+            'current_page' => $resource['meta']['current_page'],
+            'last_page' => $resource['meta']['last_page'],
+            'per_page' => $resource['meta']['per_page'],
+            'total' => $resource['meta']['total'],
+        ]);
     }
 
     public function unread(Request $request): JsonResponse
@@ -31,9 +37,15 @@ class NotificationController extends Controller
             ->latest()
             ->paginate($request->integer('per_page', 15));
 
-        return $this->successResponse(
-            NotificationResource::collection($notifications)
-        );
+        $resource = NotificationResource::collection($notifications)->response()->getData(true);
+
+        return $this->successResponse([
+            'data' => $resource['data'],
+            'current_page' => $resource['meta']['current_page'],
+            'last_page' => $resource['meta']['last_page'],
+            'per_page' => $resource['meta']['per_page'],
+            'total' => $resource['meta']['total'],
+        ]);
     }
 
     public function markAsRead(Request $request, string $id): JsonResponse
