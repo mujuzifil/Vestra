@@ -175,8 +175,7 @@ fi
 
 log "Waiting for frontend health..."
 for i in $(seq 1 18); do
-    if $COMPOSE exec -T frontend wget --no-verbose --tries=1 --spider \
-         http://localhost:3000/api/health >/dev/null 2>&1; then
+    if $COMPOSE exec -T frontend curl -fsS http://localhost:3000/api/health >/dev/null 2>&1; then
         ok "Frontend healthy after ${i} attempt(s)."
         break
     fi
