@@ -28,10 +28,10 @@ class InvoiceController extends Controller
             return $this->errorResponse('Unauthorized.', 403);
         }
 
-        $path = $this->service->save($orderModel);
+        $content = $this->service->generateBinary($orderModel);
 
-        return response()->streamDownload(function () use ($path) {
-            echo file_get_contents($path);
+        return response()->streamDownload(function () use ($content) {
+            echo $content;
         }, "{$orderModel->invoice_number}.pdf", [
             'Content-Type' => 'application/pdf',
         ]);
