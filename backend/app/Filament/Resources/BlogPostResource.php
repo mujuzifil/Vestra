@@ -112,7 +112,7 @@ class BlogPostResource extends Resource
                             ->native(false),
 
                         Forms\Components\Toggle::make('is_featured')
-                            ->label('Featured on Knowledge Centre'),
+                            ->label('Featured on Knowledge Centre')
                             ->default(false),
 
                         Forms\Components\TextInput::make('reading_time_minutes')
