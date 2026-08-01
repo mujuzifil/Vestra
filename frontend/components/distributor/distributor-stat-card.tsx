@@ -20,7 +20,7 @@ export function DistributorStatCard({
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-muted">{label}</p>
-          <p className="text-2xl lg:text-3xl font-extrabold text-primary-900 mt-1">{value}</p>
+          <p className="text-2xl lg:text-3xl font-extrabold text-text-heading mt-1">{value}</p>
         </div>
         <div className={cn("p-2.5 rounded-xl", color)}>
           <Icon className="w-5 h-5 text-white" />

@@ -276,12 +276,12 @@ export function Navbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search products..."
-                className="flex-1 text-lg text-primary-900 placeholder:text-placeholder outline-none"
+                className="flex-1 text-lg text-text-heading placeholder:text-placeholder outline-none"
               />
               <button
                 type="button"
                 onClick={() => setSearchOpen(false)}
-                className="p-2 text-muted hover:text-primary-900"
+                className="p-2 text-text-muted hover:text-text-heading"
                 aria-label="Close search"
               >
                 <X className="w-5 h-5" />
@@ -290,7 +290,7 @@ export function Navbar() {
             <div className="max-h-[60vh] overflow-y-auto p-2">
               {suggestions && suggestions.length > 0 && (
                 <div className="py-2">
-                  <p className="px-4 text-xs font-semibold text-muted uppercase tracking-wider mb-1">Suggestions</p>
+                  <p className="px-4 text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Suggestions</p>
                   {suggestions.map((suggestion) => (
                     <Link
                       key={suggestion.id}
@@ -301,14 +301,14 @@ export function Navbar() {
                       }}
                       className="flex items-center gap-3 px-4 py-3 hover:bg-surface-page rounded-xl transition-colors-base"
                     >
-                      <Search className="w-4 h-4 text-muted" />
-                      <span className="text-sm font-medium text-primary-900">{suggestion.name}</span>
+                      <Search className="w-4 h-4 text-text-muted" />
+                      <span className="text-sm font-medium text-text-heading">{suggestion.name}</span>
                     </Link>
                   ))}
                 </div>
               )}
               {searchQuery.trim().length >= 2 && (!suggestions || suggestions.length === 0) && (
-                <div className="px-4 py-6 text-center text-sm text-muted">No products found.</div>
+                <div className="px-4 py-6 text-center text-sm text-text-muted">No products found.</div>
               )}
             </div>
           </div>

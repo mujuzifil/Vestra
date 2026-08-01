@@ -54,10 +54,10 @@ export function PromiseSection() {
                 <Icon name={item.icon} className="w-6 h-6 lg:w-7 lg:h-7" />
               </div>
               <div>
-                <h3 className="text-base lg:text-lg font-bold text-primary-900 mb-1 leading-tight">
+                <h3 className="text-base lg:text-lg font-bold text-text-heading mb-1 leading-tight">
                   {item.title}
                 </h3>
-                <p className="text-sm text-muted leading-relaxed">{item.description}</p>
+                <p className="text-sm text-text-muted leading-relaxed">{item.description}</p>
               </div>
             </motion.div>
           ))}

@@ -4,11 +4,11 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Container } from "@/components/common/container";
 import { ArrowRight } from "lucide-react";
-
-const prefersReducedMotion =
-  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { Button } from "@/components/ui/button";
 
 export function ContactBannerSection() {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <section
       id="contact-banner"
@@ -34,28 +34,15 @@ export function ContactBannerSection() {
             business goals.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link
-              href="/request-quote"
-              data-track="contact-banner-quote"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-secondary-600 bg-white hover:bg-white/90 hover:-translate-y-1 transition-all-base group"
-            >
-              Request a Quote
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />
-            </Link>
-            <Link
-              href="/contact"
-              data-track="contact-banner-contact"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white border border-white/40 hover:bg-white/10 hover:-translate-y-1 transition-all-base"
-            >
-              Contact Sales
-            </Link>
-            <Link
-              href="/distributor"
-              data-track="contact-banner-distributor"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white border border-white/40 hover:bg-white/10 hover:-translate-y-1 transition-all-base"
-            >
-              Become a Distributor
-            </Link>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto bg-white text-text-heading border-transparent hover:bg-white/90" rightIcon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />}>
+              <Link href="/request-quote" data-track="contact-banner-quote">Request a Quote</Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto border-white/40 text-white bg-transparent hover:bg-white/10 hover:text-white hover:border-white/50">
+              <Link href="/contact" data-track="contact-banner-contact">Contact Sales</Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto border-white/40 text-white bg-transparent hover:bg-white/10 hover:text-white hover:border-white/50">
+              <Link href="/distributor" data-track="contact-banner-distributor">Become a Distributor</Link>
+            </Button>
           </div>
         </motion.div>
       </Container>

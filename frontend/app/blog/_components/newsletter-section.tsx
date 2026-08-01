@@ -54,8 +54,8 @@ export function NewsletterSection() {
               <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-5">
                 <CheckCircle className="w-8 h-8 text-green-600" aria-hidden="true" />
               </div>
-              <h3 className="text-xl font-bold text-primary-900 mb-2">Thank You for Subscribing</h3>
-              <p className="text-muted">
+              <h3 className="text-xl font-bold text-text-heading mb-2">Thank You for Subscribing</h3>
+              <p className="text-text-muted">
                 You will receive our latest Knowledge Centre updates at {email}.
               </p>
             </div>
@@ -66,7 +66,7 @@ export function NewsletterSection() {
             >
               <div className="grid sm:grid-cols-2 gap-4 mb-5">
                 <div>
-                  <label htmlFor="newsletter-name" className="block text-sm font-medium text-primary-900 mb-1.5">
+                  <label htmlFor="newsletter-name" className="block text-sm font-medium text-text-heading mb-1.5">
                     Name
                   </label>
                   <input
@@ -75,11 +75,11 @@ export function NewsletterSection() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Your name"
-                    className="w-full px-4 py-3 rounded-xl border border-default bg-surface-page text-primary-900 placeholder:text-placeholder outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all-base"
+                    className="w-full px-4 py-3 rounded-xl border border-default bg-surface-page text-text-heading placeholder:text-placeholder outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all-base"
                   />
                 </div>
                 <div>
-                  <label htmlFor="newsletter-email" className="block text-sm font-medium text-primary-900 mb-1.5">
+                  <label htmlFor="newsletter-email" className="block text-sm font-medium text-text-heading mb-1.5">
                     Email <span className="text-danger-500">*</span>
                   </label>
                   <input
@@ -89,13 +89,13 @@ export function NewsletterSection() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@company.com"
                     required
-                    className="w-full px-4 py-3 rounded-xl border border-default bg-surface-page text-primary-900 placeholder:text-placeholder outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all-base"
+                    className="w-full px-4 py-3 rounded-xl border border-default bg-surface-page text-text-heading placeholder:text-placeholder outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all-base"
                   />
                 </div>
               </div>
 
               <fieldset className="mb-6">
-                <legend className="block text-sm font-medium text-primary-900 mb-3">Interests</legend>
+                <legend className="block text-sm font-medium text-text-heading mb-3">Interests</legend>
                 <div className="flex flex-wrap gap-2">
                   {interestOptions.map((interest) => {
                     const selected = interests.includes(interest);
@@ -107,7 +107,7 @@ export function NewsletterSection() {
                         className={`px-4 py-2 rounded-full text-sm font-medium border transition-all-base ${
                           selected
                             ? "bg-primary-600 border-primary-600 text-white"
-                            : "bg-surface-page border-default text-primary-900 hover:border-primary-300"
+                            : "bg-surface-page border-default text-text-heading hover:border-primary-300"
                         }`}
                         aria-pressed={selected}
                       >

@@ -58,7 +58,7 @@ export function DocumentUploader({ onUpload, types = defaultTypes }: DocumentUpl
 
   return (
     <form onSubmit={handleSubmit} className="bg-surface-card rounded-[20px] border border-border shadow-sm p-6">
-      <h3 className="text-lg font-bold text-primary-900 mb-4">Upload Document</h3>
+      <h3 className="text-lg font-bold text-text-heading mb-4">Upload Document</h3>
       <div className="grid sm:grid-cols-2 gap-5 mb-4">
         <InputField
           id="doc-title"
@@ -77,17 +77,17 @@ export function DocumentUploader({ onUpload, types = defaultTypes }: DocumentUpl
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-semibold text-primary-900 mb-1.5">File</label>
+        <label className="block text-sm font-semibold text-text-heading mb-1.5">File</label>
         <div
           onClick={() => inputRef.current?.click()}
           className="cursor-pointer border-2 border-dashed border-border rounded-xl p-6 hover:border-secondary-500 hover:bg-secondary-50/30 transition-colors-base"
         >
           <div className="flex flex-col items-center text-center">
-            <Upload className="w-8 h-8 text-neutral-400 mb-2" />
-            <p className="text-sm font-medium text-primary-900">
+            <Upload className="w-8 h-8 text-text-muted mb-2" />
+            <p className="text-sm font-medium text-text-heading">
               {file ? file.name : "Click to upload or drag and drop"}
             </p>
-            <p className="text-xs text-neutral-400 mt-1">PDF, JPG, PNG up to 10MB</p>
+            <p className="text-xs text-text-muted mt-1">PDF, JPG, PNG up to 10MB</p>
           </div>
           <input
             ref={inputRef}
@@ -98,7 +98,7 @@ export function DocumentUploader({ onUpload, types = defaultTypes }: DocumentUpl
           />
         </div>
         {file && (
-          <div className="flex items-center gap-2 mt-3 p-2 rounded-lg bg-surface-page text-sm text-primary-900">
+          <div className="flex items-center gap-2 mt-3 p-2 rounded-lg bg-surface-page text-sm text-text-heading">
             <FileText className="w-4 h-4 text-secondary-600" />
             <span className="flex-1 truncate">{file.name}</span>
             <button
@@ -107,7 +107,7 @@ export function DocumentUploader({ onUpload, types = defaultTypes }: DocumentUpl
                 setFile(null);
                 if (inputRef.current) inputRef.current.value = "";
               }}
-              className="p-1 text-neutral-400 hover:text-danger-600"
+              className="p-1 text-text-muted hover:text-danger-600"
               aria-label="Remove file"
             >
               <X className="w-4 h-4" />

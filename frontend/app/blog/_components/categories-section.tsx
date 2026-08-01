@@ -64,11 +64,11 @@ export function CategoriesSection({ categories, selected, onSelect }: Categories
                   >
                     <Icon name={getCategoryIcon(category.slug)} className="w-6 h-6" />
                   </div>
-                  <h3 className={`font-bold mb-1 ${isSelected ? "text-white" : "text-primary-900"}`}>
+                  <h3 className={`font-bold mb-1 ${isSelected ? "text-white" : "text-text-heading"}`}>
                     {category.name}
                   </h3>
                   {category.description && (
-                    <p className={`text-sm line-clamp-2 ${isSelected ? "text-white/80" : "text-muted"}`}>
+                    <p className={`text-sm line-clamp-2 ${isSelected ? "text-white/80" : "text-text-muted"}`}>
                       {category.description}
                     </p>
                   )}

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Facebook, Instagram, MessageCircle, Mail, Phone, MapPin, Clock } from "lucide-react";
+import { Facebook, Instagram, Linkedin, MessageCircle, Youtube, Mail, Phone, MapPin, Clock } from "lucide-react";
 import { useContactInfo } from "@/hooks/use-settings";
 
 const quickLinks = [
@@ -24,16 +24,18 @@ const productLinks = [
 ];
 
 const socialLinks = [
-  { Icon: Facebook, href: "#", label: "Facebook" },
-  { Icon: Instagram, href: "#", label: "Instagram" },
-  { Icon: MessageCircle, href: "#", label: "WhatsApp" },
+  { Icon: Facebook, href: "https://www.facebook.com/share/1LZTmjZC3J/", label: "Facebook" },
+  { Icon: Instagram, href: "https://www.instagram.com/vestradetergent", label: "Instagram" },
+  { Icon: Linkedin, href: "https://www.linkedin.com/company/vestra%E2%84%A2/", label: "LinkedIn" },
+  { Icon: Youtube, href: "https://youtube.com/@vestradetergent", label: "YouTube" },
+  { Icon: MessageCircle, href: "https://whatsapp.com/channel/0029VbCSQuZ6WaKmC6z76a3n", label: "WhatsApp Channel" },
 ];
 
 export function Footer() {
   const { contactInfo } = useContactInfo();
 
   const phone = contactInfo?.phone || "+256 707 128 442";
-  const email = contactInfo?.email || "vestradetergent@gmail.com";
+  const email = contactInfo?.email || "info@vestradetergents.com";
   const location = contactInfo?.location || "Kampala, Uganda";
   const businessHours = contactInfo?.businessHours || "Mon – Fri: 8:00 AM – 5:00 PM";
 
@@ -60,6 +62,8 @@ export function Footer() {
                   key={label}
                   href={href}
                   aria-label={label}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-secondary-500 hover:-translate-y-1 transition-all-base"
                 >
                   <Icon className="w-4 h-4" aria-hidden="true" />

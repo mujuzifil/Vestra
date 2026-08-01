@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { Container } from "@/components/common/container";
 import { SectionHeader } from "@/components/common/section-header";
 import { ArrowRight, Hotel, School, Factory, HeartHandshake, Briefcase, Stethoscope } from "lucide-react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { Button } from "@/components/ui/button";
 
 const audiences = [
   { icon: Hotel, label: "Hotels" },
@@ -15,10 +17,8 @@ const audiences = [
   { icon: Factory, label: "Manufacturers" },
 ];
 
-const prefersReducedMotion =
-  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
 export function RequestQuoteSection() {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <section
       id="request-quote"
@@ -66,14 +66,9 @@ export function RequestQuoteSection() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-center"
         >
-          <Link
-            href="/request-quote"
-            data-track="quote-section-cta"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-white bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-lg shadow-secondary-500/30 hover:-translate-y-1 transition-transform-base group"
-          >
-            Request a Quote
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />
-          </Link>
+          <Button asChild variant="gradient" className="rounded-full px-7 py-3.5 h-auto group" rightIcon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />}>
+              <Link href="/request-quote" data-track="quote-section-cta">Request a Quote</Link>
+            </Button>
         </motion.div>
       </Container>
     </section>

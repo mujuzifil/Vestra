@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Container } from "@/components/common/container";
 import { PhoneCall, Smartphone, Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function FinalCTASection() {
   return (
@@ -21,27 +22,15 @@ export function FinalCTASection() {
             Our sales team is ready to discuss your requirements and prepare a quotation.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="tel:+256707128442"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-primary-900 bg-white shadow-lg hover:-translate-y-1 transition-transform-base"
-            >
-              <PhoneCall className="w-4 h-4" />
-              Call Sales
-            </Link>
-            <Link
-              href="https://wa.me/256707128442"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold border border-white/40 text-white hover:bg-white/10 transition-colors-base"
-            >
-              <Smartphone className="w-4 h-4" />
-              WhatsApp
-            </Link>
-            <Link
-              href="mailto:vestradetergent@gmail.com"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold border border-white/40 text-white hover:bg-white/10 transition-colors-base"
-            >
-              <Mail className="w-4 h-4" />
-              Email
-            </Link>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto bg-white text-text-heading border-transparent hover:bg-white/90" leftIcon={<PhoneCall className="w-4 h-4" />}>
+              <Link href="tel:+256707128442">Call Sales</Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto border-white/40 text-white bg-transparent hover:bg-white/10 hover:text-white hover:border-white/50" leftIcon={<Smartphone className="w-4 h-4" />}>
+              <Link href="https://wa.me/256707128442">WhatsApp</Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto border-white/40 text-white bg-transparent hover:bg-white/10 hover:text-white hover:border-white/50" leftIcon={<Mail className="w-4 h-4" />}>
+              <Link href="mailto:info@vestradetergents.com">Email</Link>
+            </Button>
           </div>
         </div>
       </Container>

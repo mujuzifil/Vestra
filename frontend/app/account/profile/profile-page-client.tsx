@@ -99,7 +99,7 @@ export function ProfilePageClient() {
         <Container>
           <Link
             href="/account/settings"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Settings
@@ -111,7 +111,7 @@ export function ProfilePageClient() {
                 <User className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-primary-900">Profile Information</h1>
+                <h1 className="text-lg font-bold text-text-heading">Profile Information</h1>
                 <p className="text-sm text-muted">Manage your name, contact details, and preferences.</p>
               </div>
             </div>
@@ -119,7 +119,7 @@ export function ProfilePageClient() {
             <form onSubmit={handleSubmit} className="max-w-2xl space-y-5">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">First Name</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">First Name</label>
                   <input
                     type="text"
                     value={form.first_name}
@@ -128,7 +128,7 @@ export function ProfilePageClient() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Last Name</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Last Name</label>
                   <input
                     type="text"
                     value={form.last_name}
@@ -140,7 +140,7 @@ export function ProfilePageClient() {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Email</label>
                   <input
                     type="email"
                     disabled
@@ -150,7 +150,7 @@ export function ProfilePageClient() {
                   <p className="text-xs text-placeholder mt-1">Email cannot be changed here.</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Phone</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Phone</label>
                   <input
                     type="tel"
                     value={form.phone}
@@ -162,7 +162,7 @@ export function ProfilePageClient() {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Date of Birth</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Date of Birth</label>
                   <input
                     type="date"
                     value={form.date_of_birth}
@@ -171,7 +171,7 @@ export function ProfilePageClient() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Gender</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Gender</label>
                   <select
                     value={form.gender}
                     onChange={(e) => handleChange("gender", e.target.value)}

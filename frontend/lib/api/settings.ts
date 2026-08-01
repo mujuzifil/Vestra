@@ -18,7 +18,7 @@ export function getSettingValue(
 export function buildContactInfo(settings: Setting[]) {
   return {
     phone: getSettingValue(settings, "contact_phone", "+256 707 128 442"),
-    email: getSettingValue(settings, "contact_email", "vestradetergent@gmail.com"),
+    email: getSettingValue(settings, "contact_email", "info@vestradetergents.com"),
     location: getSettingValue(settings, "contact_location", "Kampala, Uganda"),
     whatsapp: getSettingValue(settings, "contact_whatsapp", "+256 707 128 442"),
     businessHours: getSettingValue(settings, "contact_business_hours", "Mon - Fri: 8:00 AM - 6:00 PM"),

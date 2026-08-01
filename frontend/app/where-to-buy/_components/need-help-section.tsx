@@ -52,7 +52,7 @@ export function NeedHelpSection({ contactPhone, contactEmail, whatsapp }: NeedHe
                   <Icon name={channel.icon} className="w-7 h-7" />
                 </div>
                 <h3 className="text-lg font-bold text-text-heading mb-1">{channel.title}</h3>
-                <p className="text-base font-semibold text-primary-900">{channel.value}</p>
+                <p className="text-base font-semibold text-text-heading">{channel.value}</p>
               </a>
             </AnimatedItem>
           ))}

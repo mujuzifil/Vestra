@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight, Clock, Newspaper } from "lucide-react";
 import { Container } from "@/components/common/container";
+import { Button } from "@/components/ui/button";
 import { getBlogImageUrl } from "@/lib/api/blog";
 import type { BlogPost } from "@/types";
 
@@ -55,7 +56,7 @@ export function FeaturedArticleSection({ post }: FeaturedArticleSectionProps) {
           </Link>
 
           <div>
-            <div className="flex items-center gap-3 text-sm text-muted mb-4">
+            <div className="flex items-center gap-3 text-sm text-text-muted mb-4">
               <span className="px-3 py-1 rounded-full bg-secondary-500/10 text-secondary-700 font-semibold">
                 Featured Article
               </span>
@@ -65,13 +66,13 @@ export function FeaturedArticleSection({ post }: FeaturedArticleSectionProps) {
                 </span>
               )}
             </div>
-            <h2 id="featured-article-heading" className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-primary-900 mb-4 tracking-tight">
+            <h2 id="featured-article-heading" className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-text-heading mb-4 tracking-tight">
               {post.title}
             </h2>
-            <p className="text-base lg:text-lg text-muted leading-relaxed mb-6">
+            <p className="text-base lg:text-lg text-text-muted leading-relaxed mb-6">
               {post.excerpt || ""}
             </p>
-            <div className="flex items-center gap-4 text-sm text-muted mb-8">
+            <div className="flex items-center gap-4 text-sm text-text-muted mb-8">
               <span className="flex items-center gap-1">
                 <Clock className="w-4 h-4" aria-hidden="true" />
                 {post.reading_time_minutes} min read
@@ -81,13 +82,9 @@ export function FeaturedArticleSection({ post }: FeaturedArticleSectionProps) {
                 {post.published_at && ` · ${formatDate(post.published_at)}`}
               </span>
             </div>
-            <Link
-              href={`/blog/${post.slug}`}
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-lg shadow-secondary-500/30 hover:-translate-y-1 transition-transform-base group"
-            >
-              Read Article
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />
-            </Link>
+            <Button asChild variant="gradient" className="rounded-full px-7 py-3.5 h-auto group" rightIcon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />}>
+              <Link href={`/blog/${post.slug}`}>Read Article</Link>
+            </Button>
           </div>
         </motion.div>
       </Container>

@@ -23,8 +23,8 @@ const supportChannels = [
   {
     icon: "Mail",
     title: "Email",
-    value: "vestradetergent@gmail.com",
-    href: "mailto:vestradetergent@gmail.com",
+    value: "info@vestradetergents.com",
+    href: "mailto:info@vestradetergents.com",
     description: "Send detailed requirements and attachments.",
   },
   {
@@ -56,7 +56,7 @@ export function CustomerSupportSection() {
                   <Icon name={channel.icon} className="w-6 h-6" />
                 </div>
                 <h3 className="text-lg font-bold text-text-heading mb-1">{channel.title}</h3>
-                <p className="text-base font-semibold text-primary-900 mb-2">{channel.value}</p>
+                <p className="text-base font-semibold text-text-heading mb-2">{channel.value}</p>
                 <p className="text-sm text-text-muted">{channel.description}</p>
               </a>
             </AnimatedItem>

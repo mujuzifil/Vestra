@@ -23,7 +23,7 @@ export function InvoiceDetailPageClient({ invoiceId }: Props) {
     return (
       <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-8 text-center">
         <AlertCircle className="w-10 h-10 mx-auto mb-3 text-placeholder" />
-        <h2 className="text-lg font-bold text-primary-900">Invoice not found</h2>
+        <h2 className="text-lg font-bold text-text-heading">Invoice not found</h2>
         <Link href="/distributor/invoices" className="text-green-600 font-semibold hover:text-green-700">
           Back to Invoices
         </Link>
@@ -35,7 +35,7 @@ export function InvoiceDetailPageClient({ invoiceId }: Props) {
     <div className="space-y-6">
       <Link
         href="/distributor/invoices"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading"
       >
         <ChevronLeft className="w-4 h-4" />
         Back to Invoices
@@ -48,7 +48,7 @@ export function InvoiceDetailPageClient({ invoiceId }: Props) {
               <Receipt className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-extrabold text-primary-900">{invoice.invoice_number}</h1>
+              <h1 className="text-2xl font-extrabold text-text-heading">{invoice.invoice_number}</h1>
               <p className="text-sm text-muted">Issued {new Date(invoice.created_at).toLocaleDateString()}</p>
             </div>
           </div>
@@ -66,7 +66,7 @@ export function InvoiceDetailPageClient({ invoiceId }: Props) {
         <div className="grid sm:grid-cols-3 gap-6 mb-8">
           <div className="p-4 rounded-xl bg-neutral-50">
             <p className="text-sm text-muted mb-1">Amount</p>
-            <p className="text-xl font-extrabold text-primary-900">UGX {invoice.amount}</p>
+            <p className="text-xl font-extrabold text-text-heading">UGX {invoice.amount}</p>
           </div>
           <div className="p-4 rounded-xl bg-neutral-50">
             <p className="text-sm text-muted mb-1">Amount Paid</p>

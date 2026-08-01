@@ -88,7 +88,7 @@ export function PhotoPageClient() {
         <Container>
           <Link
             href="/account/settings"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Settings
@@ -100,7 +100,7 @@ export function PhotoPageClient() {
                 <Camera className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-primary-900">Profile Photo</h1>
+                <h1 className="text-lg font-bold text-text-heading">Profile Photo</h1>
                 <p className="text-sm text-muted">A photo helps personalize your account.</p>
               </div>
             </div>
@@ -123,7 +123,7 @@ export function PhotoPageClient() {
               </div>
 
               <div className="text-center">
-                <p className="font-semibold text-primary-900">{user.name}</p>
+                <p className="font-semibold text-text-heading">{user.name}</p>
                 <p className="text-sm text-muted">{user.email}</p>
               </div>
 

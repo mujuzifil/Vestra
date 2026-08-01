@@ -5,7 +5,7 @@ const COMPANY_NAME = "VESTRA";
 const COMPANY_DESCRIPTION =
   "VESTRA® is a Ugandan manufacturer of professional cleaning solutions, supplying premium detergents and fabric care products to businesses, institutions, and distribution partners across Uganda.";
 const CONTACT_PHONE = "+256 707 128 442";
-const CONTACT_EMAIL = "vestradetergent@gmail.com";
+const CONTACT_EMAIL = "info@vestradetergents.com";
 const CONTACT_LOCATION = "Kampala, Uganda";
 const SITE_URL = "https://vestradetergents.com";
 

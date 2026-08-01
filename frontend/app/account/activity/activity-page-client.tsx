@@ -33,7 +33,7 @@ function ActivityRow({ item }: { item: ActivityItem }) {
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-primary-900">{item.description}</p>
+        <p className="font-semibold text-text-heading">{item.description}</p>
         <p className="text-sm text-muted">
           {new Date(item.created_at).toLocaleString()}
           {item.ip_address && ` · IP ${item.ip_address}`}
@@ -80,7 +80,7 @@ export function ActivityPageClient() {
         <Container>
           <Link
             href="/account/settings"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Settings
@@ -92,7 +92,7 @@ export function ActivityPageClient() {
                 <Activity className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-primary-900">Recent Activity</h1>
+                <h1 className="text-lg font-bold text-text-heading">Recent Activity</h1>
                 <p className="text-sm text-muted">A timeline of events related to your account.</p>
               </div>
             </div>

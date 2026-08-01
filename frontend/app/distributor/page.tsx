@@ -60,9 +60,9 @@ function ApplicationStatusCard({ status }: { status: string }) {
           <div className="p-2 rounded-full bg-green-100">
             <CheckCircle2 className="w-6 h-6 text-green-600" />
           </div>
-          <h2 className="text-xl lg:text-2xl font-bold text-primary-900">Application Approved</h2>
+          <h2 className="text-xl lg:text-2xl font-bold text-text-heading">Application Approved</h2>
         </div>
-        <p className="text-muted mb-6">
+        <p className="text-text-muted mb-6">
           Congratulations! Your distributor application has been approved. You can now access the distributor portal.
         </p>
         <Link
@@ -83,9 +83,9 @@ function ApplicationStatusCard({ status }: { status: string }) {
           <div className="p-2 rounded-full bg-red-100">
             <XCircle className="w-6 h-6 text-red-600" />
           </div>
-          <h2 className="text-xl lg:text-2xl font-bold text-primary-900">Application Not Approved</h2>
+          <h2 className="text-xl lg:text-2xl font-bold text-text-heading">Application Not Approved</h2>
         </div>
-        <p className="text-muted mb-6">
+        <p className="text-text-muted mb-6">
           Thank you for your interest. Unfortunately, your application was not approved at this time. Please contact our partnership team for more information.
         </p>
         <Link
@@ -105,9 +105,9 @@ function ApplicationStatusCard({ status }: { status: string }) {
         <div className="p-2 rounded-full bg-amber-100">
           <Clock className="w-6 h-6 text-amber-600" />
         </div>
-        <h2 className="text-xl lg:text-2xl font-bold text-primary-900">Application Pending</h2>
+        <h2 className="text-xl lg:text-2xl font-bold text-text-heading">Application Pending</h2>
       </div>
-      <p className="text-muted mb-6">
+      <p className="text-text-muted mb-6">
         Your distributor application is currently under review. Our team will get back to you within 5–7 business days.
       </p>
       <Link
@@ -171,7 +171,7 @@ export default function DistributorPage() {
                     "Receive confirmation with a unique reference number.",
                     "Work with our team to finalise territory and terms.",
                   ].map((item, index) => (
-                    <li key={item} className="flex items-start gap-4 text-body text-base lg:text-lg">
+                    <li key={item} className="flex items-start gap-4 text-text-body text-base lg:text-lg">
                       <span className="w-7 h-7 rounded-full bg-secondary-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
                         {index + 1}
                       </span>
@@ -190,10 +190,10 @@ export default function DistributorPage() {
                   <ApplicationStatusCard status={application.status} />
                 ) : (
                   <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-neutral-200 shadow-lg">
-                    <h2 className="text-xl lg:text-2xl font-bold text-primary-900 mb-2">
+                    <h2 className="text-xl lg:text-2xl font-bold text-text-heading mb-2">
                       Distributor Application
                     </h2>
-                    <p className="text-muted mb-6">
+                    <p className="text-text-muted mb-6">
                       All fields marked by the form are required unless indicated optional.
                     </p>
                     <DistributorForm />

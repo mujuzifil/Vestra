@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, BookOpen } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { Breadcrumb } from "@/components/common/breadcrumb";
+import { Button } from "@/components/ui/button";
 
 export function BlogHero() {
   return (
@@ -44,19 +45,12 @@ export function BlogHero() {
             cleaning solutions for businesses and institutions.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="#articles"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-primary-900 bg-white shadow-lg hover:-translate-y-1 transition-transform-base group"
-            >
-              Browse Articles
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" />
-            </Link>
-            <Link
-              href="/request-quote"
-              className="inline-flex items-center px-7 py-3.5 rounded-full font-semibold border border-white/40 text-white hover:bg-white/10 transition-colors-base"
-            >
-              Request a Quote
-            </Link>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto bg-white text-text-heading border-transparent hover:bg-white/90" rightIcon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" />}>
+              <Link href="#articles">Browse Articles</Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto border-white/40 text-white bg-transparent hover:bg-white/10 hover:text-white hover:border-white/50">
+              <Link href="/request-quote">Request a Quote</Link>
+            </Button>
           </div>
         </motion.div>
       </Container>

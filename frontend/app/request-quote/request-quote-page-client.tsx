@@ -41,7 +41,7 @@ const quoteFaqs = [
   },
   {
     question: "Who should I contact for support?",
-    answer: "Call or WhatsApp +256 707 128 442, or email vestradetergent@gmail.com.",
+    answer: "Call or WhatsApp +256 707 128 442, or email info@vestradetergents.com.",
   },
 ];
 

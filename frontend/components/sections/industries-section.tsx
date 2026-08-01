@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Container } from "@/components/common/container";
 import { SectionHeader } from "@/components/common/section-header";
 import { Icon } from "@/components/common/icon";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 const industries = [
   { icon: "Hotel", title: "Hotels", description: "Housekeeping and linen care at scale." },
@@ -18,10 +19,8 @@ const industries = [
   { icon: "Factory", title: "Manufacturers", description: "Integrated cleaning supply partners." },
 ];
 
-const prefersReducedMotion =
-  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
 export function IndustriesSection() {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <section
       id="industries"
@@ -48,8 +47,8 @@ export function IndustriesSection() {
               <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-primary-50 flex items-center justify-center text-primary-500 mx-auto mb-4">
                 <Icon name={industry.icon} className="w-6 h-6 lg:w-7 lg:h-7" aria-hidden="true" />
               </div>
-              <h3 className="text-sm lg:text-base font-bold text-primary-900 mb-1">{industry.title}</h3>
-              <p className="text-xs lg:text-sm text-muted leading-relaxed">{industry.description}</p>
+              <h3 className="text-sm lg:text-base font-bold text-text-heading mb-1">{industry.title}</h3>
+              <p className="text-xs lg:text-sm text-text-muted leading-relaxed">{industry.description}</p>
             </motion.div>
           ))}
         </div>

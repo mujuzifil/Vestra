@@ -9,6 +9,7 @@ import { QuoteItemsField } from "./quote-items-field";
 import { createQuoteRequest } from "@/lib/api/quote-requests";
 import { toastError, toastSuccess } from "@/lib/toast-utils";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import type { QuoteRequestFormData, QuoteRequestItem } from "@/types";
 
 type FormErrors = Partial<Record<keyof QuoteRequestFormData | "items" | "general", string>>;
@@ -135,34 +136,21 @@ export function QuoteForm() {
         <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
           <CheckCircle className="w-8 h-8 text-green-600" aria-hidden="true" />
         </div>
-        <h2 className="text-2xl font-bold text-primary-900 mb-2">Quote Request Received</h2>
-        <p className="text-muted mb-2">
+        <h2 className="text-2xl font-bold text-text-heading mb-2">Quote Request Received</h2>
+        <p className="text-text-muted mb-2">
           Thank you. Your quotation request <strong>{reference}</strong> has been received.
         </p>
-        <p className="text-muted mb-8">Our sales team will contact you within 24–48 business hours.</p>
+        <p className="text-text-muted mb-8">Our sales team will contact you within 24–48 business hours.</p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link
-            href="/"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-primary-900 bg-white border border-default hover:bg-surface-page transition-colors-base"
-          >
-            <Home className="w-4 h-4" />
-            Return Home
-          </Link>
-          <Link
-            href="/products"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-0.5 transition-all-base"
-          >
-            <PackageSearch className="w-4 h-4" />
-            View Products
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link
-            href="/distributor"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-primary-900 bg-white border border-default hover:bg-surface-page transition-colors-base"
-          >
-            <Briefcase className="w-4 h-4" />
-            Become a Distributor
-          </Link>
+          <Button asChild variant="outline" className="rounded-full px-6 py-3 h-auto" leftIcon={<Home className="w-4 h-4" />}>
+            <Link href="/">Return Home</Link>
+          </Button>
+          <Button asChild variant="gradient" className="rounded-full px-6 py-3 h-auto" leftIcon={<PackageSearch className="w-4 h-4" />} rightIcon={<ArrowRight className="w-4 h-4" />}>
+            <Link href="/products">View Products</Link>
+          </Button>
+          <Button asChild variant="outline" className="rounded-full px-6 py-3 h-auto" leftIcon={<Briefcase className="w-4 h-4" />}>
+            <Link href="/distributor">Become a Distributor</Link>
+          </Button>
         </div>
       </div>
     );

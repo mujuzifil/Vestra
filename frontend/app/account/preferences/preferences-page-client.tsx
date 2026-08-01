@@ -158,7 +158,7 @@ export function PreferencesPageClient() {
         <Container>
           <Link
             href="/account/settings"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Settings
@@ -171,7 +171,7 @@ export function PreferencesPageClient() {
                   <SlidersHorizontal className="w-5 h-5" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold text-primary-900">Notification Preferences</h1>
+                  <h1 className="text-lg font-bold text-text-heading">Notification Preferences</h1>
                   <p className="text-sm text-muted">Choose how VESTRA communicates with you.</p>
                 </div>
               </div>
@@ -186,7 +186,7 @@ export function PreferencesPageClient() {
                       <Icon className="w-4 h-4" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-primary-900">{label}</p>
+                      <p className="font-semibold text-text-heading">{label}</p>
                       <p className="text-sm text-muted">{description}</p>
                     </div>
                     <input
@@ -206,7 +206,7 @@ export function PreferencesPageClient() {
                   <ShieldAlert className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-primary-900">Alert Preferences</h2>
+                  <h2 className="text-lg font-bold text-text-heading">Alert Preferences</h2>
                   <p className="text-sm text-muted">Critical alerts bypass marketing preferences.</p>
                 </div>
               </div>
@@ -214,7 +214,7 @@ export function PreferencesPageClient() {
               <div className="space-y-4">
                 <label className="flex items-start gap-4 p-4 rounded-xl border border-default hover:border-secondary-200 hover:bg-secondary-50/30 transition-colors-base cursor-pointer">
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-primary-900">System Alerts</p>
+                    <p className="font-semibold text-text-heading">System Alerts</p>
                     <p className="text-sm text-muted">Security, maintenance, and account alerts.</p>
                   </div>
                   <input
@@ -227,7 +227,7 @@ export function PreferencesPageClient() {
 
                 <label className="flex items-start gap-4 p-4 rounded-xl border border-default hover:border-secondary-200 hover:bg-secondary-50/30 transition-colors-base cursor-pointer">
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-primary-900">Emergency Alerts</p>
+                    <p className="font-semibold text-text-heading">Emergency Alerts</p>
                     <p className="text-sm text-muted">Urgent platform and service alerts.</p>
                   </div>
                   <input

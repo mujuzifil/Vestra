@@ -8,6 +8,7 @@ import { SectionHeader } from "@/components/common/section-header";
 import { ArticleCard } from "@/app/blog/_components/article-card";
 import { getBlogPosts } from "@/lib/api/blog";
 import type { BlogPost } from "@/types";
+import { Button } from "@/components/ui/button";
 
 export function LatestArticlesSection() {
   const [articles, setArticles] = useState<BlogPost[]>([]);
@@ -61,17 +62,14 @@ export function LatestArticlesSection() {
             <div className="w-20 h-20 rounded-full bg-primary-50 flex items-center justify-center mx-auto mb-6">
               <Newspaper className="w-10 h-10 text-primary-300" aria-hidden="true" />
             </div>
-            <h3 className="text-2xl font-bold text-primary-900 mb-4">Articles Coming Soon</h3>
-            <p className="text-muted text-lg leading-relaxed mb-8">
+            <h3 className="text-2xl font-bold text-text-heading mb-4">Articles Coming Soon</h3>
+            <p className="text-text-muted text-lg leading-relaxed mb-8">
               We are preparing practical guides on fabric care, institutional laundering,
               distributor best practices, and product application tips. Check back soon.
             </p>
-            <Link
-              href="/blog"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold text-primary-900 bg-surface-card border border-default hover:bg-surface-page transition-colors-base"
-            >
-              Visit Knowledge Centre
-            </Link>
+            <Button asChild variant="outline" className="rounded-full px-6 py-3.5 h-auto">
+              <Link href="/blog">Visit Knowledge Centre</Link>
+            </Button>
           </div>
         )}
       </Container>

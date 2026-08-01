@@ -87,7 +87,7 @@ export function DirectoryList({ contactPhone, contactEmail }: DirectoryListProps
             </a>
             <a
               href={`mailto:${contactEmail}`}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-primary-900 bg-white border border-default"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-text-heading bg-white border border-default"
             >
               <Mail className="w-4 h-4" />
               Email Sales
@@ -169,14 +169,14 @@ export function DirectoryList({ contactPhone, contactEmail }: DirectoryListProps
                             ? "bg-green-50 text-green-700"
                             : area.status === "coming_soon"
                             ? "bg-amber-50 text-amber-700"
-                            : "bg-neutral-100 text-neutral-600"
+                            : "bg-neutral-100 text-text-body"
                         )}
                       >
                         {area.district}
                       </span>
                     ))}
                     {distributor.service_areas.length > 6 && (
-                      <span className="px-2 py-1 rounded-lg text-xs font-medium bg-neutral-100 text-neutral-600">
+                      <span className="px-2 py-1 rounded-lg text-xs font-medium bg-neutral-100 text-text-body">
                         +{distributor.service_areas.length - 6} more
                       </span>
                     )}

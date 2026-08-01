@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/common/container";
+import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { createMetadata } from "@/lib/metadata";
 
@@ -14,18 +15,14 @@ export default function NotFoundPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-surface-page pt-24 pb-16">
       <Container className="text-center">
-        <h1 className="text-7xl lg:text-9xl font-black text-primary-900 mb-4">404</h1>
-        <h2 className="text-2xl lg:text-4xl font-bold text-primary-900 mb-4">Page Not Found</h2>
-        <p className="text-muted text-base lg:text-lg max-w-md mx-auto mb-8">
+        <h1 className="text-7xl lg:text-9xl font-black text-text-heading mb-4">404</h1>
+        <h2 className="text-2xl lg:text-4xl font-bold text-text-heading mb-4">Page Not Found</h2>
+        <p className="text-text-muted text-base lg:text-lg max-w-md mx-auto mb-8">
           The page you are looking for might have been moved, deleted, or never existed.
         </p>
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-1 transition-transform-base"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Home
-        </Link>
+        <Button asChild variant="gradient" className="rounded-full px-7 py-3.5 h-auto" leftIcon={<ArrowLeft className="w-4 h-4" />}>
+          <Link href="/">Back to Home</Link>
+        </Button>
       </Container>
     </main>
   );

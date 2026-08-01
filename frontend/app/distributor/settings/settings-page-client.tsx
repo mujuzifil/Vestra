@@ -53,7 +53,7 @@ export function SettingsPageClient() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-primary-900">Settings</h1>
+        <h1 className="text-2xl font-extrabold text-text-heading">Settings</h1>
         <p className="text-muted">Manage your distributor portal preferences.</p>
       </div>
 
@@ -62,7 +62,7 @@ export function SettingsPageClient() {
           <div className="p-2 rounded-xl bg-green-600">
             <Globe className="w-5 h-5 text-white" />
           </div>
-          <h2 className="text-lg font-bold text-primary-900">Portal Preferences</h2>
+          <h2 className="text-lg font-bold text-text-heading">Portal Preferences</h2>
         </div>
         <div className="grid sm:grid-cols-2 gap-5">
           <InputField
@@ -100,7 +100,7 @@ export function SettingsPageClient() {
           <div className="p-2 rounded-xl bg-primary-900">
             <Lock className="w-5 h-5 text-white" />
           </div>
-          <h2 className="text-lg font-bold text-primary-900">Change Password</h2>
+          <h2 className="text-lg font-bold text-text-heading">Change Password</h2>
         </div>
         <div className="grid sm:grid-cols-2 gap-5">
           <InputField

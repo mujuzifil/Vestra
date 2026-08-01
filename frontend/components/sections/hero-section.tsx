@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import { ChevronRight, Star } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { Icon } from "@/components/common/icon";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { Button } from "@/components/ui/button";
 
 const heroFeatures = [
   { icon: "Factory", title: "Manufactured", description: "in Uganda" },
@@ -13,10 +15,8 @@ const heroFeatures = [
   { icon: "FlaskConical", title: "Advanced", description: "Formulations" },
 ];
 
-const prefersReducedMotion =
-  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
 export function HeroSection() {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <section
       id="home"
@@ -85,22 +85,12 @@ export function HeroSection() {
             </p>
 
             <div className="flex flex-wrap gap-4 mb-10">
-              <Link
-                href="/request-quote"
-                data-track="hero-primary-cta"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-lg shadow-secondary-500/30 hover:-translate-y-1 transition-transform-base group"
-              >
-                Request a Quote
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />
-              </Link>
-              <Link
-                href="/distributor"
-                data-track="hero-secondary-cta"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white border border-white/40 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:-translate-y-1 transition-all-base group"
-              >
-                Become a Distributor
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />
-              </Link>
+              <Button asChild variant="gradient" className="rounded-full px-7 py-3.5 h-auto group" rightIcon={<ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />}>
+              <Link href="/request-quote" data-track="hero-primary-cta">Request a Quote</Link>
+            </Button>
+              <Button asChild variant="outline" className="rounded-full px-6 py-3.5 h-auto border-white/40 text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:text-white hover:border-white/50" rightIcon={<ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />}>
+                <Link href="/distributor" data-track="hero-secondary-cta">Become a Distributor</Link>
+              </Button>
             </div>
 
             <div className="flex flex-wrap items-center gap-4 sm:gap-6">

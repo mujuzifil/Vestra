@@ -59,7 +59,7 @@ export function WhereToBuyPageClient() {
   }, []);
 
   const phone = contactInfo?.phone || "+256 707 128 442";
-  const email = contactInfo?.email || "vestradetergent@gmail.com";
+  const email = contactInfo?.email || "info@vestradetergents.com";
   const whatsapp = contactInfo?.whatsapp || "+256 707 128 442";
 
   const stats = {

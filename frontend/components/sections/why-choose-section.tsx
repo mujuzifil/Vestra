@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Container } from "@/components/common/container";
 import { Icon } from "@/components/common/icon";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 const whyChooseFeatures = [
   { icon: "Award", title: "Premium Quality", description: "Manufactured to professional standards with rigorous quality control." },
@@ -13,10 +14,8 @@ const whyChooseFeatures = [
   { icon: "HeartHandshake", title: "Professional Support", description: "Dedicated sales and technical support for every partner." },
 ];
 
-const prefersReducedMotion =
-  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
 export function WhyChooseSection() {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <section
       id="why-choose"

@@ -28,7 +28,7 @@ function ProductCard({ product, onRemove, isLoading }: ProductCardProps) {
         <Image src={image} alt={product.name} fill className="object-contain p-4" sizes="300px" />
       </div>
       <div className="p-5">
-        <Link href={`/products/${product.slug}`} className="font-bold text-primary-900 hover:text-secondary-600 line-clamp-2">
+        <Link href={`/products/${product.slug}`} className="font-bold text-text-heading hover:text-secondary-600 line-clamp-2">
           {product.name}
         </Link>
         <p className="text-sm text-muted mt-1">SKU: {product.sku}</p>
@@ -45,7 +45,7 @@ function ProductCard({ product, onRemove, isLoading }: ProductCardProps) {
             type="button"
             onClick={onRemove}
             disabled={isLoading}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-default text-sm font-semibold text-primary-900 rounded-xl hover:bg-surface-page disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-default text-sm font-semibold text-text-heading rounded-xl hover:bg-surface-page disabled:opacity-50"
           >
             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
             Remove
@@ -126,7 +126,7 @@ export function WishlistPageClient() {
                 className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors ${
                   activeTab === "wishlist"
                     ? "border-secondary-600 text-secondary-600"
-                    : "border-transparent text-muted hover:text-primary-900"
+                    : "border-transparent text-muted hover:text-text-heading"
                 }`}
               >
                 Wishlist ({wishlist.length})
@@ -137,7 +137,7 @@ export function WishlistPageClient() {
                 className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors ${
                   activeTab === "saved"
                     ? "border-secondary-600 text-secondary-600"
-                    : "border-transparent text-muted hover:text-primary-900"
+                    : "border-transparent text-muted hover:text-text-heading"
                 }`}
               >
                 Saved Items ({savedItems.length})
@@ -151,7 +151,7 @@ export function WishlistPageClient() {
             ) : items.length === 0 ? (
               <div className="py-16 text-center">
                 <Heart className="w-14 h-14 mx-auto mb-4 text-placeholder" />
-                <h3 className="text-lg font-bold text-primary-900 mb-2">
+                <h3 className="text-lg font-bold text-text-heading mb-2">
                   {activeTab === "wishlist" ? "Your wishlist is empty" : "No saved items"}
                 </h3>
                 <p className="text-muted mb-6">

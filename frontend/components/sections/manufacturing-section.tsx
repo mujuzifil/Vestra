@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { CheckCircle2 } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { SectionHeader } from "@/components/common/section-header";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 const capabilities = [
   "Modern manufacturing processes built for scale",
@@ -13,10 +14,8 @@ const capabilities = [
   "Professional workforce and technical expertise",
 ];
 
-const prefersReducedMotion =
-  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
 export function ManufacturingSection() {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <section
       id="manufacturing"
@@ -43,12 +42,12 @@ export function ManufacturingSection() {
               {capabilities.map((capability) => (
                 <li key={capability} className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-secondary-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-                  <span className="text-body leading-relaxed">{capability}</span>
+                  <span className="text-text-body leading-relaxed">{capability}</span>
                 </li>
               ))}
             </ul>
 
-            <p className="text-body leading-relaxed">
+            <p className="text-text-body leading-relaxed">
               From raw material sourcing to final packaging, every step is managed with precision to
               ensure our partners receive products they can rely on.
             </p>

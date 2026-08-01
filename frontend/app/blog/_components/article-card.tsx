@@ -51,7 +51,7 @@ export function ArticleCard({ post, index = 0, featured = false }: ArticleCardPr
           )}
         </div>
         <div className="p-6 lg:p-7 flex-1 flex flex-col">
-          <div className="flex items-center gap-3 text-sm text-muted mb-3">
+          <div className="flex items-center gap-3 text-sm text-text-muted mb-3">
             {category && (
               <span className="px-2.5 py-0.5 rounded-full bg-primary-50 text-primary-700 font-medium">
                 {category.name}
@@ -63,17 +63,17 @@ export function ArticleCard({ post, index = 0, featured = false }: ArticleCardPr
             </span>
           </div>
           <h3
-            className={`font-bold text-primary-900 mb-2 group-hover:text-secondary-600 transition-colors-base ${
+            className={`font-bold text-text-heading mb-2 group-hover:text-secondary-600 transition-colors-base ${
               featured ? "text-xl lg:text-2xl" : "text-lg"
             }`}
           >
             {post.title}
           </h3>
-          <p className="text-sm text-muted leading-relaxed flex-1 mb-5 line-clamp-3">
+          <p className="text-sm text-text-muted leading-relaxed flex-1 mb-5 line-clamp-3">
             {post.excerpt || ""}
           </p>
           <div className="flex items-center justify-between mt-auto pt-4 border-t border-default">
-            <span className="text-sm text-muted">
+            <span className="text-sm text-text-muted">
               {post.author?.name ? `By ${post.author.name}` : "VESTRA® Team"}
               {post.published_at && ` · ${formatDate(post.published_at)}`}
             </span>

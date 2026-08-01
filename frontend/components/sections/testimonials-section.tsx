@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Container } from "@/components/common/container";
 import { SectionHeader } from "@/components/common/section-header";
 import { Quote } from "lucide-react";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 /**
  * Placeholder testimonials.
@@ -30,10 +31,8 @@ const testimonials = [
   },
 ];
 
-const prefersReducedMotion =
-  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
 export function TestimonialsSection() {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <section
       id="testimonials"
@@ -61,12 +60,12 @@ export function TestimonialsSection() {
                 className="absolute top-6 left-6 w-8 h-8 text-secondary-500/20 fill-secondary-500/10"
                 aria-hidden="true"
               />
-              <p className="relative z-10 text-body leading-relaxed mb-6 pt-8">
+              <p className="relative z-10 text-text-body leading-relaxed mb-6 pt-8">
                 &ldquo;{testimonial.quote}&rdquo;
               </p>
               <div>
-                <p className="font-semibold text-primary-900 text-sm">{testimonial.author}</p>
-                <p className="text-xs text-muted">{testimonial.company}</p>
+                <p className="font-semibold text-text-heading text-sm">{testimonial.author}</p>
+                <p className="text-xs text-text-muted">{testimonial.company}</p>
               </div>
             </motion.article>
           ))}

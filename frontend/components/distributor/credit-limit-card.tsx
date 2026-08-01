@@ -17,7 +17,7 @@ export function CreditLimitCard({ credit }: CreditLimitCardProps) {
           <CreditCard className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-primary-900">Credit Account</h3>
+          <h3 className="text-lg font-bold text-text-heading">Credit Account</h3>
           <p className="text-sm text-muted">Current balance and limit</p>
         </div>
       </div>
@@ -32,7 +32,7 @@ export function CreditLimitCard({ credit }: CreditLimitCardProps) {
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div className="p-4 rounded-xl bg-surface-page">
               <p className="text-sm text-muted mb-1">Credit Limit</p>
-              <p className="text-xl font-extrabold text-primary-900">UGX {limit.toLocaleString()}</p>
+              <p className="text-xl font-extrabold text-text-heading">UGX {limit.toLocaleString()}</p>
             </div>
             <div className="p-4 rounded-xl bg-surface-page">
               <p className="text-sm text-muted mb-1">Available</p>
@@ -42,8 +42,8 @@ export function CreditLimitCard({ credit }: CreditLimitCardProps) {
 
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
-              <span className="font-medium text-primary-900">Utilization</span>
-              <span className="font-bold text-primary-900">{utilized.toFixed(1)}%</span>
+              <span className="font-medium text-text-heading">Utilization</span>
+              <span className="font-bold text-text-heading">{utilized.toFixed(1)}%</span>
             </div>
             <div className="h-2.5 bg-neutral-100 rounded-full overflow-hidden">
               <div

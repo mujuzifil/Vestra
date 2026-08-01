@@ -81,7 +81,7 @@ export function PasswordPageClient() {
         <Container>
           <Link
             href="/account/settings"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Settings
@@ -93,14 +93,14 @@ export function PasswordPageClient() {
                 <Lock className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-primary-900">Change Password</h1>
+                <h1 className="text-lg font-bold text-text-heading">Change Password</h1>
                 <p className="text-sm text-muted">Update the password you use to sign in.</p>
               </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-primary-900 mb-1">Current Password</label>
+                <label className="block text-sm font-medium text-text-heading mb-1">Current Password</label>
                 <div className="relative">
                   <input
                     type={show.current ? "text" : "password"}
@@ -120,7 +120,7 @@ export function PasswordPageClient() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-primary-900 mb-1">New Password</label>
+                <label className="block text-sm font-medium text-text-heading mb-1">New Password</label>
                 <div className="relative">
                   <input
                     type={show.new ? "text" : "password"}
@@ -141,7 +141,7 @@ export function PasswordPageClient() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-primary-900 mb-1">Confirm New Password</label>
+                <label className="block text-sm font-medium text-text-heading mb-1">Confirm New Password</label>
                 <div className="relative">
                   <input
                     type={show.confirm ? "text" : "password"}

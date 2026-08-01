@@ -28,10 +28,10 @@ function ProductCard({ product }: { product: DistributorProduct }) {
       </div>
       <div className="p-5">
         <p className="text-xs font-semibold text-green-600 uppercase tracking-wider mb-1">{product.category?.name}</p>
-        <h3 className="font-bold text-primary-900 group-hover:text-green-600 transition-colors-base line-clamp-1">{product.name}</h3>
+        <h3 className="font-bold text-text-heading group-hover:text-green-600 transition-colors-base line-clamp-1">{product.name}</h3>
         <p className="text-sm text-muted mt-1 line-clamp-2">{product.short_description}</p>
         <div className="flex items-center justify-between mt-4">
-          <span className="font-extrabold text-primary-900">UGX {price}</span>
+          <span className="font-extrabold text-text-heading">UGX {price}</span>
           <span className="text-xs text-placeholder">SKU: {product.sku}</span>
         </div>
       </div>
@@ -58,7 +58,7 @@ export function ProductsPageClient() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-primary-900">Products</h1>
+          <h1 className="text-2xl font-extrabold text-text-heading">Products</h1>
           <p className="text-muted">Browse products with distributor pricing.</p>
         </div>
         <div className="relative max-w-sm">

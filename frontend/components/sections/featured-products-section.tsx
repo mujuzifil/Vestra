@@ -8,10 +8,9 @@ import { Container } from "@/components/common/container";
 import { SectionHeader } from "@/components/common/section-header";
 import { SkeletonGrid } from "@/components/ui/skeleton-grid";
 import { ApiError } from "@/components/ui/api-error";
+import { Button } from "@/components/ui/button";
 import { useHomeRecommendations } from "@/hooks/use-recommendations";
-
-const prefersReducedMotion =
-  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 function packageSizes(specifications: Record<string, string> | null): string {
   if (!specifications) return "";
@@ -20,6 +19,7 @@ function packageSizes(specifications: Record<string, string> | null): string {
 }
 
 export function FeaturedProductsSection() {
+  const prefersReducedMotion = useReducedMotion();
   const { data: recommendations, isLoading, error, refetch } = useHomeRecommendations(6);
 
   const featured = recommendations?.best_sellers?.slice(0, 3) || [];
@@ -63,31 +63,23 @@ export function FeaturedProductsSection() {
                 </Link>
 
                 <div className="p-6 lg:p-7 flex-1 flex flex-col">
-                  <h3 className="text-lg lg:text-xl font-bold text-primary-900 mb-2">{product.name}</h3>
-                  <p className="text-sm lg:text-base text-muted mb-4 flex-1 leading-relaxed line-clamp-2">
+                  <h3 className="text-lg lg:text-xl font-bold text-text-heading mb-2">{product.name}</h3>
+                  <p className="text-sm lg:text-base text-text-muted mb-4 flex-1 leading-relaxed line-clamp-2">
                     {product.short_description}
                   </p>
                   {packageSizes(product.specifications) && (
-                    <p className="text-xs text-muted mb-4">
-                      <span className="font-medium text-primary-700">Available sizes:</span>{" "}
+                    <p className="text-xs text-text-muted mb-4">
+                      <span className="font-medium text-text-heading">Available sizes:</span>{" "}
                       {packageSizes(product.specifications)}
                     </p>
                   )}
                   <div className="flex gap-3">
-                    <Link
-                      href={`/products/${product.slug}`}
-                      className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-full font-semibold text-sm bg-white border border-default text-primary-900 hover:bg-surface-page hover:border-primary-400 hover:text-primary-500 transition-colors-base"
-                    >
-                      Learn More
-                    </Link>
-                    <Link
-                      href={`/request-quote?product=${encodeURIComponent(product.slug)}`}
-                      data-track="featured-product-quote"
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm bg-secondary-600 text-white hover:bg-secondary-600/90 transition-colors-base"
-                    >
-                      <FileText className="w-4 h-4" aria-hidden="true" />
-                      Request a Quote
-                    </Link>
+                    <Button asChild variant="outline" className="flex-1 rounded-full px-4 py-2.5 h-auto text-sm">
+                      <Link href={`/products/${product.slug}`}>Learn More</Link>
+                    </Button>
+                    <Button asChild variant="default" className="flex-1 rounded-full px-4 py-2.5 h-auto text-sm" leftIcon={<FileText className="w-4 h-4" aria-hidden="true" />}>
+                      <Link href={`/request-quote?product=${encodeURIComponent(product.slug)}`} data-track="featured-product-quote">Request a Quote</Link>
+                    </Button>
                   </div>
                 </div>
               </motion.article>
@@ -102,13 +94,9 @@ export function FeaturedProductsSection() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-center mt-14"
         >
-          <Link
-            href="/products"
-            data-track="view-all-products"
-            className="inline-block px-9 py-3.5 rounded-full font-semibold text-primary-900 bg-white border border-default shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all-base"
-          >
-            View All Products
-          </Link>
+          <Button asChild variant="outline" className="rounded-full px-9 py-3.5 h-auto">
+            <Link href="/products" data-track="view-all-products">View All Products</Link>
+          </Button>
         </motion.div>
       </Container>
     </section>

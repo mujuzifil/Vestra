@@ -100,18 +100,18 @@ export function BulkOrderTable({ products, lines, onChange }: BulkOrderTableProp
           <table className="w-full text-left text-sm">
             <thead className="bg-surface-page">
               <tr>
-                <th className="px-4 py-3 font-semibold text-primary-900">Product</th>
-                <th className="px-4 py-3 font-semibold text-primary-900">SKU</th>
-                <th className="px-4 py-3 font-semibold text-primary-900">Unit Price</th>
-                <th className="px-4 py-3 font-semibold text-primary-900">Qty</th>
-                <th className="px-4 py-3 font-semibold text-primary-900">Total</th>
+                <th className="px-4 py-3 font-semibold text-text-heading">Product</th>
+                <th className="px-4 py-3 font-semibold text-text-heading">SKU</th>
+                <th className="px-4 py-3 font-semibold text-text-heading">Unit Price</th>
+                <th className="px-4 py-3 font-semibold text-text-heading">Qty</th>
+                <th className="px-4 py-3 font-semibold text-text-heading">Total</th>
                 <th className="px-4 py-3"></th>
               </tr>
             </thead>
             <tbody>
               {lines.map((line) => (
                 <tr key={line.product_id} className="border-t border-neutral-100">
-                  <td className="px-4 py-3 font-medium text-primary-900">{line.product_name}</td>
+                  <td className="px-4 py-3 font-medium text-text-heading">{line.product_name}</td>
                   <td className="px-4 py-3 text-muted">{line.product_sku}</td>
                   <td className="px-4 py-3 text-muted">UGX {line.unit_price}</td>
                   <td className="px-4 py-3">
@@ -135,12 +135,12 @@ export function BulkOrderTable({ products, lines, onChange }: BulkOrderTableProp
                       </button>
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-bold text-primary-900">UGX {line.line_total}</td>
+                  <td className="px-4 py-3 font-bold text-text-heading">UGX {line.line_total}</td>
                   <td className="px-4 py-3">
                     <button
                       type="button"
                       onClick={() => removeLine(line.product_id)}
-                      className="p-1.5 text-neutral-400 hover:text-danger-600 hover:bg-danger-50 rounded-lg transition-colors-base"
+                      className="p-1.5 text-text-muted hover:text-danger-600 hover:bg-danger-50 rounded-lg transition-colors-base"
                       aria-label="Remove product"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -151,7 +151,7 @@ export function BulkOrderTable({ products, lines, onChange }: BulkOrderTableProp
             </tbody>
             <tfoot className="bg-surface-page">
               <tr>
-                <td colSpan={4} className="px-4 py-3 text-right font-bold text-primary-900">
+                <td colSpan={4} className="px-4 py-3 text-right font-bold text-text-heading">
                   Total
                 </td>
                 <td className="px-4 py-3 font-extrabold text-secondary-600">UGX {total.toFixed(2)}</td>

@@ -120,7 +120,7 @@ export function AddressesPageClient() {
         <Container>
           <Link
             href="/account"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Account
@@ -129,12 +129,12 @@ export function AddressesPageClient() {
           {/* Add/Edit Form */}
           {showForm && (
             <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8 mb-8">
-              <h2 className="text-lg font-bold text-primary-900 mb-4">
+              <h2 className="text-lg font-bold text-text-heading mb-4">
                 {editingId ? "Edit Address" : "Add New Address"}
               </h2>
               <form onSubmit={handleSubmit} className="grid sm:grid-cols-2 gap-4">
                 <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Label</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Label</label>
                   <input
                     type="text"
                     required
@@ -145,7 +145,7 @@ export function AddressesPageClient() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Full Name</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Full Name</label>
                   <input
                     type="text"
                     required
@@ -155,7 +155,7 @@ export function AddressesPageClient() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Phone</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Phone</label>
                   <input
                     type="tel"
                     required
@@ -165,7 +165,7 @@ export function AddressesPageClient() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">City</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">City</label>
                   <input
                     type="text"
                     required
@@ -175,7 +175,7 @@ export function AddressesPageClient() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Region</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Region</label>
                   <input
                     type="text"
                     value={form.region}
@@ -184,7 +184,7 @@ export function AddressesPageClient() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">District</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">District</label>
                   <input
                     type="text"
                     value={form.district}
@@ -193,7 +193,7 @@ export function AddressesPageClient() {
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Address Line</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Address Line</label>
                   <textarea
                     required
                     rows={2}
@@ -203,7 +203,7 @@ export function AddressesPageClient() {
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Apartment / Suite / Floor (optional)</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Apartment / Suite / Floor (optional)</label>
                   <input
                     type="text"
                     value={form.address_line_2}
@@ -213,7 +213,7 @@ export function AddressesPageClient() {
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4 sm:col-span-2">
                   <div>
-                    <label className="block text-sm font-medium text-primary-900 mb-1">Postal Code (optional)</label>
+                    <label className="block text-sm font-medium text-text-heading mb-1">Postal Code (optional)</label>
                     <input
                       type="text"
                       value={form.postal_code}
@@ -222,7 +222,7 @@ export function AddressesPageClient() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-primary-900 mb-1">Country</label>
+                    <label className="block text-sm font-medium text-text-heading mb-1">Country</label>
                     <input
                       type="text"
                       required
@@ -233,7 +233,7 @@ export function AddressesPageClient() {
                   </div>
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Delivery Notes (optional)</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Delivery Notes (optional)</label>
                   <textarea
                     rows={2}
                     value={form.delivery_notes}
@@ -294,7 +294,7 @@ export function AddressesPageClient() {
           {/* Address List */}
           <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-primary-900">Saved Addresses</h2>
+              <h2 className="text-lg font-bold text-text-heading">Saved Addresses</h2>
               {!showForm && (
                 <button
                   onClick={() => setShowForm(true)}
@@ -313,7 +313,7 @@ export function AddressesPageClient() {
             ) : !addresses || addresses.length === 0 ? (
               <div className="py-16 text-center">
                 <MapPin className="w-14 h-14 mx-auto mb-4 text-placeholder" />
-                <h3 className="text-lg font-bold text-primary-900 mb-2">No addresses saved</h3>
+                <h3 className="text-lg font-bold text-text-heading mb-2">No addresses saved</h3>
                 <p className="text-muted mb-6">Add a delivery address for faster order processing.</p>
                 {!showForm && (
                   <button
@@ -339,7 +339,7 @@ export function AddressesPageClient() {
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex flex-wrap items-center gap-2">
                         <Home className="w-4 h-4 text-secondary-600" />
-                        <span className="font-semibold text-primary-900">{addr.label}</span>
+                        <span className="font-semibold text-text-heading">{addr.label}</span>
                         {addr.is_default && (
                           <span className="px-2 py-0.5 bg-secondary-100 text-secondary-600 text-xs font-medium rounded-full">
                             Default
@@ -374,7 +374,7 @@ export function AddressesPageClient() {
                       </div>
                     </div>
                     <div className="text-sm text-muted space-y-0.5">
-                      <p className="font-medium text-primary-900">{addr.full_name}</p>
+                      <p className="font-medium text-text-heading">{addr.full_name}</p>
                       <p>{addr.phone}</p>
                       <p>{addr.address_line}</p>
                       {addr.address_line_2 && <p>{addr.address_line_2}</p>}

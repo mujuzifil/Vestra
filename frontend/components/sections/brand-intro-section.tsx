@@ -34,12 +34,12 @@ export function BrandIntroSection() {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="text-center md:text-left"
           >
-            <p className="text-lg lg:text-xl font-medium text-primary-900 leading-relaxed mb-5">
+            <p className="text-lg lg:text-xl font-medium text-text-heading leading-relaxed mb-5">
               VESTRA exists to redefine fabric care through innovation, quality, and performance. We
               develop professional-grade detergents and garment care solutions for laundries,
               businesses, and consumers who expect more than ordinary cleaning.
             </p>
-            <p className="text-body text-base lg:text-lg leading-relaxed">
+            <p className="text-text-body text-base lg:text-lg leading-relaxed">
               Rather than focusing only on removing dirt, VESTRA aims to preserve fabrics, extend
               garment life, and deliver a premium cleaning experience.
             </p>

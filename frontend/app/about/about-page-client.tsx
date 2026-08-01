@@ -12,6 +12,8 @@ import { MissionVisionCard } from "@/components/common/mission-vision-card";
 import { Icon } from "@/components/common/icon";
 import { useCompanyInfo } from "@/hooks/use-settings";
 import { JsonLd, breadcrumbSchema } from "@/lib/structured-data";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { Button } from "@/components/ui/button";
 
 const coreValues = [
   { icon: "ShieldCheck", title: "Quality", description: "Rigorous standards in every batch we produce." },
@@ -65,10 +67,8 @@ const sustainabilityPoints = [
   "Commitment to safe manufacturing practices",
 ];
 
-const prefersReducedMotion =
-  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
 export function AboutPageClient() {
+  const prefersReducedMotion = useReducedMotion();
   const { companyInfo, isLoading } = useCompanyInfo();
 
   return (
@@ -127,18 +127,18 @@ export function AboutPageClient() {
                   </div>
                 ) : (
                   <>
-                    <p className="text-body text-base lg:text-lg leading-relaxed mb-5">
+                    <p className="text-text-body text-base lg:text-lg leading-relaxed mb-5">
                       Founded in {companyInfo?.founded || "2020"} and headquartered in{" "}
                       {companyInfo?.headquarters || "Kampala, Uganda"}, VESTRA® was created to meet
                       the growing demand for reliable, professional-grade cleaning solutions across
                       Uganda.
                     </p>
-                    <p className="text-body text-base lg:text-lg leading-relaxed mb-5">
+                    <p className="text-text-body text-base lg:text-lg leading-relaxed mb-5">
                       We combine advanced chemistry with practical manufacturing expertise to produce
                       detergents and fabric care products that clean powerfully while protecting the
                       fabrics and surfaces our partners depend on.
                     </p>
-                    <p className="text-body text-base lg:text-lg leading-relaxed">
+                    <p className="text-text-body text-base lg:text-lg leading-relaxed">
                       Our long-term vision is to become one of East Africa&apos;s most trusted names
                       in professional cleaning — known for quality, consistency, and partnership.
                     </p>
@@ -216,8 +216,8 @@ export function AboutPageClient() {
                   <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-500 to-primary-400 flex items-center justify-center text-white mx-auto mb-5 shadow-lg shadow-primary-400/25">
                     <Icon name={category.icon} className="w-7 h-7" aria-hidden="true" />
                   </div>
-                  <h3 className="text-base lg:text-lg font-bold text-primary-900 mb-2">{category.title}</h3>
-                  <p className="text-sm text-muted leading-relaxed">{category.description}</p>
+                  <h3 className="text-base lg:text-lg font-bold text-text-heading mb-2">{category.title}</h3>
+                  <p className="text-sm text-text-muted leading-relaxed">{category.description}</p>
                 </motion.div>
               ))}
             </div>
@@ -277,7 +277,7 @@ export function AboutPageClient() {
                   <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-primary-50 flex items-center justify-center text-primary-500 mx-auto mb-4">
                     <Icon name={industry.icon} className="w-6 h-6 lg:w-7 lg:h-7" aria-hidden="true" />
                   </div>
-                  <h3 className="text-sm lg:text-base font-bold text-primary-900">{industry.title}</h3>
+                  <h3 className="text-sm lg:text-base font-bold text-text-heading">{industry.title}</h3>
                 </motion.div>
               ))}
             </div>
@@ -305,11 +305,11 @@ export function AboutPageClient() {
                   {qualityIndicators.map((item) => (
                     <li key={item} className="flex items-start gap-3">
                       <CheckCircle2 className="w-5 h-5 text-secondary-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-                      <span className="text-body leading-relaxed">{item}</span>
+                      <span className="text-text-body leading-relaxed">{item}</span>
                     </li>
                   ))}
                 </ul>
-                <p className="text-body leading-relaxed">
+                <p className="text-text-body leading-relaxed">
                   This disciplined approach helps us deliver consistent products that our partners
                   can specify with confidence.
                 </p>
@@ -330,13 +330,13 @@ export function AboutPageClient() {
                   <p className="text-3xl lg:text-4xl font-black text-white mb-1">UG</p>
                   <p className="text-sm text-white/90">Manufactured</p>
                 </div>
-                <div className="p-6 rounded-[20px] bg-primary-50 text-primary-900 text-center">
+                <div className="p-6 rounded-[20px] bg-primary-50 text-text-heading text-center">
                   <p className="text-3xl lg:text-4xl font-black text-primary-500 mb-1">B2B</p>
                   <p className="text-sm text-primary-700">Focused</p>
                 </div>
                 <div className="p-6 rounded-[20px] bg-surface-card border border-default text-center">
                   <p className="text-3xl lg:text-4xl font-black text-secondary-600 mb-1">24h</p>
-                  <p className="text-sm text-muted">Quote response</p>
+                  <p className="text-sm text-text-muted">Quote response</p>
                 </div>
               </motion.div>
             </div>
@@ -365,7 +365,7 @@ export function AboutPageClient() {
                   className="flex items-start gap-3 p-6 rounded-[20px] bg-white border border-default shadow-sm"
                 >
                   <Leaf className="w-5 h-5 text-secondary-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
-                  <span className="text-body text-sm lg:text-base leading-relaxed">{point}</span>
+                  <span className="text-text-body text-sm lg:text-base leading-relaxed">{point}</span>
                 </motion.div>
               ))}
             </div>
@@ -384,37 +384,24 @@ export function AboutPageClient() {
             >
               <h2
                 id="partner-heading"
-                className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-primary-900 mb-4 tracking-tight"
+                className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-text-heading mb-4 tracking-tight"
               >
                 Partner with VESTRA®
               </h2>
-              <p className="text-base lg:text-lg text-muted mb-8 leading-relaxed">
+              <p className="text-base lg:text-lg text-text-muted mb-8 leading-relaxed">
                 Whether you need a tailored quotation, distribution partnership, or commercial supply
                 agreement, our team is ready to talk.
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <Link
-                  href="/request-quote"
-                  data-track="about-partner-quote"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-lg shadow-secondary-500/30 hover:-translate-y-1 transition-transform-base group"
-                >
-                  Request a Quote
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />
-                </Link>
-                <Link
-                  href="/distributor"
-                  data-track="about-partner-distributor"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-primary-900 bg-white border border-default hover:bg-surface-page hover:-translate-y-1 transition-all-base"
-                >
-                  Become a Distributor
-                </Link>
-                <Link
-                  href="/contact"
-                  data-track="about-partner-contact"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-primary-900 hover:text-secondary-600 transition-colors-base"
-                >
-                  Contact Sales
-                </Link>
+                <Button asChild variant="gradient" className="rounded-full px-7 py-3.5 h-auto group" rightIcon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />}>
+              <Link href="/request-quote" data-track="about-partner-quote">Request a Quote</Link>
+            </Button>
+                <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto">
+                  <Link href="/distributor" data-track="about-partner-distributor">Become a Distributor</Link>
+                </Button>
+                <Button asChild variant="link" className="rounded-full px-7 py-3.5 h-auto">
+                  <Link href="/contact" data-track="about-partner-contact">Contact Sales</Link>
+                </Button>
               </div>
             </motion.div>
           </Container>

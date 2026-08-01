@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { SectionHeader } from "@/components/common/section-header";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { Button } from "@/components/ui/button";
 
 const benefits = [
   "Competitive distributor pricing and margins",
@@ -15,10 +17,8 @@ const benefits = [
   "Product training and technical guidance",
 ];
 
-const prefersReducedMotion =
-  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
 export function DistributorCtaSection() {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <section
       id="distributor"
@@ -67,19 +67,14 @@ export function DistributorCtaSection() {
                     className="w-5 h-5 text-secondary-500 flex-shrink-0 mt-0.5"
                     aria-hidden="true"
                   />
-                  <span className="text-body leading-relaxed">{benefit}</span>
+                  <span className="text-text-body leading-relaxed">{benefit}</span>
                 </li>
               ))}
             </ul>
 
-            <Link
-              href="/distributor"
-              data-track="distributor-section-cta"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-semibold text-white bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-lg shadow-secondary-500/30 hover:-translate-y-1 transition-transform-base group"
-            >
-              Apply Now
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />
-            </Link>
+            <Button asChild variant="gradient" className="rounded-full px-7 py-3.5 h-auto group" rightIcon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />}>
+              <Link href="/distributor" data-track="distributor-section-cta">Apply Now</Link>
+            </Button>
           </motion.div>
         </div>
       </Container>

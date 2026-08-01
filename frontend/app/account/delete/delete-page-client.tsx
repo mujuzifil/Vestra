@@ -81,7 +81,7 @@ export function DeletePageClient() {
         <Container>
           <Link
             href="/account/settings"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Settings
@@ -93,7 +93,7 @@ export function DeletePageClient() {
                 <Trash2 className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-primary-900">Delete Account</h1>
+                <h1 className="text-lg font-bold text-text-heading">Delete Account</h1>
                 <p className="text-sm text-muted">This action cannot be undone.</p>
               </div>
             </div>
@@ -143,7 +143,7 @@ export function DeletePageClient() {
             {step === "reason" && (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">
+                  <label className="block text-sm font-medium text-text-heading mb-1">
                     Reason for leaving <span className="text-placeholder">(optional)</span>
                   </label>
                   <textarea
@@ -156,7 +156,7 @@ export function DeletePageClient() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Password</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Password</label>
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}

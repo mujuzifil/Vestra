@@ -12,7 +12,7 @@ function InvoiceCard({ invoice }: { invoice: DistributorInvoice }) {
     <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-5">
       <div className="flex items-start justify-between mb-3">
         <div>
-          <p className="font-bold text-primary-900">{invoice.invoice_number}</p>
+          <p className="font-bold text-text-heading">{invoice.invoice_number}</p>
           <p className="text-xs text-muted">{new Date(invoice.created_at).toLocaleDateString()}</p>
         </div>
         <span
@@ -24,8 +24,8 @@ function InvoiceCard({ invoice }: { invoice: DistributorInvoice }) {
         </span>
       </div>
       <div className="space-y-1 text-sm text-muted mb-4">
-        <p>Amount: <span className="font-medium text-primary-900">UGX {invoice.amount}</span></p>
-        <p>Balance Due: <span className="font-medium text-primary-900">UGX {invoice.balance_due}</span></p>
+        <p>Amount: <span className="font-medium text-text-heading">UGX {invoice.amount}</span></p>
+        <p>Balance Due: <span className="font-medium text-text-heading">UGX {invoice.balance_due}</span></p>
       </div>
       <div className="flex items-center gap-2">
         <Link
@@ -39,7 +39,7 @@ function InvoiceCard({ invoice }: { invoice: DistributorInvoice }) {
           href={`${process.env.NEXT_PUBLIC_API_URL}/invoices/${invoice.id}/download`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-sm font-semibold text-muted hover:text-primary-900"
+          className="inline-flex items-center gap-1 text-sm font-semibold text-muted hover:text-text-heading"
         >
           <Download className="w-3 h-3" />
           PDF
@@ -62,7 +62,7 @@ export function InvoicesPageClient() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-primary-900">Invoices</h1>
+        <h1 className="text-2xl font-extrabold text-text-heading">Invoices</h1>
         <p className="text-muted">View and download your distributor invoices.</p>
       </div>
 

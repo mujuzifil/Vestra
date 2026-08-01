@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Send, Loader2, X, Upload } from "lucide-react";
 import { StarRating } from "./star-rating";
 import { useAuth } from "@/lib/auth-context";
@@ -31,7 +32,7 @@ export function ReviewForm({ productId, initialData, onSubmit, onCancel }: Revie
   if (!isAuthenticated) {
     return (
       <div className="p-4 rounded-xl bg-surface-page text-center">
-        <p className="text-sm text-muted">Please sign in to leave a review.</p>
+        <p className="text-sm text-text-muted">Please sign in to leave a review.</p>
       </div>
     );
   }
@@ -123,12 +124,12 @@ export function ReviewForm({ productId, initialData, onSubmit, onCancel }: Revie
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-primary-900 mb-2">Your Rating</label>
+        <label className="block text-sm font-medium text-text-heading mb-2">Your Rating</label>
         <StarRating rating={rating} interactive size="lg" onChange={setRating} />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-primary-900 mb-1">Title (optional)</label>
+        <label className="block text-sm font-medium text-text-heading mb-1">Title (optional)</label>
         <input
           type="text"
           value={title}
@@ -140,7 +141,7 @@ export function ReviewForm({ productId, initialData, onSubmit, onCancel }: Revie
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-primary-900 mb-1">Review</label>
+        <label className="block text-sm font-medium text-text-heading mb-1">Review</label>
         <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}
@@ -149,12 +150,12 @@ export function ReviewForm({ productId, initialData, onSubmit, onCancel }: Revie
           placeholder="Share your experience with this product..."
           className="w-full px-4 py-2.5 rounded-xl border border-border focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none resize-none"
         />
-        <p className="text-xs text-neutral-400 mt-1">{comment.length}/1000</p>
+        <p className="text-xs text-text-muted mt-1">{comment.length}/1000</p>
       </div>
 
       {/* Pros */}
       <div>
-        <label className="block text-sm font-medium text-primary-900 mb-1">Pros</label>
+        <label className="block text-sm font-medium text-text-heading mb-1">Pros</label>
         <div className="flex flex-wrap gap-2 mb-2">
           {pros.map((pro, idx) => (
             <span key={idx} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-success-50 text-success-700">
@@ -191,7 +192,7 @@ export function ReviewForm({ productId, initialData, onSubmit, onCancel }: Revie
 
       {/* Cons */}
       <div>
-        <label className="block text-sm font-medium text-primary-900 mb-1">Cons</label>
+        <label className="block text-sm font-medium text-text-heading mb-1">Cons</label>
         <div className="flex flex-wrap gap-2 mb-2">
           {cons.map((con, idx) => (
             <span key={idx} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-danger-50 text-danger-700">
@@ -228,10 +229,10 @@ export function ReviewForm({ productId, initialData, onSubmit, onCancel }: Revie
 
       {/* Images */}
       <div>
-        <label className="block text-sm font-medium text-primary-900 mb-2">Photos (optional, max 5)</label>
+        <label className="block text-sm font-medium text-text-heading mb-2">Photos (optional, max 5)</label>
         <label className="flex items-center justify-center gap-2 w-full px-4 py-6 border-2 border-dashed border-border rounded-xl cursor-pointer hover:bg-surface-page transition-colors">
-          <Upload className="w-5 h-5 text-muted" />
-          <span className="text-sm text-muted">Click to upload images</span>
+          <Upload className="w-5 h-5 text-text-muted" />
+          <span className="text-sm text-text-muted">Click to upload images</span>
           <input
             type="file"
             accept="image/*"
@@ -244,7 +245,7 @@ export function ReviewForm({ productId, initialData, onSubmit, onCancel }: Revie
           <div className="flex flex-wrap gap-3 mt-3">
             {previews.map((src, idx) => (
               <div key={idx} className="relative w-16 h-16 rounded-lg overflow-hidden border border-border">
-                <img src={src} alt="" className="w-full h-full object-cover" />
+                <Image src={src} alt="" fill className="object-cover" sizes="64px" />
                 <button
                   type="button"
                   onClick={() => removeImage(idx)}

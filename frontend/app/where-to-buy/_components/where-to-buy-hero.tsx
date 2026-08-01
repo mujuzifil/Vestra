@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, MapPin } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { Breadcrumb } from "@/components/common/breadcrumb";
+import { Button } from "@/components/ui/button";
 
 export function WhereToBuyHero() {
   return (
@@ -43,19 +44,12 @@ export function WhereToBuyHero() {
             VESTRA® products are supplied through an expanding network of authorised distributors and retail partners across Uganda.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="#directory"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-primary-900 bg-white shadow-lg hover:-translate-y-1 transition-transform-base group"
-            >
-              Find a Distributor
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" />
-            </Link>
-            <Link
-              href="/distributor"
-              className="inline-flex items-center px-7 py-3.5 rounded-full font-semibold border border-white/40 text-white hover:bg-white/10 transition-colors-base"
-            >
-              Become a Distributor
-            </Link>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto bg-white text-text-heading border-transparent hover:bg-white/90" rightIcon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" />}>
+              <Link href="#directory">Find a Distributor</Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto border-white/40 text-white bg-transparent hover:bg-white/10 hover:text-white hover:border-white/50">
+              <Link href="/distributor">Become a Distributor</Link>
+            </Button>
           </div>
         </motion.div>
       </Container>

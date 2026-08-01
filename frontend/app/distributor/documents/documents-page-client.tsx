@@ -41,7 +41,7 @@ export function DocumentsPageClient() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-primary-900">Documents</h1>
+        <h1 className="text-2xl font-extrabold text-text-heading">Documents</h1>
         <p className="text-muted">Upload and manage company documents.</p>
       </div>
 
@@ -59,10 +59,10 @@ export function DocumentsPageClient() {
             <table className="w-full text-left text-sm">
               <thead className="bg-neutral-50">
                 <tr>
-                  <th className="px-6 py-4 font-semibold text-primary-900">Title</th>
-                  <th className="px-6 py-4 font-semibold text-primary-900">Type</th>
-                  <th className="px-6 py-4 font-semibold text-primary-900">Version</th>
-                  <th className="px-6 py-4 font-semibold text-primary-900">Uploaded</th>
+                  <th className="px-6 py-4 font-semibold text-text-heading">Title</th>
+                  <th className="px-6 py-4 font-semibold text-text-heading">Type</th>
+                  <th className="px-6 py-4 font-semibold text-text-heading">Version</th>
+                  <th className="px-6 py-4 font-semibold text-text-heading">Uploaded</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -72,7 +72,7 @@ export function DocumentsPageClient() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <FileText className="w-4 h-4 text-green-600" />
-                        <span className="font-medium text-primary-900">{doc.title}</span>
+                        <span className="font-medium text-text-heading">{doc.title}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-muted capitalize">{doc.type.replace(/_/g, " ")}</td>

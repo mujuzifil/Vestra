@@ -46,7 +46,7 @@ export function SearchFilterSection({
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search articles..."
-              className="w-full pl-12 pr-4 py-3 rounded-full border border-default bg-surface-page text-primary-900 placeholder:text-placeholder outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all-base"
+              className="w-full pl-12 pr-4 py-3 rounded-full border border-default bg-surface-page text-text-heading placeholder:text-placeholder outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all-base"
             />
           </div>
 
@@ -56,7 +56,7 @@ export function SearchFilterSection({
                 value={selectedCategory}
                 onChange={(e) => onCategoryChange(e.target.value)}
                 aria-label="Filter by category"
-                className="appearance-none w-full sm:w-56 pl-4 pr-10 py-3 rounded-full border border-default bg-surface-page text-primary-900 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all-base cursor-pointer"
+                className="appearance-none w-full sm:w-56 pl-4 pr-10 py-3 rounded-full border border-default bg-surface-page text-text-heading outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all-base cursor-pointer"
               >
                 <option value="">All Categories</option>
                 {categories.map((category) => (
@@ -65,7 +65,7 @@ export function SearchFilterSection({
                   </option>
                 ))}
               </select>
-              <SlidersHorizontal className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" aria-hidden="true" />
+              <SlidersHorizontal className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" aria-hidden="true" />
             </div>
 
             <div className="relative">
@@ -73,7 +73,7 @@ export function SearchFilterSection({
                 value={sort}
                 onChange={(e) => onSortChange(e.target.value)}
                 aria-label="Sort articles"
-                className="appearance-none w-full sm:w-48 pl-4 pr-10 py-3 rounded-full border border-default bg-surface-page text-primary-900 outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all-base cursor-pointer"
+                className="appearance-none w-full sm:w-48 pl-4 pr-10 py-3 rounded-full border border-default bg-surface-page text-text-heading outline-none focus:border-primary-400 focus:ring-2 focus:ring-primary-400/20 transition-all-base cursor-pointer"
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -81,12 +81,12 @@ export function SearchFilterSection({
                   </option>
                 ))}
               </select>
-              <SlidersHorizontal className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" aria-hidden="true" />
+              <SlidersHorizontal className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" aria-hidden="true" />
             </div>
           </div>
         </div>
 
-        <p className="mt-4 text-sm text-muted">
+        <p className="mt-4 text-sm text-text-muted">
           Showing {resultCount} article{resultCount !== 1 ? "s" : ""}
         </p>
       </Container>

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Briefcase } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { Breadcrumb } from "@/components/common/breadcrumb";
+import { Button } from "@/components/ui/button";
 
 export function DistributorHero() {
   return (
@@ -44,19 +45,12 @@ export function DistributorHero() {
             business with reliable supply, marketing support, and exclusive territory opportunities.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="#application-form"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-primary-900 bg-white shadow-lg hover:-translate-y-1 transition-transform-base group"
-            >
-              Apply Now
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" />
-            </Link>
-            <Link
-              href="/contact"
-              className="inline-flex items-center px-7 py-3.5 rounded-full font-semibold border border-white/40 text-white hover:bg-white/10 transition-colors-base"
-            >
-              Contact Sales
-            </Link>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto bg-white text-text-heading border-transparent hover:bg-white/90" rightIcon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" />}>
+              <Link href="#application-form">Apply Now</Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto border-white/40 text-white bg-transparent hover:bg-white/10 hover:text-white hover:border-white/50">
+              <Link href="/contact">Contact Sales</Link>
+            </Button>
           </div>
         </motion.div>
       </Container>

@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, FormEvent, useRef } from "react";
-import { CheckCircle, Loader2, Send, AlertCircle, Paperclip, X } from "lucide-react";
+import Link from "next/link";
+import { CheckCircle, Send, AlertCircle, Paperclip, X } from "lucide-react";
 import { InputField, TextareaField, SelectField } from "@/components/common/form-field";
+import { Button } from "@/components/ui/button";
 import { useContactMutation } from "@/hooks/use-contact";
-import { cn } from "@/lib/utils";
 import type { ContactEnquiryType, ContactFormData } from "@/types";
 
 interface FormErrors {
@@ -136,23 +137,17 @@ export function ContactForm({ defaultSubject, defaultEnquiryType = "general" }: 
     return (
       <div className="text-center py-12">
         <CheckCircle className="w-16 h-16 text-success-500 mx-auto mb-4" aria-hidden="true" />
-        <h3 className="text-2xl font-bold text-primary-900 mb-2">Message Sent</h3>
-        <p className="text-muted mb-6">
+        <h3 className="text-2xl font-bold text-text-heading mb-2">Message Sent</h3>
+        <p className="text-text-muted mb-6">
           Thank you for contacting VESTRA®. Our team will respond within 24–48 business hours.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <a
-            href="/request-quote"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-white bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-lg hover:-translate-y-0.5 transition-transform-base"
-          >
-            Request a Quote
-          </a>
-          <a
-            href="/distributor"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-primary-900 bg-surface-card border border-default hover:bg-surface-page transition-colors-base"
-          >
-            Become a Distributor
-          </a>
+          <Button asChild variant="gradient" className="rounded-full px-6 py-3 h-auto">
+            <Link href="/request-quote">Request a Quote</Link>
+          </Button>
+          <Button asChild variant="outline" className="rounded-full px-6 py-3 h-auto">
+            <Link href="/distributor">Become a Distributor</Link>
+          </Button>
         </div>
       </div>
     );
@@ -239,14 +234,16 @@ export function ContactForm({ defaultSubject, defaultEnquiryType = "general" }: 
           onChange={handleFileChange}
           className="hidden"
         />
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="sm"
+          className="rounded-xl"
+          leftIcon={<Paperclip className="w-4 h-4" aria-hidden="true" />}
           onClick={() => fileInputRef.current?.click()}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-default bg-surface-page text-primary-900 text-sm font-medium hover:bg-neutral-50 transition-colors-base"
         >
-          <Paperclip className="w-4 h-4" aria-hidden="true" />
           Add files
-        </button>
+        </Button>
         {files.length > 0 && (
           <ul className="space-y-2 mt-2">
             {files.map((file, index) => (
@@ -255,12 +252,12 @@ export function ContactForm({ defaultSubject, defaultEnquiryType = "general" }: 
                 className="flex items-center justify-between gap-3 px-3 py-2 rounded-xl border border-default bg-surface-page text-sm"
               >
                 <span className="truncate">
-                  {file.name} <span className="text-muted">({formatFileSize(file.size)})</span>
+                  {file.name} <span className="text-text-muted">({formatFileSize(file.size)})</span>
                 </span>
                 <button
                   type="button"
                   onClick={() => removeFile(index)}
-                  className="p-1 text-muted hover:text-danger-500 transition-colors-base"
+                  className="p-1 text-text-muted hover:text-danger-500 transition-colors-base"
                   aria-label={`Remove ${file.name}`}
                 >
                   <X className="w-4 h-4" />
@@ -274,29 +271,19 @@ export function ContactForm({ defaultSubject, defaultEnquiryType = "general" }: 
             {errors.attachments}
           </p>
         )}
-        <p className="text-xs text-muted">Up to 5 files. PDF, JPG, PNG, DOC/DOCX. Max 5 MB each.</p>
+        <p className="text-xs text-text-muted">Up to 5 files. PDF, JPG, PNG, DOC/DOCX. Max 5 MB each.</p>
       </div>
 
-      <button
+      <Button
         type="submit"
-        disabled={mutation.isPending}
-        className={cn(
-          "w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-lg shadow-secondary-500/30 hover:-translate-y-1 transition-all-base",
-          mutation.isPending && "opacity-70 cursor-not-allowed"
-        )}
+        variant="gradient"
+        fullWidth
+        isLoading={mutation.isPending}
+        leftIcon={<Send className="w-4 h-4" aria-hidden="true" />}
+        className="rounded-full px-7 py-3.5 h-auto"
       >
-        {mutation.isPending ? (
-          <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Sending...
-          </>
-        ) : (
-          <>
-            <Send className="w-4 h-4" />
-            Send Message
-          </>
-        )}
-      </button>
+        {mutation.isPending ? "Sending..." : "Send Message"}
+      </Button>
     </form>
   );
 }

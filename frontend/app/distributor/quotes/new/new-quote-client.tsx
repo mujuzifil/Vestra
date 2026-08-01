@@ -55,7 +55,7 @@ export function NewQuoteClient() {
     <div className="space-y-6">
       <Link
         href="/distributor/quotes"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading"
       >
         <ChevronLeft className="w-4 h-4" />
         Back to Quotes
@@ -63,7 +63,7 @@ export function NewQuoteClient() {
 
       <form onSubmit={handleSubmit} className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-6 lg:p-8 space-y-6">
         <div>
-          <h1 className="text-2xl font-extrabold text-primary-900">New Quote Request</h1>
+          <h1 className="text-2xl font-extrabold text-text-heading">New Quote Request</h1>
           <p className="text-muted">Build your quote from distributor-priced products.</p>
         </div>
 
@@ -77,7 +77,7 @@ export function NewQuoteClient() {
         />
 
         <div>
-          <h3 className="text-lg font-bold text-primary-900 mb-4">Products</h3>
+          <h3 className="text-lg font-bold text-text-heading mb-4">Products</h3>
           {products && <BulkOrderTable products={products} lines={lines} onChange={setLines} />}
         </div>
 

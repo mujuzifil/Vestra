@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ArrowLeft, Clock, Newspaper } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { Breadcrumb } from "@/components/common/breadcrumb";
+import { Button } from "@/components/ui/button";
 import { JsonLd, blogPostSchema } from "@/lib/structured-data";
 import { getBlogImageUrl } from "@/lib/api/blog";
 import type { BlogPost } from "@/types";
@@ -100,7 +101,7 @@ export function ArticleDetailClient({ post }: ArticleDetailClientProps) {
             />
             <style jsx>{`
               .blog-content {
-                color: var(--text-body);
+                color: var(--text-text-body);
                 line-height: 1.75;
               }
               .blog-content :global(h2) {
@@ -120,7 +121,7 @@ export function ArticleDetailClient({ post }: ArticleDetailClientProps) {
               }
               .blog-content :global(p) {
                 margin-bottom: 1.25rem;
-                color: var(--text-muted);
+                color: var(--text-text-muted);
               }
               .blog-content :global(a) {
                 color: var(--secondary-600);
@@ -137,7 +138,7 @@ export function ArticleDetailClient({ post }: ArticleDetailClientProps) {
               .blog-content :global(ol) {
                 margin-bottom: 1.25rem;
                 padding-left: 1.5rem;
-                color: var(--text-muted);
+                color: var(--text-text-muted);
               }
               .blog-content :global(li) {
                 margin-bottom: 0.5rem;
@@ -159,7 +160,7 @@ export function ArticleDetailClient({ post }: ArticleDetailClientProps) {
 
             {post.tags.length > 0 && (
               <div className="mt-12 pt-8 border-t border-default">
-                <h2 className="text-sm font-semibold text-primary-900 uppercase tracking-wider mb-3">
+                <h2 className="text-sm font-semibold text-text-heading uppercase tracking-wider mb-3">
                   Tags
                 </h2>
                 <div className="flex flex-wrap gap-2">
@@ -201,18 +202,12 @@ export function ArticleDetailClient({ post }: ArticleDetailClientProps) {
               Our team is ready to help you choose the right cleaning and fabric care solutions.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                href="/request-quote"
-                className="inline-flex items-center px-7 py-3.5 rounded-full font-semibold text-primary-900 bg-white shadow-lg hover:-translate-y-1 transition-transform-base"
-              >
-                Request a Quote
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex items-center px-7 py-3.5 rounded-full font-semibold border border-white/40 text-white hover:bg-white/10 transition-colors-base"
-              >
-                Contact Sales
-              </Link>
+              <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto bg-white text-text-heading border-transparent hover:bg-white/90">
+                <Link href="/request-quote">Request a Quote</Link>
+              </Button>
+              <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto border-white/40 text-white bg-transparent hover:bg-white/10 hover:text-white hover:border-white/50">
+                <Link href="/contact">Contact Sales</Link>
+              </Button>
             </div>
           </Container>
         </section>

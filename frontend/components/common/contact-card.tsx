@@ -21,10 +21,10 @@ export function ContactCard({ icon, title, lines, className }: ContactCardProps)
       <div className="w-14 h-14 rounded-full bg-gradient-to-br from-secondary-500 to-secondary-600 flex items-center justify-center text-white mb-5 shadow-lg shadow-secondary-500/25">
         <Icon name={icon} className="w-6 h-6" />
       </div>
-      <h3 className="text-lg font-bold text-primary-900 mb-3">{title}</h3>
+      <h3 className="text-lg font-bold text-text-heading mb-3">{title}</h3>
       <ul className="space-y-2">
         {lines.map((line, index) => (
-          <li key={index} className="text-neutral-600">
+          <li key={index} className="text-text-body">
             {line.href ? (
               <a
                 href={line.href}
@@ -32,12 +32,12 @@ export function ContactCard({ icon, title, lines, className }: ContactCardProps)
                 target={line.href.startsWith("http") ? "_blank" : undefined}
                 rel={line.href.startsWith("http") ? "noopener noreferrer" : undefined}
               >
-                {line.label && <span className="block text-xs text-neutral-400">{line.label}</span>}
+                {line.label && <span className="block text-xs text-text-muted">{line.label}</span>}
                 {line.value}
               </a>
             ) : (
               <>
-                {line.label && <span className="block text-xs text-neutral-400">{line.label}</span>}
+                {line.label && <span className="block text-xs text-text-muted">{line.label}</span>}
                 {line.value}
               </>
             )}

@@ -27,8 +27,8 @@ export function ValueCard({ icon, title, description, index = 0, className }: Va
       <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-gradient-to-br from-primary-500 to-primary-400 flex items-center justify-center text-white mx-auto mb-5 shadow-lg shadow-primary-400/25">
         <Icon name={icon} className="w-7 h-7 lg:w-8 lg:h-8" />
       </div>
-      <h3 className="text-lg lg:text-xl font-bold text-primary-900 mb-2">{title}</h3>
-      <p className="text-sm lg:text-base text-muted leading-relaxed">{description}</p>
+      <h3 className="text-lg lg:text-xl font-bold text-text-heading mb-2">{title}</h3>
+      <p className="text-sm lg:text-base text-text-muted leading-relaxed">{description}</p>
     </motion.div>
   );
 }

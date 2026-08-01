@@ -46,12 +46,12 @@ export function PaymentsPageClient() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-primary-900">Payments</h1>
+        <h1 className="text-2xl font-extrabold text-text-heading">Payments</h1>
         <p className="text-muted">Upload proof of payment and view history.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-6 space-y-5">
-        <h2 className="text-lg font-bold text-primary-900">Submit Payment Proof</h2>
+        <h2 className="text-lg font-bold text-text-heading">Submit Payment Proof</h2>
         <div className="grid sm:grid-cols-2 gap-5">
           <InputField
             id="amount"
@@ -78,14 +78,14 @@ export function PaymentsPageClient() {
           rows={3}
         />
         <div>
-          <label className="block text-sm font-semibold text-primary-900 mb-1.5">Receipt</label>
+          <label className="block text-sm font-semibold text-text-heading mb-1.5">Receipt</label>
           <div
             onClick={() => document.getElementById("payment-receipt")?.click()}
             className="cursor-pointer border-2 border-dashed border-neutral-200 rounded-xl p-6 hover:border-green-500 hover:bg-green-50/30 transition-colors-base"
           >
             <div className="flex flex-col items-center text-center">
               <Upload className="w-8 h-8 text-placeholder mb-2" />
-              <p className="text-sm font-medium text-primary-900">{file ? file.name : "Click to upload receipt"}</p>
+              <p className="text-sm font-medium text-text-heading">{file ? file.name : "Click to upload receipt"}</p>
             </div>
             <input
               id="payment-receipt"
@@ -118,17 +118,17 @@ export function PaymentsPageClient() {
             <table className="w-full text-left text-sm">
               <thead className="bg-neutral-50">
                 <tr>
-                  <th className="px-6 py-4 font-semibold text-primary-900">Reference</th>
-                  <th className="px-6 py-4 font-semibold text-primary-900">Amount</th>
-                  <th className="px-6 py-4 font-semibold text-primary-900">Status</th>
-                  <th className="px-6 py-4 font-semibold text-primary-900">Date</th>
+                  <th className="px-6 py-4 font-semibold text-text-heading">Reference</th>
+                  <th className="px-6 py-4 font-semibold text-text-heading">Amount</th>
+                  <th className="px-6 py-4 font-semibold text-text-heading">Status</th>
+                  <th className="px-6 py-4 font-semibold text-text-heading">Date</th>
                   <th className="px-6 py-4 text-right">Receipt</th>
                 </tr>
               </thead>
               <tbody>
                 {payments.map((payment) => (
                   <tr key={payment.id} className="border-t border-neutral-100">
-                    <td className="px-6 py-4 font-medium text-primary-900">{payment.reference_number}</td>
+                    <td className="px-6 py-4 font-medium text-text-heading">{payment.reference_number}</td>
                     <td className="px-6 py-4 text-muted">UGX {payment.amount}</td>
                     <td className="px-6 py-4">
                       <span

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Check, Package, ArrowRight, FileText } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
 import { SectionHeader } from "@/components/common/section-header";
@@ -205,13 +206,13 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                 </span>
                 <h1
                   id="overview-heading"
-                  className="text-3xl lg:text-4xl font-extrabold text-primary-900 mb-4 tracking-tight"
+                  className="text-3xl lg:text-4xl font-extrabold text-text-heading mb-4 tracking-tight"
                 >
                   {product.name}
                 </h1>
 
                 <div className="flex flex-wrap items-center gap-3 mb-6">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-neutral-100 text-body">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-neutral-100 text-text-body">
                     <Package className="w-3.5 h-3.5" aria-hidden="true" />
                     SKU: {product.sku}
                   </span>
@@ -223,37 +224,39 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                   )}
                 </div>
 
-                <p className="text-body text-base lg:text-lg leading-relaxed mb-8">
+                <p className="text-text-body text-base lg:text-lg leading-relaxed mb-8">
                   {product.description}
                 </p>
 
                 {/* B2B enquiry actions */}
                 <div className="flex flex-col sm:flex-row gap-3 mb-6">
-                  <Link
-                    href={`/request-quote?product=${encodeURIComponent(product.slug)}`}
-                    data-track="product-detail-quote"
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-lg shadow-secondary-500/30 hover:-translate-y-0.5 transition-all-base"
+                  <Button
+                    asChild
+                    variant="gradient"
+                    className="flex-1 rounded-full px-6 py-3.5 h-auto"
+                    leftIcon={<FileText className="w-4 h-4" aria-hidden="true" />}
                   >
-                    <FileText className="w-4 h-4" aria-hidden="true" />
-                    Request a Quote
-                  </Link>
-                  <Link
-                    href={`/contact?subject=${encodeURIComponent(`Enquiry about ${product.name}`)}`}
-                    data-track="product-detail-contact"
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold text-primary-900 bg-white border border-default hover:bg-surface-page transition-colors-base"
-                  >
-                    Contact Sales
-                  </Link>
+                    <Link href={`/request-quote?product=${encodeURIComponent(product.slug)}`} data-track="product-detail-quote">
+                      Request a Quote
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="flex-1 rounded-full px-6 py-3.5 h-auto">
+                    <Link href={`/contact?subject=${encodeURIComponent(`Enquiry about ${product.name}`)}`} data-track="product-detail-contact">
+                      Contact Sales
+                    </Link>
+                  </Button>
                 </div>
 
-                <Link
-                  href="/distributor"
-                  data-track="product-detail-distributor"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-secondary-600 hover:text-secondary-700 underline underline-offset-2"
+                <Button
+                  asChild
+                  variant="link"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-secondary-600 hover:text-secondary-700 underline underline-offset-2 p-0 h-auto"
+                  rightIcon={<ArrowRight className="w-4 h-4" aria-hidden="true" />}
                 >
-                  Interested in reseller or bulk pricing? Become a distributor
-                  <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                </Link>
+                  <Link href="/distributor" data-track="product-detail-distributor">
+                    Interested in reseller or bulk pricing? Become a distributor
+                  </Link>
+                </Button>
               </div>
             </div>
           </Container>
@@ -274,14 +277,14 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                 {product.benefits && product.benefits.length > 0 ? (
                   <ul className="space-y-3">
                     {product.benefits.map((benefit) => (
-                      <li key={benefit} className="flex items-start gap-3 text-body">
+                      <li key={benefit} className="flex items-start gap-3 text-text-body">
                         <Check className="w-5 h-5 text-secondary-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
                         {benefit}
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="text-body">Benefits information coming soon.</p>
+                  <p className="text-text-body">Benefits information coming soon.</p>
                 )}
               </div>
 
@@ -296,7 +299,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                   {applications.map((app) => (
                     <span
                       key={app}
-                      className="px-4 py-2 rounded-full text-sm font-medium bg-white border border-default text-body"
+                      className="px-4 py-2 rounded-full text-sm font-medium bg-white border border-default text-text-body"
                     >
                       {app}
                     </span>
@@ -331,7 +334,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-body">Package size information coming soon.</p>
+                  <p className="text-text-body">Package size information coming soon.</p>
                 )}
               </div>
 
@@ -343,9 +346,9 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                   className="mb-8"
                 />
                 {instructions ? (
-                  <p className="text-body leading-relaxed">{instructions}</p>
+                  <p className="text-text-body leading-relaxed">{instructions}</p>
                 ) : (
-                  <p className="text-body">Usage instructions coming soon.</p>
+                  <p className="text-text-body">Usage instructions coming soon.</p>
                 )}
               </div>
             </div>
@@ -390,10 +393,10 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                       .filter(([key]) => !["Package Sizes", "Sizes", "Pack Sizes", "Usage Instructions", "Directions"].includes(key))
                       .map(([key, value]) => (
                         <tr key={key} className="border-b border-default last:border-0">
-                          <td className="px-5 py-3 font-semibold text-primary-900 bg-surface-page w-1/3">
+                          <td className="px-5 py-3 font-semibold text-text-heading bg-surface-page w-1/3">
                             {key}
                           </td>
-                          <td className="px-5 py-3 text-body">{value}</td>
+                          <td className="px-5 py-3 text-text-body">{value}</td>
                         </tr>
                       ))}
                   </tbody>
@@ -432,7 +435,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                       <span className="text-xs font-semibold text-secondary-600 uppercase tracking-wider">
                         {recent.category}
                       </span>
-                      <h3 className="text-base font-bold text-primary-900 mt-1">{recent.name}</h3>
+                      <h3 className="text-base font-bold text-text-heading mt-1">{recent.name}</h3>
                     </div>
                   </Link>
                 ))}
@@ -470,8 +473,8 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                       <span className="text-xs font-semibold text-secondary-600 uppercase tracking-wider">
                         {related.category.name}
                       </span>
-                      <h3 className="text-lg font-bold text-primary-900 mt-1 mb-2">{related.name}</h3>
-                      <p className="text-sm text-muted line-clamp-2">{related.short_description}</p>
+                      <h3 className="text-lg font-bold text-text-heading mt-1 mb-2">{related.name}</h3>
+                      <p className="text-sm text-text-muted line-clamp-2">{related.short_description}</p>
                     </div>
                   </Link>
                 ))}

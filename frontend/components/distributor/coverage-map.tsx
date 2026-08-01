@@ -74,7 +74,7 @@ export function CoverageMap() {
                               ? "bg-green-50 text-green-700"
                               : district.status === "coming_soon"
                               ? "bg-amber-50 text-amber-700"
-                              : "bg-neutral-100 text-neutral-600"
+                              : "bg-neutral-100 text-text-body"
                           )}
                         >
                           {statusLabel[district.status] || district.status}

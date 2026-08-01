@@ -18,7 +18,7 @@ export function WhatsAppFloat() {
       aria-label="Chat with us on WhatsApp"
     >
       <MessageCircle className="w-7 h-7 fill-current" />
-      <span className="absolute right-16 bg-surface-card text-primary-900 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap shadow-md opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all-base pointer-events-none hidden sm:block">
+      <span className="absolute right-16 bg-surface-card text-text-heading px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap shadow-md opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all-base pointer-events-none hidden sm:block">
         Chat with us
       </span>
     </Link>

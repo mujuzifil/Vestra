@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Container } from "@/components/common/container";
+import { Button } from "@/components/ui/button";
 
 export function FinalCTASection() {
   return (
@@ -20,24 +21,15 @@ export function FinalCTASection() {
             Contact our sales team, apply to become a distributor, or request a tailored quotation.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/contact"
-              className="inline-flex items-center px-7 py-3.5 rounded-full font-semibold text-primary-900 bg-white shadow-lg hover:-translate-y-1 transition-transform-base"
-            >
-              Contact Sales
-            </Link>
-            <Link
-              href="/distributor"
-              className="inline-flex items-center px-7 py-3.5 rounded-full font-semibold border border-white/40 text-white hover:bg-white/10 transition-colors-base"
-            >
-              Become a Distributor
-            </Link>
-            <Link
-              href="/request-quote"
-              className="inline-flex items-center px-7 py-3.5 rounded-full font-semibold border border-white/40 text-white hover:bg-white/10 transition-colors-base"
-            >
-              Request a Quote
-            </Link>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto bg-white text-text-heading border-transparent hover:bg-white/90">
+              <Link href="/contact">Contact Sales</Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto border-white/40 text-white bg-transparent hover:bg-white/10 hover:text-white hover:border-white/50">
+              <Link href="/distributor">Become a Distributor</Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto border-white/40 text-white bg-transparent hover:bg-white/10 hover:text-white hover:border-white/50">
+              <Link href="/request-quote">Request a Quote</Link>
+            </Button>
           </div>
         </div>
       </Container>

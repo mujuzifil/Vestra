@@ -28,7 +28,7 @@ const statusColors: Record<string, string> = {
   shipped: "bg-cyan-100 text-cyan-700",
   delivered: "bg-secondary-100 text-secondary-600",
   cancelled: "bg-danger-100 text-danger-600",
-  refunded: "bg-neutral-100 text-neutral-600",
+  refunded: "bg-neutral-100 text-text-body",
 };
 
 const statusOptions = [
@@ -64,7 +64,7 @@ function OrderStatusBadge({ status }: { status: string }) {
   return (
     <span
       className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${
-        statusColors[status] || "bg-neutral-100 text-neutral-600"
+        statusColors[status] || "bg-neutral-100 text-text-body"
       }`}
     >
       {status}
@@ -93,7 +93,7 @@ function OrderCard({ order }: { order: Order }) {
     <div className="bg-surface-page rounded-xl p-4 sm:hidden">
       <div className="flex items-start justify-between mb-2">
         <div>
-          <p className="font-semibold text-primary-900">{order.invoice_number}</p>
+          <p className="font-semibold text-text-heading">{order.invoice_number}</p>
           <p className="text-xs text-muted">{new Date(order.created_at).toLocaleDateString()}</p>
         </div>
         <OrderStatusBadge status={order.status} />
@@ -212,7 +212,7 @@ export function OrdersPageClient() {
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
             <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-4">
               <p className="text-sm text-muted">Total Orders</p>
-              <p className="text-2xl font-extrabold text-primary-900">{stats.total}</p>
+              <p className="text-2xl font-extrabold text-text-heading">{stats.total}</p>
             </div>
             <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-4">
               <p className="text-sm text-muted">Pending Payment</p>
@@ -298,7 +298,7 @@ export function OrdersPageClient() {
             ) : filteredOrders.length === 0 ? (
               <div className="py-16 text-center">
                 <Package className="w-14 h-14 mx-auto mb-4 text-placeholder" />
-                <h3 className="text-lg font-bold text-primary-900 mb-2">
+                <h3 className="text-lg font-bold text-text-heading mb-2">
                   {orders?.length === 0 ? "No orders yet" : "No matching orders"}
                 </h3>
                 <p className="text-muted mb-6">
@@ -322,18 +322,18 @@ export function OrdersPageClient() {
                   <table className="w-full text-left">
                     <thead>
                       <tr className="border-b border-default">
-                        <th className="pb-3 font-semibold text-primary-900">Order</th>
-                        <th className="pb-3 font-semibold text-primary-900">Date</th>
-                        <th className="pb-3 font-semibold text-primary-900">Total</th>
-                        <th className="pb-3 font-semibold text-primary-900">Status</th>
-                        <th className="pb-3 font-semibold text-primary-900">Payment</th>
-                        <th className="pb-3 font-semibold text-primary-900 text-right">Action</th>
+                        <th className="pb-3 font-semibold text-text-heading">Order</th>
+                        <th className="pb-3 font-semibold text-text-heading">Date</th>
+                        <th className="pb-3 font-semibold text-text-heading">Total</th>
+                        <th className="pb-3 font-semibold text-text-heading">Status</th>
+                        <th className="pb-3 font-semibold text-text-heading">Payment</th>
+                        <th className="pb-3 font-semibold text-text-heading text-right">Action</th>
                       </tr>
                     </thead>
                     <tbody>
                       {paginatedOrders.map((order) => (
                         <tr key={order.id} className="border-b border-neutral-100">
-                          <td className="py-4 font-semibold text-primary-900">{order.invoice_number}</td>
+                          <td className="py-4 font-semibold text-text-heading">{order.invoice_number}</td>
                           <td className="py-4 text-muted">{new Date(order.created_at).toLocaleDateString()}</td>
                           <td className="py-4 font-bold text-primary-500">UGX {order.total_amount}</td>
                           <td className="py-4">
@@ -370,7 +370,7 @@ export function OrdersPageClient() {
                     <button
                       onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                       disabled={currentPage === 1}
-                      className="px-4 py-2 text-sm font-semibold text-primary-900 bg-surface-card border border-default rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-page"
+                      className="px-4 py-2 text-sm font-semibold text-text-heading bg-surface-card border border-default rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-page"
                     >
                       Previous
                     </button>
@@ -380,7 +380,7 @@ export function OrdersPageClient() {
                     <button
                       onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                       disabled={currentPage === totalPages}
-                      className="px-4 py-2 text-sm font-semibold text-primary-900 bg-surface-card border border-default rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-page"
+                      className="px-4 py-2 text-sm font-semibold text-text-heading bg-surface-card border border-default rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-surface-page"
                     >
                       Next
                     </button>
