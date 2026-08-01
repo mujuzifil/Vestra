@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Globe, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Instagram, MessageCircle, Mail, Phone, MapPin, Clock } from "lucide-react";
 import { useContactInfo } from "@/hooks/use-settings";
 
 const quickLinks = [
@@ -23,10 +23,10 @@ const productLinks = [
   { label: "Pro Finish", href: "/products/pro-finish" },
 ];
 
-const socialIcons = [
-  { Icon: Globe, href: "#", label: "Facebook" },
-  { Icon: Globe, href: "#", label: "Instagram" },
-  { Icon: Globe, href: "#", label: "WhatsApp" },
+const socialLinks = [
+  { Icon: Facebook, href: "#", label: "Facebook" },
+  { Icon: Instagram, href: "#", label: "Instagram" },
+  { Icon: MessageCircle, href: "#", label: "WhatsApp" },
 ];
 
 export function Footer() {
@@ -35,6 +35,7 @@ export function Footer() {
   const phone = contactInfo?.phone || "+256 707 128 442";
   const email = contactInfo?.email || "vestradetergent@gmail.com";
   const location = contactInfo?.location || "Kampala, Uganda";
+  const businessHours = contactInfo?.businessHours || "Mon – Fri: 8:00 AM – 5:00 PM";
 
   return (
     <footer className="bg-primary-900 text-white pt-20 pb-8">
@@ -50,17 +51,18 @@ export function Footer() {
               className="h-16 w-auto object-contain mb-6"
             />
             <p className="text-white/70 leading-relaxed mb-6">
-              Premium fabric care solutions engineered for professional results and fabric protection.
+              VESTRA® manufactures professional cleaning and fabric care solutions for businesses,
+              institutions, and distribution partners across Uganda.
             </p>
             <div className="flex gap-3">
-              {socialIcons.map(({ Icon, href, label }) => (
+              {socialLinks.map(({ Icon, href, label }) => (
                 <a
                   key={label}
                   href={href}
                   aria-label={label}
                   className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-secondary-500 hover:-translate-y-1 transition-all-base"
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-4 h-4" aria-hidden="true" />
                 </a>
               ))}
             </div>
@@ -102,16 +104,20 @@ export function Footer() {
             <h4 className="text-lg font-bold mb-6">Contact Us</h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3 text-white/80">
-                <MapPin className="w-5 h-5 text-secondary-500 mt-0.5 flex-shrink-0" />
+                <MapPin className="w-5 h-5 text-secondary-500 mt-0.5 flex-shrink-0" aria-hidden="true" />
                 <span>{location}</span>
               </li>
               <li className="flex items-start gap-3 text-white/80">
-                <Phone className="w-5 h-5 text-secondary-500 mt-0.5 flex-shrink-0" />
+                <Phone className="w-5 h-5 text-secondary-500 mt-0.5 flex-shrink-0" aria-hidden="true" />
                 <span>{phone}</span>
               </li>
               <li className="flex items-start gap-3 text-white/80">
-                <Mail className="w-5 h-5 text-secondary-500 mt-0.5 flex-shrink-0" />
+                <Mail className="w-5 h-5 text-secondary-500 mt-0.5 flex-shrink-0" aria-hidden="true" />
                 <span>{email}</span>
+              </li>
+              <li className="flex items-start gap-3 text-white/80">
+                <Clock className="w-5 h-5 text-secondary-500 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                <span>{businessHours}</span>
               </li>
             </ul>
           </div>
@@ -119,13 +125,19 @@ export function Footer() {
 
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-white/55 text-sm">
-            &copy; {new Date().getFullYear()} VESTRA. All rights reserved.
+            &copy; {new Date().getFullYear()} VESTRA®. All rights reserved.
           </p>
           <div className="flex gap-7">
-            <Link href="/privacy-policy" className="text-white/55 text-sm hover:text-secondary-400 transition-colors-base">
+            <Link
+              href="/privacy-policy"
+              className="text-white/55 text-sm hover:text-secondary-400 transition-colors-base"
+            >
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-white/55 text-sm hover:text-secondary-400 transition-colors-base">
+            <Link
+              href="/terms"
+              className="text-white/55 text-sm hover:text-secondary-400 transition-colors-base"
+            >
               Terms & Conditions
             </Link>
           </div>

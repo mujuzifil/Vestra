@@ -64,13 +64,17 @@ export function Navbar() {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
+  const isHome = pathname === "/";
+
   return (
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all-base duration-300",
-        scrolled
-          ? "bg-primary-900/98 backdrop-blur-md py-2 shadow-md"
-          : "bg-primary-900/98 py-3.5"
+        isHome && !scrolled
+          ? "bg-transparent py-3.5"
+          : scrolled
+            ? "bg-primary-900/98 backdrop-blur-md py-2 shadow-md"
+            : "bg-primary-900/98 py-3.5"
       )}
     >
       <div className="container mx-auto flex items-center justify-between px-4 lg:px-8">

@@ -1,23 +1,25 @@
 import { Product } from "@/types";
 
 const COMPANY_NAME = "VESTRA";
-const COMPANY_DESCRIPTION = "VESTRA is a premium fabric care brand dedicated to developing high-performance cleaning solutions that combine advanced chemistry, innovation, and exceptional garment care.";
+const COMPANY_DESCRIPTION =
+  "VESTRA® is a Ugandan manufacturer of professional cleaning solutions, supplying premium detergents and fabric care products to businesses, institutions, and distribution partners across Uganda.";
 const CONTACT_PHONE = "+256 707 128 442";
 const CONTACT_EMAIL = "vestradetergent@gmail.com";
 const CONTACT_LOCATION = "Kampala, Uganda";
+const SITE_URL = "https://vestradetergents.com";
 
 export function organizationSchema() {
   return {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": ["Organization", "Manufacturer"],
     name: COMPANY_NAME,
-    url: "https://vestra.com",
-    logo: "https://vestra.com/assets/images/branding/vestra-logo.png",
+    url: SITE_URL,
+    logo: `${SITE_URL}/assets/images/branding/vestra-logo.png`,
     description: COMPANY_DESCRIPTION,
     contactPoint: {
       "@type": "ContactPoint",
       telephone: CONTACT_PHONE.replace(/\s/g, ""),
-      contactType: "Customer Service",
+      contactType: "Sales",
       email: CONTACT_EMAIL,
       areaServed: "UG",
       availableLanguage: ["English"],
@@ -31,14 +33,38 @@ export function websiteSchema() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: COMPANY_NAME,
-    url: "https://vestra.com",
+    url: SITE_URL,
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: "https://vestra.com/products?search={search_term_string}",
+        urlTemplate: `${SITE_URL}/products?search={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
+    },
+  };
+}
+
+export function manufacturerSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": ["Organization", "Manufacturer"],
+    name: COMPANY_NAME,
+    url: SITE_URL,
+    logo: `${SITE_URL}/assets/images/branding/vestra-logo.png`,
+    description: COMPANY_DESCRIPTION,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: CONTACT_LOCATION,
+      addressCountry: "UG",
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: CONTACT_PHONE.replace(/\s/g, ""),
+      contactType: "Sales",
+      email: CONTACT_EMAIL,
+      areaServed: "UG",
+      availableLanguage: ["English"],
     },
   };
 }
@@ -58,8 +84,8 @@ export function breadcrumbSchema(items: { name: string; url: string }[]) {
 
 export function productSchema(product: Product) {
   const imageUrl = product.images?.[0]?.image
-    ? (product.images[0].image.startsWith("http") ? product.images[0].image : `https://vestra.com${product.images[0].image}`)
-    : "https://vestra.com/assets/images/branding/vestra-logo.png";
+    ? (product.images[0].image.startsWith("http") ? product.images[0].image : `${SITE_URL}${product.images[0].image}`)
+    : `${SITE_URL}/assets/images/branding/vestra-logo.png`;
 
   return {
     "@context": "https://schema.org",
@@ -73,7 +99,7 @@ export function productSchema(product: Product) {
     },
     offers: {
       "@type": "Offer",
-      url: `https://vestra.com/products/${product.slug}`,
+      url: `${SITE_URL}/products/${product.slug}`,
       priceCurrency: "UGX",
       price: product.price.toString(),
       availability: "https://schema.org/InStock",
@@ -87,7 +113,7 @@ export function contactPageSchema() {
     "@context": "https://schema.org",
     "@type": "ContactPage",
     name: "Contact VESTRA",
-    url: "https://vestra.com/contact",
+    url: `${SITE_URL}/contact`,
     mainEntity: {
       "@type": "Organization",
       name: COMPANY_NAME,
