@@ -3,10 +3,22 @@ import { AboutPageClient } from "./about-page-client";
 import { createMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createMetadata({
-  title: "About Us",
+  title: "About VESTRA® | Ugandan Detergent Manufacturer",
   description:
-    "Learn about VESTRA's mission, vision, core values, and commitment to premium fabric care across Africa.",
-  keywords: ["about", "mission", "vision", "values", "company"],
+    "Learn about VESTRA®, a Ugandan manufacturer of professional detergents and cleaning solutions. Discover our mission, values, manufacturing capability, and partnership opportunities.",
+  keywords: [
+    "about",
+    "manufacturer",
+    "Uganda",
+    "detergent",
+    "fabric care",
+    "cleaning solutions",
+    "B2B",
+    "distributor",
+    "mission",
+    "vision",
+    "values",
+  ],
   pathname: "/about",
 });
 
