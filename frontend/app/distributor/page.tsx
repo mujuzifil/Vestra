@@ -128,7 +128,7 @@ export default function DistributorPage() {
       <PageHero
         title="Become a Distributor"
         subtitle="Join the VESTRA network and bring professional fabric care solutions to your market."
-        breadcrumb={[{ label: "Distributor" }]}
+        breadcrumb={[{ label: "Become a Distributor" }]}
       />
 
       {/* Benefits */}

@@ -89,7 +89,7 @@ export function RecentlyViewedPageClient() {
                   className="inline-flex items-center gap-2 px-6 py-3 bg-secondary-600 text-white font-semibold rounded-xl hover:bg-secondary-600 transition-colors-base"
                 >
                   <ShoppingBag className="w-4 h-4" />
-                  Start Shopping
+                  View Products
                 </Link>
               </div>
             ) : (

@@ -51,7 +51,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("vestra_auth_token", result.token);
       setToken(result.token);
       queryClient.setQueryData(["auth", "profile"], result.user);
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
     [queryClient]
   );
@@ -81,7 +80,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Ignore errors on logout
     }
     localStorage.removeItem("vestra_auth_token");
-    localStorage.removeItem("vestra_cart");
     setToken(null);
     queryClient.clear();
   }, [logoutMutation, queryClient]);

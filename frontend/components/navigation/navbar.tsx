@@ -4,9 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Search, User, ShoppingCart, ChevronDown, LogIn } from "lucide-react";
+import { Menu, X, Search, User, ChevronDown, LogIn } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import { useCartContext } from "@/lib/cart-context";
 import { useSearchSuggestions } from "@/hooks/use-products";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { cn } from "@/lib/utils";
@@ -26,10 +25,11 @@ const navLinks = [
       { label: "Pro Finish", href: "/products/pro-finish" },
     ],
   },
-  { label: "Bulk Orders", href: "/bulk-orders" },
   { label: "Become a Distributor", href: "/distributor" },
-  { label: "Contact Us", href: "/contact" },
-  { label: "Account", href: "/account" },
+  { label: "Request a Quote", href: "/request-quote" },
+  { label: "Where to Buy", href: "/where-to-buy" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export function Navbar() {
@@ -37,23 +37,11 @@ export function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [badgeBump, setBadgeBump] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { user, isAuthenticated, logout } = useAuth();
-  const { itemCount } = useCartContext();
-  const prevItemCountRef = useRef(itemCount);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { data: suggestions } = useSearchSuggestions(searchQuery);
-
-  useEffect(() => {
-    if (itemCount > prevItemCountRef.current) {
-      setBadgeBump(true);
-      const timer = setTimeout(() => setBadgeBump(false), 300);
-      return () => clearTimeout(timer);
-    }
-    prevItemCountRef.current = itemCount;
-  }, [itemCount]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -156,24 +144,6 @@ export function Navbar() {
           </button>
 
           {isAuthenticated && <NotificationBell />}
-
-          <Link
-            href="/cart"
-            aria-label={`Shopping cart (${itemCount} items)`}
-            className="relative text-white hover:text-secondary-400 transition-colors-base p-2 rounded-full focus-visible:ring-2 focus-visible:ring-secondary-500"
-          >
-            <ShoppingCart className="w-5 h-5" aria-hidden="true" />
-            {itemCount > 0 && (
-              <span
-                className={cn(
-                  "absolute top-0 right-0 w-4 h-4 bg-secondary-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center transition-transform-base",
-                  badgeBump && "scale-150"
-                )}
-              >
-                {itemCount > 99 ? "99+" : itemCount}
-              </span>
-            )}
-          </Link>
 
           {isAuthenticated ? (
             <div className="group relative">

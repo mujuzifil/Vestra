@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { CheckCircle, Clock, ArrowRight, Home, ShoppingBag, Mail, Phone } from "lucide-react";
+import { CheckCircle, Clock, ArrowRight, Home, Package, Mail, Phone } from "lucide-react";
 import { Container } from "@/components/common/container";
 
 export function DistributorSuccessPageClient() {
@@ -76,8 +76,8 @@ export function DistributorSuccessPageClient() {
               href="/products"
               className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-0.5 transition-all-base"
             >
-              <ShoppingBag className="w-4 h-4" />
-              Continue Shopping
+              <Package className="w-4 h-4" />
+              View Products
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

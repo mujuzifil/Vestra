@@ -12,6 +12,9 @@ export default function robots(): MetadataRoute.Robots {
           "/account",
           "/auth",
           "/checkout",
+          "/cart",
+          "/compare",
+          "/bulk-orders",
           "/api",
           "/admin",
         ],
@@ -19,7 +22,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "Googlebot",
         allow: "/",
-        disallow: ["/account", "/auth", "/checkout", "/api", "/admin"],
+        disallow: ["/account", "/auth", "/checkout", "/cart", "/compare", "/bulk-orders", "/api", "/admin"],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

@@ -14,7 +14,11 @@ interface FormErrors {
   _server?: string;
 }
 
-export function ContactForm() {
+interface ContactFormProps {
+  defaultSubject?: string;
+}
+
+export function ContactForm({ defaultSubject }: ContactFormProps) {
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -118,6 +122,7 @@ export function ContactForm() {
         label="Subject"
         placeholder="How can we help?"
         error={errors.subject}
+        defaultValue={defaultSubject}
       />
       <TextareaField
         id="message"

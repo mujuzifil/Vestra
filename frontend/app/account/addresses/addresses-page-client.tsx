@@ -314,7 +314,7 @@ export function AddressesPageClient() {
               <div className="py-16 text-center">
                 <MapPin className="w-14 h-14 mx-auto mb-4 text-placeholder" />
                 <h3 className="text-lg font-bold text-primary-900 mb-2">No addresses saved</h3>
-                <p className="text-muted mb-6">Add a delivery address for faster checkout.</p>
+                <p className="text-muted mb-6">Add a delivery address for faster order processing.</p>
                 {!showForm && (
                   <button
                     onClick={() => setShowForm(true)}

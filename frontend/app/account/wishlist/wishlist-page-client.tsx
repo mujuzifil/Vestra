@@ -4,12 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, ShoppingBag, Trash2, Loader2, MoveRight } from "lucide-react";
+import { Heart, Trash2, Loader2, FileText, ArrowRight } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
 import { useAuth } from "@/lib/auth-context";
 import { useWishlist } from "@/lib/wishlist-context";
-import { useCartContext, toCartProduct } from "@/lib/cart-context";
 import { formatPrice } from "@/lib/utils";
 import { toastSuccess } from "@/lib/toast-utils";
 import type { Product } from "@/types";
@@ -17,13 +16,11 @@ import type { Product } from "@/types";
 interface ProductCardProps {
   product: Product;
   onRemove: () => void;
-  onMoveToCart: () => void;
   isLoading?: boolean;
 }
 
-function ProductCard({ product, onRemove, onMoveToCart, isLoading }: ProductCardProps) {
+function ProductCard({ product, onRemove, isLoading }: ProductCardProps) {
   const image = product.images?.[0]?.image || "/assets/images/products/placeholder.png";
-  const outOfStock = product.stock_quantity <= 0;
 
   return (
     <div className="bg-surface-card rounded-[20px] border border-default shadow-sm overflow-hidden">
@@ -37,15 +34,13 @@ function ProductCard({ product, onRemove, onMoveToCart, isLoading }: ProductCard
         <p className="text-sm text-muted mt-1">SKU: {product.sku}</p>
         <p className="text-lg font-extrabold text-primary-500 mt-2">{formatPrice(Number(product.price || 0))}</p>
         <div className="flex flex-col gap-2 mt-4">
-          <button
-            type="button"
-            onClick={onMoveToCart}
-            disabled={isLoading || outOfStock}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-secondary-600 text-white text-sm font-semibold rounded-xl hover:bg-secondary-600/90 disabled:opacity-50"
+          <Link
+            href={`/request-quote?product=${encodeURIComponent(product.slug)}`}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-secondary-600 text-white text-sm font-semibold rounded-xl hover:bg-secondary-600/90"
           >
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingBag className="w-4 h-4" />}
-            {outOfStock ? "Out of Stock" : "Move to Cart"}
-          </button>
+            <FileText className="w-4 h-4" />
+            Request a Quote
+          </Link>
           <button
             type="button"
             onClick={onRemove}
@@ -69,11 +64,8 @@ export function WishlistPageClient() {
     savedItems,
     isLoading,
     removeFromWishlist,
-    moveWishlistToCart,
     removeFromSavedItems,
-    moveSavedItemToCart,
   } = useWishlist();
-  const { addItem } = useCartContext();
   const [activeTab, setActiveTab] = useState<"wishlist" | "saved">("wishlist");
   const [actionId, setActionId] = useState<number | null>(null);
 
@@ -93,39 +85,11 @@ export function WishlistPageClient() {
     }
   };
 
-  const handleMoveWishlistToCart = async (product: Product) => {
-    setActionId(product.id);
-    try {
-      if (isAuthenticated) {
-        await moveWishlistToCart(product.id);
-      } else {
-        await addItem(toCartProduct(product), 1);
-        await removeFromWishlist(product.id);
-      }
-    } finally {
-      setActionId(null);
-    }
-  };
-
   const handleRemoveSaved = async (productId: number) => {
     setActionId(productId);
     try {
       await removeFromSavedItems(productId);
       toastSuccess("Removed from saved items");
-    } finally {
-      setActionId(null);
-    }
-  };
-
-  const handleMoveSavedToCart = async (product: Product) => {
-    setActionId(product.id);
-    try {
-      if (isAuthenticated) {
-        await moveSavedItemToCart(product.id);
-      } else {
-        await addItem(toCartProduct(product), 1);
-        await removeFromSavedItems(product.id);
-      }
     } finally {
       setActionId(null);
     }
@@ -147,7 +111,7 @@ export function WishlistPageClient() {
     <>
       <PageHero
         title="Wishlist & Saved Items"
-        subtitle="Products you love and items saved for later"
+        subtitle="Products you love and items you have saved"
         breadcrumb={[{ label: "Account", href: "/account" }, { label: "Wishlist" }]}
       />
 
@@ -176,7 +140,7 @@ export function WishlistPageClient() {
                     : "border-transparent text-muted hover:text-primary-900"
                 }`}
               >
-                Saved for Later ({savedItems.length})
+                Saved Items ({savedItems.length})
               </button>
             </div>
 
@@ -193,15 +157,14 @@ export function WishlistPageClient() {
                 <p className="text-muted mb-6">
                   {activeTab === "wishlist"
                     ? "Save products you love to find them quickly."
-                    : "Move items from your cart to save them for later."}
+                    : "Save products here to review or request a quote later."}
                 </p>
                 <Link
                   href="/products"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-secondary-600 text-white font-semibold rounded-xl hover:bg-secondary-600 transition-colors-base"
                 >
-                  <ShoppingBag className="w-4 h-4" />
-                  Continue Shopping
-                  <MoveRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4" />
+                  View Products
                 </Link>
               </div>
             ) : (
@@ -213,9 +176,6 @@ export function WishlistPageClient() {
                     isLoading={actionId === item.product.id}
                     onRemove={() =>
                       activeTab === "wishlist" ? handleRemoveWishlist(item.product.id) : handleRemoveSaved(item.product.id)
-                    }
-                    onMoveToCart={() =>
-                      activeTab === "wishlist" ? handleMoveWishlistToCart(item.product) : handleMoveSavedToCart(item.product)
                     }
                   />
                 ))}

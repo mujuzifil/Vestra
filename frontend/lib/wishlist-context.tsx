@@ -16,14 +16,12 @@ import {
   getWishlist,
   addToWishlist as addToWishlistApi,
   removeFromWishlist as removeFromWishlistApi,
-  moveWishlistToCart as moveWishlistToCartApi,
   mergeWishlist,
 } from "@/lib/api/wishlist";
 import {
   getSavedItems,
   addToSavedItems as addToSavedItemsApi,
   removeFromSavedItems as removeFromSavedItemsApi,
-  moveSavedItemToCart as moveSavedItemToCartApi,
   mergeSavedItems,
 } from "@/lib/api/saved-items";
 import { toastError, toastSuccess } from "@/lib/toast-utils";
@@ -49,10 +47,8 @@ interface WishlistContextValue {
   isSavedForLater: (productId: number) => boolean;
   addToWishlist: (product: Product, listName?: string, notes?: string) => Promise<void>;
   removeFromWishlist: (productId: number) => Promise<void>;
-  moveWishlistToCart: (productId: number) => Promise<void>;
   addToSavedItems: (product: Product) => Promise<void>;
   removeFromSavedItems: (productId: number) => Promise<void>;
-  moveSavedItemToCart: (productId: number) => Promise<void>;
 }
 
 const WISHLIST_STORAGE_KEY = "vestra_wishlist";
@@ -245,27 +241,6 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     [isAuthenticated, queryClient]
   );
 
-  const moveWishlistToCart = useCallback(
-    async (productId: number) => {
-      if (isAuthenticated) {
-        try {
-          await moveWishlistToCartApi(productId);
-          queryClient.invalidateQueries({ queryKey: ["wishlist"] });
-          queryClient.invalidateQueries({ queryKey: ["cart"] });
-          toastSuccess("Moved to cart");
-        } catch (error) {
-          const message = error instanceof Error ? error.message : "Could not move item to cart.";
-          toastError(message);
-          throw error;
-        }
-      } else {
-        toastError("Please sign in to move items to your cart.");
-        throw new Error("Not authenticated");
-      }
-    },
-    [isAuthenticated, queryClient]
-  );
-
   const addToSavedItems = useCallback(
     async (product: Product) => {
       if (isAuthenticated) {
@@ -313,27 +288,6 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     [isAuthenticated, queryClient]
   );
 
-  const moveSavedItemToCart = useCallback(
-    async (productId: number) => {
-      if (isAuthenticated) {
-        try {
-          await moveSavedItemToCartApi(productId);
-          queryClient.invalidateQueries({ queryKey: ["saved-items"] });
-          queryClient.invalidateQueries({ queryKey: ["cart"] });
-          toastSuccess("Moved to cart");
-        } catch (error) {
-          const message = error instanceof Error ? error.message : "Could not move item to cart.";
-          toastError(message);
-          throw error;
-        }
-      } else {
-        toastError("Please sign in to move items to your cart.");
-        throw new Error("Not authenticated");
-      }
-    },
-    [isAuthenticated, queryClient]
-  );
-
   return (
     <WishlistContext.Provider
       value={{
@@ -344,10 +298,8 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
         isSavedForLater,
         addToWishlist,
         removeFromWishlist,
-        moveWishlistToCart,
         addToSavedItems,
         removeFromSavedItems,
-        moveSavedItemToCart,
       }}
     >
       {children}

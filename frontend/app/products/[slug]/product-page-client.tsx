@@ -1,21 +1,10 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { notFound, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Check,
-  Minus,
-  Plus,
-  ShoppingCart,
-  Zap,
-  Package,
-  Loader2,
-  Heart,
-  Bookmark,
-  Scale,
-} from "lucide-react";
+import { Check, Package } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
 import { SectionHeader } from "@/components/common/section-header";
@@ -25,10 +14,6 @@ import { ApiError } from "@/components/ui/api-error";
 import { useProduct } from "@/hooks/use-products";
 import { useProductRecommendations } from "@/hooks/use-recommendations";
 import { useAuth } from "@/lib/auth-context";
-import { useCartContext, toCartProduct } from "@/lib/cart-context";
-import { useWishlist } from "@/lib/wishlist-context";
-import { useCompare } from "@/lib/compare-context";
-import { toastAddedToCart } from "@/lib/toast-utils";
 import { formatPrice, cn } from "@/lib/utils";
 import { ReviewList } from "@/components/reviews/review-list";
 import { ReviewForm } from "@/components/reviews/review-form";
@@ -78,7 +63,6 @@ function saveToRecentlyViewed(product: RecentProduct) {
 }
 
 export default function ProductPageClient({ slug }: ProductPageClientProps) {
-  const router = useRouter();
   const {
     data: product,
     isLoading,
@@ -89,14 +73,8 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
   const { data: recommendations } = useProductRecommendations(slug);
   const { data: reviewsData } = useProductReviews(slug);
   const submitReviewMutation = useSubmitReview();
-  const { addItem } = useCartContext();
   const { isAuthenticated } = useAuth();
-  const { addToWishlist, addToSavedItems, isInWishlist, isSavedForLater } = useWishlist();
-  const { addToCompare, isInCompare, canAddMore } = useCompare();
 
-  const [quantity, setQuantity] = useState(1);
-  const [adding, setAdding] = useState(false);
-  const [buying, setBuying] = useState(false);
   const [recentlyViewed, setRecentlyViewed] = useState<RecentProduct[]>([]);
   const recordView = useRecordProductView();
   const viewRecordedRef = useRef(false);
@@ -281,132 +259,33 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                     </div>
                   )}
 
-                  {/* Quantity selector */}
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm font-semibold text-primary-900">Quantity</span>
-                    <div className="flex items-center border border-default rounded-full bg-white">
-                      <button
-                        type="button"
-                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                        disabled={quantity <= 1}
-                        className="w-10 h-10 flex items-center justify-center text-body hover:text-primary-900 disabled:opacity-40"
-                        aria-label="Decrease quantity"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <span className="w-10 text-center text-sm font-semibold text-primary-900">{quantity}</span>
-                      <button
-                        type="button"
-                        onClick={() => setQuantity((q) => q + 1)}
-                        className="w-10 h-10 flex items-center justify-center text-body hover:text-primary-900"
-                        aria-label="Increase quantity"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
+                  {/* B2B enquiry actions */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Link
+                      href={`/request-quote?product=${encodeURIComponent(product.slug)}`}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg shadow-[var(--primary-500)]/30 hover:-translate-y-0.5 transition-all-base"
+                    >
+                      Request a Quote
+                    </Link>
+                    <Link
+                      href={`/contact?subject=${encodeURIComponent(`Enquiry about ${product.name}`)}`}
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-0.5 transition-all-base"
+                    >
+                      Contact Sales
+                    </Link>
                   </div>
 
-                  {/* Commerce actions */}
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <button
-                      type="button"
-                      disabled={adding || buying || product.stock_quantity <= 0}
-                      onClick={async () => {
-                        setAdding(true);
-                        try {
-                          await addItem(toCartProduct(product), quantity);
-                          toastAddedToCart(product.name, quantity);
-                        } catch {
-                          // error already toasted in context
-                        } finally {
-                          setAdding(false);
-                        }
-                      }}
-                      className={cn(
-                        "flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg shadow-[var(--primary-500)]/30 hover:-translate-y-0.5 transition-all-base",
-                        (adding || buying || product.stock_quantity <= 0) && "opacity-70 cursor-not-allowed"
-                      )}
-                    >
-                      {adding ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <ShoppingCart className="w-4 h-4" />
-                      )}
-                      {adding ? "Adding..." : "Add to Cart"}
-                    </button>
-                    <button
-                      type="button"
-                      disabled={adding || buying || product.stock_quantity <= 0}
-                      onClick={async () => {
-                        setBuying(true);
-                        try {
-                          await addItem(toCartProduct(product), quantity);
-                          router.push("/checkout");
-                        } catch {
-                          // error already toasted in context
-                        } finally {
-                          setBuying(false);
-                        }
-                      }}
-                      className={cn(
-                        "flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-0.5 transition-all-base",
-                        (adding || buying || product.stock_quantity <= 0) && "opacity-70 cursor-not-allowed"
-                      )}
-                    >
-                      {buying ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Zap className="w-4 h-4" />
-                      )}
-                      {buying ? "Please wait..." : "Buy Now"}
-                    </button>
-                  </div>
-
-                  {/* Wishlist / Save for later / Compare */}
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        try {
-                          await addToWishlist(product);
-                        } catch {
-                          // error already toasted
-                        }
-                      }}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-primary-900 bg-surface-card border border-default hover:bg-surface-page transition-colors-base"
-                    >
-                      <Heart className={`w-4 h-4 ${isInWishlist(product.id) ? "fill-danger-500 text-danger-500" : ""}`} />
-                      {isInWishlist(product.id) ? "In Wishlist" : "Add to Wishlist"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        try {
-                          await addToSavedItems(product);
-                        } catch {
-                          // error already toasted
-                        }
-                      }}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-primary-900 bg-surface-card border border-default hover:bg-surface-page transition-colors-base"
-                    >
-                      <Bookmark className={`w-4 h-4 ${isSavedForLater(product.id) ? "fill-secondary-500 text-secondary-500" : ""}`} />
-                      {isSavedForLater(product.id) ? "Saved for Later" : "Save for Later"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => addToCompare(product)}
-                      disabled={!canAddMore && !isInCompare(product.id)}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-primary-900 bg-surface-card border border-default hover:bg-surface-page transition-colors-base disabled:opacity-50"
-                    >
-                      <Scale className={`w-4 h-4 ${isInCompare(product.id) ? "text-secondary-500" : ""}`} />
-                      {isInCompare(product.id) ? "In Compare" : "Compare"}
-                    </button>
-                  </div>
+                  <Link
+                    href="/distributor"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-primary-900 bg-surface-card border border-default hover:bg-surface-page transition-colors-base w-full sm:w-auto"
+                  >
+                    Become a Distributor
+                  </Link>
 
                   {/* Secondary distributor prompt */}
                   <p className="text-sm text-muted">
                     Interested in reseller or bulk pricing?{" "}
-                    <Link href="/bulk-orders" className="font-semibold text-green-600 hover:text-green-700 underline underline-offset-2">
+                    <Link href="/request-quote" className="font-semibold text-green-600 hover:text-green-700 underline underline-offset-2">
                       Request a wholesale quote
                     </Link>{" "}
                     or{" "}
@@ -487,7 +366,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
         {frequentlyBoughtTogether.length > 0 && (
           <section className="py-16 lg:py-24 bg-white">
             <Container>
-              <SectionHeader title="Frequently Bought Together" subtitle="Customers often purchase these together." />
+              <SectionHeader title="Frequently Requested Together" subtitle="Customers often request these products together." />
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
                 {frequentlyBoughtTogether.map((related) => (
                   <Link
@@ -551,7 +430,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
           title="Need wholesale or corporate pricing?"
           description="Request a tailored quotation for bulk orders, institutions, or resale partnerships."
           buttonText="Request a Quote"
-          buttonHref="/bulk-orders"
+          buttonHref="/request-quote"
           secondaryButton={{ text: "Become a Distributor", href: "/distributor" }}
           light
         />

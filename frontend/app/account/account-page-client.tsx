@@ -178,7 +178,7 @@ export function AccountPageClient() {
   ];
 
   const quickActions = [
-    { icon: ShoppingBag, label: "Continue Shopping", href: "/products", color: "bg-secondary-600" },
+    { icon: ShoppingBag, label: "View Products", href: "/products", color: "bg-secondary-600" },
     { icon: Search, label: "Track Order", href: "/track", color: "bg-primary-500" },
     { icon: Package, label: "View Orders", href: "/account/orders", color: "bg-info-600" },
     { icon: Settings, label: "Update Profile", href: "/account/settings", color: "bg-neutral-600" },
@@ -278,7 +278,7 @@ export function AccountPageClient() {
                     />
                   </div>
                   <p className="text-xs text-placeholder">
-                    Complete your profile for a faster checkout experience.
+                    Complete your profile for a faster enquiry experience.
                   </p>
                 </div>
               </div>
@@ -333,7 +333,7 @@ export function AccountPageClient() {
                       <Package className="w-10 h-10 mx-auto mb-2 text-placeholder" />
                       <p>No orders yet.</p>
                       <Link href="/products" className="text-secondary-600 font-semibold hover:text-secondary-600">
-                        Start Shopping
+                        View Products
                       </Link>
                     </div>
                   ) : (

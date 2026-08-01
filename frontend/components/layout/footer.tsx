@@ -9,8 +9,11 @@ const quickLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
   { label: "Products", href: "/products" },
-  { label: "Distributor", href: "/distributor" },
-  { label: "Contact Us", href: "/contact" },
+  { label: "Request a Quote", href: "/request-quote" },
+  { label: "Become a Distributor", href: "/distributor" },
+  { label: "Where to Buy", href: "/where-to-buy" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const productLinks = [

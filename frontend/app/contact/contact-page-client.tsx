@@ -1,6 +1,8 @@
 "use client";
 
+import { Suspense } from "react";
 import { MapPin } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
 import { SectionHeader } from "@/components/common/section-header";
@@ -17,7 +19,7 @@ const generalFaqs = [
   {
     question: "Where can I buy VESTRA products?",
     answer:
-      "VESTRA products are available through authorized distributors, select retail stores, and our online store once launched.",
+      "VESTRA products are available through authorized distributors, select retail stores, and direct institutional supply. Visit our Where to Buy page to find the right channel for your business.",
   },
   {
     question: "Are VESTRA products safe for all fabrics?",
@@ -35,6 +37,12 @@ const generalFaqs = [
       "Fill out the distributor application form on our Become a Distributor page and our team will get in touch.",
   },
 ];
+
+function ContactFormWithSubject() {
+  const searchParams = useSearchParams();
+  const subject = searchParams.get("subject") ?? undefined;
+  return <ContactForm defaultSubject={subject} />;
+}
 
 export function ContactPageClient() {
   const { contactInfo, isLoading, error } = useContactInfo();
@@ -125,7 +133,9 @@ export function ContactPageClient() {
                 <p className="text-muted mb-6">
                   Fill out the form below and our team will get back to you shortly.
                 </p>
-                <ContactForm />
+                <Suspense fallback={<div className="h-64 rounded-xl bg-neutral-100 animate-pulse" />}>
+                  <ContactFormWithSubject />
+                </Suspense>
               </AnimatedSection>
 
               <AnimatedSection

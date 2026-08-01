@@ -90,6 +90,18 @@ const nextConfig: NextConfig = {
   // Compression
   compress: true,
 
+  // Redirect obsolete shopping routes to B2B enquiry pages
+  async redirects() {
+    return [
+      { source: "/cart", destination: "/request-quote", permanent: true },
+      { source: "/cart/:path*", destination: "/request-quote", permanent: true },
+      { source: "/checkout", destination: "/request-quote", permanent: true },
+      { source: "/checkout/:path*", destination: "/request-quote", permanent: true },
+      { source: "/compare", destination: "/products", permanent: true },
+      { source: "/bulk-orders", destination: "/request-quote", permanent: true },
+    ];
+  },
+
   // Experimental features
   experimental: {
     optimizePackageImports: ["lucide-react"],

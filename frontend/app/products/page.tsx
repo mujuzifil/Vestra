@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, ShoppingCart, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
@@ -13,38 +13,7 @@ import { SkeletonGrid } from "@/components/ui/skeleton-grid";
 import { ApiError } from "@/components/ui/api-error";
 import { useProductSearch } from "@/hooks/use-products";
 import { useCategories } from "@/hooks/use-categories";
-import { useCartContext, toCartProduct } from "@/lib/cart-context";
-import { toastAddedToCart } from "@/lib/toast-utils";
-import type { Product } from "@/types";
 import { formatPrice, cn } from "@/lib/utils";
-
-function QuickAddButton({ product, disabled }: { product: Product; disabled?: boolean }) {
-  const { addItem } = useCartContext();
-  const [loading, setLoading] = useState(false);
-
-  return (
-    <button
-      type="button"
-      disabled={disabled || loading}
-      onClick={async () => {
-        setLoading(true);
-        try {
-          await addItem(toCartProduct(product), 1);
-          toastAddedToCart(product.name, 1);
-        } finally {
-          setLoading(false);
-        }
-      }}
-      className={cn(
-        "inline-flex items-center justify-center w-10 h-10 rounded-full border border-default bg-white text-primary-900 hover:bg-surface-page hover:border-green-500 hover:text-green-600 transition-colors-base",
-        (disabled || loading) && "opacity-60 cursor-not-allowed"
-      )}
-      aria-label="Add to cart"
-    >
-      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShoppingCart className="w-4 h-4" />}
-    </button>
-  );
-}
 
 const sortOptions = [
   { value: "", label: "Featured" },
@@ -255,7 +224,12 @@ export default function ProductsPage() {
                       >
                         View Details
                       </Link>
-                      <QuickAddButton product={product} disabled={product.stock_quantity <= 0} />
+                      <Link
+                        href={`/request-quote?product=${encodeURIComponent(product.slug)}`}
+                        className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-full font-semibold text-sm bg-green-600 text-white hover:bg-green-700 transition-colors-base"
+                      >
+                        Request a Quote
+                      </Link>
                     </div>
                   </div>
                 </motion.article>
