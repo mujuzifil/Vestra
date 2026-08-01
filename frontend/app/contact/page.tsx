@@ -3,10 +3,10 @@ import { ContactPageClient } from "./contact-page-client";
 import { createMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createMetadata({
-  title: "Contact Us",
+  title: "Contact VESTRA®",
   description:
-    "Get in touch with VESTRA for support, partnerships, distributor inquiries, and general questions.",
-  keywords: ["contact", "support", "distributor inquiry", "Uganda"],
+    "Contact VESTRA® for sales, distributor opportunities, technical support, and general enquiries. Call, WhatsApp, email, or visit our office in Kampala, Uganda.",
+  keywords: ["contact", "sales", "support", "distributor inquiry", "Kampala", "Uganda"],
   pathname: "/contact",
 });
 

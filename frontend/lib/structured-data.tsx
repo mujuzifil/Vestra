@@ -129,6 +129,44 @@ export function contactPageSchema() {
   };
 }
 
+export function localBusinessSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": ["LocalBusiness", "Manufacturer"],
+    name: COMPANY_NAME,
+    url: SITE_URL,
+    logo: `${SITE_URL}/assets/images/branding/vestra-logo.png`,
+    telephone: CONTACT_PHONE.replace(/\s/g, ""),
+    email: CONTACT_EMAIL,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: CONTACT_LOCATION,
+      addressCountry: "UG",
+    },
+    sameAs: [
+      "https://www.facebook.com/share/1LZTmjZC3J/",
+      "https://www.instagram.com/vestradetergent",
+      "https://www.linkedin.com/company/vestra%E2%84%A2/",
+      "https://www.tiktok.com/@vestra.256707128442",
+      "https://youtube.com/@vestradetergent",
+    ],
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "08:00",
+        closes: "17:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: "Saturday",
+        opens: "09:00",
+        closes: "13:00",
+      },
+    ],
+  };
+}
+
 export function blogPostSchema(post: BlogPost) {
   const imageUrl = getBlogImageUrl(post.featured_image) ?? `${SITE_URL}/assets/images/branding/vestra-logo.png`;
 

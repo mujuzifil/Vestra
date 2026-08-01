@@ -102,11 +102,23 @@ export interface ContactInfo {
   businessHours: string;
 }
 
+export type ContactEnquiryType =
+  | "general"
+  | "sales"
+  | "distributor"
+  | "quote"
+  | "technical_support"
+  | "other";
+
 export interface ContactFormData {
   name: string;
+  company?: string;
   email: string;
+  phone?: string;
   subject: string;
+  enquiry_type: ContactEnquiryType;
   message: string;
+  attachments?: FileList | null;
 }
 
 export interface DistributorFormData {

@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\ContactEnquiryType;
 use App\Enums\ContactStatus;
 use App\Enums\Priority;
 use App\Filament\Resources\ContactMessageResource\Pages;
 use App\Mail\ContactReplyMail;
 use App\Models\ContactMessage;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -39,13 +41,29 @@ class ContactMessageResource extends Resource
                             ->disabled(),
                         Forms\Components\TextInput::make('email')
                             ->disabled(),
+                        Forms\Components\TextInput::make('company')
+                            ->disabled(),
                         Forms\Components\TextInput::make('phone')
                             ->disabled(),
                         Forms\Components\TextInput::make('subject')
                             ->disabled(),
+                        Forms\Components\Select::make('enquiry_type')
+                            ->disabled()
+                            ->options([
+                                ContactEnquiryType::GENERAL->value => ContactEnquiryType::GENERAL->label(),
+                                ContactEnquiryType::SALES->value => ContactEnquiryType::SALES->label(),
+                                ContactEnquiryType::DISTRIBUTOR->value => ContactEnquiryType::DISTRIBUTOR->label(),
+                                ContactEnquiryType::QUOTE->value => ContactEnquiryType::QUOTE->label(),
+                                ContactEnquiryType::TECHNICAL_SUPPORT->value => ContactEnquiryType::TECHNICAL_SUPPORT->label(),
+                                ContactEnquiryType::OTHER->value => ContactEnquiryType::OTHER->label(),
+                            ])
+                            ->native(false),
                         Forms\Components\Textarea::make('message')
                             ->disabled()
                             ->rows(5)
+                            ->columnSpanFull(),
+                        Forms\Components\ViewField::make('attachments')
+                            ->view('filament.components.contact-message-attachments')
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
@@ -71,6 +89,16 @@ class ContactMessageResource extends Resource
                                 Priority::NEUTRAL->value => Priority::NEUTRAL->label(),
                             ])
                             ->native(false),
+                        Forms\Components\Select::make('assigned_to')
+                            ->label('Assigned To')
+                            ->relationship('assignedTo', 'name', fn (Builder $query) => $query->where('is_admin', true))
+                            ->searchable()
+                            ->preload()
+                            ->placeholder('Unassigned')
+                            ->native(false),
+                        Forms\Components\Textarea::make('internal_notes')
+                            ->rows(4)
+                            ->columnSpanFull(),
                     ])
                     ->columns(2),
 
@@ -99,6 +127,15 @@ class ContactMessageResource extends Resource
                     ->searchable()
                     ->limit(40)
                     ->weight('font-semibold'),
+
+                Tables\Columns\TextColumn::make('company')
+                    ->placeholder('—')
+                    ->toggleable(),
+
+                Tables\Columns\BadgeColumn::make('enquiry_type')
+                    ->label('Type')
+                    ->formatStateUsing(fn ($state): string => $state instanceof \App\Enums\ContactEnquiryType ? $state->label() : (\App\Enums\ContactEnquiryType::tryFrom($state)?->label() ?? ucfirst($state)))
+                    ->color('primary'),
 
                 Tables\Columns\BadgeColumn::make('priority')
                     ->formatStateUsing(fn ($state): string => Priority::tryFrom($state)?->label() ?? ucfirst($state))
@@ -148,6 +185,17 @@ class ContactMessageResource extends Resource
                               ->orWhere('message', 'like', "%{$term}%");
                         });
                     }),
+
+                Tables\Filters\SelectFilter::make('enquiry_type')
+                    ->label('Enquiry Type')
+                    ->options([
+                        ContactEnquiryType::GENERAL->value => ContactEnquiryType::GENERAL->label(),
+                        ContactEnquiryType::SALES->value => ContactEnquiryType::SALES->label(),
+                        ContactEnquiryType::DISTRIBUTOR->value => ContactEnquiryType::DISTRIBUTOR->label(),
+                        ContactEnquiryType::QUOTE->value => ContactEnquiryType::QUOTE->label(),
+                        ContactEnquiryType::TECHNICAL_SUPPORT->value => ContactEnquiryType::TECHNICAL_SUPPORT->label(),
+                        ContactEnquiryType::OTHER->value => ContactEnquiryType::OTHER->label(),
+                    ]),
 
                 Tables\Filters\SelectFilter::make('status')
                     ->options([

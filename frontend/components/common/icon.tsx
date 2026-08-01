@@ -24,6 +24,7 @@ import {
   Instagram,
   Landmark,
   Leaf,
+  Linkedin,
   LucideIcon,
   Mail,
   MapPin,
@@ -53,6 +54,7 @@ import {
   Truck,
   Users,
   Warehouse,
+  Youtube,
 } from "lucide-react";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -81,6 +83,7 @@ const iconMap: Record<string, LucideIcon> = {
   Instagram,
   Landmark,
   Leaf,
+  Linkedin,
   Mail,
   MapPin,
   MessageCircle,
@@ -109,6 +112,7 @@ const iconMap: Record<string, LucideIcon> = {
   Truck,
   Users,
   Warehouse,
+  Youtube,
 };
 
 interface IconProps {
