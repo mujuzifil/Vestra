@@ -26,6 +26,7 @@ use App\Events\Notification\ProfileUpdated;
 use App\Events\Notification\QuotationApproved;
 use App\Events\Notification\QuotationRejected;
 use App\Events\Notification\QuotationSubmitted;
+use App\Events\Notification\QuoteRequestSubmitted;
 use App\Events\Notification\ReviewApproved;
 use App\Events\Notification\ReviewReplied;
 use App\Events\Notification\StatementGenerated;
@@ -233,6 +234,22 @@ class DispatchNotificationListener
                 'variables' => [
                     'customer_name' => $event->quotationRequest->distributor->user?->name,
                     'quotation_number' => $event->quotationRequest->reference_number,
+                ],
+            ],
+            $event instanceof QuoteRequestSubmitted => [
+                'users' => User::where('is_admin', true)->get()->all(),
+                'template' => 'quote_request.admin_notification',
+                'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                'topic' => 'order_updates',
+                'variables' => [
+                    'customer_name' => $event->quoteRequest->full_name,
+                    'company_name' => $event->quoteRequest->company_name,
+                    'email' => $event->quoteRequest->email,
+                    'phone' => $event->quoteRequest->phone,
+                    'reference_number' => $event->quoteRequest->reference_number,
+                    'product_summary' => $event->quoteRequest->items->map(
+                        fn ($item) => "{$item->quantity} x {$item->product_name}"
+                    )->implode(', '),
                 ],
             ],
             $event instanceof QuotationApproved => [

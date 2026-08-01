@@ -25,6 +25,7 @@ use App\Events\Notification\ProfileUpdated;
 use App\Events\Notification\QuotationApproved;
 use App\Events\Notification\QuotationRejected;
 use App\Events\Notification\QuotationSubmitted;
+use App\Events\Notification\QuoteRequestSubmitted;
 use App\Events\Notification\ReviewApproved;
 use App\Events\Notification\ReviewReplied;
 use App\Events\Notification\StatementGenerated;
@@ -115,6 +116,10 @@ class EventServiceProvider extends ServiceProvider
             LogNotificationDeliveryListener::class,
         ],
         QuotationSubmitted::class => [
+            DispatchNotificationListener::class,
+            LogNotificationDeliveryListener::class,
+        ],
+        QuoteRequestSubmitted::class => [
             DispatchNotificationListener::class,
             LogNotificationDeliveryListener::class,
         ],

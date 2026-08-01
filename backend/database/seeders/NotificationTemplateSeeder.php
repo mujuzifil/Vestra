@@ -73,6 +73,16 @@ class NotificationTemplateSeeder extends Seeder
                 'variables_json' => ['customer_name', 'order_number', 'reason'],
             ],
             [
+                'event_key' => 'quote_request.admin_notification',
+                'name' => 'New Quote Request Received',
+                'category' => 'sales',
+                'subject' => 'New Quote Request {{reference_number}} from {{company_name}}',
+                'email_body' => '<p>A new quotation request has been submitted.</p><p><strong>Reference:</strong> {{reference_number}}<br><strong>Customer:</strong> {{customer_name}}<br><strong>Company:</strong> {{company_name}}<br><strong>Email:</strong> {{email}}<br><strong>Phone:</strong> {{phone}}<br><strong>Products:</strong> {{product_summary}}</p>',
+                'sms_body' => 'VESTRA: New quote request {{reference_number}} from {{company_name}}.',
+                'in_app_body' => 'New quote request {{reference_number}} from {{company_name}}.',
+                'variables_json' => ['reference_number', 'customer_name', 'company_name', 'email', 'phone', 'product_summary'],
+            ],
+            [
                 'event_key' => 'distributor.application_submitted',
                 'name' => 'Distributor Application Submitted',
                 'category' => 'distributor',

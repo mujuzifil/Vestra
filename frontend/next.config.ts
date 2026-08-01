@@ -99,6 +99,8 @@ const nextConfig: NextConfig = {
       { source: "/checkout/:path*", destination: "/request-quote", permanent: true },
       { source: "/compare", destination: "/products", permanent: true },
       { source: "/bulk-orders", destination: "/request-quote", permanent: true },
+      { source: "/track", destination: "/account/orders", permanent: true },
+      { source: "/track/:path*", destination: "/account/orders", permanent: true },
     ];
   },
 

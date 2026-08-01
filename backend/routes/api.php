@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\V1\Distributor\PaymentUploadController as Distribut
 use App\Http\Controllers\Api\V1\Distributor\AnalyticsController as DistributorAnalyticsController;
 use App\Http\Controllers\Api\V1\Distributor\NotificationController as DistributorNotificationController;
 use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\QuoteRequestController;
 use App\Http\Controllers\Api\V1\RecommendationController;
 use App\Http\Controllers\Api\V1\SettingController;
 use App\Http\Controllers\Api\V1\ReportController;
@@ -76,6 +77,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:contact');
     Route::post('/distributor', [DistributorController::class, 'store'])->middleware('throttle:distributor');
     Route::post('/feedback', [FeedbackController::class, 'store'])->middleware('throttle:feedback');
+    Route::post('/quote-requests', [QuoteRequestController::class, 'store'])->middleware('throttle:contact');
 
     // Customer auth (public)
     Route::post('/auth/register', [RegisterController::class, 'register'])->middleware('throttle:register');

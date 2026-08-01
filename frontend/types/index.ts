@@ -200,28 +200,44 @@ export interface ActivityItem {
   created_at: string;
 }
 
-export interface CartItemProduct {
-  id: number;
-  name: string;
-  slug: string;
-  sku: string;
-  price: string;
-  stock_quantity: number;
-  images: ProductImage[];
-}
-
-export interface CartItem {
-  id: number;
-  product: CartItemProduct;
+export interface QuoteRequestItem {
+  product_name: string;
+  product_id?: number | null;
+  package_size?: string;
   quantity: number;
-  line_total: string;
+  notes?: string;
 }
 
-export interface Cart {
+export interface QuoteRequestFormData {
+  full_name: string;
+  company_name: string;
+  email: string;
+  phone: string;
+  district?: string;
+  city?: string;
+  address?: string;
+  preferred_delivery_date?: string;
+  delivery_location?: string;
+  items?: QuoteRequestItem[];
+  requirements?: string;
+}
+
+export interface QuoteRequest {
   id: number;
-  items: CartItem[];
-  item_count: number;
-  subtotal: string;
+  reference_number: string;
+  full_name: string;
+  company_name: string;
+  email: string;
+  phone: string;
+  district?: string;
+  city?: string;
+  address?: string;
+  preferred_delivery_date?: string;
+  delivery_location?: string;
+  status: string;
+  status_label: string;
+  items: QuoteRequestItem[];
+  created_at: string;
 }
 
 export interface OrderItem {
