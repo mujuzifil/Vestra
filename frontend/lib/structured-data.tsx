@@ -1,4 +1,5 @@
-import { Product } from "@/types";
+import { BlogPost, Product } from "@/types";
+import { getBlogImageUrl } from "@/lib/api/blog";
 
 const COMPANY_NAME = "VESTRA";
 const COMPANY_DESCRIPTION =
@@ -124,6 +125,44 @@ export function contactPageSchema() {
         addressLocality: CONTACT_LOCATION,
         addressCountry: "UG",
       },
+    },
+  };
+}
+
+export function blogPostSchema(post: BlogPost) {
+  const imageUrl = getBlogImageUrl(post.featured_image) ?? `${SITE_URL}/assets/images/branding/vestra-logo.png`;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.meta_title ?? post.title,
+    description: post.meta_description ?? post.excerpt,
+    image: imageUrl,
+    url: `${SITE_URL}/blog/${post.slug}`,
+    datePublished: post.published_at,
+    dateModified: post.updated_at,
+    author: post.author
+      ? {
+          "@type": "Person",
+          name: post.author.name,
+          url: `${SITE_URL}/blog?author=${post.author.slug}`,
+        }
+      : {
+          "@type": "Organization",
+          name: COMPANY_NAME,
+          url: SITE_URL,
+        },
+    publisher: {
+      "@type": "Organization",
+      name: COMPANY_NAME,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/assets/images/branding/vestra-logo.png`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/blog/${post.slug}`,
     },
   };
 }

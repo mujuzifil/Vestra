@@ -55,6 +55,7 @@ use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\SavedItemController;
 use App\Http\Controllers\Api\V1\WishlistController;
 use App\Http\Controllers\Api\V1\FeedbackController;
+use App\Http\Controllers\Api\V1\BlogPostController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -84,6 +85,13 @@ Route::prefix('v1')->group(function () {
     Route::get('/public/distributors', [PublicDistributorController::class, 'index']);
     Route::get('/public/distributors/stats', [PublicDistributorController::class, 'stats']);
     Route::get('/public/distributors/coverage', [PublicDistributorController::class, 'coverageRegions']);
+
+    // Public blog / knowledge centre
+    Route::get('/blog/posts', [BlogPostController::class, 'index']);
+    Route::get('/blog/posts/featured', [BlogPostController::class, 'featured']);
+    Route::get('/blog/posts/{slug}', [BlogPostController::class, 'show']);
+    Route::get('/blog/categories', [BlogPostController::class, 'categories']);
+    Route::get('/blog/tags', [BlogPostController::class, 'tags']);
 
     // Customer auth (public)
     Route::post('/auth/register', [RegisterController::class, 'register'])->middleware('throttle:register');

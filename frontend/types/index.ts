@@ -634,3 +634,86 @@ export interface CoverageDistrict {
 }
 
 export type CoverageRegions = Record<string, CoverageDistrict[]>;
+
+// Blog / Knowledge Centre types
+
+export interface BlogAuthor {
+  id: number;
+  name: string;
+  slug: string;
+  email: string | null;
+  role: string | null;
+  bio: string | null;
+  avatar: string | null;
+  social_links: Record<string, string> | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BlogCategory {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BlogTag {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string;
+  featured_image: string | null;
+  gallery: string[] | null;
+  content_blocks: Record<string, unknown>[] | null;
+  status: string;
+  status_label: string;
+  visibility: string;
+  is_featured: boolean;
+  reading_time_minutes: number;
+  published_at: string | null;
+  scheduled_at: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  canonical_url: string | null;
+  view_count: number;
+  author: BlogAuthor | null;
+  categories: BlogCategory[];
+  tags: BlogTag[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BlogPostFilters {
+  search?: string;
+  category?: string;
+  tag?: string;
+  sort?: "newest" | "oldest" | "popular" | "reading_time";
+  per_page?: number;
+  page?: number;
+}
+
+export interface PaginatedBlogPosts {
+  data: BlogPost[];
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
