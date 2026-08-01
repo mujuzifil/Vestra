@@ -573,3 +573,64 @@ export interface DistributorDashboard {
   recent_quotes: DistributorQuotation[];
   recent_notifications: DistributorNotification[];
 }
+
+export interface DistributorServiceArea {
+  region: string;
+  district: string;
+  status: "covered" | "coming_soon" | "planned";
+}
+
+export interface PublicDistributorBranch {
+  id: number;
+  name: string;
+  manager_name: string | null;
+  phone: string | null;
+  email: string | null;
+  country: string | null;
+  district: string | null;
+  city: string | null;
+  address: string | null;
+  latitude: string | null;
+  longitude: string | null;
+  delivery_notes: string | null;
+  formatted_address: string;
+}
+
+export interface PublicDistributor {
+  id: number;
+  company_name: string;
+  trading_name: string | null;
+  primary_contact_name: string | null;
+  email: string | null;
+  phone: string | null;
+  website: string | null;
+  business_type: string | null;
+  district: string | null;
+  city: string | null;
+  address: string | null;
+  operating_hours: Record<string, unknown> | null;
+  logo_url: string | null;
+  branch: PublicDistributorBranch | null;
+  service_areas: DistributorServiceArea[];
+}
+
+export interface DistributorDirectoryFilters {
+  search?: string;
+  district?: string;
+  region?: string;
+}
+
+export interface DistributorNetworkStats {
+  active_distributors: number;
+  branches: number;
+  districts_served: number;
+  commercial_customers: number;
+}
+
+export interface CoverageDistrict {
+  district: string;
+  status: "covered" | "coming_soon" | "planned";
+  count: number;
+}
+
+export type CoverageRegions = Record<string, CoverageDistrict[]>;

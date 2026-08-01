@@ -36,6 +36,7 @@ use App\Http\Controllers\Api\V1\SettingController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\InvoiceController;
 use App\Http\Controllers\Api\V1\PaymentController;
+use App\Http\Controllers\Api\V1\PublicDistributorController;
 use App\Http\Controllers\Api\V1\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Api\V1\Admin\AutomatedWorkflowController as AdminAutomatedWorkflowController;
 use App\Http\Controllers\Api\V1\Admin\CreditAccountController as AdminCreditAccountController;
@@ -78,6 +79,11 @@ Route::prefix('v1')->group(function () {
     Route::post('/distributor', [DistributorController::class, 'store'])->middleware('throttle:distributor');
     Route::post('/feedback', [FeedbackController::class, 'store'])->middleware('throttle:feedback');
     Route::post('/quote-requests', [QuoteRequestController::class, 'store'])->middleware('throttle:contact');
+
+    // Public distributor directory
+    Route::get('/public/distributors', [PublicDistributorController::class, 'index']);
+    Route::get('/public/distributors/stats', [PublicDistributorController::class, 'stats']);
+    Route::get('/public/distributors/coverage', [PublicDistributorController::class, 'coverageRegions']);
 
     // Customer auth (public)
     Route::post('/auth/register', [RegisterController::class, 'register'])->middleware('throttle:register');

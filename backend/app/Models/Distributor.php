@@ -114,6 +114,11 @@ class Distributor extends Model
         return $this->hasMany(DistributorProductPrice::class);
     }
 
+    public function serviceAreas(): HasMany
+    {
+        return $this->hasMany(DistributorServiceArea::class);
+    }
+
     public function defaultBranch(): ?DistributorBranch
     {
         return $this->branches()->where('is_default', true)->first()

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DistributorBranch extends Model
 {
@@ -37,6 +38,11 @@ class DistributorBranch extends Model
     public function distributor(): BelongsTo
     {
         return $this->belongsTo(Distributor::class);
+    }
+
+    public function serviceAreas(): HasMany
+    {
+        return $this->hasMany(DistributorServiceArea::class, 'branch_id');
     }
 
     public function setAsDefault(): void

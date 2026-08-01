@@ -827,6 +827,12 @@ class SettingSeeder extends Seeder
             ['key' => 'footer_text', 'value' => '© '.date('Y').' VESTRA. All rights reserved. Premium garment care solutions.', 'type' => SettingType::TEXT, 'group' => SettingGroup::CONTENT, 'label' => 'Footer Text', 'sort_order' => 5, 'is_public' => true, 'is_sensitive' => false],
             ['key' => 'founded', 'value' => '2020', 'type' => SettingType::STRING, 'group' => SettingGroup::GENERAL, 'label' => 'Founded Year', 'sort_order' => 13, 'is_public' => true, 'is_sensitive' => false],
             ['key' => 'headquarters', 'value' => 'Kampala, Uganda', 'type' => SettingType::STRING, 'group' => SettingGroup::GENERAL, 'label' => 'Headquarters', 'sort_order' => 14, 'is_public' => true, 'is_sensitive' => false],
+
+            // Network stats (Where to Buy)
+            ['key' => 'network_districts_served', 'value' => '0', 'type' => SettingType::NUMBER, 'group' => SettingGroup::GENERAL, 'label' => 'Districts Served', 'sort_order' => 15, 'is_public' => true, 'is_sensitive' => false],
+            ['key' => 'network_authorised_partners', 'value' => '0', 'type' => SettingType::NUMBER, 'group' => SettingGroup::GENERAL, 'label' => 'Authorised Partners', 'sort_order' => 16, 'is_public' => true, 'is_sensitive' => false],
+            ['key' => 'network_commercial_customers', 'value' => '0', 'type' => SettingType::NUMBER, 'group' => SettingGroup::GENERAL, 'label' => 'Commercial Customers', 'sort_order' => 17, 'is_public' => true, 'is_sensitive' => false],
+            ['key' => 'network_growing_network_label', 'value' => 'Growing Network', 'type' => SettingType::STRING, 'group' => SettingGroup::GENERAL, 'label' => 'Growing Network Label', 'sort_order' => 18, 'is_public' => true, 'is_sensitive' => false],
             ['key' => 'core_values', 'value' => json_encode([
                 ['icon' => 'FlaskConical', 'title' => 'Innovation', 'description' => 'We continuously research and develop better formulas for modern fabric care.'],
                 ['icon' => 'ShieldCheck', 'title' => 'Quality', 'description' => 'Every product meets strict quality standards for professional results.'],
