@@ -1,55 +1,93 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, type ReactNode } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, FileText, ArrowRight, X, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
+import { SectionHeader } from "@/components/common/section-header";
 import { EmptyProducts } from "@/components/ui/empty-products";
 import { SkeletonGrid } from "@/components/ui/skeleton-grid";
 import { ApiError } from "@/components/ui/api-error";
-import { useProductSearch } from "@/hooks/use-products";
+import { useProducts } from "@/hooks/use-products";
 import { useCategories } from "@/hooks/use-categories";
-import { formatPrice, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import type { Product } from "@/types";
 
 const sortOptions = [
   { value: "", label: "Featured" },
   { value: "newest", label: "Newest" },
-  { value: "price_asc", label: "Price — Low to High" },
-  { value: "price_desc", label: "Price — High to Low" },
   { value: "name_asc", label: "Name — A-Z" },
   { value: "name_desc", label: "Name — Z-A" },
 ];
+
+const availabilityOptions = [
+  { value: "", label: "All Availability" },
+  { value: "in_stock", label: "In Stock" },
+];
+
+const categoryToIndustries: Record<string, string[]> = {
+  "laundry-detergents": ["Commercial Laundries", "Hotels", "Hospitals", "Schools"],
+  "fabric-care": ["Hotels", "Commercial Laundries", "Households", "Retail"],
+  "stain-removal": ["Commercial Laundries", "Cleaning Companies", "Hotels"],
+  "garment-finishing": ["Commercial Laundries", "Hotels", "Manufacturers"],
+};
+
+const whyChooseItems = [
+  { icon: "ShieldCheck", title: "Premium Quality", description: "Rigorous standards in every batch." },
+  { icon: "Factory", title: "Manufacturer Direct", description: "Source straight from the maker." },
+  { icon: "Truck", title: "Bulk Supply", description: "Flexible commercial volumes." },
+  { icon: "Globe", title: "Reliable Distribution", description: "Supply across Uganda." },
+  { icon: "HeartHandshake", title: "Professional Support", description: "Dedicated sales and technical help." },
+];
+
+function packageSizes(product: Product): string[] {
+  if (!product.specifications) return [];
+  const raw =
+    product.specifications["Package Sizes"] ||
+    product.specifications["Sizes"] ||
+    product.specifications["Pack Sizes"] ||
+    product.specifications["Available Sizes"] ||
+    "";
+  return raw
+    .split(/[,\/]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function industriesForProduct(product: Product): string[] {
+  return categoryToIndustries[product.category.slug] || ["Commercial Use"];
+}
+
+function applicationsForProduct(product: Product): string[] {
+  return product.features?.slice(0, 3) || industriesForProduct(product);
+}
+
+const prefersReducedMotion =
+  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export default function ProductsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [query, setQuery] = useState(searchParams.get("q") ?? "");
-  const [activeCategory, setActiveCategory] = useState(searchParams.get("category") ?? "all");
+  const [category, setCategory] = useState(searchParams.get("category") ?? "");
+  const [packageSize, setPackageSize] = useState(searchParams.get("package_size") ?? "");
+  const [industry, setIndustry] = useState(searchParams.get("industry") ?? "");
+  const [availability, setAvailability] = useState(searchParams.get("availability") ?? "");
   const [sort, setSort] = useState(searchParams.get("sort") ?? "");
   const [page, setPage] = useState(Number(searchParams.get("page") ?? 1));
-
-  const filters = useMemo(
-    () => ({
-      page,
-      per_page: 12,
-      search: query.trim() || undefined,
-      category: activeCategory === "all" ? undefined : activeCategory,
-      sort: sort || undefined,
-    }),
-    [page, query, activeCategory, sort]
-  );
+  const [compare, setCompare] = useState<string[]>([]);
 
   const {
-    data: searchResult,
+    data: allProducts,
     isLoading: productsLoading,
     error: productsError,
     refetch: refetchProducts,
-  } = useProductSearch(filters);
+  } = useProducts();
 
   const {
     data: categories,
@@ -58,51 +96,168 @@ export default function ProductsPage() {
     refetch: refetchCategories,
   } = useCategories();
 
-  const allCategories = useMemo(() => {
-    if (!categories) return [{ id: 0, name: "All Products", slug: "all" }];
-    return [{ id: 0, name: "All Products", slug: "all" }, ...categories];
+  const isLoading = productsLoading || categoriesLoading;
+  const hasError = productsError || categoriesError;
+
+  const packageSizeOptions = useMemo(() => {
+    if (!allProducts) return [{ value: "", label: "All Package Sizes" }];
+    const sizes = new Set<string>();
+    allProducts.forEach((p) => packageSizes(p).forEach((s) => sizes.add(s)));
+    return [{ value: "", label: "All Package Sizes" }, ...Array.from(sizes).sort().map((s) => ({ value: s, label: s }))];
+  }, [allProducts]);
+
+  const industryOptions = useMemo(() => {
+    if (!categories) return [{ value: "", label: "All Industries" }];
+    const industries = new Set<string>();
+    categories.forEach((c) => {
+      (categoryToIndustries[c.slug] || []).forEach((i) => industries.add(i));
+    });
+    return [{ value: "", label: "All Industries" }, ...Array.from(industries).sort().map((i) => ({ value: i, label: i }))];
   }, [categories]);
+
+  const filteredProducts = useMemo(() => {
+    if (!allProducts) return [];
+
+    let result = allProducts.filter((p) => {
+      const matchesSearch =
+        !query.trim() ||
+        p.name.toLowerCase().includes(query.trim().toLowerCase()) ||
+        p.short_description.toLowerCase().includes(query.trim().toLowerCase());
+      const matchesCategory = !category || p.category.slug === category;
+      const matchesPackageSize = !packageSize || packageSizes(p).includes(packageSize);
+      const matchesIndustry = !industry || industriesForProduct(p).includes(industry);
+      const matchesAvailability = availability !== "in_stock" || p.stock_quantity > 0 || p.status === "active";
+      return matchesSearch && matchesCategory && matchesPackageSize && matchesIndustry && matchesAvailability;
+    });
+
+    switch (sort) {
+      case "newest":
+        result = [...result].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        break;
+      case "name_asc":
+        result = [...result].sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "name_desc":
+        result = [...result].sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      default:
+        result = [...result].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+    }
+
+    return result;
+  }, [allProducts, query, category, packageSize, industry, availability, sort]);
+
+  const perPage = 12;
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / perPage));
+  const paginatedProducts = useMemo(() => {
+    const start = (page - 1) * perPage;
+    return filteredProducts.slice(start, start + perPage);
+  }, [filteredProducts, page]);
 
   useEffect(() => {
     setPage(1);
-  }, [query, activeCategory, sort]);
+  }, [query, category, packageSize, industry, availability, sort]);
 
   const updateUrl = useCallback(() => {
     const params = new URLSearchParams();
     if (query.trim()) params.set("q", query.trim());
-    if (activeCategory !== "all") params.set("category", activeCategory);
+    if (category) params.set("category", category);
+    if (packageSize) params.set("package_size", packageSize);
+    if (industry) params.set("industry", industry);
+    if (availability) params.set("availability", availability);
     if (sort) params.set("sort", sort);
     if (page > 1) params.set("page", String(page));
     const qs = params.toString();
     router.replace(`/products${qs ? `?${qs}` : ""}`, { scroll: false });
-  }, [router, page, query, activeCategory, sort]);
+  }, [router, page, query, category, packageSize, industry, availability, sort]);
 
   useEffect(() => {
     updateUrl();
   }, [updateUrl]);
 
-  const isLoading = productsLoading || categoriesLoading;
-  const hasError = productsError || categoriesError;
-  const products = searchResult?.data ?? [];
-  const meta = searchResult?.meta;
+  const resetFilters = useCallback(() => {
+    setQuery("");
+    setCategory("");
+    setPackageSize("");
+    setIndustry("");
+    setAvailability("");
+    setSort("");
+    setPage(1);
+  }, []);
+
+  const toggleCompare = (slug: string) => {
+    setCompare((prev) => {
+      if (prev.includes(slug)) return prev.filter((s) => s !== slug);
+      if (prev.length >= 3) return prev;
+      return [...prev, slug];
+    });
+  };
+
+  const compareProducts = useMemo(
+    () => allProducts?.filter((p) => compare.includes(p.slug)) || [],
+    [allProducts, compare]
+  );
+
+  const activeFiltersCount = [category, packageSize, industry, availability, sort].filter(Boolean).length;
 
   return (
     <main>
       <PageHero
-        title="Our Products"
-        subtitle="Explore our range of professional fabric care solutions designed for homes, laundries, and businesses."
+        title="Professional Cleaning Products"
+        subtitle="Explore our range of professional detergents and fabric care solutions manufactured for businesses, institutions, and distributors."
         breadcrumb={[{ label: "Products" }]}
       />
 
-      <section className="py-16 lg:py-24 bg-white" aria-labelledby="products-heading">
+      {/* Categories */}
+      <section className="py-16 lg:py-20 bg-white" aria-labelledby="categories-heading">
         <Container>
-          <h2 id="products-heading" className="sr-only">
-            Product Listing
-          </h2>
+          <SectionHeader
+            id="categories-heading"
+            title="Product Categories"
+            subtitle="Solutions developed for every professional cleaning need."
+          />
+          {categoriesLoading ? (
+            <SkeletonGrid count={4} />
+          ) : categoriesError ? (
+            <ApiError message="Failed to load categories." onRetry={refetchCategories} />
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {categories?.map((cat, index) => (
+                <motion.div
+                  key={cat.id}
+                  initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.5, delay: index * 0.08 }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setCategory(cat.slug === category ? "" : cat.slug)}
+                    className={cn(
+                      "w-full text-left p-6 rounded-[20px] border transition-all-base h-full",
+                      category === cat.slug
+                        ? "border-secondary-500 bg-secondary-50 shadow-md"
+                        : "border-default bg-white hover:-translate-y-1 hover:shadow-md hover:border-primary-300"
+                    )}
+                  >
+                    <div className="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center text-primary-500 mb-4">
+                      <span className="text-xl font-bold">{cat.name.charAt(0)}</span>
+                    </div>
+                    <h3 className="text-lg font-bold text-primary-900 mb-1">{cat.name}</h3>
+                    <p className="text-sm text-muted line-clamp-2">{cat.description || `Explore ${cat.name}.`}</p>
+                  </button>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </Container>
+      </section>
 
-          {/* Search and sort */}
-          <div className="flex flex-col lg:flex-row gap-4 lg:items-center justify-between mb-10">
-            <div className="relative max-w-md w-full">
+      {/* Filter Bar */}
+      <section className="py-6 bg-surface-page border-y border-default" aria-label="Product filters">
+        <Container>
+          <div className="flex flex-col lg:flex-row gap-4 lg:items-end">
+            <div className="relative flex-1 max-w-md">
               <label htmlFor="product-search" className="sr-only">
                 Search products
               </label>
@@ -113,58 +268,91 @@ export default function ProductsPage() {
                 placeholder="Search products..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 rounded-full border border-default bg-surface-page text-primary-900 placeholder:text-placeholder focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all-base"
+                className="w-full pl-12 pr-4 py-3 rounded-full border border-default bg-white text-primary-900 placeholder:text-placeholder focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent transition-all-base"
               />
             </div>
 
-            <div className="flex items-center gap-3">
-              <label htmlFor="sort-select" className="text-sm font-semibold text-primary-900">
-                Filter:
-              </label>
-              <select
-                id="sort-select"
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 flex-1">
+              <FilterSelect
+                id="category-filter"
+                label="Category"
+                value={category}
+                onChange={setCategory}
+                options={[{ value: "", label: "All Categories" }, ...(categories?.map((c) => ({ value: c.slug, label: c.name })) || [])]}
+              />
+              <FilterSelect
+                id="package-size-filter"
+                label="Package Size"
+                value={packageSize}
+                onChange={setPackageSize}
+                options={packageSizeOptions}
+              />
+              <FilterSelect
+                id="industry-filter"
+                label="Industry"
+                value={industry}
+                onChange={setIndustry}
+                options={industryOptions}
+              />
+              <FilterSelect
+                id="availability-filter"
+                label="Availability"
+                value={availability}
+                onChange={setAvailability}
+                options={availabilityOptions}
+              />
+              <FilterSelect
+                id="sort-filter"
+                label="Sort"
                 value={sort}
-                onChange={(e) => setSort(e.target.value)}
-                className="px-4 py-2.5 rounded-full text-sm font-semibold border border-default bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                {sortOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                onChange={setSort}
+                options={sortOptions}
+              />
             </div>
           </div>
 
-          {/* Category tabs */}
-          <div className="flex flex-wrap gap-2 mb-10" role="tablist" aria-label="Product categories">
-            {categoriesLoading ? (
-              <div className="flex gap-2">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="w-24 h-9 rounded-full bg-neutral-200 animate-pulse" />
-                ))}
-              </div>
-            ) : (
-              allCategories.map((category) => (
-                <button
-                  key={category.id}
-                  role="tab"
-                  aria-selected={activeCategory === category.slug}
-                  onClick={() => setActiveCategory(category.slug)}
-                  className={cn(
-                    "px-4 py-2 rounded-full text-sm font-semibold transition-all-base",
-                    activeCategory === category.slug
-                      ? "bg-green-500 text-white shadow-md shadow-green-500/25"
-                      : "bg-neutral-100 text-body hover:bg-neutral-200"
-                  )}
-                >
-                  {category.name}
-                </button>
-              ))
-            )}
-          </div>
+          {activeFiltersCount > 0 && (
+            <div className="flex items-center gap-3 mt-4">
+              <span className="text-sm text-muted">{filteredProducts.length} result(s)</span>
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="text-sm font-semibold text-secondary-600 hover:text-secondary-700"
+              >
+                Reset filters
+              </button>
+            </div>
+          )}
+        </Container>
+      </section>
 
-          {/* Error state */}
+      {/* Compare Banner */}
+      {compareProducts.length > 0 && (
+        <section className="py-4 bg-primary-900 text-white" aria-label="Product comparison selection">
+          <Container>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <p className="text-sm">
+                Comparing {compareProducts.length} of 3 products
+              </p>
+              <button
+                type="button"
+                onClick={() => setCompare([])}
+                className="text-sm font-semibold text-white/80 hover:text-white"
+              >
+                Clear comparison
+              </button>
+            </div>
+          </Container>
+        </section>
+      )}
+
+      {/* Products Grid */}
+      <section className="py-16 lg:py-24 bg-white" aria-labelledby="products-heading">
+        <Container>
+          <h2 id="products-heading" className="sr-only">
+            Product Listing
+          </h2>
+
           {hasError && (
             <ApiError
               message="Failed to load products. Please try again."
@@ -175,109 +363,428 @@ export default function ProductsPage() {
             />
           )}
 
-          {/* Loading state */}
           {isLoading && !hasError && <SkeletonGrid count={6} />}
 
-          {/* Product grid */}
-          {!isLoading && !hasError && products.length > 0 && (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-              {products.map((product, index) => (
-                <motion.article
-                  key={product.id}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.5, delay: (index % 6) * 0.08 }}
-                  className="group bg-white rounded-[20px] overflow-hidden border border-default shadow-sm hover:-translate-y-2 hover:shadow-xl hover:border-primary-300 transition-all-base flex flex-col"
-                >
-                  <Link
-                    href={`/products/${product.slug}`}
-                    className="relative p-6 lg:p-8 min-h-[240px] lg:min-h-[260px] flex items-center justify-center bg-gradient-to-b from-neutral-50 to-white overflow-hidden"
-                  >
-                    <div className="absolute w-44 h-44 rounded-full bg-[radial-gradient(circle,rgba(13,59,102,0.05)_0%,transparent_70%)]" />
-                    <Image
-                      src={product.images[0]?.image || "/assets/images/products/placeholder.png"}
-                      alt={product.name}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="relative z-10 object-contain p-4 lg:p-6 group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </Link>
+          {!isLoading && !hasError && paginatedProducts.length > 0 && (
+            <>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                {paginatedProducts.map((product, index) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    index={index}
+                    isCompared={compare.includes(product.slug)}
+                    onToggleCompare={() => toggleCompare(product.slug)}
+                    compareDisabled={compare.length >= 3 && !compare.includes(product.slug)}
+                  />
+                ))}
+              </div>
 
-                  <div className="p-6 flex-1 flex flex-col">
-                    <span className="text-xs font-semibold text-green-600 uppercase tracking-wider mb-2">
-                      {product.category.name}
-                    </span>
-                    <h3 className="text-lg font-bold text-primary-900 mb-2">
-                      <Link href={`/products/${product.slug}`} className="hover:text-green-600 transition-colors-base">
-                        {product.name}
-                      </Link>
-                    </h3>
-                    <p className="text-sm text-muted mb-4 flex-1 line-clamp-2 leading-relaxed">
-                      {product.short_description}
-                    </p>
-                    <p className="text-xl font-extrabold text-primary-500 mb-4">{formatPrice(Number(product.price))}</p>
-                    <div className="flex gap-3">
-                      <Link
-                        href={`/products/${product.slug}`}
-                        className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-full font-semibold text-sm bg-white border border-default text-primary-900 hover:bg-surface-page hover:border-primary-400 hover:text-primary-500 transition-colors-base"
-                      >
-                        View Details
-                      </Link>
-                      <Link
-                        href={`/request-quote?product=${encodeURIComponent(product.slug)}`}
-                        className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-full font-semibold text-sm bg-green-600 text-white hover:bg-green-700 transition-colors-base"
-                      >
-                        Request a Quote
-                      </Link>
-                    </div>
-                  </div>
-                </motion.article>
-              ))}
-            </div>
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 mt-10">
+                  <button
+                    type="button"
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page <= 1}
+                    className="p-2 rounded-xl border border-default bg-white text-primary-900 hover:bg-surface-page disabled:opacity-50"
+                    aria-label="Previous page"
+                  >
+                    <ChevronLeft className="w-5 h-5" aria-hidden="true" />
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setPage(p)}
+                      className={cn(
+                        "w-10 h-10 rounded-xl text-sm font-semibold border transition-colors-base",
+                        page === p
+                          ? "bg-secondary-500 text-white border-secondary-500"
+                          : "bg-white text-primary-900 border-default hover:bg-surface-page"
+                      )}
+                      aria-current={page === p ? "page" : undefined}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={page >= totalPages}
+                    className="p-2 rounded-xl border border-default bg-white text-primary-900 hover:bg-surface-page disabled:opacity-50"
+                    aria-label="Next page"
+                  >
+                    <ChevronRight className="w-5 h-5" aria-hidden="true" />
+                  </button>
+                </div>
+              )}
+            </>
           )}
 
-          {/* Empty state */}
-          {!isLoading && !hasError && products.length === 0 && <EmptyProducts />}
-
-          {/* Pagination */}
-          {!isLoading && !hasError && meta && meta.last_page > 1 && (
-            <div className="flex items-center justify-center gap-2 mt-10">
-              <button
-                type="button"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page <= 1}
-                className="p-2 rounded-xl border border-default bg-white text-primary-900 hover:bg-surface-page disabled:opacity-50"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              {Array.from({ length: meta.last_page }, (_, i) => i + 1).map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => setPage(p)}
-                  className={cn(
-                    "w-10 h-10 rounded-xl text-sm font-semibold border transition-colors-base",
-                    page === p
-                      ? "bg-green-500 text-white border-green-500"
-                      : "bg-white text-primary-900 border-default hover:bg-surface-page"
-                  )}
-                >
-                  {p}
-                </button>
-              ))}
-              <button
-                type="button"
-                onClick={() => setPage((p) => Math.min(meta.last_page, p + 1))}
-                disabled={page >= meta.last_page}
-                className="p-2 rounded-xl border border-default bg-white text-primary-900 hover:bg-surface-page disabled:opacity-50"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
+          {!isLoading && !hasError && paginatedProducts.length === 0 && (
+            <EmptyProducts onReset={resetFilters} />
           )}
         </Container>
       </section>
+
+      {/* Comparison Table */}
+      {compareProducts.length > 1 && (
+        <section className="py-16 lg:py-24 bg-surface-page" aria-labelledby="compare-heading">
+          <Container>
+            <SectionHeader
+              id="compare-heading"
+              title="Compare Products"
+              subtitle="Side-by-side comparison of selected VESTRA® solutions."
+            />
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr>
+                    <th className="text-left p-4 bg-white border border-default min-w-[160px]">Attribute</th>
+                    {compareProducts.map((p) => (
+                      <th key={p.id} className="text-left p-4 bg-white border border-default min-w-[200px]">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="font-bold text-primary-900">{p.name}</span>
+                          <button
+                            type="button"
+                            onClick={() => toggleCompare(p.slug)}
+                            className="text-muted hover:text-danger-500"
+                            aria-label={`Remove ${p.name} from comparison`}
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="p-4 border border-default font-semibold text-primary-900 bg-surface-page">Applications</td>
+                    {compareProducts.map((p) => (
+                      <td key={p.id} className="p-4 border border-default align-top">
+                        {applicationsForProduct(p).join(", ")}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td className="p-4 border border-default font-semibold text-primary-900 bg-surface-page">Industries</td>
+                    {compareProducts.map((p) => (
+                      <td key={p.id} className="p-4 border border-default align-top">
+                        {industriesForProduct(p).join(", ")}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td className="p-4 border border-default font-semibold text-primary-900 bg-surface-page">Package Sizes</td>
+                    {compareProducts.map((p) => (
+                      <td key={p.id} className="p-4 border border-default align-top">
+                        {packageSizes(p).join(", ") || "—"}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td className="p-4 border border-default font-semibold text-primary-900 bg-surface-page">Key Benefits</td>
+                    {compareProducts.map((p) => (
+                      <td key={p.id} className="p-4 border border-default align-top">
+                        {p.benefits?.slice(0, 3).join("; ") || "—"}
+                      </td>
+                    ))}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </Container>
+        </section>
+      )}
+
+      {/* Why Choose */}
+      <section className="py-16 lg:py-24 bg-primary-900" aria-labelledby="why-choose-heading">
+        <Container>
+          <SectionHeader
+            id="why-choose-heading"
+            title="Why Choose VESTRA®"
+            subtitle="The advantages that make us a dependable manufacturing partner."
+            light
+          />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
+            {whyChooseItems.map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.5, delay: index * 0.08 }}
+                className="text-center p-6 rounded-[20px] bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors-base"
+              >
+                <div className="w-14 h-14 rounded-full border border-white/25 flex items-center justify-center mx-auto mb-4 text-secondary-500">
+                  <IconFor name={item.icon} />
+                </div>
+                <h3 className="text-base font-semibold mb-1">{item.title}</h3>
+                <p className="text-sm text-white/70">{item.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* CTA */}
+      <section className="py-20 lg:py-28 bg-white" aria-labelledby="help-heading">
+        <Container>
+          <motion.div
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.7 }}
+            className="max-w-3xl mx-auto text-center px-6 py-12 lg:px-12 lg:py-16 rounded-[28px] border border-default shadow-lg bg-surface-card"
+          >
+            <h2 id="help-heading" className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-primary-900 mb-4 tracking-tight">
+              Need Help Choosing?
+            </h2>
+            <p className="text-base lg:text-lg text-muted mb-8 leading-relaxed">
+              Our team can recommend the right products and package sizes for your business or institution.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link
+                href="/request-quote"
+                data-track="products-cta-quote"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-lg shadow-secondary-500/30 hover:-translate-y-1 transition-transform-base group"
+              >
+                Request a Quote
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />
+              </Link>
+              <Link
+                href="/contact"
+                data-track="products-cta-contact"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-primary-900 bg-white border border-default hover:bg-surface-page transition-colors-base"
+              >
+                Contact Sales
+              </Link>
+              <Link
+                href="/distributor"
+                data-track="products-cta-distributor"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-primary-900 hover:text-secondary-600 transition-colors-base"
+              >
+                Become a Distributor
+              </Link>
+            </div>
+          </motion.div>
+        </Container>
+      </section>
     </main>
+  );
+}
+
+function FilterSelect({
+  id,
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: { value: string; label: string }[];
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label htmlFor={id} className="text-xs font-semibold text-muted uppercase tracking-wider">
+        {label}
+      </label>
+      <select
+        id={id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="px-3 py-2.5 rounded-xl text-sm font-medium border border-default bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-secondary-500"
+      >
+        {options.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+function ProductCard({
+  product,
+  index,
+  isCompared,
+  onToggleCompare,
+  compareDisabled,
+}: {
+  product: Product;
+  index: number;
+  isCompared: boolean;
+  onToggleCompare: () => void;
+  compareDisabled: boolean;
+}) {
+  const sizes = packageSizes(product);
+  const industries = industriesForProduct(product);
+  const features = product.features?.slice(0, 3) || [];
+
+  return (
+    <motion.article
+      initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.5, delay: (index % 6) * 0.08 }}
+      className="group bg-white rounded-[20px] overflow-hidden border border-default shadow-sm hover:-translate-y-2 hover:shadow-xl hover:border-primary-300 transition-all-base flex flex-col"
+    >
+      <div className="relative p-6 lg:p-8 min-h-[220px] lg:min-h-[240px] flex items-center justify-center bg-gradient-to-b from-neutral-50 to-white overflow-hidden">
+        <div className="absolute top-3 right-3 z-20">
+          <button
+            type="button"
+            onClick={onToggleCompare}
+            disabled={compareDisabled}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors-base",
+              isCompared
+                ? "bg-secondary-500 text-white border-secondary-500"
+                : "bg-white/90 text-primary-900 border-default hover:border-secondary-500 disabled:opacity-40"
+            )}
+            aria-pressed={isCompared}
+          >
+            {isCompared ? <Check className="w-3.5 h-3.5" /> : <span className="w-3.5 h-3.5 rounded-full border border-current" />}
+            {isCompared ? "Comparing" : "Compare"}
+          </button>
+        </div>
+        <div className="absolute w-44 h-44 rounded-full bg-[radial-gradient(circle,rgba(13,59,102,0.05)_0%,transparent_70%)]" />
+        <Image
+          src={product.images[0]?.image || "/assets/images/products/placeholder.png"}
+          alt={product.name}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="relative z-10 object-contain p-4 lg:p-6 group-hover:scale-105 transition-transform duration-500"
+        />
+      </div>
+
+      <div className="p-6 flex-1 flex flex-col">
+        <span className="text-xs font-semibold text-secondary-600 uppercase tracking-wider mb-2">
+          {product.category.name}
+        </span>
+        <h3 className="text-lg font-bold text-primary-900 mb-2">
+          <Link href={`/products/${product.slug}`} className="hover:text-secondary-600 transition-colors-base">
+            {product.name}
+          </Link>
+        </h3>
+        <p className="text-sm text-muted mb-4 flex-1 line-clamp-2 leading-relaxed">
+          {product.short_description}
+        </p>
+
+        {sizes.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {sizes.map((size) => (
+              <span key={size} className="px-2.5 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-700">
+                {size}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {industries.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {industries.slice(0, 2).map((industry) => (
+              <span key={industry} className="px-2.5 py-1 rounded-full text-xs font-medium bg-secondary-50 text-secondary-700">
+                {industry}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {features.length > 0 && (
+          <ul className="space-y-1.5 mb-5">
+            {features.map((feature) => (
+              <li key={feature} className="flex items-start gap-2 text-xs text-muted">
+                <Check className="w-3.5 h-3.5 text-secondary-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <span className="line-clamp-1">{feature}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="flex gap-3 mt-auto">
+          <Link
+            href={`/products/${product.slug}`}
+            className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-full font-semibold text-sm bg-white border border-default text-primary-900 hover:bg-surface-page hover:border-primary-400 hover:text-primary-500 transition-colors-base"
+          >
+            Learn More
+          </Link>
+          <Link
+            href={`/request-quote?product=${encodeURIComponent(product.slug)}`}
+            data-track="product-card-quote"
+            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full font-semibold text-sm bg-secondary-600 text-white hover:bg-secondary-600/90 transition-colors-base"
+          >
+            <FileText className="w-4 h-4" aria-hidden="true" />
+            Request Quote
+          </Link>
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
+function IconFor({ name, className }: { name: string; className?: string }) {
+  // Simple mapping for the five Why Choose icons used in this page.
+  const map: Record<string, ReactNode> = {
+    ShieldCheck: <ShieldCheckIcon className={className} />,
+    Factory: <FactoryIcon className={className} />,
+    Truck: <TruckIcon className={className} />,
+    Globe: <GlobeIcon className={className} />,
+    HeartHandshake: <HeartHandshakeIcon className={className} />,
+  };
+  return map[name] || null;
+}
+
+// Minimal inline icon components to avoid adding to common/icon.tsx for one page.
+function ShieldCheckIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  );
+}
+function FactoryIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
+      <path d="M17 18h1" />
+      <path d="M12 18h1" />
+      <path d="M7 18h1" />
+    </svg>
+  );
+}
+function TruckIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+      <path d="M15 18H9" />
+      <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-2.48-3.1A1 1 0 0 0 18.52 9H15" />
+      <circle cx="7" cy="18" r="2" />
+      <circle cx="17" cy="18" r="2" />
+    </svg>
+  );
+}
+function GlobeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+      <path d="M2 12h20" />
+    </svg>
+  );
+}
+function HeartHandshakeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3.986 6.017" />
+      <path d="M14.5 17.5 12 20l-2.5-2.5" />
+      <path d="M12 13.5 9.5 11l2.5-2.5L12 8l2.5 2.5L17 11l-2.5 2.5" />
+      <path d="M12 20v-8" />
+    </svg>
   );
 }

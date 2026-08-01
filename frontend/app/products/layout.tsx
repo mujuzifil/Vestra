@@ -2,10 +2,20 @@ import { Metadata } from "next";
 import { createMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createMetadata({
-  title: "Our Products",
+  title: "Professional Cleaning Products | VESTRA®",
   description:
-    "Browse VESTRA's professional fabric care products including detergents, delicate care, specialty care, finishing, and stain removal solutions.",
-  keywords: ["products", "detergent", "fabric care", "laundry", "cleaning"],
+    "Browse VESTRA® professional cleaning and fabric care products for commercial laundries, institutions, and distributors in Uganda.",
+  keywords: [
+    "products",
+    "manufacturer",
+    "detergent",
+    "fabric care",
+    "commercial cleaning",
+    "institutional supply",
+    "Uganda",
+    "B2B",
+    "distributor",
+  ],
   pathname: "/products",
 });
 
