@@ -52,7 +52,7 @@ export function SecurityPageClient() {
         <Container>
           <Link
             href="/account/settings"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Settings
@@ -66,7 +66,7 @@ export function SecurityPageClient() {
                     <Shield className="w-5 h-5" />
                   </div>
                   <div>
-                    <h1 className="text-lg font-bold text-primary-900">Security Overview</h1>
+                    <h1 className="text-lg font-bold text-text-heading">Security Overview</h1>
                     <p className="text-sm text-muted">Monitor recent activity and signed-in devices.</p>
                   </div>
                 </div>
@@ -75,7 +75,7 @@ export function SecurityPageClient() {
                   <div className="p-4 rounded-xl bg-surface-page border border-default flex items-start gap-4">
                     <Clock className="w-5 h-5 text-secondary-600 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-primary-900">Last Login</p>
+                      <p className="font-semibold text-text-heading">Last Login</p>
                       <p className="text-sm text-muted">
                         {user.updated_at ? new Date(user.updated_at).toLocaleString() : "Unknown"}
                       </p>
@@ -85,7 +85,7 @@ export function SecurityPageClient() {
                   <div className="p-4 rounded-xl bg-surface-page border border-default flex items-start gap-4">
                     <Shield className="w-5 h-5 text-secondary-600 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-primary-900">Password</p>
+                      <p className="font-semibold text-text-heading">Password</p>
                       <p className="text-sm text-muted">Last changed on {new Date(user.updated_at).toLocaleDateString()}</p>
                     </div>
                   </div>
@@ -103,7 +103,7 @@ export function SecurityPageClient() {
               </div>
 
               <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8">
-                <h2 className="text-lg font-bold text-primary-900 mb-4">Active Sessions</h2>
+                <h2 className="text-lg font-bold text-text-heading mb-4">Active Sessions</h2>
                 <div className="space-y-3">
                   {mockSessions.map((session) => (
                     <div
@@ -115,7 +115,7 @@ export function SecurityPageClient() {
                           <Smartphone className="w-4 h-4" />
                         </div>
                         <div>
-                          <p className="font-semibold text-primary-900">
+                          <p className="font-semibold text-text-heading">
                             {session.device}
                             {session.isCurrent && (
                               <span className="ml-2 px-2 py-0.5 bg-secondary-100 text-secondary-600 text-xs rounded-full">
@@ -138,23 +138,23 @@ export function SecurityPageClient() {
 
             <div className="lg:col-span-1">
               <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 sticky top-24">
-                <h2 className="text-base font-bold text-primary-900 mb-4">Quick Links</h2>
+                <h2 className="text-base font-bold text-text-heading mb-4">Quick Links</h2>
                 <nav className="space-y-2">
                   <Link
                     href="/account/password"
-                    className="block p-3 rounded-xl text-sm font-medium text-body hover:bg-surface-page hover:text-primary-900"
+                    className="block p-3 rounded-xl text-sm font-medium text-body hover:bg-surface-page hover:text-text-heading"
                   >
                     Change Password
                   </Link>
                   <Link
                     href="/account/preferences"
-                    className="block p-3 rounded-xl text-sm font-medium text-body hover:bg-surface-page hover:text-primary-900"
+                    className="block p-3 rounded-xl text-sm font-medium text-body hover:bg-surface-page hover:text-text-heading"
                   >
                     Notification Preferences
                   </Link>
                   <Link
                     href="/account/activity"
-                    className="block p-3 rounded-xl text-sm font-medium text-body hover:bg-surface-page hover:text-primary-900"
+                    className="block p-3 rounded-xl text-sm font-medium text-body hover:bg-surface-page hover:text-text-heading"
                   >
                     Account Activity
                   </Link>

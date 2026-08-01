@@ -14,14 +14,14 @@ export function StatementsPageClient() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-primary-900">Statements</h1>
+        <h1 className="text-2xl font-extrabold text-text-heading">Statements</h1>
         <p className="text-muted">Review your account statement and transaction history.</p>
       </div>
 
       <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-6">
         <div className="flex flex-col sm:flex-row items-end gap-4">
           <div className="flex-1 w-full">
-            <label className="block text-sm font-semibold text-primary-900 mb-1.5">Start Date</label>
+            <label className="block text-sm font-semibold text-text-heading mb-1.5">Start Date</label>
             <div className="relative">
               <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-placeholder" />
               <input
@@ -33,7 +33,7 @@ export function StatementsPageClient() {
             </div>
           </div>
           <div className="flex-1 w-full">
-            <label className="block text-sm font-semibold text-primary-900 mb-1.5">End Date</label>
+            <label className="block text-sm font-semibold text-text-heading mb-1.5">End Date</label>
             <div className="relative">
               <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-placeholder" />
               <input
@@ -50,7 +50,7 @@ export function StatementsPageClient() {
               setStart("");
               setEnd("");
             }}
-            className="px-5 py-2.5 text-muted font-semibold hover:text-primary-900"
+            className="px-5 py-2.5 text-muted font-semibold hover:text-text-heading"
           >
             Reset
           </button>
@@ -68,15 +68,15 @@ export function StatementsPageClient() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-5">
               <p className="text-sm text-muted mb-1">Opening Balance</p>
-              <p className="text-2xl font-extrabold text-primary-900">UGX {statement.opening_balance}</p>
+              <p className="text-2xl font-extrabold text-text-heading">UGX {statement.opening_balance}</p>
             </div>
             <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-5">
               <p className="text-sm text-muted mb-1">Closing Balance</p>
-              <p className="text-2xl font-extrabold text-primary-900">UGX {statement.closing_balance}</p>
+              <p className="text-2xl font-extrabold text-text-heading">UGX {statement.closing_balance}</p>
             </div>
             <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-5">
               <p className="text-sm text-muted mb-1">Period</p>
-              <p className="text-lg font-extrabold text-primary-900">
+              <p className="text-lg font-extrabold text-text-heading">
                 {new Date(statement.period_start).toLocaleDateString()} - {new Date(statement.period_end).toLocaleDateString()}
               </p>
             </div>
@@ -87,23 +87,23 @@ export function StatementsPageClient() {
               <table className="w-full text-left text-sm">
                 <thead className="bg-neutral-50">
                   <tr>
-                    <th className="px-6 py-4 font-semibold text-primary-900">Date</th>
-                    <th className="px-6 py-4 font-semibold text-primary-900">Description</th>
-                    <th className="px-6 py-4 font-semibold text-primary-900">Invoice</th>
-                    <th className="px-6 py-4 font-semibold text-primary-900 text-right">Debit</th>
-                    <th className="px-6 py-4 font-semibold text-primary-900 text-right">Credit</th>
-                    <th className="px-6 py-4 font-semibold text-primary-900 text-right">Balance</th>
+                    <th className="px-6 py-4 font-semibold text-text-heading">Date</th>
+                    <th className="px-6 py-4 font-semibold text-text-heading">Description</th>
+                    <th className="px-6 py-4 font-semibold text-text-heading">Invoice</th>
+                    <th className="px-6 py-4 font-semibold text-text-heading text-right">Debit</th>
+                    <th className="px-6 py-4 font-semibold text-text-heading text-right">Credit</th>
+                    <th className="px-6 py-4 font-semibold text-text-heading text-right">Balance</th>
                   </tr>
                 </thead>
                 <tbody>
                   {statement.transactions.map((tx, index) => (
                     <tr key={index} className="border-t border-neutral-100">
                       <td className="px-6 py-4 text-muted">{new Date(tx.date).toLocaleDateString()}</td>
-                      <td className="px-6 py-4 text-primary-900">{tx.description}</td>
+                      <td className="px-6 py-4 text-text-heading">{tx.description}</td>
                       <td className="px-6 py-4 text-muted">{tx.invoice_number || "—"}</td>
                       <td className="px-6 py-4 text-right font-medium text-red-600">{Number(tx.debit) > 0 ? `UGX ${tx.debit}` : "—"}</td>
                       <td className="px-6 py-4 text-right font-medium text-green-600">{Number(tx.credit) > 0 ? `UGX ${tx.credit}` : "—"}</td>
-                      <td className="px-6 py-4 text-right font-bold text-primary-900">UGX {tx.balance}</td>
+                      <td className="px-6 py-4 text-right font-bold text-text-heading">UGX {tx.balance}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\ContactEnquiryType;
 use App\Enums\ContactStatus;
 use App\Enums\Priority;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ContactMessage extends Model
 {
@@ -14,12 +16,20 @@ class ContactMessage extends Model
 
     protected $fillable = [
         'name',
+        'company',
         'email',
         'phone',
         'subject',
+        'enquiry_type',
         'message',
+        'attachments',
         'status',
         'priority',
+        'assigned_to',
+        'internal_notes',
+        'source',
+        'ip_address',
+        'user_agent',
         'read_at',
         'reply',
         'replied_at',
@@ -29,9 +39,21 @@ class ContactMessage extends Model
     {
         return [
             'status' => ContactStatus::class,
+            'enquiry_type' => ContactEnquiryType::class,
+            'attachments' => 'array',
             'read_at' => 'datetime',
             'replied_at' => 'datetime',
         ];
+    }
+
+    public function assignedTo(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function enquiryTypeLabel(): string
+    {
+        return $this->enquiry_type?->label() ?? ucfirst($this->enquiry_type);
     }
 
     public function scopeNew(Builder $query): Builder

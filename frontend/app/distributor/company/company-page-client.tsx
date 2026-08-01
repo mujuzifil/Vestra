@@ -67,7 +67,7 @@ export function CompanyPageClient() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-primary-900">Company Profile</h1>
+        <h1 className="text-2xl font-extrabold text-text-heading">Company Profile</h1>
         <p className="text-muted">Manage your distributor company information.</p>
       </div>
 
@@ -81,7 +81,7 @@ export function CompanyPageClient() {
             )}
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-bold text-primary-900 mb-2">Company Logo</h3>
+            <h3 className="text-lg font-bold text-text-heading mb-2">Company Logo</h3>
             <div className="flex flex-wrap items-center gap-3">
               <label className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 cursor-pointer transition-colors-base">
                 <Upload className="w-4 h-4" />
@@ -157,7 +157,7 @@ export function CompanyPageClient() {
         </div>
 
         <div className="border-t border-neutral-200 pt-6">
-          <h3 className="text-lg font-bold text-primary-900 mb-4">Contact Information</h3>
+          <h3 className="text-lg font-bold text-text-heading mb-4">Contact Information</h3>
           <div className="grid sm:grid-cols-2 gap-5">
             <InputField
               id="primary_contact_name"
@@ -183,7 +183,7 @@ export function CompanyPageClient() {
         </div>
 
         <div className="border-t border-neutral-200 pt-6">
-          <h3 className="text-lg font-bold text-primary-900 mb-4">Address</h3>
+          <h3 className="text-lg font-bold text-text-heading mb-4">Address</h3>
           <div className="grid sm:grid-cols-2 gap-5">
             <InputField
               id="country"

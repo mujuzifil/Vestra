@@ -37,10 +37,6 @@ export async function removeFromWishlist(productId: number): Promise<void> {
   await apiDelete<ApiResponse<unknown>>(`/auth/wishlist/${productId}`);
 }
 
-export async function moveWishlistToCart(productId: number): Promise<void> {
-  await apiPost<ApiResponse<unknown>>(`/auth/wishlist/${productId}/move-to-cart`, {});
-}
-
 export async function mergeWishlist(items: { product_id: number; list_name?: string; notes?: string }[]): Promise<void> {
   await apiPost<ApiResponse<unknown>>("/auth/wishlist/merge", { items });
 }

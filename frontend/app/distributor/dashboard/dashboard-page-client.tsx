@@ -25,7 +25,7 @@ function OrderRow({ order }: { order: DistributorOrder }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-neutral-50">
       <div>
-        <p className="font-semibold text-primary-900">{order.invoice_number}</p>
+        <p className="font-semibold text-text-heading">{order.invoice_number}</p>
         <p className="text-sm text-muted">{formatDate(order.created_at)}</p>
       </div>
       <div className="flex items-center gap-3">
@@ -57,7 +57,7 @@ function QuoteRow({ quote }: { quote: DistributorQuotation }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-neutral-50">
       <div>
-        <p className="font-semibold text-primary-900">{quote.reference_number}</p>
+        <p className="font-semibold text-text-heading">{quote.reference_number}</p>
         <p className="text-sm text-muted">{formatDate(quote.created_at)}</p>
       </div>
       <div className="flex items-center gap-3">
@@ -80,7 +80,7 @@ function NotificationRow({ notification }: { notification: DistributorNotificati
     <div className="flex items-start gap-3 p-4 rounded-xl bg-neutral-50">
       <Bell className={`w-4 h-4 mt-0.5 ${notification.is_read ? "text-placeholder" : "text-green-600"}`} />
       <div className="flex-1">
-        <p className={`text-sm font-medium ${notification.is_read ? "text-muted" : "text-primary-900"}`}>
+        <p className={`text-sm font-medium ${notification.is_read ? "text-muted" : "text-text-heading"}`}>
           {notification.title}
         </p>
         <p className="text-xs text-placeholder">{notification.message}</p>
@@ -105,7 +105,7 @@ export function DashboardPageClient() {
     return (
       <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-8 text-center">
         <AlertCircle className="w-10 h-10 mx-auto mb-3 text-placeholder" />
-        <h2 className="text-lg font-bold text-primary-900">Could not load dashboard</h2>
+        <h2 className="text-lg font-bold text-text-heading">Could not load dashboard</h2>
         <p className="text-sm text-muted">Please try again later.</p>
       </div>
     );
@@ -117,7 +117,7 @@ export function DashboardPageClient() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-primary-900">Distributor Dashboard</h1>
+          <h1 className="text-2xl font-extrabold text-text-heading">Distributor Dashboard</h1>
           <p className="text-muted">Welcome back, {distributor.company_name}</p>
         </div>
         <div className="flex items-center gap-3">
@@ -130,7 +130,7 @@ export function DashboardPageClient() {
           </Link>
           <Link
             href="/distributor/products"
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-neutral-200 text-primary-900 font-semibold rounded-xl hover:bg-neutral-50 transition-colors-base"
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-neutral-200 text-text-heading font-semibold rounded-xl hover:bg-neutral-50 transition-colors-base"
           >
             <Package className="w-4 h-4" />
             Products
@@ -149,7 +149,7 @@ export function DashboardPageClient() {
         <div className="lg:col-span-2 space-y-8">
           <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-primary-900">Recent Orders</h2>
+              <h2 className="text-lg font-bold text-text-heading">Recent Orders</h2>
               <Link href="/distributor/orders" className="text-sm font-semibold text-green-600 hover:text-green-700">
                 View All
               </Link>
@@ -163,7 +163,7 @@ export function DashboardPageClient() {
 
           <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-primary-900">Recent Quotes</h2>
+              <h2 className="text-lg font-bold text-text-heading">Recent Quotes</h2>
               <Link href="/distributor/quotes" className="text-sm font-semibold text-green-600 hover:text-green-700">
                 View All
               </Link>
@@ -185,8 +185,8 @@ export function DashboardPageClient() {
                 <CreditCard className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-primary-900">Outstanding Balance</h3>
-                <p className="text-2xl font-extrabold text-primary-900">UGX {stats.outstanding_balance}</p>
+                <h3 className="text-lg font-bold text-text-heading">Outstanding Balance</h3>
+                <p className="text-2xl font-extrabold text-text-heading">UGX {stats.outstanding_balance}</p>
               </div>
             </div>
             <Link
@@ -200,7 +200,7 @@ export function DashboardPageClient() {
 
           <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-primary-900">Notifications</h2>
+              <h2 className="text-lg font-bold text-text-heading">Notifications</h2>
               {stats.unread_notifications > 0 && (
                 <span className="px-2 py-0.5 text-xs font-bold text-white bg-red-500 rounded-full">
                   {stats.unread_notifications}

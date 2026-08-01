@@ -64,7 +64,7 @@ export function RegisterPageClient() {
         <div className="bg-surface-card rounded-[24px] border border-border-default shadow-lg p-8 lg:p-10">
           <div className="text-center mb-8">
             <h1 className="text-2xl lg:text-3xl font-extrabold text-text-heading mb-2">Create Account</h1>
-            <p className="text-text-muted">Join VESTRA for a better shopping experience</p>
+            <p className="text-text-muted">Join VESTRA for a better business experience</p>
           </div>
 
           {error && (

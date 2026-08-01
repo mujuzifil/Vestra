@@ -6,18 +6,22 @@ import { motion } from "framer-motion";
 import { ChevronRight, Star } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { Icon } from "@/components/common/icon";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { Button } from "@/components/ui/button";
 
 const heroFeatures = [
-  { icon: "Shield", title: "Professional", description: "Results" },
-  { icon: "Leaf", title: "Fabric", description: "Protection" },
-  { icon: "FlaskConical", title: "Innovative", description: "Formulations" },
+  { icon: "Factory", title: "Manufactured", description: "in Uganda" },
+  { icon: "Shield", title: "Professional", description: "Quality" },
+  { icon: "FlaskConical", title: "Advanced", description: "Formulations" },
 ];
 
 export function HeroSection() {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <section
       id="home"
       className="relative min-h-[600px] lg:min-h-[calc(100vh-88px)] flex items-center bg-primary-900 overflow-hidden pt-28 lg:pt-0"
+      aria-labelledby="hero-heading"
     >
       {/* Background effects */}
       <div className="absolute inset-0 z-0">
@@ -49,62 +53,58 @@ export function HeroSection() {
       <Container className="relative z-10 w-full py-16 lg:py-24">
         <div className="grid lg:grid-cols-[45%_55%] gap-8 lg:gap-12 items-center">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-white max-w-xl"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-xs sm:text-sm font-bold tracking-wider mb-6">
-              <Star className="w-4 h-4 text-green-500 fill-green-500" />
-              <span>PROFESSIONAL CARE. PREMIUM RESULTS.</span>
+              <Star className="w-4 h-4 text-secondary-500 fill-secondary-500" aria-hidden="true" />
+              <span>PROFESSIONAL CLEANING SOLUTIONS</span>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-[clamp(3rem,6vw,6rem)] font-black leading-[1.05] tracking-tight mb-6">
+            <h1
+              id="hero-heading"
+              className="text-4xl sm:text-5xl lg:text-[clamp(3rem,6vw,6rem)] font-black leading-[1.05] tracking-tight mb-6"
+            >
               Professional
               <br />
-              Fabric Care.
+              Cleaning Solutions
               <br />
-              <span className="text-green-500">
-                Engineered
+              <span className="text-secondary-500">
+                Manufactured
                 <br />
-                for Excellence.
+                for Uganda.
               </span>
             </h1>
 
             <p className="text-white/80 text-base sm:text-lg leading-relaxed mb-8 max-w-xl">
-              VESTRA is a premium fabric care brand dedicated to developing high-performance cleaning
-              solutions that combine advanced chemistry, innovation, and exceptional garment care.
+              VESTRA® manufactures high-performance detergents and fabric care products for
+              businesses, institutions, and distribution partners who demand consistent quality,
+              reliable supply, and professional results.
             </p>
 
             <div className="flex flex-wrap gap-4 mb-10">
-              <Link
-                href="/products"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-1 transition-transform-base group"
-              >
-                Explore Products
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" />
-              </Link>
-              <Link
-                href="/distributor"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full font-semibold text-white border border-white/40 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:-translate-y-1 transition-all-base group"
-              >
-                Become a Distributor
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" />
-              </Link>
+              <Button asChild variant="gradient" className="rounded-full px-7 py-3.5 h-auto group" rightIcon={<ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />}>
+              <Link href="/request-quote" data-track="hero-primary-cta">Request a Quote</Link>
+            </Button>
+              <Button asChild variant="outline" className="rounded-full px-6 py-3.5 h-auto border-white/40 text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:text-white hover:border-white/50" rightIcon={<ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />}>
+                <Link href="/distributor" data-track="hero-secondary-cta">Become a Distributor</Link>
+              </Button>
             </div>
 
             <div className="flex flex-wrap items-center gap-4 sm:gap-6">
               {heroFeatures.map((feature, index) => (
                 <div key={feature.title} className="flex items-center gap-3">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-green-500/40 bg-green-500/10 flex items-center justify-center text-green-500">
-                    <Icon name={feature.icon} className="w-5 h-5" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-secondary-500/40 bg-secondary-500/10 flex items-center justify-center text-secondary-500">
+                    <Icon name={feature.icon} className="w-5 h-5" aria-hidden="true" />
                   </div>
                   <div className="leading-tight">
                     <strong className="block text-white text-sm font-semibold">{feature.title}</strong>
                     <span className="text-white/70 text-xs sm:text-sm">{feature.description}</span>
                   </div>
                   {index < heroFeatures.length - 1 && (
-                    <div className="hidden sm:block w-px h-8 bg-white/20 ml-2" />
+                    <div className="hidden sm:block w-px h-8 bg-white/20 ml-2" aria-hidden="true" />
                   )}
                 </div>
               ))}
@@ -112,15 +112,15 @@ export function HeroSection() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, ease: "easeOut", delay: 0.2 }}
             className="relative lg:absolute lg:right-0 lg:bottom-0 lg:w-[55%] lg:h-full flex items-end justify-end"
           >
             <div className="relative w-full aspect-[4/3] lg:aspect-auto lg:h-full">
               <Image
-                src="/assets/images/hero/home-page-image.png"
-                alt="VESTRA Professional Fabric Care Product Composition"
+                src="/assets/images/hero/home-page-image.webp"
+                alt="VESTRA professional detergent product range manufactured in Uganda"
                 fill
                 sizes="(max-width: 1024px) 100vw, 55vw"
                 priority

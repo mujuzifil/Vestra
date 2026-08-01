@@ -26,6 +26,7 @@ use App\Events\Notification\ProfileUpdated;
 use App\Events\Notification\QuotationApproved;
 use App\Events\Notification\QuotationRejected;
 use App\Events\Notification\QuotationSubmitted;
+use App\Events\Notification\QuoteRequestSubmitted;
 use App\Events\Notification\ReviewApproved;
 use App\Events\Notification\ReviewReplied;
 use App\Events\Notification\StatementGenerated;
@@ -55,26 +56,30 @@ class DispatchNotificationListener
             return;
         }
 
-        foreach ($config['users'] as $user) {
-            if (! $user instanceof User) {
-                continue;
-            }
+        $dispatches = $config['dispatches'] ?? [$config];
 
-            try {
-                $this->dispatcher->dispatch(
-                    user: $user,
-                    templateKey: $config['template'],
-                    variables: $config['variables'],
-                    channels: $config['channels'],
-                    topic: $config['topic'],
-                    metadata: $config['metadata'] ?? []
-                );
-            } catch (\Throwable $e) {
-                Log::error('Notification dispatch listener failed', [
-                    'event' => get_class($event),
-                    'user_id' => $user->id,
-                    'error' => $e->getMessage(),
-                ]);
+        foreach ($dispatches as $dispatch) {
+            foreach (($dispatch['users'] ?? []) as $user) {
+                if (! $user instanceof User) {
+                    continue;
+                }
+
+                try {
+                    $this->dispatcher->dispatch(
+                        user: $user,
+                        templateKey: $dispatch['template'],
+                        variables: $dispatch['variables'],
+                        channels: $dispatch['channels'],
+                        topic: $dispatch['topic'],
+                        metadata: $dispatch['metadata'] ?? []
+                    );
+                } catch (\Throwable $e) {
+                    Log::error('Notification dispatch listener failed', [
+                        'event' => get_class($event),
+                        'user_id' => $user->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
             }
         }
     }
@@ -93,13 +98,32 @@ class DispatchNotificationListener
                 'variables' => ['customer_name' => $event->user->name, 'email' => $event->user->email],
             ],
             $event instanceof DistributorApplicationSubmitted => [
-                'users' => $this->usersFromDistributorRequest($event->distributorRequest),
-                'template' => 'distributor.application_submitted',
-                'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
-                'topic' => 'order_updates',
-                'variables' => [
-                    'customer_name' => $event->distributorRequest->contact_person,
-                    'company_name' => $event->distributorRequest->company_name,
+                'dispatches' => [
+                    [
+                        'users' => $this->usersFromDistributorRequest($event->distributorRequest),
+                        'template' => 'distributor.application_submitted',
+                        'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                        'topic' => 'order_updates',
+                        'variables' => [
+                            'customer_name' => $event->distributorRequest->contact_person,
+                            'company_name' => $event->distributorRequest->company_name,
+                        ],
+                    ],
+                    [
+                        'users' => User::where('is_admin', true)->get()->all(),
+                        'template' => 'distributor.application_admin_notification',
+                        'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                        'topic' => 'order_updates',
+                        'variables' => [
+                            'customer_name' => $event->distributorRequest->contact_person,
+                            'company_name' => $event->distributorRequest->company_name,
+                            'email' => $event->distributorRequest->email,
+                            'phone' => $event->distributorRequest->phone,
+                            'reference_number' => 'VESTRA-DIST-' . $event->distributorRequest->id,
+                            'district' => $event->distributorRequest->region,
+                            'business_type' => $event->distributorRequest->business_type,
+                        ],
+                    ],
                 ],
             ],
             $event instanceof DistributorApplicationApproved => [
@@ -233,6 +257,37 @@ class DispatchNotificationListener
                 'variables' => [
                     'customer_name' => $event->quotationRequest->distributor->user?->name,
                     'quotation_number' => $event->quotationRequest->reference_number,
+                ],
+            ],
+            $event instanceof QuoteRequestSubmitted => [
+                'dispatches' => [
+                    [
+                        'users' => User::where('is_admin', true)->get()->all(),
+                        'template' => 'quote_request.admin_notification',
+                        'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                        'topic' => 'order_updates',
+                        'variables' => [
+                            'customer_name' => $event->quoteRequest->full_name,
+                            'company_name' => $event->quoteRequest->company_name,
+                            'email' => $event->quoteRequest->email,
+                            'phone' => $event->quoteRequest->phone,
+                            'reference_number' => $event->quoteRequest->reference_number,
+                            'product_summary' => $event->quoteRequest->items->map(
+                                fn ($item) => "{$item->quantity} x {$item->product_name}"
+                            )->implode(', '),
+                        ],
+                    ],
+                    [
+                        'users' => $this->usersFromQuoteRequest($event->quoteRequest),
+                        'template' => 'quote_request.customer_confirmation',
+                        'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                        'topic' => 'order_updates',
+                        'variables' => [
+                            'customer_name' => $event->quoteRequest->full_name,
+                            'company_name' => $event->quoteRequest->company_name,
+                            'reference_number' => $event->quoteRequest->reference_number,
+                        ],
+                    ],
                 ],
             ],
             $event instanceof QuotationApproved => [
@@ -386,6 +441,24 @@ class DispatchNotificationListener
      * @return array<int, User>
      */
     protected function usersFromDistributorRequest(DistributorRequest $request): array
+    {
+        if ($request->email) {
+            $user = User::where('email', $request->email)->first();
+
+            if ($user) {
+                return [$user];
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * Resolve user(s) from a quote request by email.
+     *
+     * @return array<int, User>
+     */
+    protected function usersFromQuoteRequest(\App\Models\QuoteRequest $request): array
     {
         if ($request->email) {
             $user = User::where('email', $request->email)->first();

@@ -23,6 +23,7 @@ use App\Models\QuotationRequest;
 use App\Models\Order;
 use App\Models\PaymentTransaction;
 use App\Models\Product;
+use App\Models\QuoteRequest;
 use App\Models\Review;
 use App\Models\Setting;
 use App\Models\User;
@@ -46,6 +47,7 @@ use App\Policies\NotificationTemplatePolicy;
 use App\Policies\PaymentUploadPolicy;
 use App\Policies\QuotationRequestPolicy;
 use App\Policies\OrderPolicy;
+use App\Policies\QuoteRequestPolicy;
 use App\Policies\PaymentTransactionPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ReviewPolicy;
@@ -76,6 +78,7 @@ class AuthServiceProvider extends ServiceProvider
         NotificationTemplate::class => NotificationTemplatePolicy::class,
         PaymentUpload::class => PaymentUploadPolicy::class,
         QuotationRequest::class => QuotationRequestPolicy::class,
+        QuoteRequest::class => QuoteRequestPolicy::class,
         Order::class => OrderPolicy::class,
         PaymentTransaction::class => PaymentTransactionPolicy::class,
         Product::class => ProductPolicy::class,
@@ -90,5 +93,6 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('view reports', fn (User $user): bool => $user->isAdmin());
+        Gate::define('admin', fn (User $user): bool => $user->isAdmin());
     }
 }

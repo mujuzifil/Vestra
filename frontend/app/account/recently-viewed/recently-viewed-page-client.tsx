@@ -61,7 +61,7 @@ export function RecentlyViewedPageClient() {
         <Container>
           <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-primary-900">Browsing History</h2>
+              <h2 className="text-lg font-bold text-text-heading">Browsing History</h2>
               {items.length > 0 && (
                 <button
                   type="button"
@@ -82,14 +82,14 @@ export function RecentlyViewedPageClient() {
             ) : items.length === 0 ? (
               <div className="py-16 text-center">
                 <Clock className="w-14 h-14 mx-auto mb-4 text-placeholder" />
-                <h3 className="text-lg font-bold text-primary-900 mb-2">No recently viewed products</h3>
+                <h3 className="text-lg font-bold text-text-heading mb-2">No recently viewed products</h3>
                 <p className="text-muted mb-6">Products you view will appear here.</p>
                 <Link
                   href="/products"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-secondary-600 text-white font-semibold rounded-xl hover:bg-secondary-600 transition-colors-base"
                 >
                   <ShoppingBag className="w-4 h-4" />
-                  Start Shopping
+                  View Products
                 </Link>
               </div>
             ) : (
@@ -108,7 +108,7 @@ export function RecentlyViewedPageClient() {
                       <div className="p-5">
                         <Link
                           href={`/products/${product.slug}`}
-                          className="font-bold text-primary-900 hover:text-secondary-600 line-clamp-2"
+                          className="font-bold text-text-heading hover:text-secondary-600 line-clamp-2"
                         >
                           {product.name}
                         </Link>

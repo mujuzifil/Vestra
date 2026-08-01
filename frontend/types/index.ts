@@ -102,21 +102,41 @@ export interface ContactInfo {
   businessHours: string;
 }
 
+export type ContactEnquiryType =
+  | "general"
+  | "sales"
+  | "distributor"
+  | "quote"
+  | "technical_support"
+  | "other";
+
 export interface ContactFormData {
   name: string;
+  company?: string;
   email: string;
+  phone?: string;
   subject: string;
+  enquiry_type: ContactEnquiryType;
   message: string;
+  attachments?: FileList | null;
 }
 
 export interface DistributorFormData {
   fullName: string;
   businessName: string;
+  position: string;
   email: string;
   phone: string;
-  city: string;
+  district: string;
+  physicalAddress: string;
+  yearsInBusiness: string;
   businessType: string;
-  experience: string;
+  regionsCovered: string;
+  existingBrands: string;
+  warehouseAvailability: string;
+  deliveryCapability: string;
+  additionalInformation: string;
+  documents?: FileList | null;
 }
 
 export interface NotificationPreferences {
@@ -200,28 +220,50 @@ export interface ActivityItem {
   created_at: string;
 }
 
-export interface CartItemProduct {
-  id: number;
-  name: string;
-  slug: string;
-  sku: string;
-  price: string;
-  stock_quantity: number;
-  images: ProductImage[];
-}
-
-export interface CartItem {
-  id: number;
-  product: CartItemProduct;
+export interface QuoteRequestItem {
+  product_name: string;
+  product_id?: number | null;
+  package_size?: string;
   quantity: number;
-  line_total: string;
+  notes?: string;
 }
 
-export interface Cart {
+export interface QuoteRequestFormData {
+  full_name: string;
+  company_name: string;
+  email: string;
+  phone: string;
+  district?: string;
+  city?: string;
+  address?: string;
+  preferred_delivery_date?: string;
+  delivery_location?: string;
+  items?: QuoteRequestItem[];
+  requirements?: string;
+  attachments?: FileList | null;
+}
+
+export interface QuoteRequest {
   id: number;
-  items: CartItem[];
-  item_count: number;
-  subtotal: string;
+  reference_number: string;
+  full_name: string;
+  company_name: string;
+  email: string;
+  phone: string;
+  district?: string;
+  city?: string;
+  address?: string;
+  preferred_delivery_date?: string;
+  delivery_location?: string;
+  status: string;
+  status_label: string;
+  priority?: string | null;
+  estimated_value?: string | null;
+  expected_close_date?: string | null;
+  attachments?: string[] | null;
+  crm_metadata?: Record<string, unknown> | null;
+  items: QuoteRequestItem[];
+  created_at: string;
 }
 
 export interface OrderItem {
@@ -542,4 +584,148 @@ export interface DistributorDashboard {
   recent_orders: DistributorOrder[];
   recent_quotes: DistributorQuotation[];
   recent_notifications: DistributorNotification[];
+}
+
+export interface DistributorServiceArea {
+  region: string;
+  district: string;
+  status: "covered" | "coming_soon" | "planned";
+}
+
+export interface PublicDistributorBranch {
+  id: number;
+  name: string;
+  manager_name: string | null;
+  phone: string | null;
+  email: string | null;
+  country: string | null;
+  district: string | null;
+  city: string | null;
+  address: string | null;
+  latitude: string | null;
+  longitude: string | null;
+  delivery_notes: string | null;
+  formatted_address: string;
+}
+
+export interface PublicDistributor {
+  id: number;
+  company_name: string;
+  trading_name: string | null;
+  primary_contact_name: string | null;
+  email: string | null;
+  phone: string | null;
+  website: string | null;
+  business_type: string | null;
+  district: string | null;
+  city: string | null;
+  address: string | null;
+  operating_hours: Record<string, unknown> | null;
+  logo_url: string | null;
+  branch: PublicDistributorBranch | null;
+  service_areas: DistributorServiceArea[];
+}
+
+export interface DistributorDirectoryFilters {
+  search?: string;
+  district?: string;
+  region?: string;
+}
+
+export interface DistributorNetworkStats {
+  active_distributors: number;
+  branches: number;
+  districts_served: number;
+  commercial_customers: number;
+}
+
+export interface CoverageDistrict {
+  district: string;
+  status: "covered" | "coming_soon" | "planned";
+  count: number;
+}
+
+export type CoverageRegions = Record<string, CoverageDistrict[]>;
+
+// Blog / Knowledge Centre types
+
+export interface BlogAuthor {
+  id: number;
+  name: string;
+  slug: string;
+  email: string | null;
+  role: string | null;
+  bio: string | null;
+  avatar: string | null;
+  social_links: Record<string, string> | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BlogCategory {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BlogTag {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string;
+  featured_image: string | null;
+  gallery: string[] | null;
+  content_blocks: Record<string, unknown>[] | null;
+  status: string;
+  status_label: string;
+  visibility: string;
+  is_featured: boolean;
+  reading_time_minutes: number;
+  published_at: string | null;
+  scheduled_at: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  canonical_url: string | null;
+  view_count: number;
+  author: BlogAuthor | null;
+  categories: BlogCategory[];
+  tags: BlogTag[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BlogPostFilters {
+  search?: string;
+  category?: string;
+  tag?: string;
+  sort?: "newest" | "oldest" | "popular" | "reading_time";
+  per_page?: number;
+  page?: number;
+}
+
+export interface PaginatedBlogPosts {
+  data: BlogPost[];
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
 }

@@ -125,7 +125,7 @@ export function SettingsPageClient() {
         <Container>
           <Link
             href="/account"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Account
@@ -139,7 +139,7 @@ export function SettingsPageClient() {
                 className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-2 transition-colors-base ${
                   activeTab === "profile"
                     ? "border-secondary-600 text-secondary-600"
-                    : "border-transparent text-muted hover:text-primary-900"
+                    : "border-transparent text-muted hover:text-text-heading"
                 }`}
               >
                 <User className="w-4 h-4" />
@@ -150,7 +150,7 @@ export function SettingsPageClient() {
                 className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-2 transition-colors-base ${
                   activeTab === "password"
                     ? "border-secondary-600 text-secondary-600"
-                    : "border-transparent text-muted hover:text-primary-900"
+                    : "border-transparent text-muted hover:text-text-heading"
                 }`}
               >
                 <Lock className="w-4 h-4" />
@@ -162,7 +162,7 @@ export function SettingsPageClient() {
             {activeTab === "profile" && (
               <form onSubmit={handleProfileSubmit} className="max-w-lg space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Full Name</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Full Name</label>
                   <input
                     type="text"
                     required
@@ -172,7 +172,7 @@ export function SettingsPageClient() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Phone</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Phone</label>
                   <input
                     type="tel"
                     value={profileForm.phone}
@@ -181,7 +181,7 @@ export function SettingsPageClient() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Email</label>
                   <input
                     type="email"
                     disabled
@@ -218,7 +218,7 @@ export function SettingsPageClient() {
             {activeTab === "password" && (
               <form onSubmit={handlePasswordSubmit} className="max-w-lg space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Current Password</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Current Password</label>
                   <input
                     type="password"
                     required
@@ -228,7 +228,7 @@ export function SettingsPageClient() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">New Password</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">New Password</label>
                   <input
                     type="password"
                     required
@@ -239,7 +239,7 @@ export function SettingsPageClient() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-primary-900 mb-1">Confirm New Password</label>
+                  <label className="block text-sm font-medium text-text-heading mb-1">Confirm New Password</label>
                   <input
                     type="password"
                     required
@@ -274,7 +274,7 @@ export function SettingsPageClient() {
 
             {/* More Settings */}
             <div className="mt-10 pt-8 border-t border-default">
-              <h2 className="text-base font-bold text-primary-900 mb-4">More Settings</h2>
+              <h2 className="text-base font-bold text-text-heading mb-4">More Settings</h2>
               <div className="grid sm:grid-cols-2 gap-3">
                 <Link
                   href="/account/profile/photo"
@@ -284,7 +284,7 @@ export function SettingsPageClient() {
                     <Camera className="w-4 h-4" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-primary-900">Profile Photo</p>
+                    <p className="font-semibold text-text-heading">Profile Photo</p>
                     <p className="text-xs text-muted">Upload or remove avatar</p>
                   </div>
                   <ChevronRight className="w-4 h-4 text-placeholder" />
@@ -297,7 +297,7 @@ export function SettingsPageClient() {
                     <Shield className="w-4 h-4" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-primary-900">Security</p>
+                    <p className="font-semibold text-text-heading">Security</p>
                     <p className="text-xs text-muted">Sessions and login activity</p>
                   </div>
                   <ChevronRight className="w-4 h-4 text-placeholder" />
@@ -310,7 +310,7 @@ export function SettingsPageClient() {
                     <SlidersHorizontal className="w-4 h-4" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-primary-900">Preferences</p>
+                    <p className="font-semibold text-text-heading">Preferences</p>
                     <p className="text-xs text-muted">Notifications and account prefs</p>
                   </div>
                   <ChevronRight className="w-4 h-4 text-placeholder" />
@@ -323,7 +323,7 @@ export function SettingsPageClient() {
                     <Activity className="w-4 h-4" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-primary-900">Activity</p>
+                    <p className="font-semibold text-text-heading">Activity</p>
                     <p className="text-xs text-muted">Account event timeline</p>
                   </div>
                   <ChevronRight className="w-4 h-4 text-placeholder" />

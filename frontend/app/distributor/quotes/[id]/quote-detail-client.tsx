@@ -44,7 +44,7 @@ export function QuoteDetailPageClient({ quoteId }: Props) {
     return (
       <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-8 text-center">
         <AlertCircle className="w-10 h-10 mx-auto mb-3 text-placeholder" />
-        <h2 className="text-lg font-bold text-primary-900">Quote not found</h2>
+        <h2 className="text-lg font-bold text-text-heading">Quote not found</h2>
         <Link href="/distributor/quotes" className="text-green-600 font-semibold hover:text-green-700">
           Back to Quotes
         </Link>
@@ -59,7 +59,7 @@ export function QuoteDetailPageClient({ quoteId }: Props) {
     <div className="space-y-6">
       <Link
         href="/distributor/quotes"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading"
       >
         <ChevronLeft className="w-4 h-4" />
         Back to Quotes
@@ -68,7 +68,7 @@ export function QuoteDetailPageClient({ quoteId }: Props) {
       <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-6 lg:p-8">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-extrabold text-primary-900">{quote.reference_number}</h1>
+            <h1 className="text-2xl font-extrabold text-text-heading">{quote.reference_number}</h1>
             <p className="text-muted">Created {new Date(quote.created_at).toLocaleDateString()}</p>
           </div>
           <QuoteStatusBadge status={quote.status} />
@@ -84,39 +84,39 @@ export function QuoteDetailPageClient({ quoteId }: Props) {
           <table className="w-full text-left text-sm">
             <thead className="bg-neutral-50">
               <tr>
-                <th className="px-6 py-4 font-semibold text-primary-900">Product</th>
-                <th className="px-6 py-4 font-semibold text-primary-900">SKU</th>
-                <th className="px-6 py-4 font-semibold text-primary-900">Qty</th>
-                <th className="px-6 py-4 font-semibold text-primary-900">Unit Price</th>
-                <th className="px-6 py-4 font-semibold text-primary-900 text-right">Total</th>
+                <th className="px-6 py-4 font-semibold text-text-heading">Product</th>
+                <th className="px-6 py-4 font-semibold text-text-heading">SKU</th>
+                <th className="px-6 py-4 font-semibold text-text-heading">Qty</th>
+                <th className="px-6 py-4 font-semibold text-text-heading">Unit Price</th>
+                <th className="px-6 py-4 font-semibold text-text-heading text-right">Total</th>
               </tr>
             </thead>
             <tbody>
               {quote.items.map((item) => (
                 <tr key={item.id} className="border-t border-neutral-100">
-                  <td className="px-6 py-4 font-medium text-primary-900">{item.product_name}</td>
+                  <td className="px-6 py-4 font-medium text-text-heading">{item.product_name}</td>
                   <td className="px-6 py-4 text-muted">{item.product_sku}</td>
                   <td className="px-6 py-4 text-muted">{item.quantity}</td>
                   <td className="px-6 py-4 text-muted">UGX {item.unit_price}</td>
-                  <td className="px-6 py-4 font-bold text-primary-900 text-right">UGX {item.line_total}</td>
+                  <td className="px-6 py-4 font-bold text-text-heading text-right">UGX {item.line_total}</td>
                 </tr>
               ))}
             </tbody>
             <tfoot className="bg-neutral-50">
               <tr>
-                <td colSpan={4} className="px-6 py-4 text-right font-semibold text-primary-900">
+                <td colSpan={4} className="px-6 py-4 text-right font-semibold text-text-heading">
                   Subtotal
                 </td>
-                <td className="px-6 py-4 text-right font-semibold text-primary-900">UGX {quote.subtotal}</td>
+                <td className="px-6 py-4 text-right font-semibold text-text-heading">UGX {quote.subtotal}</td>
               </tr>
               <tr>
-                <td colSpan={4} className="px-6 py-4 text-right font-semibold text-primary-900">
+                <td colSpan={4} className="px-6 py-4 text-right font-semibold text-text-heading">
                   Tax
                 </td>
-                <td className="px-6 py-4 text-right font-semibold text-primary-900">UGX {quote.tax_amount}</td>
+                <td className="px-6 py-4 text-right font-semibold text-text-heading">UGX {quote.tax_amount}</td>
               </tr>
               <tr>
-                <td colSpan={4} className="px-6 py-4 text-right font-extrabold text-primary-900">
+                <td colSpan={4} className="px-6 py-4 text-right font-extrabold text-text-heading">
                   Total
                 </td>
                 <td className="px-6 py-4 text-right font-extrabold text-green-600">UGX {quote.total_amount}</td>
@@ -156,7 +156,7 @@ export function QuoteDetailPageClient({ quoteId }: Props) {
           <button
             type="button"
             onClick={() => window.print()}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-neutral-200 text-primary-900 font-semibold rounded-xl hover:bg-neutral-50 transition-colors-base"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-neutral-200 text-text-heading font-semibold rounded-xl hover:bg-neutral-50 transition-colors-base"
           >
             <FileText className="w-4 h-4" />
             Print

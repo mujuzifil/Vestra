@@ -31,10 +31,6 @@ export async function removeFromSavedItems(productId: number): Promise<void> {
   await apiDelete<ApiResponse<unknown>>(`/auth/saved-for-later/${productId}`);
 }
 
-export async function moveSavedItemToCart(productId: number): Promise<void> {
-  await apiPost<ApiResponse<unknown>>(`/auth/saved-for-later/${productId}/move-to-cart`, {});
-}
-
 export async function mergeSavedItems(items: { product_id: number }[]): Promise<void> {
   await apiPost<ApiResponse<unknown>>("/auth/saved-for-later/merge", { items });
 }

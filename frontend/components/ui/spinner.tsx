@@ -18,7 +18,7 @@ const colorClasses = {
   primary: "text-secondary-500",
   secondary: "text-primary-500",
   white: "text-white",
-  muted: "text-neutral-400",
+  muted: "text-text-muted",
 };
 
 function Spinner({

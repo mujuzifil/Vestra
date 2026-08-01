@@ -43,7 +43,7 @@ function ReviewCard({
         <div className="flex-1 min-w-0">
           <Link
             href={`/products/${review.product?.slug}`}
-            className="font-semibold text-primary-900 hover:text-secondary-600 truncate block"
+            className="font-semibold text-text-heading hover:text-secondary-600 truncate block"
           >
             {review.product?.name ?? "Unknown Product"}
           </Link>
@@ -80,7 +80,7 @@ function ReviewCard({
         </div>
       </div>
 
-      {review.title && <p className="font-semibold text-primary-900 mb-1">{review.title}</p>}
+      {review.title && <p className="font-semibold text-text-heading mb-1">{review.title}</p>}
       {review.comment && <p className="text-sm text-muted mb-3">{review.comment}</p>}
 
       {(review.pros?.length > 0 || review.cons?.length > 0) && (
@@ -212,19 +212,19 @@ export function ReviewsPageClient() {
             ) : reviews.length === 0 ? (
               <div className="py-16 text-center">
                 <Star className="w-14 h-14 mx-auto mb-4 text-placeholder" />
-                <h3 className="text-lg font-bold text-primary-900 mb-2">No reviews yet</h3>
+                <h3 className="text-lg font-bold text-text-heading mb-2">No reviews yet</h3>
                 <p className="text-muted mb-6">You haven&apos;t reviewed any products yet.</p>
                 <Link
                   href="/products"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-secondary-600 text-white font-semibold rounded-xl hover:bg-secondary-600 transition-colors-base"
                 >
                   <ShoppingBag className="w-4 h-4" />
-                  Start Shopping
+                  View Products
                 </Link>
               </div>
             ) : editingReview ? (
               <div className="max-w-2xl">
-                <h2 className="text-lg font-bold text-primary-900 mb-4">Edit Review</h2>
+                <h2 className="text-lg font-bold text-text-heading mb-4">Edit Review</h2>
                 <ReviewForm
                   productId={editingReview.product?.id}
                   initialData={{

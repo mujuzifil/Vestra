@@ -57,13 +57,13 @@ export function DistributorSidebar() {
     <nav className="flex flex-col h-full">
       <div className="flex items-center justify-between p-4 lg:p-6 border-b border-border-default">
         <Link href="/distributor/dashboard" className="flex items-center gap-2" onClick={onNavigate}>
-          <span className="text-xl font-extrabold text-primary-900">VESTRA</span>
+          <span className="text-xl font-extrabold text-text-heading">VESTRA</span>
           <span className="px-2 py-0.5 text-xs font-semibold text-white bg-secondary-600 rounded-full">Dist</span>
         </Link>
         <button
           type="button"
           onClick={() => setMobileOpen(false)}
-          className="lg:hidden p-2 text-text-muted hover:text-primary-900"
+          className="lg:hidden p-2 text-text-muted hover:text-text-heading"
           aria-label="Close menu"
         >
           <X className="w-5 h-5" />
@@ -82,7 +82,7 @@ export function DistributorSidebar() {
                 "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors-base",
                 isActive
                   ? "bg-secondary-50 text-secondary-600"
-                  : "text-neutral-600 hover:bg-surface-page hover:text-primary-900"
+                  : "text-text-body hover:bg-surface-page hover:text-text-heading"
               )}
               aria-current={isActive ? "page" : undefined}
             >
@@ -97,7 +97,7 @@ export function DistributorSidebar() {
       <div className="p-3 lg:p-4 border-t border-border space-y-1">
         <Link
           href="/account"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-neutral-600 hover:bg-surface-page hover:text-primary-900 transition-colors-base"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-text-body hover:bg-surface-page hover:text-text-heading transition-colors-base"
         >
           <Bell className="w-5 h-5" />
           <span>Customer Portal</span>
@@ -121,7 +121,7 @@ export function DistributorSidebar() {
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
-          className="p-2.5 bg-surface-card border border-border-default rounded-xl shadow-sm text-primary-900"
+          className="p-2.5 bg-surface-card border border-border-default rounded-xl shadow-sm text-text-heading"
           aria-label="Open menu"
         >
           <Menu className="w-5 h-5" />

@@ -22,7 +22,7 @@ function OrderCard({ order }: { order: DistributorOrder }) {
     <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-5">
       <div className="flex items-start justify-between mb-3">
         <div>
-          <p className="font-bold text-primary-900">{order.invoice_number}</p>
+          <p className="font-bold text-text-heading">{order.invoice_number}</p>
           <p className="text-xs text-muted">{new Date(order.created_at).toLocaleDateString()}</p>
         </div>
         <span
@@ -39,7 +39,7 @@ function OrderCard({ order }: { order: DistributorOrder }) {
       </div>
       <p className="text-sm text-muted mb-4">Payment: <span className="capitalize">{order.payment_status}</span></p>
       <div className="flex items-center justify-between">
-        <span className="font-extrabold text-primary-900">UGX {order.total_amount}</span>
+        <span className="font-extrabold text-text-heading">UGX {order.total_amount}</span>
         <Link
           href={`/distributor/orders/${order.id}`}
           className="inline-flex items-center gap-1 text-sm font-semibold text-green-600 hover:text-green-700"
@@ -72,7 +72,7 @@ export function OrdersPageClient() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-extrabold text-primary-900">Orders</h1>
+        <h1 className="text-2xl font-extrabold text-text-heading">Orders</h1>
         <p className="text-muted">Track and manage your distributor orders.</p>
       </div>
 

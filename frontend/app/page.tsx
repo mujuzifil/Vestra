@@ -1,19 +1,34 @@
 import { Metadata } from "next";
 import { HeroSection } from "@/components/sections/hero-section";
-import { BrandIntroSection } from "@/components/sections/brand-intro-section";
-import { PromiseSection } from "@/components/sections/promise-section";
 import { WhyChooseSection } from "@/components/sections/why-choose-section";
+import { ProductCategoriesSection } from "@/components/sections/product-categories-section";
+import { IndustriesSection } from "@/components/sections/industries-section";
 import { FeaturedProductsSection } from "@/components/sections/featured-products-section";
-import { VisionBannerSection } from "@/components/sections/vision-banner-section";
+import { ManufacturingSection } from "@/components/sections/manufacturing-section";
 import { DistributorCtaSection } from "@/components/sections/distributor-cta-section";
+import { RequestQuoteSection } from "@/components/sections/request-quote-section";
+import { TestimonialsSection } from "@/components/sections/testimonials-section";
+import { LatestArticlesSection } from "@/components/sections/latest-articles-section";
+import { ContactBannerSection } from "@/components/sections/contact-banner-section";
 import { createMetadata, siteConfig } from "@/lib/metadata";
-import { JsonLd, organizationSchema, websiteSchema } from "@/lib/structured-data";
+import { JsonLd, organizationSchema, websiteSchema, manufacturerSchema } from "@/lib/structured-data";
 
 export const metadata: Metadata = createMetadata({
-  title: siteConfig.name,
-  description: siteConfig.description,
-  keywords: ["home", "fabric care", "premium detergent", "Uganda"],
+  title: `${siteConfig.name}® | Professional Cleaning Solutions Manufactured for Uganda`,
+  description:
+    "VESTRA® is a Ugandan manufacturer of professional detergents and fabric care products. We supply businesses, institutions, and distributors across Uganda with quality cleaning solutions.",
+  keywords: [
+    "manufacturer",
+    "cleaning solutions",
+    "detergent",
+    "fabric care",
+    "Uganda",
+    "B2B",
+    "distributor",
+    "institutional supply",
+  ],
   pathname: "/",
+  image: "/assets/images/branding/vestra-logo.png",
 });
 
 export default function Home() {
@@ -21,14 +36,19 @@ export default function Home() {
     <>
       <JsonLd data={organizationSchema()} />
       <JsonLd data={websiteSchema()} />
+      <JsonLd data={manufacturerSchema()} />
       <main>
         <HeroSection />
-        <BrandIntroSection />
-        <PromiseSection />
         <WhyChooseSection />
+        <ProductCategoriesSection />
+        <IndustriesSection />
         <FeaturedProductsSection />
-        <VisionBannerSection />
+        <ManufacturingSection />
         <DistributorCtaSection />
+        <RequestQuoteSection />
+        <TestimonialsSection />
+        <LatestArticlesSection />
+        <ContactBannerSection />
       </main>
     </>
   );

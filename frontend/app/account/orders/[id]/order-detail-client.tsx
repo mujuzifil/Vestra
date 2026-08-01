@@ -103,7 +103,7 @@ export function OrderDetailPageClient({ orderId }: Props) {
     return (
       <Container className="py-20 text-center">
         <AlertCircle className="w-12 h-12 mx-auto mb-4 text-placeholder" />
-        <h2 className="text-xl font-bold text-primary-900 mb-2">Order not found</h2>
+        <h2 className="text-xl font-bold text-text-heading mb-2">Order not found</h2>
         <p className="text-muted mb-6">The order you are looking for does not exist.</p>
         <Link
           href="/account/orders"
@@ -145,7 +145,7 @@ export function OrderDetailPageClient({ orderId }: Props) {
         <Container>
           <Link
             href="/account/orders"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900 mb-6"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
             Back to Orders
@@ -156,15 +156,15 @@ export function OrderDetailPageClient({ orderId }: Props) {
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-placeholder mb-1">Invoice Number</p>
-                <p className="text-lg font-bold text-primary-900">{order.invoice_number}</p>
+                <p className="text-lg font-bold text-text-heading">{order.invoice_number}</p>
               </div>
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-placeholder mb-1">Order Date</p>
-                <p className="text-base font-semibold text-primary-900">{formatDate(order.created_at)}</p>
+                <p className="text-base font-semibold text-text-heading">{formatDate(order.created_at)}</p>
               </div>
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-placeholder mb-1">Payment Method</p>
-                <p className="text-base font-semibold text-primary-900 capitalize">{order.payment_method.replace(/_/g, " ")}</p>
+                <p className="text-base font-semibold text-text-heading capitalize">{order.payment_method.replace(/_/g, " ")}</p>
               </div>
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-placeholder mb-1">Total</p>
@@ -205,7 +205,7 @@ export function OrderDetailPageClient({ orderId }: Props) {
               {/* Order Timeline */}
               {order.status !== "cancelled" && order.status !== "refunded" && (
                 <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
-                  <h2 className="text-lg font-bold text-primary-900 mb-6">Order Timeline</h2>
+                  <h2 className="text-lg font-bold text-text-heading mb-6">Order Timeline</h2>
                   <div className="relative">
                     <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-default" />
                     <div className="space-y-6">
@@ -220,7 +220,7 @@ export function OrderDetailPageClient({ orderId }: Props) {
                               <Clock className="w-4 h-4" />
                             </div>
                             <div className="pt-1 flex-1">
-                              <p className="font-semibold text-primary-900">{event.title}</p>
+                              <p className="font-semibold text-text-heading">{event.title}</p>
                               <p className="text-sm text-muted">{event.description}</p>
                               <div className="flex items-center gap-2 mt-1 text-xs text-placeholder">
                                 <Calendar className="w-3 h-3" />
@@ -259,7 +259,7 @@ export function OrderDetailPageClient({ orderId }: Props) {
 
               {/* Order Items */}
               <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
-                <h2 className="text-lg font-bold text-primary-900 mb-4">Order Items</h2>
+                <h2 className="text-lg font-bold text-text-heading mb-4">Order Items</h2>
                 <div className="space-y-4">
                   {order.items.map((item) => {
                     const image = item.product?.images?.[0]?.image || "/assets/images/products/placeholder.png";
@@ -277,7 +277,7 @@ export function OrderDetailPageClient({ orderId }: Props) {
                           />
                         </div>
                         <div className="flex-1">
-                          <p className="font-semibold text-primary-900">{item.product_name}</p>
+                          <p className="font-semibold text-text-heading">{item.product_name}</p>
                           <p className="text-sm text-muted">SKU: {item.product_sku}</p>
                           <p className="text-sm text-muted">Qty: {item.quantity}</p>
                         </div>
@@ -296,22 +296,22 @@ export function OrderDetailPageClient({ orderId }: Props) {
             <div className="space-y-6">
               {/* Order Summary */}
               <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
-                <h2 className="text-lg font-bold text-primary-900 mb-4">Order Summary</h2>
+                <h2 className="text-lg font-bold text-text-heading mb-4">Order Summary</h2>
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted">Subtotal</span>
-                    <span className="font-medium text-primary-900">UGX {order.subtotal}</span>
+                    <span className="font-medium text-text-heading">UGX {order.subtotal}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted">Shipping</span>
-                    <span className="font-medium text-primary-900">UGX {order.shipping_cost}</span>
+                    <span className="font-medium text-text-heading">UGX {order.shipping_cost}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted">Tax</span>
-                    <span className="font-medium text-primary-900">UGX {order.tax_amount}</span>
+                    <span className="font-medium text-text-heading">UGX {order.tax_amount}</span>
                   </div>
                   <div className="pt-3 border-t border-default flex justify-between">
-                    <span className="font-bold text-primary-900">Total</span>
+                    <span className="font-bold text-text-heading">Total</span>
                     <span className="font-bold text-primary-500">UGX {order.total_amount}</span>
                   </div>
                 </div>
@@ -321,10 +321,10 @@ export function OrderDetailPageClient({ orderId }: Props) {
               <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <MapPin className="w-5 h-5 text-secondary-600" />
-                  <h2 className="text-lg font-bold text-primary-900">Shipping Address</h2>
+                  <h2 className="text-lg font-bold text-text-heading">Shipping Address</h2>
                 </div>
                 <div className="text-sm text-muted space-y-1">
-                  <p className="font-medium text-primary-900">{order.shipping_address?.full_name}</p>
+                  <p className="font-medium text-text-heading">{order.shipping_address?.full_name}</p>
                   <p>{order.shipping_address?.phone}</p>
                   <p>{order.shipping_address?.address_line}</p>
                   <p>
@@ -338,24 +338,24 @@ export function OrderDetailPageClient({ orderId }: Props) {
               <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <Truck className="w-5 h-5 text-secondary-600" />
-                  <h2 className="text-lg font-bold text-primary-900">Tracking</h2>
+                  <h2 className="text-lg font-bold text-text-heading">Tracking</h2>
                 </div>
                 <div className="text-sm text-muted space-y-2">
                   <div className="flex justify-between">
                     <span>Courier</span>
-                    <span className="font-medium text-primary-900">{order.courier || "—"}</span>
+                    <span className="font-medium text-text-heading">{order.courier || "—"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Tracking Number</span>
-                    <span className="font-medium text-primary-900">{order.tracking_number || "—"}</span>
+                    <span className="font-medium text-text-heading">{order.tracking_number || "—"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Dispatched</span>
-                    <span className="font-medium text-primary-900">{formatDate(order.dispatched_at)}</span>
+                    <span className="font-medium text-text-heading">{formatDate(order.dispatched_at)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Estimated Delivery</span>
-                    <span className="font-medium text-primary-900">{formatDate(order.estimated_delivery)}</span>
+                    <span className="font-medium text-text-heading">{formatDate(order.estimated_delivery)}</span>
                   </div>
                 </div>
                 <Link
@@ -371,12 +371,12 @@ export function OrderDetailPageClient({ orderId }: Props) {
               <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <CreditCard className="w-5 h-5 text-secondary-600" />
-                  <h2 className="text-lg font-bold text-primary-900">Payment</h2>
+                  <h2 className="text-lg font-bold text-text-heading">Payment</h2>
                 </div>
                 <div className="text-sm text-muted space-y-1">
                   <p>
                     Method:{" "}
-                    <span className="font-medium text-primary-900 capitalize">
+                    <span className="font-medium text-text-heading capitalize">
                       {order.payment_method}
                     </span>
                   </p>

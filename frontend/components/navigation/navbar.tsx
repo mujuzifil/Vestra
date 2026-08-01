@@ -4,9 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Search, User, ShoppingCart, ChevronDown, LogIn } from "lucide-react";
+import { Menu, X, Search, User, ChevronDown, LogIn } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import { useCartContext } from "@/lib/cart-context";
 import { useSearchSuggestions } from "@/hooks/use-products";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { cn } from "@/lib/utils";
@@ -26,10 +25,11 @@ const navLinks = [
       { label: "Pro Finish", href: "/products/pro-finish" },
     ],
   },
-  { label: "Bulk Orders", href: "/bulk-orders" },
   { label: "Become a Distributor", href: "/distributor" },
-  { label: "Contact Us", href: "/contact" },
-  { label: "Account", href: "/account" },
+  { label: "Request a Quote", href: "/request-quote" },
+  { label: "Where to Buy", href: "/where-to-buy" },
+  { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export function Navbar() {
@@ -37,23 +37,11 @@ export function Navbar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [badgeBump, setBadgeBump] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { user, isAuthenticated, logout } = useAuth();
-  const { itemCount } = useCartContext();
-  const prevItemCountRef = useRef(itemCount);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { data: suggestions } = useSearchSuggestions(searchQuery);
-
-  useEffect(() => {
-    if (itemCount > prevItemCountRef.current) {
-      setBadgeBump(true);
-      const timer = setTimeout(() => setBadgeBump(false), 300);
-      return () => clearTimeout(timer);
-    }
-    prevItemCountRef.current = itemCount;
-  }, [itemCount]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -76,13 +64,17 @@ export function Navbar() {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
+  const isHome = pathname === "/";
+
   return (
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all-base duration-300",
-        scrolled
-          ? "bg-primary-900/98 backdrop-blur-md py-2 shadow-md"
-          : "bg-primary-900/98 py-3.5"
+        isHome && !scrolled
+          ? "bg-transparent py-3.5"
+          : scrolled
+            ? "bg-primary-900/98 backdrop-blur-md py-2 shadow-md"
+            : "bg-primary-900/98 py-3.5"
       )}
     >
       <div className="container mx-auto flex items-center justify-between px-4 lg:px-8">
@@ -156,24 +148,6 @@ export function Navbar() {
           </button>
 
           {isAuthenticated && <NotificationBell />}
-
-          <Link
-            href="/cart"
-            aria-label={`Shopping cart (${itemCount} items)`}
-            className="relative text-white hover:text-secondary-400 transition-colors-base p-2 rounded-full focus-visible:ring-2 focus-visible:ring-secondary-500"
-          >
-            <ShoppingCart className="w-5 h-5" aria-hidden="true" />
-            {itemCount > 0 && (
-              <span
-                className={cn(
-                  "absolute top-0 right-0 w-4 h-4 bg-secondary-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center transition-transform-base",
-                  badgeBump && "scale-150"
-                )}
-              >
-                {itemCount > 99 ? "99+" : itemCount}
-              </span>
-            )}
-          </Link>
 
           {isAuthenticated ? (
             <div className="group relative">
@@ -302,12 +276,12 @@ export function Navbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search products..."
-                className="flex-1 text-lg text-primary-900 placeholder:text-placeholder outline-none"
+                className="flex-1 text-lg text-text-heading placeholder:text-placeholder outline-none"
               />
               <button
                 type="button"
                 onClick={() => setSearchOpen(false)}
-                className="p-2 text-muted hover:text-primary-900"
+                className="p-2 text-text-muted hover:text-text-heading"
                 aria-label="Close search"
               >
                 <X className="w-5 h-5" />
@@ -316,7 +290,7 @@ export function Navbar() {
             <div className="max-h-[60vh] overflow-y-auto p-2">
               {suggestions && suggestions.length > 0 && (
                 <div className="py-2">
-                  <p className="px-4 text-xs font-semibold text-muted uppercase tracking-wider mb-1">Suggestions</p>
+                  <p className="px-4 text-xs font-semibold text-text-muted uppercase tracking-wider mb-1">Suggestions</p>
                   {suggestions.map((suggestion) => (
                     <Link
                       key={suggestion.id}
@@ -327,14 +301,14 @@ export function Navbar() {
                       }}
                       className="flex items-center gap-3 px-4 py-3 hover:bg-surface-page rounded-xl transition-colors-base"
                     >
-                      <Search className="w-4 h-4 text-muted" />
-                      <span className="text-sm font-medium text-primary-900">{suggestion.name}</span>
+                      <Search className="w-4 h-4 text-text-muted" />
+                      <span className="text-sm font-medium text-text-heading">{suggestion.name}</span>
                     </Link>
                   ))}
                 </div>
               )}
               {searchQuery.trim().length >= 2 && (!suggestions || suggestions.length === 0) && (
-                <div className="px-4 py-6 text-center text-sm text-muted">No products found.</div>
+                <div className="px-4 py-6 text-center text-sm text-text-muted">No products found.</div>
               )}
             </div>
           </div>

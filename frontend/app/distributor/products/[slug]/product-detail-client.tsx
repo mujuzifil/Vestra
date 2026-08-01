@@ -24,7 +24,7 @@ export function ProductDetailPageClient({ slug }: Props) {
     return (
       <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-8 text-center">
         <AlertCircle className="w-10 h-10 mx-auto mb-3 text-placeholder" />
-        <h2 className="text-lg font-bold text-primary-900">Product not found</h2>
+        <h2 className="text-lg font-bold text-text-heading">Product not found</h2>
         <p className="text-sm text-muted mb-4">The product you are looking for does not exist.</p>
         <Link href="/distributor/products" className="text-green-600 font-semibold hover:text-green-700">
           Back to Products
@@ -40,7 +40,7 @@ export function ProductDetailPageClient({ slug }: Props) {
     <div className="space-y-6">
       <Link
         href="/distributor/products"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-primary-900"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading"
       >
         <ChevronLeft className="w-4 h-4" />
         Back to Products
@@ -61,12 +61,12 @@ export function ProductDetailPageClient({ slug }: Props) {
           <div className="space-y-6">
             <div>
               <p className="text-sm font-semibold text-green-600 uppercase tracking-wider mb-2">{product.category?.name}</p>
-              <h1 className="text-2xl lg:text-3xl font-extrabold text-primary-900">{product.name}</h1>
+              <h1 className="text-2xl lg:text-3xl font-extrabold text-text-heading">{product.name}</h1>
               <p className="text-sm text-muted mt-2">SKU: {product.sku}</p>
             </div>
 
             <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-extrabold text-primary-900">UGX {price}</span>
+              <span className="text-3xl font-extrabold text-text-heading">UGX {price}</span>
               {product.distributor_price && product.distributor_price !== product.price && (
                 <span className="text-lg text-placeholder line-through">UGX {product.price}</span>
               )}
@@ -83,7 +83,7 @@ export function ProductDetailPageClient({ slug }: Props) {
 
             {product.features && product.features.length > 0 && (
               <div>
-                <h3 className="font-bold text-primary-900 mb-3">Features</h3>
+                <h3 className="font-bold text-text-heading mb-3">Features</h3>
                 <ul className="space-y-2">
                   {product.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-2 text-body">
@@ -97,12 +97,12 @@ export function ProductDetailPageClient({ slug }: Props) {
 
             {product.specifications && Object.keys(product.specifications).length > 0 && (
               <div>
-                <h3 className="font-bold text-primary-900 mb-3">Specifications</h3>
+                <h3 className="font-bold text-text-heading mb-3">Specifications</h3>
                 <dl className="grid grid-cols-2 gap-3 text-sm">
                   {Object.entries(product.specifications).map(([key, value]) => (
                     <div key={key} className="p-3 rounded-xl bg-neutral-50">
                       <dt className="text-placeholder capitalize">{key}</dt>
-                      <dd className="font-medium text-primary-900">{value}</dd>
+                      <dd className="font-medium text-text-heading">{value}</dd>
                     </div>
                   ))}
                 </dl>

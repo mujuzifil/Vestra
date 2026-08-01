@@ -13,14 +13,14 @@ function QuoteCard({ quote }: { quote: DistributorQuotation }) {
     <div className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-5">
       <div className="flex items-start justify-between mb-3">
         <div>
-          <p className="font-bold text-primary-900">{quote.reference_number}</p>
+          <p className="font-bold text-text-heading">{quote.reference_number}</p>
           <p className="text-xs text-muted">{new Date(quote.created_at).toLocaleDateString()}</p>
         </div>
         <QuoteStatusBadge status={quote.status} />
       </div>
       <p className="text-sm text-muted mb-4 line-clamp-2">{quote.notes || "No notes provided."}</p>
       <div className="flex items-center justify-between">
-        <span className="font-extrabold text-primary-900">UGX {quote.total_amount}</span>
+        <span className="font-extrabold text-text-heading">UGX {quote.total_amount}</span>
         <Link
           href={`/distributor/quotes/${quote.id}`}
           className="inline-flex items-center gap-1 text-sm font-semibold text-green-600 hover:text-green-700"
@@ -49,7 +49,7 @@ export function QuotesPageClient() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-primary-900">Quotes</h1>
+          <h1 className="text-2xl font-extrabold text-text-heading">Quotes</h1>
           <p className="text-muted">Manage quotation requests and responses.</p>
         </div>
         <Link

@@ -30,11 +30,13 @@ use App\Http\Controllers\Api\V1\Distributor\PaymentUploadController as Distribut
 use App\Http\Controllers\Api\V1\Distributor\AnalyticsController as DistributorAnalyticsController;
 use App\Http\Controllers\Api\V1\Distributor\NotificationController as DistributorNotificationController;
 use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\QuoteRequestController;
 use App\Http\Controllers\Api\V1\RecommendationController;
 use App\Http\Controllers\Api\V1\SettingController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\InvoiceController;
 use App\Http\Controllers\Api\V1\PaymentController;
+use App\Http\Controllers\Api\V1\PublicDistributorController;
 use App\Http\Controllers\Api\V1\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Api\V1\Admin\AutomatedWorkflowController as AdminAutomatedWorkflowController;
 use App\Http\Controllers\Api\V1\Admin\CreditAccountController as AdminCreditAccountController;
@@ -53,6 +55,7 @@ use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\SavedItemController;
 use App\Http\Controllers\Api\V1\WishlistController;
 use App\Http\Controllers\Api\V1\FeedbackController;
+use App\Http\Controllers\Api\V1\BlogPostController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -76,6 +79,19 @@ Route::prefix('v1')->group(function () {
     Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:contact');
     Route::post('/distributor', [DistributorController::class, 'store'])->middleware('throttle:distributor');
     Route::post('/feedback', [FeedbackController::class, 'store'])->middleware('throttle:feedback');
+    Route::post('/quote-requests', [QuoteRequestController::class, 'store'])->middleware('throttle:contact');
+
+    // Public distributor directory
+    Route::get('/public/distributors', [PublicDistributorController::class, 'index']);
+    Route::get('/public/distributors/stats', [PublicDistributorController::class, 'stats']);
+    Route::get('/public/distributors/coverage', [PublicDistributorController::class, 'coverageRegions']);
+
+    // Public blog / knowledge centre
+    Route::get('/blog/posts', [BlogPostController::class, 'index']);
+    Route::get('/blog/posts/featured', [BlogPostController::class, 'featured']);
+    Route::get('/blog/posts/{slug}', [BlogPostController::class, 'show']);
+    Route::get('/blog/categories', [BlogPostController::class, 'categories']);
+    Route::get('/blog/tags', [BlogPostController::class, 'tags']);
 
     // Customer auth (public)
     Route::post('/auth/register', [RegisterController::class, 'register'])->middleware('throttle:register');
@@ -226,7 +242,7 @@ Route::prefix('v1')->group(function () {
         });
 
         // Admin-only routes
-        Route::middleware([\App\Http\Middleware\RequireAdminPasswordChange::class])->group(function () {
+        Route::middleware(['can:admin', \App\Http\Middleware\RequireAdminPasswordChange::class])->group(function () {
             Route::get('/admin/reviews', [ReviewController::class, 'adminIndex']);
             Route::put('/admin/reviews/{review}/status', [ReviewController::class, 'updateStatus']);
             Route::post('/admin/reviews/{review}/reply', [ReviewController::class, 'reply']);

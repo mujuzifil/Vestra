@@ -26,7 +26,7 @@ export function ReviewList({ reviews, averageRating, reviewCount, ratingDistribu
 
   if (reviewCount === 0) {
     return (
-      <div className="py-8 text-center text-muted">
+      <div className="py-8 text-center text-text-muted">
         <p>No reviews yet. Be the first to review this product!</p>
       </div>
     );
@@ -58,22 +58,22 @@ export function ReviewList({ reviews, averageRating, reviewCount, ratingDistribu
       {/* Summary */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-xl bg-surface-page">
         <div className="text-center min-w-[100px]">
-          <p className="text-3xl font-extrabold text-primary-900">{averageRating.toFixed(1)}</p>
+          <p className="text-3xl font-extrabold text-text-heading">{averageRating.toFixed(1)}</p>
           <StarRating rating={Math.round(averageRating)} size="sm" />
-          <p className="text-sm text-muted mt-1">{reviewCount} review{reviewCount !== 1 ? "s" : ""}</p>
+          <p className="text-sm text-text-muted mt-1">{reviewCount} review{reviewCount !== 1 ? "s" : ""}</p>
         </div>
         {ratingDistribution && (
           <div className="flex-1 w-full space-y-1">
             {ratingDistribution.map((item) => (
               <div key={item.rating} className="flex items-center gap-2 text-sm">
-                <span className="w-8 font-medium text-primary-900">{item.rating}★</span>
+                <span className="w-8 font-medium text-text-heading">{item.rating}★</span>
                 <div className="flex-1 h-2 bg-neutral-100 rounded-full overflow-hidden">
                   <div
                     className="h-full bg-amber-400 rounded-full"
                     style={{ width: `${(item.count / maxDistribution) * 100}%` }}
                   />
                 </div>
-                <span className="w-8 text-right text-muted">{item.count}</span>
+                <span className="w-8 text-right text-text-muted">{item.count}</span>
               </div>
             ))}
           </div>
@@ -90,8 +90,8 @@ export function ReviewList({ reviews, averageRating, reviewCount, ratingDistribu
                   {review.user.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <p className="font-medium text-primary-900">{review.user.name}</p>
-                  <p className="text-xs text-neutral-400">
+                  <p className="font-medium text-text-heading">{review.user.name}</p>
+                  <p className="text-xs text-text-muted">
                     {new Date(review.created_at).toLocaleDateString()}
                   </p>
                 </div>
@@ -106,8 +106,8 @@ export function ReviewList({ reviews, averageRating, reviewCount, ratingDistribu
               </div>
             </div>
 
-            {review.title && <p className="font-semibold text-primary-900 mb-1">{review.title}</p>}
-            {review.comment && <p className="text-sm text-muted mb-3">{review.comment}</p>}
+            {review.title && <p className="font-semibold text-text-heading mb-1">{review.title}</p>}
+            {review.comment && <p className="text-sm text-text-muted mb-3">{review.comment}</p>}
 
             {/* Pros / Cons */}
             {(review.pros?.length > 0 || review.cons?.length > 0) && (
@@ -117,7 +117,7 @@ export function ReviewList({ reviews, averageRating, reviewCount, ratingDistribu
                     <p className="text-xs font-semibold text-success-700 mb-1">Pros</p>
                     <ul className="space-y-1">
                       {review.pros.map((pro, idx) => (
-                        <li key={idx} className="flex items-start gap-1.5 text-sm text-muted">
+                        <li key={idx} className="flex items-start gap-1.5 text-sm text-text-muted">
                           <Check className="w-3.5 h-3.5 text-success-500 mt-0.5 flex-shrink-0" />
                           {pro}
                         </li>
@@ -130,7 +130,7 @@ export function ReviewList({ reviews, averageRating, reviewCount, ratingDistribu
                     <p className="text-xs font-semibold text-danger-700 mb-1">Cons</p>
                     <ul className="space-y-1">
                       {review.cons.map((con, idx) => (
-                        <li key={idx} className="flex items-start gap-1.5 text-sm text-muted">
+                        <li key={idx} className="flex items-start gap-1.5 text-sm text-text-muted">
                           <X className="w-3.5 h-3.5 text-danger-500 mt-0.5 flex-shrink-0" />
                           {con}
                         </li>
@@ -179,7 +179,7 @@ export function ReviewList({ reviews, averageRating, reviewCount, ratingDistribu
                 onClick={() => handleVote(review, true)}
                 disabled={!isAuthenticated || voteMutation.isPending}
                 className={`inline-flex items-center gap-1.5 text-sm ${
-                  review.user_vote === true ? "text-secondary-600 font-semibold" : "text-muted hover:text-primary-900"
+                  review.user_vote === true ? "text-secondary-600 font-semibold" : "text-text-muted hover:text-text-heading"
                 }`}
               >
                 <ThumbsUp className="w-4 h-4" />
@@ -190,7 +190,7 @@ export function ReviewList({ reviews, averageRating, reviewCount, ratingDistribu
                 onClick={() => handleVote(review, false)}
                 disabled={!isAuthenticated || voteMutation.isPending}
                 className={`inline-flex items-center gap-1.5 text-sm ${
-                  review.user_vote === false ? "text-danger-600 font-semibold" : "text-muted hover:text-primary-900"
+                  review.user_vote === false ? "text-danger-600 font-semibold" : "text-text-muted hover:text-text-heading"
                 }`}
               >
                 <ThumbsDown className="w-4 h-4" />
@@ -201,7 +201,7 @@ export function ReviewList({ reviews, averageRating, reviewCount, ratingDistribu
                 onClick={() => setReportingId(review.id)}
                 disabled={!isAuthenticated || reportMutation.isPending || review.user_reported}
                 className={`inline-flex items-center gap-1.5 text-sm ml-auto ${
-                  review.user_reported ? "text-danger-600 font-semibold" : "text-muted hover:text-danger-600"
+                  review.user_reported ? "text-danger-600 font-semibold" : "text-text-muted hover:text-danger-600"
                 }`}
               >
                 <Flag className="w-4 h-4" />
@@ -212,7 +212,7 @@ export function ReviewList({ reviews, averageRating, reviewCount, ratingDistribu
             {/* Report form */}
             {reportingId === review.id && (
               <div className="mt-3 p-3 rounded-xl bg-surface-page border border-default">
-                <p className="text-sm font-medium text-primary-900 mb-2">Report this review</p>
+                <p className="text-sm font-medium text-text-heading mb-2">Report this review</p>
                 <input
                   type="text"
                   value={reportReason}
@@ -243,7 +243,7 @@ export function ReviewList({ reviews, averageRating, reviewCount, ratingDistribu
                       setReportReason("");
                       setReportDetails("");
                     }}
-                    className="px-4 py-1.5 text-sm font-semibold text-primary-900 bg-surface-card border border-default rounded-lg hover:bg-surface-page"
+                    className="px-4 py-1.5 text-sm font-semibold text-text-heading bg-surface-card border border-default rounded-lg hover:bg-surface-page"
                   >
                     Cancel
                   </button>
@@ -260,8 +260,8 @@ export function ReviewList({ reviews, averageRating, reviewCount, ratingDistribu
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
           onClick={() => setLightboxImage(null)}
         >
-          <div className="relative max-w-3xl w-full max-h-[80vh]">
-            <img src={lightboxImage} alt="Review photo" className="w-full h-full object-contain rounded-xl" />
+          <div className="relative w-full h-[80vh]">
+            <Image src={lightboxImage} alt="Review photo" fill className="object-contain rounded-xl" sizes="(max-width: 768px) 100vw, 80vw" />
             <button
               type="button"
               onClick={() => setLightboxImage(null)}

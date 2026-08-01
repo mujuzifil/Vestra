@@ -43,7 +43,7 @@ const statusColors: Record<string, string> = {
   shipped: "bg-cyan-100 text-cyan-700",
   delivered: "bg-secondary-100 text-secondary-600",
   cancelled: "bg-danger-100 text-danger-600",
-  refunded: "bg-neutral-100 text-neutral-600",
+  refunded: "bg-neutral-100 text-text-body",
 };
 
 function StatCard({
@@ -62,7 +62,7 @@ function StatCard({
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-muted">{label}</p>
-          <p className="text-3xl font-extrabold text-primary-900 mt-1">{value}</p>
+          <p className="text-3xl font-extrabold text-text-heading mt-1">{value}</p>
         </div>
         <div className={`p-2.5 rounded-xl ${color}`}>
           <Icon className="w-5 h-5 text-white" />
@@ -79,13 +79,13 @@ function OrderRow({ order }: { order: Order }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-surface-page">
       <div>
-        <p className="font-semibold text-primary-900">{order.invoice_number}</p>
+        <p className="font-semibold text-text-heading">{order.invoice_number}</p>
         <p className="text-sm text-muted">{new Date(order.created_at).toLocaleDateString()}</p>
       </div>
       <div className="flex items-center gap-3">
         <span
           className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${
-            statusColors[order.status] || "bg-neutral-100 text-neutral-600"
+            statusColors[order.status] || "bg-neutral-100 text-text-body"
           }`}
         >
           {order.status}
@@ -178,7 +178,7 @@ export function AccountPageClient() {
   ];
 
   const quickActions = [
-    { icon: ShoppingBag, label: "Continue Shopping", href: "/products", color: "bg-secondary-600" },
+    { icon: ShoppingBag, label: "View Products", href: "/products", color: "bg-secondary-600" },
     { icon: Search, label: "Track Order", href: "/track", color: "bg-primary-500" },
     { icon: Package, label: "View Orders", href: "/account/orders", color: "bg-info-600" },
     { icon: Settings, label: "Update Profile", href: "/account/settings", color: "bg-neutral-600" },
@@ -211,7 +211,7 @@ export function AccountPageClient() {
                     <User className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="font-bold text-primary-900">{user.name}</p>
+                    <p className="font-bold text-text-heading">{user.name}</p>
                     <p className="text-sm text-muted">{user.email}</p>
                   </div>
                 </div>
@@ -221,7 +221,7 @@ export function AccountPageClient() {
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="flex items-center gap-3 p-3 rounded-xl text-body hover:bg-surface-page hover:text-primary-900 transition-colors-base"
+                      className="flex items-center gap-3 p-3 rounded-xl text-body hover:bg-surface-page hover:text-text-heading transition-colors-base"
                     >
                       <item.icon className="w-5 h-5" />
                       <span className="font-medium">{item.label}</span>
@@ -254,7 +254,7 @@ export function AccountPageClient() {
                     )}
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-lg font-bold text-primary-900">Welcome back, {user.name}</h2>
+                    <h2 className="text-lg font-bold text-text-heading">Welcome back, {user.name}</h2>
                     <p className="text-sm text-muted">{user.email}</p>
                   </div>
                   <Link
@@ -268,7 +268,7 @@ export function AccountPageClient() {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-primary-900">Profile Completion</span>
+                    <span className="font-medium text-text-heading">Profile Completion</span>
                     <span className="font-bold text-secondary-600">{profileCompletion}%</span>
                   </div>
                   <div className="h-2.5 bg-neutral-100 rounded-full overflow-hidden">
@@ -278,7 +278,7 @@ export function AccountPageClient() {
                     />
                   </div>
                   <p className="text-xs text-placeholder">
-                    Complete your profile for a faster checkout experience.
+                    Complete your profile for a faster enquiry experience.
                   </p>
                 </div>
               </div>
@@ -299,7 +299,7 @@ export function AccountPageClient() {
 
               {/* Quick Actions */}
               <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
-                <h2 className="text-lg font-bold text-primary-900 mb-4">Quick Actions</h2>
+                <h2 className="text-lg font-bold text-text-heading mb-4">Quick Actions</h2>
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
                   {quickActions.map((action) => (
                     <Link
@@ -318,7 +318,7 @@ export function AccountPageClient() {
                 {/* Recent Orders */}
                 <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-bold text-primary-900">Recent Orders</h2>
+                    <h2 className="text-lg font-bold text-text-heading">Recent Orders</h2>
                     <Link href="/account/orders" className="text-sm font-semibold text-secondary-600 hover:text-secondary-600">
                       View All
                     </Link>
@@ -333,7 +333,7 @@ export function AccountPageClient() {
                       <Package className="w-10 h-10 mx-auto mb-2 text-placeholder" />
                       <p>No orders yet.</p>
                       <Link href="/products" className="text-secondary-600 font-semibold hover:text-secondary-600">
-                        Start Shopping
+                        View Products
                       </Link>
                     </div>
                   ) : (
@@ -348,7 +348,7 @@ export function AccountPageClient() {
                 {/* Saved Addresses Preview */}
                 <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-bold text-primary-900">Saved Addresses</h2>
+                    <h2 className="text-lg font-bold text-text-heading">Saved Addresses</h2>
                     <Link href="/account/addresses" className="text-sm font-semibold text-secondary-600 hover:text-secondary-600">
                       Manage
                     </Link>
@@ -372,7 +372,7 @@ export function AccountPageClient() {
                         <div key={addr.id} className="p-4 rounded-xl bg-surface-page">
                           <div className="flex items-center gap-2 mb-1">
                             <Home className="w-4 h-4 text-secondary-600" />
-                            <span className="font-semibold text-primary-900">{addr.label}</span>
+                            <span className="font-semibold text-text-heading">{addr.label}</span>
                             {addr.is_default && (
                               <span className="px-2 py-0.5 bg-secondary-100 text-secondary-600 text-xs font-medium rounded-full">
                                 Default
@@ -395,7 +395,7 @@ export function AccountPageClient() {
               {/* Recent Activity Preview */}
               <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-primary-900">Recent Activity</h2>
+                  <h2 className="text-lg font-bold text-text-heading">Recent Activity</h2>
                   <Link href="/account/activity" className="text-sm font-semibold text-secondary-600 hover:text-secondary-600">
                     View All
                   </Link>
@@ -416,7 +416,7 @@ export function AccountPageClient() {
                       <div key={item.id} className="flex items-start gap-3 p-4 rounded-xl bg-surface-page">
                         <Activity className="w-4 h-4 text-secondary-600 mt-0.5" />
                         <div>
-                          <p className="text-sm font-medium text-primary-900">{item.description}</p>
+                          <p className="text-sm font-medium text-text-heading">{item.description}</p>
                           <p className="text-xs text-muted">{new Date(item.created_at).toLocaleString()}</p>
                         </div>
                       </div>
@@ -427,7 +427,7 @@ export function AccountPageClient() {
 
               {/* Feedback */}
               <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6">
-                <h2 className="text-lg font-bold text-primary-900 mb-4">Send Feedback</h2>
+                <h2 className="text-lg font-bold text-text-heading mb-4">Send Feedback</h2>
                 <p className="text-sm text-muted mb-4">
                   We value your opinion. Let us know how we can improve your experience.
                 </p>

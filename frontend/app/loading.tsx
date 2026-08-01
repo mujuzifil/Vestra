@@ -8,7 +8,7 @@ export default function Loading() {
           <div className="absolute inset-0 rounded-full border-4 border-default" />
           <div className="absolute inset-0 rounded-full border-4 border-green-500 border-t-transparent animate-spin" />
         </div>
-        <p className="text-muted font-medium">Loading VESTRA...</p>
+        <p className="text-text-muted font-medium">Loading VESTRA...</p>
       </Container>
     </main>
   );
