@@ -6,6 +6,7 @@ use App\Enums\QuoteRequestStatus;
 use App\Events\Notification\QuoteRequestSubmitted;
 use App\Mail\QuoteRequestReceivedMail;
 use App\Models\QuoteRequest;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -14,6 +15,9 @@ class QuoteRequestService
     public function submit(array $data): QuoteRequest
     {
         return DB::transaction(function () use ($data) {
+            $attachments = $data['attachments'] ?? null;
+            unset($data['attachments']);
+
             $quote = QuoteRequest::create([
                 'reference_number' => $this->generateReference(),
                 'full_name' => $data['full_name'],
@@ -26,6 +30,9 @@ class QuoteRequestService
                 'preferred_delivery_date' => $data['preferred_delivery_date'] ?? null,
                 'delivery_location' => $data['delivery_location'] ?? null,
                 'status' => QuoteRequestStatus::PENDING->value,
+                'priority' => $data['priority'] ?? null,
+                'estimated_value' => $data['estimated_value'] ?? null,
+                'expected_close_date' => $data['expected_close_date'] ?? null,
                 'source' => $data['source'] ?? 'website',
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
@@ -33,6 +40,16 @@ class QuoteRequestService
             ]);
 
             $this->syncItems($quote, $data['items'] ?? []);
+
+            if (is_array($attachments) && count($attachments) > 0) {
+                $stored = [];
+                /** @var UploadedFile $file */
+                foreach ($attachments as $file) {
+                    $stored[] = $file->store("quote_attachments/{$quote->id}", 'public');
+                }
+                $quote->attachments = $stored;
+                $quote->save();
+            }
 
             $quote->load('items');
 

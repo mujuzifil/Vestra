@@ -260,19 +260,34 @@ class DispatchNotificationListener
                 ],
             ],
             $event instanceof QuoteRequestSubmitted => [
-                'users' => User::where('is_admin', true)->get()->all(),
-                'template' => 'quote_request.admin_notification',
-                'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
-                'topic' => 'order_updates',
-                'variables' => [
-                    'customer_name' => $event->quoteRequest->full_name,
-                    'company_name' => $event->quoteRequest->company_name,
-                    'email' => $event->quoteRequest->email,
-                    'phone' => $event->quoteRequest->phone,
-                    'reference_number' => $event->quoteRequest->reference_number,
-                    'product_summary' => $event->quoteRequest->items->map(
-                        fn ($item) => "{$item->quantity} x {$item->product_name}"
-                    )->implode(', '),
+                'dispatches' => [
+                    [
+                        'users' => User::where('is_admin', true)->get()->all(),
+                        'template' => 'quote_request.admin_notification',
+                        'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                        'topic' => 'order_updates',
+                        'variables' => [
+                            'customer_name' => $event->quoteRequest->full_name,
+                            'company_name' => $event->quoteRequest->company_name,
+                            'email' => $event->quoteRequest->email,
+                            'phone' => $event->quoteRequest->phone,
+                            'reference_number' => $event->quoteRequest->reference_number,
+                            'product_summary' => $event->quoteRequest->items->map(
+                                fn ($item) => "{$item->quantity} x {$item->product_name}"
+                            )->implode(', '),
+                        ],
+                    ],
+                    [
+                        'users' => $this->usersFromQuoteRequest($event->quoteRequest),
+                        'template' => 'quote_request.customer_confirmation',
+                        'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                        'topic' => 'order_updates',
+                        'variables' => [
+                            'customer_name' => $event->quoteRequest->full_name,
+                            'company_name' => $event->quoteRequest->company_name,
+                            'reference_number' => $event->quoteRequest->reference_number,
+                        ],
+                    ],
                 ],
             ],
             $event instanceof QuotationApproved => [
@@ -426,6 +441,24 @@ class DispatchNotificationListener
      * @return array<int, User>
      */
     protected function usersFromDistributorRequest(DistributorRequest $request): array
+    {
+        if ($request->email) {
+            $user = User::where('email', $request->email)->first();
+
+            if ($user) {
+                return [$user];
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * Resolve user(s) from a quote request by email.
+     *
+     * @return array<int, User>
+     */
+    protected function usersFromQuoteRequest(\App\Models\QuoteRequest $request): array
     {
         if ($request->email) {
             $user = User::where('email', $request->email)->first();

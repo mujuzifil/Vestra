@@ -26,6 +26,11 @@ class QuoteRequestResource extends JsonResource
             'source' => $this->source,
             'requirements' => $this->requirements,
             'admin_notes' => $this->admin_notes,
+            'priority' => $this->priority,
+            'estimated_value' => $this->estimated_value,
+            'expected_close_date' => $this->expected_close_date?->toDateString(),
+            'attachments' => $this->attachments,
+            'crm_metadata' => $this->crm_metadata,
             'items' => QuoteRequestItemResource::collection($this->whenLoaded('items')),
             'created_at' => $this->created_at?->toIso8601String(),
         ];

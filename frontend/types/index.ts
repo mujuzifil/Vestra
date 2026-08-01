@@ -228,6 +228,7 @@ export interface QuoteRequestFormData {
   delivery_location?: string;
   items?: QuoteRequestItem[];
   requirements?: string;
+  attachments?: FileList | null;
 }
 
 export interface QuoteRequest {
@@ -244,6 +245,11 @@ export interface QuoteRequest {
   delivery_location?: string;
   status: string;
   status_label: string;
+  priority?: string | null;
+  estimated_value?: string | null;
+  expected_close_date?: string | null;
+  attachments?: string[] | null;
+  crm_metadata?: Record<string, unknown> | null;
   items: QuoteRequestItem[];
   created_at: string;
 }

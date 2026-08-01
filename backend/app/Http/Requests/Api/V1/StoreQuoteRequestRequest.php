@@ -30,6 +30,8 @@ class StoreQuoteRequestRequest extends FormRequest
             'items.*.quantity' => ['required_with:items', 'integer', 'min:1', 'max:999999'],
             'items.*.notes' => ['nullable', 'string', 'max:2000'],
             'requirements' => ['nullable', 'string', 'max:5000'],
+            'attachments' => ['nullable', 'array', 'max:5'],
+            'attachments.*' => ['file', 'mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx', 'max:5120'],
         ];
     }
 }

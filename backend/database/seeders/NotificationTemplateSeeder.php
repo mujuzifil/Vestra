@@ -83,6 +83,16 @@ class NotificationTemplateSeeder extends Seeder
                 'variables_json' => ['reference_number', 'customer_name', 'company_name', 'email', 'phone', 'product_summary'],
             ],
             [
+                'event_key' => 'quote_request.customer_confirmation',
+                'name' => 'Quote Request Confirmation',
+                'category' => 'sales',
+                'subject' => 'We received your quote request {{reference_number}}',
+                'email_body' => '<p>Hi {{customer_name}},</p><p>We have received your quotation request <strong>{{reference_number}}</strong> for {{company_name}}. Our sales team will contact you within 24–48 business hours.</p>',
+                'sms_body' => 'VESTRA: Quote request {{reference_number}} received. We will contact you soon.',
+                'in_app_body' => 'Your quote request {{reference_number}} has been received.',
+                'variables_json' => ['reference_number', 'customer_name', 'company_name'],
+            ],
+            [
                 'event_key' => 'distributor.application_submitted',
                 'name' => 'Distributor Application Submitted',
                 'category' => 'distributor',

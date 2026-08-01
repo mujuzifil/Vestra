@@ -87,6 +87,41 @@ class QuoteRequestResource extends Resource
                             ->reorderable(false),
                     ]),
 
+                Forms\Components\Section::make('CRM')
+                    ->icon('heroicon-o-chart-bar')
+                    ->schema([
+                        Forms\Components\Select::make('priority')
+                            ->options([
+                                'low' => 'Low',
+                                'medium' => 'Medium',
+                                'high' => 'High',
+                            ])
+                            ->native(false)
+                            ->nullable(),
+                        Forms\Components\TextInput::make('estimated_value')
+                            ->numeric()
+                            ->prefix('UGX')
+                            ->nullable(),
+                        Forms\Components\DatePicker::make('expected_close_date')
+                            ->native(false)
+                            ->nullable(),
+                        Forms\Components\KeyValue::make('crm_metadata')
+                            ->keyLabel('Field')
+                            ->valueLabel('Value')
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(3)
+                    ->collapsible(),
+
+                Forms\Components\Section::make('Attachments')
+                    ->icon('heroicon-o-paper-clip')
+                    ->schema([
+                        Forms\Components\ViewField::make('attachments')
+                            ->view('filament.components.quote-request-attachments')
+                            ->visible(fn ($record) => filled($record?->attachments)),
+                    ])
+                    ->collapsible(),
+
                 Forms\Components\Section::make('Admin Handling')
                     ->icon('heroicon-o-arrow-path')
                     ->schema([
