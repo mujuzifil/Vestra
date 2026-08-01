@@ -112,11 +112,19 @@ export interface ContactFormData {
 export interface DistributorFormData {
   fullName: string;
   businessName: string;
+  position: string;
   email: string;
   phone: string;
-  city: string;
+  district: string;
+  physicalAddress: string;
+  yearsInBusiness: string;
   businessType: string;
-  experience: string;
+  regionsCovered: string;
+  existingBrands: string;
+  warehouseAvailability: string;
+  deliveryCapability: string;
+  additionalInformation: string;
+  documents?: FileList | null;
 }
 
 export interface NotificationPreferences {

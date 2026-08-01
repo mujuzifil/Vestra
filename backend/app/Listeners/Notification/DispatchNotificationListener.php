@@ -56,26 +56,30 @@ class DispatchNotificationListener
             return;
         }
 
-        foreach ($config['users'] as $user) {
-            if (! $user instanceof User) {
-                continue;
-            }
+        $dispatches = $config['dispatches'] ?? [$config];
 
-            try {
-                $this->dispatcher->dispatch(
-                    user: $user,
-                    templateKey: $config['template'],
-                    variables: $config['variables'],
-                    channels: $config['channels'],
-                    topic: $config['topic'],
-                    metadata: $config['metadata'] ?? []
-                );
-            } catch (\Throwable $e) {
-                Log::error('Notification dispatch listener failed', [
-                    'event' => get_class($event),
-                    'user_id' => $user->id,
-                    'error' => $e->getMessage(),
-                ]);
+        foreach ($dispatches as $dispatch) {
+            foreach (($dispatch['users'] ?? []) as $user) {
+                if (! $user instanceof User) {
+                    continue;
+                }
+
+                try {
+                    $this->dispatcher->dispatch(
+                        user: $user,
+                        templateKey: $dispatch['template'],
+                        variables: $dispatch['variables'],
+                        channels: $dispatch['channels'],
+                        topic: $dispatch['topic'],
+                        metadata: $dispatch['metadata'] ?? []
+                    );
+                } catch (\Throwable $e) {
+                    Log::error('Notification dispatch listener failed', [
+                        'event' => get_class($event),
+                        'user_id' => $user->id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
             }
         }
     }
@@ -94,13 +98,32 @@ class DispatchNotificationListener
                 'variables' => ['customer_name' => $event->user->name, 'email' => $event->user->email],
             ],
             $event instanceof DistributorApplicationSubmitted => [
-                'users' => $this->usersFromDistributorRequest($event->distributorRequest),
-                'template' => 'distributor.application_submitted',
-                'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
-                'topic' => 'order_updates',
-                'variables' => [
-                    'customer_name' => $event->distributorRequest->contact_person,
-                    'company_name' => $event->distributorRequest->company_name,
+                'dispatches' => [
+                    [
+                        'users' => $this->usersFromDistributorRequest($event->distributorRequest),
+                        'template' => 'distributor.application_submitted',
+                        'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                        'topic' => 'order_updates',
+                        'variables' => [
+                            'customer_name' => $event->distributorRequest->contact_person,
+                            'company_name' => $event->distributorRequest->company_name,
+                        ],
+                    ],
+                    [
+                        'users' => User::where('is_admin', true)->get()->all(),
+                        'template' => 'distributor.application_admin_notification',
+                        'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                        'topic' => 'order_updates',
+                        'variables' => [
+                            'customer_name' => $event->distributorRequest->contact_person,
+                            'company_name' => $event->distributorRequest->company_name,
+                            'email' => $event->distributorRequest->email,
+                            'phone' => $event->distributorRequest->phone,
+                            'reference_number' => 'VESTRA-DIST-' . $event->distributorRequest->id,
+                            'district' => $event->distributorRequest->region,
+                            'business_type' => $event->distributorRequest->business_type,
+                        ],
+                    ],
                 ],
             ],
             $event instanceof DistributorApplicationApproved => [

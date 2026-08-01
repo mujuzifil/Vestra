@@ -93,6 +93,16 @@ class NotificationTemplateSeeder extends Seeder
                 'variables_json' => ['customer_name', 'company_name'],
             ],
             [
+                'event_key' => 'distributor.application_admin_notification',
+                'name' => 'New Distributor Application Received',
+                'category' => 'distributor',
+                'subject' => 'New Distributor Application {{reference_number}} from {{company_name}}',
+                'email_body' => '<p>A new distributor application has been submitted.</p><p><strong>Reference:</strong> {{reference_number}}<br><strong>Contact Person:</strong> {{customer_name}}<br><strong>Company:</strong> {{company_name}}<br><strong>Email:</strong> {{email}}<br><strong>Phone:</strong> {{phone}}<br><strong>District:</strong> {{district}}<br><strong>Business Type:</strong> {{business_type}}</p>',
+                'sms_body' => 'VESTRA: New distributor application {{reference_number}} from {{company_name}}.',
+                'in_app_body' => 'New distributor application {{reference_number}} from {{company_name}}.',
+                'variables_json' => ['reference_number', 'customer_name', 'company_name', 'email', 'phone', 'district', 'business_type'],
+            ],
+            [
                 'event_key' => 'distributor.application_approved',
                 'name' => 'Distributor Application Approved',
                 'category' => 'distributor',

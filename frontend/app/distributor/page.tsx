@@ -3,41 +3,52 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Clock, CheckCircle2, XCircle, ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { Container } from "@/components/common/container";
-import { PageHero } from "@/components/common/page-hero";
 import { SectionHeader } from "@/components/common/section-header";
 import { DistributorForm } from "@/components/forms/distributor-form";
 import { AnimatedSection } from "@/components/common/animated-section";
-import { ValueCard } from "@/components/common/value-card";
 import { FAQAccordion } from "@/components/common/faq-accordion";
 import { CTASection } from "@/components/common/cta-section";
 import { useAuth } from "@/lib/auth-context";
 import { useDistributorApplicationStatus } from "@/hooks/use-distributor-application-status";
-import Link from "next/link";
-
-const distributorBenefits = [
-  { icon: "Award", title: "Exclusive Territory", description: "Gain protected distribution rights in your region." },
-  { icon: "Truck", title: "Reliable Supply", description: "Consistent product availability and timely deliveries." },
-  { icon: "BadgeCheck", title: "Marketing Support", description: "Access branded materials and promotional resources." },
-  { icon: "Sparkles", title: "Training", description: "Receive product knowledge and sales training from our team." },
-];
+import { JsonLd, breadcrumbSchema } from "@/lib/structured-data";
+import { DistributorHero } from "./_components/distributor-hero";
+import { WhyPartnerSection } from "./_components/why-partner-section";
+import { WhoCanApplySection } from "./_components/who-can-apply-section";
+import { DistributorBenefitsSection } from "./_components/distributor-benefits-section";
+import { ApplicationProcessSection } from "./_components/application-process-section";
+import { DistributorStatsSection } from "./_components/distributor-stats-section";
 
 const distributorFaqs = [
   {
     question: "What is the minimum order quantity?",
-    answer: "Minimum order quantities vary by product. Our team will share the full price list and MOQ after reviewing your application.",
+    answer:
+      "Minimum order quantities vary by product. Our team will share the full price list and MOQ after reviewing your application.",
   },
   {
     question: "Do I need a registered business to apply?",
-    answer: "Yes, we prefer working with registered businesses that have experience in distribution or retail.",
+    answer:
+      "Yes, we prefer working with registered businesses that have experience in distribution or retail.",
   },
   {
     question: "How long does the approval process take?",
-    answer: "Applications are typically reviewed within 5-7 business days.",
+    answer: "Applications are typically reviewed within 5–7 business days.",
   },
   {
     question: "What support do distributors receive?",
-    answer: "Distributors receive marketing materials, training, territory protection, and dedicated account support.",
+    answer:
+      "Distributors receive marketing materials, training, territory protection, and dedicated account support.",
+  },
+  {
+    question: "Which regions are available?",
+    answer:
+      "Territory availability depends on existing coverage. Submit your application and our team will discuss open regions with you.",
+  },
+  {
+    question: "What documents should I upload?",
+    answer:
+      "Business registration certificates, trading licences, and company profiles help us verify your application faster.",
   },
 ];
 
@@ -97,7 +108,7 @@ function ApplicationStatusCard({ status }: { status: string }) {
         <h2 className="text-xl lg:text-2xl font-bold text-primary-900">Application Pending</h2>
       </div>
       <p className="text-muted mb-6">
-        Your distributor application is currently under review. Our team will get back to you within 5-7 business days.
+        Your distributor application is currently under review. Our team will get back to you within 5–7 business days.
       </p>
       <Link
         href="/account"
@@ -124,99 +135,102 @@ export default function DistributorPage() {
   const isLoading = authLoading || statusLoading;
 
   return (
-    <main>
-      <PageHero
-        title="Become a Distributor"
-        subtitle="Join the VESTRA network and bring professional fabric care solutions to your market."
-        breadcrumb={[{ label: "Become a Distributor" }]}
+    <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: "Home", url: "https://vestradetergents.com/" },
+          { name: "Become a Distributor", url: "https://vestradetergents.com/distributor" },
+        ])}
       />
+      <main>
+        <DistributorHero />
+        <WhyPartnerSection />
+        <WhoCanApplySection />
+        <DistributorBenefitsSection />
+        <ApplicationProcessSection />
 
-      {/* Benefits */}
-      <section className="py-20 lg:py-28 bg-white" aria-labelledby="benefits-heading">
-        <Container>
-          <SectionHeader
-            id="benefits-heading"
-            title="Why Partner with VESTRA"
-            subtitle="We support our distributors with the tools, training, and products they need to succeed."
-          />
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {distributorBenefits.map((benefit, index) => (
-              <ValueCard key={benefit.title} icon={benefit.icon} title={benefit.title} description={benefit.description} index={index} />
-            ))}
-          </div>
-        </Container>
-      </section>
+        {/* Application Form */}
+        <section
+          id="application-form"
+          className="py-20 lg:py-28 bg-white"
+          aria-labelledby="application-heading"
+        >
+          <Container>
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+              <AnimatedSection direction="left">
+                <SectionHeader
+                  id="application-heading"
+                  title="Apply to Become a Distributor"
+                  subtitle="Complete the form below. Our partnership team will review your application and contact you within 5–7 business days."
+                  centered={false}
+                />
+                <ul className="space-y-4 mt-8">
+                  {[
+                    "Submit your business profile and distribution capacity.",
+                    "Upload supporting documents for faster verification.",
+                    "Receive confirmation with a unique reference number.",
+                    "Work with our team to finalise territory and terms.",
+                  ].map((item, index) => (
+                    <li key={item} className="flex items-start gap-4 text-body text-base lg:text-lg">
+                      <span className="w-7 h-7 rounded-full bg-secondary-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
+                        {index + 1}
+                      </span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </AnimatedSection>
 
-      {/* Opportunities & Form */}
-      <section className="py-20 lg:py-28 bg-neutral-50" aria-labelledby="application-heading">
-        <Container>
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <AnimatedSection direction="left">
-              <SectionHeader
-                id="application-heading"
-                title="Business Opportunities"
-                subtitle="Tailored partnership models for every scale of operation."
-                centered={false}
-              />
-              <ul className="space-y-4">
-                {[
-                  "Retail distribution in supermarkets and shops",
-                  "Supply to hotels, hospitals, and commercial laundries",
-                  "Regional wholesale partnerships",
-                  "Bulk corporate and institutional contracts",
-                ].map((item, index) => (
-                  <li key={item} className="flex items-start gap-4 text-body text-base lg:text-lg">
-                    <span className="w-7 h-7 rounded-full bg-green-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0">
-                      {index + 1}
-                    </span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </AnimatedSection>
-
-            <AnimatedSection direction="right">
-              {isLoading ? (
-                <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-neutral-200 shadow-lg flex items-center justify-center min-h-[300px]">
-                  <Loader2 className="w-8 h-8 animate-spin text-green-500" />
-                </div>
-              ) : isAuthenticated && application ? (
-                <ApplicationStatusCard status={application.status} />
-              ) : (
-                <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-neutral-200 shadow-lg">
-                  <h2 className="text-xl lg:text-2xl font-bold text-primary-900 mb-2">Distributor Application</h2>
-                  <p className="text-muted mb-6">Complete the form below to start your partnership journey.</p>
-                  <DistributorForm />
-                </div>
-              )}
-            </AnimatedSection>
-          </div>
-        </Container>
-      </section>
-
-      {/* FAQ */}
-      <section className="py-20 lg:py-28 bg-white" aria-labelledby="distributor-faq-heading">
-        <Container>
-          <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-12 lg:gap-16">
-            <div>
-              <SectionHeader
-                id="distributor-faq-heading"
-                title="Distributor FAQ"
-                subtitle="Common questions about partnering with VESTRA."
-                centered={false}
-              />
+              <AnimatedSection direction="right">
+                {isLoading ? (
+                  <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-neutral-200 shadow-lg flex items-center justify-center min-h-[300px]">
+                    <Loader2 className="w-8 h-8 animate-spin text-green-500" />
+                  </div>
+                ) : isAuthenticated && application ? (
+                  <ApplicationStatusCard status={application.status} />
+                ) : (
+                  <div className="p-6 lg:p-10 rounded-[24px] bg-white border border-neutral-200 shadow-lg">
+                    <h2 className="text-xl lg:text-2xl font-bold text-primary-900 mb-2">
+                      Distributor Application
+                    </h2>
+                    <p className="text-muted mb-6">
+                      All fields marked by the form are required unless indicated optional.
+                    </p>
+                    <DistributorForm />
+                  </div>
+                )}
+              </AnimatedSection>
             </div>
-            <FAQAccordion items={distributorFaqs} />
-          </div>
-        </Container>
-      </section>
+          </Container>
+        </section>
 
-      <CTASection
-        title="Ready to grow with us?"
-        description="Reach out directly and our partnership team will guide you through the next steps."
-        buttonText="Contact Us"
-        buttonHref="/contact"
-      />
-    </main>
+        <DistributorStatsSection />
+
+        {/* FAQ */}
+        <section className="py-20 lg:py-28 bg-white" aria-labelledby="distributor-faq-heading">
+          <Container>
+            <div className="grid lg:grid-cols-[0.8fr_1.2fr] gap-12 lg:gap-16">
+              <div>
+                <SectionHeader
+                  id="distributor-faq-heading"
+                  title="Distributor FAQ"
+                  subtitle="Common questions about partnering with VESTRA®."
+                  centered={false}
+                />
+              </div>
+              <FAQAccordion items={distributorFaqs} />
+            </div>
+          </Container>
+        </section>
+
+        <CTASection
+          title="Ready to grow with VESTRA®?"
+          description="Apply today or speak with our partnership team about distribution opportunities in your region."
+          buttonText="Apply Now"
+          buttonHref="#application-form"
+          secondaryButton={{ text: "Contact Sales", href: "/contact" }}
+        />
+      </main>
+    </>
   );
 }
