@@ -30,6 +30,7 @@ class QuoteRequest extends Model
         'source',
         'ip_address',
         'user_agent',
+        'requirements',
         'admin_notes',
         'assigned_to',
         'attachments',

@@ -242,7 +242,7 @@ Route::prefix('v1')->group(function () {
         });
 
         // Admin-only routes
-        Route::middleware([\App\Http\Middleware\RequireAdminPasswordChange::class])->group(function () {
+        Route::middleware(['can:admin', \App\Http\Middleware\RequireAdminPasswordChange::class])->group(function () {
             Route::get('/admin/reviews', [ReviewController::class, 'adminIndex']);
             Route::put('/admin/reviews/{review}/status', [ReviewController::class, 'updateStatus']);
             Route::post('/admin/reviews/{review}/reply', [ReviewController::class, 'reply']);

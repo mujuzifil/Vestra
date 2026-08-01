@@ -93,5 +93,6 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('view reports', fn (User $user): bool => $user->isAdmin());
+        Gate::define('admin', fn (User $user): bool => $user->isAdmin());
     }
 }
