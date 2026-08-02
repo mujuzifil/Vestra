@@ -20,6 +20,8 @@ class SystemInformation extends Page
 
     protected static ?string $slug = 'system-information';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public function getTitle(): string|Htmlable
     {
         return 'System Information';

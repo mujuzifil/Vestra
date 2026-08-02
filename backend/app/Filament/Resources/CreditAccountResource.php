@@ -25,13 +25,13 @@ class CreditAccountResource extends Resource
 
     protected static ?string $navigationGroup = 'Distributors';
 
-    protected static ?string $navigationLabel = 'Credit Accounts';
+    protected static ?string $navigationLabel = 'Credit';
 
     protected static ?string $modelLabel = 'Credit Account';
 
     protected static ?string $pluralModelLabel = 'Credit Accounts';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {

@@ -27,28 +27,28 @@ $trendClass = match (true) {
 @endphp
 
 <div class="vestra-kpi-card">
-    <div class="vestra-kpi-card__top">
+    <div class="vestra-kpi-card__main">
         <span class="vestra-kpi-card__icon" style="background-color: {{ $style['light'] }}; color: {{ $style['text'] }}">
             <x-filament::icon :icon="$icon" class="h-5 w-5" />
         </span>
 
-        <span class="vestra-kpi-card__trend {{ $trendClass }}">
-            @if ($trendClass === 'vestra-kpi-card__trend--up')
-                <x-filament::icon icon="heroicon-m-arrow-trending-up" class="h-3 w-3" />
-            @elseif ($trendClass === 'vestra-kpi-card__trend--down')
-                <x-filament::icon icon="heroicon-m-arrow-trending-down" class="h-3 w-3" />
-            @else
-                <x-filament::icon icon="heroicon-m-minus" class="h-3 w-3" />
-            @endif
-            <span>{{ $trend }}</span>
-        </span>
+        <div class="vestra-kpi-card__content">
+            <p class="vestra-kpi-card__label">{{ $label }}</p>
+            <p class="vestra-kpi-card__value">{{ $value }}</p>
+        </div>
     </div>
 
-    <div class="vestra-kpi-card__content">
-        <p class="vestra-kpi-card__value">{{ $value }}</p>
-        <p class="vestra-kpi-card__label">{{ $label }}</p>
-        @if ($trendLabel)
-            <p class="vestra-kpi-card__trend-label">{{ $trendLabel }}</p>
+    <span class="vestra-kpi-card__trend {{ $trendClass }}">
+        @if ($trendClass === 'vestra-kpi-card__trend--up')
+            <x-filament::icon icon="heroicon-m-arrow-trending-up" class="h-3 w-3" />
+        @elseif ($trendClass === 'vestra-kpi-card__trend--down')
+            <x-filament::icon icon="heroicon-m-arrow-trending-down" class="h-3 w-3" />
+        @else
+            <x-filament::icon icon="heroicon-m-minus" class="h-3 w-3" />
         @endif
-    </div>
+        <span>{{ $trend }}</span>
+        @if ($trendLabel)
+            <span class="vestra-kpi-card__trend-label">{{ $trendLabel }}</span>
+        @endif
+    </span>
 </div>

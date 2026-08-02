@@ -14,6 +14,8 @@ class CreditReport extends ReportPage
 
     protected static ?int $navigationSort = 60;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string $view = 'filament.pages.reports.credit-report';
 
     public function getTitle(): string

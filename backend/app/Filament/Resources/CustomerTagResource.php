@@ -18,6 +18,8 @@ class CustomerTagResource extends Resource
 {
     protected static ?string $model = CustomerTag::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
     protected static ?string $navigationGroup = 'Sales';

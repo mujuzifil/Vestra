@@ -21,7 +21,7 @@ class DistributorResource extends Resource
 
     protected static ?string $navigationGroup = 'Distributors';
 
-    protected static ?string $navigationLabel = 'Distributors';
+    protected static ?string $navigationLabel = 'Active Partners';
 
     protected static ?string $modelLabel = 'Distributor';
 

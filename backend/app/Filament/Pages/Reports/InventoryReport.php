@@ -10,6 +10,8 @@ class InventoryReport extends ReportPage
 
     protected static ?int $navigationSort = 40;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string $view = 'filament.pages.reports.inventory-report';
 
     public function getTitle(): string

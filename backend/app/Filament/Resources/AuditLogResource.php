@@ -19,13 +19,13 @@ class AuditLogResource extends Resource
 
     protected static ?string $navigationGroup = 'Administration';
 
-    protected static ?string $navigationLabel = 'Audit Logs';
+    protected static ?string $navigationLabel = 'Audit';
 
     protected static ?string $modelLabel = 'Audit Log';
 
     protected static ?string $pluralModelLabel = 'Audit Logs';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 4;
 
     public static function getEloquentQuery(): Builder
     {

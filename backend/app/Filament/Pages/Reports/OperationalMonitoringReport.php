@@ -10,6 +10,8 @@ class OperationalMonitoringReport extends ReportPage
 
     protected static ?int $navigationSort = 71;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string $view = 'filament.pages.reports.operational-monitoring-report';
 
     public function getTitle(): string

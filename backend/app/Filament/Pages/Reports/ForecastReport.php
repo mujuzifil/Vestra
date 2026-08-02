@@ -12,6 +12,8 @@ class ForecastReport extends ReportPage
 
     protected static ?int $navigationSort = 60;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string $view = 'filament.pages.reports.forecast-report';
 
     public function getTitle(): string

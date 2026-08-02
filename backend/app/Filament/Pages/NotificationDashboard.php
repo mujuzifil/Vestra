@@ -18,6 +18,8 @@ class NotificationDashboard extends Page
 
     protected static string $view = 'filament.pages.notification-dashboard';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public function getTitle(): string
     {
         return 'Notification Center';

@@ -21,7 +21,7 @@ class BlogPostResource extends Resource
 
     protected static ?string $navigationGroup = 'Marketing';
 
-    protected static ?string $navigationLabel = 'Blog Posts';
+    protected static ?string $navigationLabel = 'Blog';
 
     protected static ?string $label = 'Blog Post';
 

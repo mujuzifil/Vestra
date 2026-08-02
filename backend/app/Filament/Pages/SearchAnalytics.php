@@ -14,6 +14,8 @@ class SearchAnalytics extends Page
 
     protected static ?int $navigationSort = 10;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string $view = 'filament.pages.search-analytics';
 
     public function getTitle(): string

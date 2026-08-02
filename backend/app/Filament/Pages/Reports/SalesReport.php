@@ -15,6 +15,8 @@ class SalesReport extends ReportPage
 
     protected static ?int $navigationSort = 20;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string $view = 'filament.pages.reports.sales-report';
 
     public function getTitle(): string

@@ -20,11 +20,11 @@ use Illuminate\Database\Eloquent\Model;
 class DistributorRequestResource extends Resource
 {
     protected static ?string $model = DistributorRequest::class;
-    protected static ?string $navigationIcon = 'heroicon-o-truck';
+    protected static ?string $navigationIcon = 'heroicon-o-inbox-stack';
     protected static ?string $navigationGroup = 'Distributors';
-    protected static ?string $navigationLabel = 'Distributor Requests';
+    protected static ?string $navigationLabel = 'Applications';
     protected static ?string $label = 'Distributor Request';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

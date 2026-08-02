@@ -22,7 +22,7 @@ class CustomerFeedbackResource extends Resource
     protected static ?string $model = CustomerFeedback::class;
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
     protected static ?string $navigationGroup = 'Customer Success';
-    protected static ?string $navigationLabel = 'Customer Feedbacks';
+    protected static ?string $navigationLabel = 'Feedback';
     protected static ?string $label = 'Customer Feedback';
     protected static ?int $navigationSort = 2;
 

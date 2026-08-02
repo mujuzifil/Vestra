@@ -21,6 +21,8 @@ class ProductWarehouseStockResource extends Resource
 {
     protected static ?string $model = ProductWarehouseStock::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationIcon = 'heroicon-o-cube';
 
     protected static ?string $navigationGroup = 'Products';

@@ -10,6 +10,8 @@ class DistributorReport extends ReportPage
 
     protected static ?int $navigationSort = 60;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string $view = 'filament.pages.reports.distributor-report';
 
     public function getTitle(): string

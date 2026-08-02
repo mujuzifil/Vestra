@@ -23,7 +23,9 @@ class AnnouncementResource extends Resource
 
     protected static ?string $navigationGroup = 'Communications';
 
-    protected static ?int $navigationSort = 82;
+    protected static ?string $navigationLabel = 'Campaigns';
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

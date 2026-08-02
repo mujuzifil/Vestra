@@ -20,11 +20,11 @@ class QuoteRequestResource extends Resource
 {
     protected static ?string $model = QuoteRequest::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $navigationGroup = 'Sales';
 
-    protected static ?string $navigationLabel = 'Quote Requests';
+    protected static ?string $navigationLabel = 'Quotes';
 
     protected static ?string $label = 'Quote Request';
 

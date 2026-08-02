@@ -12,6 +12,8 @@ class ApiAnalyticsReport extends ReportPage
 
     protected static ?int $navigationSort = 70;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string $view = 'filament.pages.reports.api-analytics-report';
 
     public function getTitle(): string

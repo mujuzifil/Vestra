@@ -14,6 +14,8 @@ class BlogAuthorResource extends Resource
 {
     protected static ?string $model = BlogAuthor::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
     protected static ?string $navigationGroup = 'Marketing';

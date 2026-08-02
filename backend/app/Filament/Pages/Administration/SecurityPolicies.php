@@ -32,6 +32,8 @@ class SecurityPolicies extends Page implements HasForms
 
     protected static ?int $navigationSort = 8;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string $view = 'filament.pages.administration.security-policies';
 
     public ?array $data = [];

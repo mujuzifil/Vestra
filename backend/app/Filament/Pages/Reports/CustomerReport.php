@@ -12,6 +12,8 @@ class CustomerReport extends ReportPage
 
     protected static ?int $navigationSort = 30;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string $view = 'filament.pages.reports.customer-report';
 
     public function getTitle(): string

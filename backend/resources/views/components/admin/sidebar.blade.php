@@ -142,25 +142,24 @@ $user = filament()->auth()->user();
             >Settings</span>
         </a>
 
-        <form method="POST" action="{{ filament()->getLogoutUrl() }}" class="vestra-sidebar__logout-form">
-            @csrf
-            <button
-                type="submit"
-                class="vestra-sidebar__footer-btn"
-                aria-label="Sign out"
-                x-data="{ tooltip: false }"
-                @mouseenter="if (collapsed) tooltip = true"
-                @mouseleave="tooltip = false"
-            >
-                <x-filament::icon icon="heroicon-o-arrow-right-start-on-rectangle" class="h-5 w-5" />
-                <span class="vestra-sidebar__footer-label">Sign out</span>
-                <span
-                    x-show="tooltip"
-                    x-transition.opacity
-                    class="vestra-sidebar__item-tooltip"
-                    role="tooltip"
-                >Sign out</span>
-            </button>
-        </form>
+        <button
+            type="button"
+            class="vestra-sidebar__footer-btn vestra-sidebar__footer-btn--collapse"
+            @click="toggleCollapse()"
+            aria-label="Collapse sidebar"
+            :aria-label="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+            x-data="{ tooltip: false }"
+            @mouseenter="if (collapsed) tooltip = true"
+            @mouseleave="tooltip = false"
+        >
+            <x-filament::icon icon="heroicon-o-chevron-double-left" class="h-5 w-5" />
+            <span class="vestra-sidebar__footer-label">Collapse</span>
+            <span
+                x-show="tooltip"
+                x-transition.opacity
+                class="vestra-sidebar__item-tooltip"
+                role="tooltip"
+            >Collapse</span>
+        </button>
     </div>
 </aside>

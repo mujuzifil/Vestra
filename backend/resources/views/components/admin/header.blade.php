@@ -37,7 +37,7 @@ $rangeOptions = [
         </span>
         <input
             type="text"
-            placeholder="Search anything..."
+            placeholder="Search customers, quotes, tickets..."
             class="vestra-header__search-input"
             aria-label="Global search"
         />

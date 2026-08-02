@@ -23,6 +23,8 @@ class SettingsDashboard extends Page implements HasForms
 
     protected static ?int $navigationSort = 1;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string $view = 'filament.pages.settings.settings-dashboard';
 
     public ?string $search = '';

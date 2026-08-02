@@ -21,9 +21,9 @@ class SettingResource extends Resource
 
     protected static ?string $navigationGroup = 'Administration';
 
-    protected static ?int $navigationSort = 99;
+    protected static ?string $navigationLabel = 'Settings';
 
-    protected static bool $shouldRegisterNavigation = false;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

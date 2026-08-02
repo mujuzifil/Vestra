@@ -21,7 +21,7 @@ class Dashboard extends Page
 
     protected static ?string $navigationGroup = 'Workspace';
 
-    protected static ?string $navigationLabel = 'Workspace';
+    protected static ?string $navigationLabel = 'Dashboard';
 
     public static function getRoutePath(): string
     {
