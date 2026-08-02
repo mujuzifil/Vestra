@@ -8,10 +8,13 @@ use App\Models\AuditLog;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Category;
+use App\Models\CompanyProfile;
 use App\Models\ContactMessage;
 use App\Models\CustomerAddress;
+use App\Models\CustomerDocument;
 use App\Models\CustomerFeedback;
 use App\Models\Distributor;
+use App\Models\SupportTicket;
 use App\Models\DistributorBranch;
 use App\Models\DistributorContact;
 use App\Models\DistributorDocument;
@@ -34,8 +37,11 @@ use App\Policies\AuditLogPolicy;
 use App\Policies\CartItemPolicy;
 use App\Policies\CartPolicy;
 use App\Policies\CategoryPolicy;
+use App\Policies\CompanyProfilePolicy;
 use App\Policies\ContactMessagePolicy;
+use App\Policies\CustomerDocumentPolicy;
 use App\Policies\CustomerFeedbackPolicy;
+use App\Policies\SupportTicketPolicy;
 use App\Policies\DistributorBranchPolicy;
 use App\Policies\DistributorContactPolicy;
 use App\Policies\DistributorDocumentPolicy;
@@ -68,8 +74,11 @@ class AuthServiceProvider extends ServiceProvider
         Category::class => CategoryPolicy::class,
         ContactMessage::class => ContactMessagePolicy::class,
         CustomerAddress::class => CustomerAddressPolicy::class,
+        CustomerDocument::class => CustomerDocumentPolicy::class,
         CustomerFeedback::class => CustomerFeedbackPolicy::class,
+        CompanyProfile::class => CompanyProfilePolicy::class,
         Distributor::class => DistributorPolicy::class,
+        SupportTicket::class => SupportTicketPolicy::class,
         DistributorBranch::class => DistributorBranchPolicy::class,
         DistributorContact::class => DistributorContactPolicy::class,
         DistributorDocument::class => DistributorDocumentPolicy::class,

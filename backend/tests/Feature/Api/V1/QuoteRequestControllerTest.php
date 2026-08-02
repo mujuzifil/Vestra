@@ -2,12 +2,16 @@
 
 namespace Tests\Feature\Api\V1;
 
+use App\Mail\QuoteRequestReceivedMail;
 use App\Models\Product;
+use App\Models\QuoteRequest;
 use App\Models\User;
 use Database\Seeders\NotificationTemplateSeeder;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class QuoteRequestControllerTest extends TestCase
@@ -68,7 +72,7 @@ class QuoteRequestControllerTest extends TestCase
             'quantity' => 50,
         ]);
 
-        Mail::assertSent(\App\Mail\QuoteRequestReceivedMail::class, function ($mail) {
+        Mail::assertSent(QuoteRequestReceivedMail::class, function ($mail) {
             return $mail->quoteRequest->email === 'john@acme.com';
         });
     }
@@ -103,6 +107,29 @@ class QuoteRequestControllerTest extends TestCase
         ]);
     }
 
+    public function test_authenticated_user_quote_request_links_to_user(): void
+    {
+        Mail::fake();
+
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $response = $this->postJson('/api/v1/quote-requests', [
+            'full_name' => $user->name,
+            'company_name' => 'Authenticated Co',
+            'email' => $user->email,
+            'phone' => '+256 704 444 444',
+        ]);
+
+        $response->assertCreated()
+            ->assertJsonPath('success', true);
+
+        $this->assertDatabaseHas('quote_requests', [
+            'email' => $user->email,
+            'user_id' => $user->id,
+        ]);
+    }
+
     public function test_quote_request_requires_required_fields(): void
     {
         Mail::fake();
@@ -129,7 +156,7 @@ class QuoteRequestControllerTest extends TestCase
     public function test_quote_request_generates_unique_reference_numbers(): void
     {
         Mail::fake();
-        NotificationFacade::fake();
+        Notification::fake();
 
         $this->postJson('/api/v1/quote-requests', [
             'full_name' => 'First',
@@ -145,7 +172,7 @@ class QuoteRequestControllerTest extends TestCase
             'phone' => '+256 702 222 222',
         ]);
 
-        $references = \App\Models\QuoteRequest::pluck('reference_number')->all();
+        $references = QuoteRequest::pluck('reference_number')->all();
         $this->assertCount(2, array_unique($references));
         $this->assertStringStartsWith('QR-', $references[0]);
     }

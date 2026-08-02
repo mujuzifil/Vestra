@@ -36,6 +36,7 @@ import { useAddresses } from "@/hooks/use-addresses";
 import { useActivity } from "@/hooks/use-activity";
 import { useDistributorApplicationStatus } from "@/hooks/use-distributor-application-status";
 import { useNotifications } from "@/hooks/use-notifications";
+import { useAccountDashboard } from "@/hooks/use-account-dashboard";
 import type { Address, ActivityItem } from "@/types";
 
 const activityIcons: Record<string, React.ElementType> = {
@@ -98,6 +99,7 @@ export function AccountPageClient() {
   const { data: activityData, isLoading: activityLoading } = useActivity(1);
   const { data: distributorStatus, isLoading: distributorLoading } = useDistributorApplicationStatus();
   const { data: notificationsData, isLoading: notificationsLoading } = useNotifications(1);
+  const { data: dashboard, isLoading: dashboardLoading } = useAccountDashboard(isAuthenticated);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -208,16 +210,40 @@ export function AccountPageClient() {
             <div>
               <h2 className="text-lg font-bold text-text-heading mb-4">Business Activity Summary</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <StatCard label="Quote Requests" value={0} note="No quote requests yet" icon={FileText} color="bg-primary-900" />
+                <StatCard
+                  label="Quote Requests"
+                  value={dashboardLoading ? "..." : dashboard?.quotes.submitted ?? 0}
+                  note={dashboard?.quotes.submitted ? `${dashboard.quotes.pending} pending` : "No quote requests yet"}
+                  icon={FileText}
+                  color="bg-primary-900"
+                />
                 <StatCard
                   label="Distributor Application"
                   value={distributorStatusText}
                   icon={Handshake}
                   color="bg-secondary-600"
                 />
-                <StatCard label="Saved Products" value={0} note="No saved products yet" icon={Bookmark} color="bg-info-500" />
-                <StatCard label="Documents" value={0} note="No documents yet" icon={FolderOpen} color="bg-warning-500" />
-                <StatCard label="Support Enquiries" value={0} note="No enquiries yet" icon={HeadphonesIcon} color="bg-neutral-600" />
+                <StatCard
+                  label="Saved Products"
+                  value={dashboardLoading ? "..." : dashboard?.saved_products ?? 0}
+                  note={dashboard?.saved_products ? "Saved for future quotes" : "No saved products yet"}
+                  icon={Bookmark}
+                  color="bg-info-500"
+                />
+                <StatCard
+                  label="Documents"
+                  value={dashboardLoading ? "..." : dashboard?.documents ?? 0}
+                  note={dashboard?.documents ? "Available for download" : "No documents yet"}
+                  icon={FolderOpen}
+                  color="bg-warning-500"
+                />
+                <StatCard
+                  label="Support Enquiries"
+                  value={dashboardLoading ? "..." : dashboard?.support_enquiries ?? 0}
+                  note={dashboard?.support_enquiries ? "Open enquiries" : "No enquiries yet"}
+                  icon={HeadphonesIcon}
+                  color="bg-neutral-600"
+                />
                 <StatCard
                   label="Recent Notifications"
                   value={notificationsLoading ? "..." : unreadNotifications}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\Account\NotificationRead;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\NotificationResource;
 use App\Traits\RespondsWithJson;
@@ -58,12 +59,16 @@ class NotificationController extends Controller
 
         $notification->markAsRead();
 
+        NotificationRead::dispatch($request->user(), $id);
+
         return $this->successResponse(null, 'Notification marked as read.');
     }
 
     public function markAllAsRead(Request $request): JsonResponse
     {
         $request->user()->unreadNotifications->markAsRead();
+
+        NotificationRead::dispatch($request->user(), '', true);
 
         return $this->successResponse(null, 'All notifications marked as read.');
     }

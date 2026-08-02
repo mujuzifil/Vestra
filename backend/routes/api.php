@@ -45,6 +45,7 @@ use App\Http\Controllers\Api\V1\Admin\NotificationTemplateController;
 use App\Http\Controllers\Api\V1\Admin\PurchaseOrderController as AdminPurchaseOrderController;
 use App\Http\Controllers\Api\V1\Admin\SupplierController as AdminSupplierController;
 use App\Http\Controllers\Api\V1\Admin\WarehouseController as AdminWarehouseController;
+use App\Http\Controllers\Api\V1\Account;
 use App\Http\Controllers\Api\V1\AnnouncementController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\NotificationController;
@@ -206,6 +207,29 @@ Route::prefix('v1')->group(function () {
 
         // Distributor application status (any authenticated user)
         Route::get('/distributor/application-status', [DistributorController::class, 'applicationStatus']);
+
+        // Customer account portal
+        Route::prefix('account')->group(function () {
+            Route::get('/dashboard', [Account\DashboardController::class, 'index']);
+
+            Route::get('/quotes', [Account\QuoteController::class, 'index']);
+            Route::get('/quotes/{quote}', [Account\QuoteController::class, 'show']);
+            Route::get('/quotes/{quote}/attachments/{index}', [Account\QuoteController::class, 'downloadAttachment']);
+
+            Route::get('/documents', [Account\DocumentController::class, 'index']);
+            Route::get('/documents/{document}/download', [Account\DocumentController::class, 'download']);
+
+            Route::apiResource('/support', Account\SupportTicketController::class)->only(['index', 'show', 'store']);
+            Route::post('/support/{ticket}/reply', [Account\SupportTicketController::class, 'reply']);
+
+            Route::get('/company', [Account\CompanyProfileController::class, 'show']);
+            Route::put('/company', [Account\CompanyProfileController::class, 'update']);
+
+            Route::get('/notifications', [NotificationController::class, 'index']);
+            Route::get('/notifications/unread', [NotificationController::class, 'unread']);
+            Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+            Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+        });
 
         // Distributor portal
         Route::middleware('distributor')->prefix('distributor')->group(function () {

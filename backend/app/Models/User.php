@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -110,12 +114,12 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Order::class);
     }
 
-    public function cart(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function cart(): HasOne
     {
         return $this->hasOne(Cart::class);
     }
 
-    public function preferences(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function preferences(): HasOne
     {
         return $this->hasOne(CustomerPreference::class);
     }
@@ -130,12 +134,12 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(CustomerNote::class, 'customer_id');
     }
 
-    public function customerTags(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function customerTags(): BelongsToMany
     {
         return $this->belongsToMany(CustomerTag::class, 'customer_tag', 'customer_id', 'customer_tag_id');
     }
 
-    public function distributor(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function distributor(): HasOne
     {
         return $this->hasOne(Distributor::class);
     }
@@ -145,7 +149,7 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(AuditLog::class);
     }
 
-    public function paymentTransactions(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    public function paymentTransactions(): HasManyThrough
     {
         return $this->hasManyThrough(PaymentTransaction::class, Order::class);
     }
@@ -160,7 +164,7 @@ class User extends Authenticatable implements FilamentUser
         return cache()->remember("user.{$this->id}.lifetime_spend", 300, fn (): float => (float) $this->orders()->where('payment_status', 'paid')->sum('total_amount'));
     }
 
-    public function recentOrders(int $limit = 5): \Illuminate\Database\Eloquent\Collection
+    public function recentOrders(int $limit = 5): Collection
     {
         return $this->orders()->latest()->limit($limit)->get();
     }
@@ -170,7 +174,8 @@ class User extends Authenticatable implements FilamentUser
         $parts = explode(' ', trim($this->name));
         $first = strtoupper(substr($parts[0] ?? '', 0, 1));
         $second = strtoupper(substr($parts[1] ?? $parts[0] ?? '', 0, 1));
-        return $first . $second;
+
+        return $first.$second;
     }
 
     public function avatarUrl(): ?string
@@ -187,7 +192,7 @@ class User extends Authenticatable implements FilamentUser
         return $this->orders()->latest()->first();
     }
 
-    public function lastOrderAt(): ?\Carbon\Carbon
+    public function lastOrderAt(): ?Carbon
     {
         return $this->lastOrder()?->created_at;
     }
@@ -195,6 +200,7 @@ class User extends Authenticatable implements FilamentUser
     public function averageOrderValue(): float
     {
         $count = $this->lifetimeOrderCount();
+
         return $count > 0 ? $this->lifetimeSpend() / $count : 0.0;
     }
 
@@ -271,9 +277,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $query->whereHas('orders', function ($q) use ($min, $max) {
             $q->selectRaw('user_id, SUM(total_amount) as total')
-              ->groupBy('user_id')
-              ->when($min !== null, fn ($q2) => $q2->having('total', '>=', $min))
-              ->when($max !== null, fn ($q2) => $q2->having('total', '<=', $max));
+                ->groupBy('user_id')
+                ->when($min !== null, fn ($q2) => $q2->having('total', '>=', $min))
+                ->when($max !== null, fn ($q2) => $q2->having('total', '<=', $max));
         });
     }
 
@@ -281,9 +287,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $query->whereHas('orders', function ($q) use ($min, $max) {
             $q->selectRaw('user_id, COUNT(*) as count')
-              ->groupBy('user_id')
-              ->when($min !== null, fn ($q2) => $q2->having('count', '>=', $min))
-              ->when($max !== null, fn ($q2) => $q2->having('count', '<=', $max));
+                ->groupBy('user_id')
+                ->when($min !== null, fn ($q2) => $q2->having('count', '>=', $min))
+                ->when($max !== null, fn ($q2) => $q2->having('count', '<=', $max));
         });
     }
 
@@ -295,5 +301,25 @@ class User extends Authenticatable implements FilamentUser
     public function scopeHasNoOrders($query)
     {
         return $query->doesntHave('orders');
+    }
+
+    public function companyProfile(): HasOne
+    {
+        return $this->hasOne(CompanyProfile::class);
+    }
+
+    public function customerDocuments(): HasMany
+    {
+        return $this->hasMany(CustomerDocument::class);
+    }
+
+    public function supportTickets(): HasMany
+    {
+        return $this->hasMany(SupportTicket::class);
+    }
+
+    public function quoteRequests(): HasMany
+    {
+        return $this->hasMany(QuoteRequest::class);
     }
 }

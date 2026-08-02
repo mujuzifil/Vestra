@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Events\Account\CompanyProfileUpdated;
+use App\Events\Account\CustomerDocumentDownloaded;
+use App\Events\Account\NotificationRead;
+use App\Events\Account\QuoteViewed;
+use App\Events\Account\SupportReplyCreated;
+use App\Events\Account\SupportTicketCreated;
 use App\Events\Notification\AdminAnnouncementPublished;
 use App\Events\Notification\BackInStock;
 use App\Events\Notification\CreditLimitUpdated;
@@ -30,6 +36,7 @@ use App\Events\Notification\ReviewApproved;
 use App\Events\Notification\ReviewReplied;
 use App\Events\Notification\StatementGenerated;
 use App\Events\Notification\SystemMaintenanceScheduled;
+use App\Listeners\Account\LogCustomerActivity;
 use App\Listeners\LogAdminFailedLogin;
 use App\Listeners\LogAdminLogin;
 use App\Listeners\LogAdminLogout;
@@ -66,14 +73,17 @@ class EventServiceProvider extends ServiceProvider
         DistributorApplicationSubmitted::class => [
             DispatchNotificationListener::class,
             LogNotificationDeliveryListener::class,
+            LogCustomerActivity::class,
         ],
         DistributorApplicationApproved::class => [
             DispatchNotificationListener::class,
             LogNotificationDeliveryListener::class,
+            LogCustomerActivity::class,
         ],
         DistributorApplicationRejected::class => [
             DispatchNotificationListener::class,
             LogNotificationDeliveryListener::class,
+            LogCustomerActivity::class,
         ],
         PasswordChanged::class => [
             DispatchNotificationListener::class,
@@ -122,6 +132,25 @@ class EventServiceProvider extends ServiceProvider
         QuoteRequestSubmitted::class => [
             DispatchNotificationListener::class,
             LogNotificationDeliveryListener::class,
+            LogCustomerActivity::class,
+        ],
+        QuoteViewed::class => [
+            LogCustomerActivity::class,
+        ],
+        SupportTicketCreated::class => [
+            LogCustomerActivity::class,
+        ],
+        SupportReplyCreated::class => [
+            LogCustomerActivity::class,
+        ],
+        CompanyProfileUpdated::class => [
+            LogCustomerActivity::class,
+        ],
+        CustomerDocumentDownloaded::class => [
+            LogCustomerActivity::class,
+        ],
+        NotificationRead::class => [
+            LogCustomerActivity::class,
         ],
         QuotationApproved::class => [
             DispatchNotificationListener::class,
