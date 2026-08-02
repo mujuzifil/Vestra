@@ -85,6 +85,7 @@ class NotificationDeliveryResource extends Resource
     {
         return [
             'index' => Pages\ListNotificationDeliveries::route('/'),
+            'view' => Pages\ViewNotificationDelivery::route('/{record}'),
         ];
     }
 
@@ -106,13 +107,5 @@ class NotificationDeliveryResource extends Resource
     public static function canAccess(): bool
     {
         return auth()->user()?->isAdmin() ?? false;
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListNotificationDeliveries::route('/'),
-            'view' => Pages\ViewNotificationDelivery::route('/{record}'),
-        ];
     }
 }
