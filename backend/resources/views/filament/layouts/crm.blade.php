@@ -4,10 +4,16 @@
 
 <x-filament-panels::layout.base :livewire="$livewire">
     <div
-        x-data="{ mobileSidebarOpen: false }"
+        x-data="{ mobileSidebarOpen: false, sidebarCollapsed: JSON.parse(localStorage.getItem('vestra-sidebar-collapsed') || 'false') }"
         @toggle-mobile-sidebar.window="mobileSidebarOpen = !mobileSidebarOpen"
+        @toggle-sidebar-collapse.window="sidebarCollapsed = !sidebarCollapsed"
+        x-init="$watch('sidebarCollapsed', value => localStorage.setItem('vestra-sidebar-collapsed', JSON.stringify(value)))"
         class="vestra-crm"
-        :class="{ 'vestra-crm--sidebar-open': mobileSidebarOpen }"
+        :class="{
+            'vestra-crm--sidebar-open': mobileSidebarOpen,
+            'vestra-crm--sidebar-collapsed': sidebarCollapsed
+        }"
+        x-cloak
     >
         {{-- Mobile overlay --}}
         <div

@@ -1,17 +1,35 @@
 @php
 $user = filament()->auth()->user();
 $unreadCount = $user?->unreadNotifications()->count() ?? 0;
+
+$rangeOptions = [
+    'this-week' => 'This Week',
+    'this-month' => 'This Month',
+    'last-30-days' => 'Last 30 Days',
+];
 @endphp
 
 <header class="vestra-header">
-    <button
-        type="button"
-        class="vestra-header__menu-btn lg:hidden"
-        @click="$dispatch('toggle-mobile-sidebar')"
-        aria-label="Open sidebar"
-    >
-        <x-filament::icon icon="heroicon-o-bars-3" class="h-6 w-6" />
-    </button>
+    <div class="vestra-header__left">
+        <button
+            type="button"
+            class="vestra-header__menu-btn lg:hidden"
+            @click="$dispatch('toggle-mobile-sidebar')"
+            aria-label="Open sidebar"
+        >
+            <x-filament::icon icon="heroicon-o-bars-3" class="h-6 w-6" />
+        </button>
+
+        <button
+            type="button"
+            class="vestra-header__collapse-btn hidden lg:flex"
+            @click="$dispatch('toggle-sidebar-collapse')"
+            aria-label="Toggle sidebar"
+            x-data
+        >
+            <x-filament::icon icon="heroicon-o-chevron-double-left" class="h-5 w-5 collapse-icon" />
+        </button>
+    </div>
 
     <div class="vestra-header__search">
         <span class="vestra-header__search-icon">
@@ -28,18 +46,52 @@ $unreadCount = $user?->unreadNotifications()->count() ?? 0;
 
     <div class="vestra-header__actions">
         {{-- Date selector --}}
-        <div class="vestra-header__date">
-            <x-filament::icon icon="heroicon-o-calendar" class="h-4 w-4" />
-            <select
-                wire:change="$dispatch('dashboard-range-changed', { range: $event.target.value })"
-                aria-label="Select dashboard date range"
-                class="vestra-header__date-select"
+        <div
+            class="vestra-header__date"
+            x-data="{ open: false, range: '{{ $dateRange }}' }"
+            @click.outside="open = false"
+        >
+            <button
+                type="button"
+                @click="open = !open"
+                class="vestra-header__date-trigger"
+                aria-haspopup="listbox"
+                :aria-expanded="open"
             >
-                <option value="this-week" @selected($dateRange === 'this-week')>This Week</option>
-                <option value="this-month" @selected($dateRange === 'this-month')>This Month</option>
-                <option value="last-30-days" @selected($dateRange === 'last-30-days')>Last 30 Days</option>
-            </select>
-            <x-filament::icon icon="heroicon-m-chevron-down" class="h-4 w-4" />
+                <x-filament::icon icon="heroicon-o-calendar" class="h-4 w-4" />
+                <span class="vestra-header__date-label" x-text="{
+                    'this-week': 'This Week',
+                    'this-month': 'This Month',
+                    'last-30-days': 'Last 30 Days'
+                }[range]"></span>
+                <x-filament::icon
+                    icon="heroicon-m-chevron-down"
+                    class="h-4 w-4 vestra-header__date-chevron"
+                    x-bind:class="{ 'vestra-header__date-chevron--open': open }"
+                />
+            </button>
+
+            <div
+                x-show="open"
+                x-transition.origin.top.right
+                class="vestra-header__date-dropdown"
+                role="listbox"
+            >
+                @foreach ($rangeOptions as $value => $label)
+                    <button
+                        type="button"
+                        @click="range = '{{ $value }}'; open = false; $dispatch('dashboard-range-changed', { range: '{{ $value }}' })"
+                        class="vestra-header__date-option @if ($dateRange === $value) vestra-header__date-option--active @endif"
+                        role="option"
+                        aria-selected="{{ $dateRange === $value ? 'true' : 'false' }}"
+                    >
+                        <span>{{ $label }}</span>
+                        @if ($dateRange === $value)
+                            <x-filament::icon icon="heroicon-m-check" class="h-4 w-4" />
+                        @endif
+                    </button>
+                @endforeach
+            </div>
         </div>
 
         {{-- Notifications --}}

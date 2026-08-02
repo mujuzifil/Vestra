@@ -4,13 +4,49 @@ $user = filament()->auth()->user();
 @endphp
 
 <aside
-    x-data="{ open: true, mobileOpen: false }"
+    x-data="{
+        open: true,
+        mobileOpen: false,
+        collapsed: JSON.parse(localStorage.getItem('vestra-sidebar-collapsed') || 'false'),
+        init() {
+            this.$watch('collapsed', value => localStorage.setItem('vestra-sidebar-collapsed', JSON.stringify(value)));
+        },
+        toggleCollapse() {
+            if (window.innerWidth < 1024) return;
+            this.collapsed = !this.collapsed;
+        }
+    }"
+    @toggle-mobile-sidebar.window="mobileOpen = !mobileOpen"
+    @toggle-sidebar-collapse.window="toggleCollapse()"
+    x-init="init()"
     class="vestra-sidebar"
-    :class="{ 'vestra-sidebar--collapsed': !open, 'vestra-sidebar--mobile-open': mobileOpen }"
+    :class="{
+        'vestra-sidebar--collapsed': collapsed,
+        'vestra-sidebar--mobile-open': mobileOpen
+    }"
+    x-cloak
 >
     <div class="vestra-sidebar__brand">
-        <img src="{{ asset('images/vestra-logo.png') }}" alt="VESTRA" class="vestra-sidebar__logo" />
-        <span class="vestra-sidebar__portal">Admin Portal</span>
+        <div class="vestra-sidebar__brand-lockup">
+            <img
+                src="{{ asset('images/vestra-logo.png') }}"
+                alt="VESTRA"
+                class="vestra-sidebar__logo"
+                width="857"
+                height="474"
+            />
+            <span class="vestra-sidebar__portal">Admin Portal</span>
+        </div>
+
+        <button
+            type="button"
+            class="vestra-sidebar__collapse-btn"
+            @click="toggleCollapse()"
+            aria-label="Collapse sidebar"
+            :aria-label="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+        >
+            <x-filament::icon icon="heroicon-o-chevron-double-left" class="h-5 w-5" />
+        </button>
     </div>
 
     <nav class="vestra-sidebar__nav" aria-label="Main">
@@ -55,20 +91,31 @@ $user = filament()->auth()->user();
                             $url = $item->getUrl();
                             $active = $item->isActive();
                             $badge = $item->getBadge();
+                            $label = $item->getLabel();
                         @endphp
 
                         <a
                             href="{{ $url }}"
                             @class(['vestra-sidebar__item', 'vestra-sidebar__item--active' => $active])
                             @if ($active) aria-current="page" @endif
+                            x-data="{ tooltip: false }"
+                            @mouseenter="if (collapsed) tooltip = true"
+                            @mouseleave="tooltip = false"
                         >
                             <span class="vestra-sidebar__item-icon-wrap">
                                 <x-filament::icon :icon="$item->getIcon()" class="vestra-sidebar__item-icon" />
                             </span>
-                            <span class="vestra-sidebar__item-label">{{ $item->getLabel() }}</span>
+                            <span class="vestra-sidebar__item-label">{{ $label }}</span>
                             @if ($badge)
                                 <span class="vestra-sidebar__item-badge">{{ $badge }}</span>
                             @endif
+
+                            <span
+                                x-show="tooltip"
+                                x-transition.opacity
+                                class="vestra-sidebar__item-tooltip"
+                                role="tooltip"
+                            >{{ $label }}</span>
                         </a>
                     @endforeach
                 </div>
@@ -77,14 +124,43 @@ $user = filament()->auth()->user();
     </nav>
 
     <div class="vestra-sidebar__footer">
-        <div class="vestra-sidebar__user">
-            <span class="vestra-sidebar__user-avatar">
-                {{ $user ? strtoupper(substr($user->name, 0, 1)) : 'A' }}
-            </span>
-            <div class="vestra-sidebar__user-info">
-                <span class="vestra-sidebar__user-name">{{ $user?->name ?? 'Admin User' }}</span>
-                <span class="vestra-sidebar__user-role">{{ $user?->roles?->first()?->name ?? 'Administrator' }}</span>
-            </div>
-        </div>
+        <a
+            href="{{ url('/settings') }}"
+            class="vestra-sidebar__footer-btn"
+            aria-label="Settings"
+            x-data="{ tooltip: false }"
+            @mouseenter="if (collapsed) tooltip = true"
+            @mouseleave="tooltip = false"
+        >
+            <x-filament::icon icon="heroicon-o-cog-6-tooth" class="h-5 w-5" />
+            <span class="vestra-sidebar__footer-label">Settings</span>
+            <span
+                x-show="tooltip"
+                x-transition.opacity
+                class="vestra-sidebar__item-tooltip"
+                role="tooltip"
+            >Settings</span>
+        </a>
+
+        <form method="POST" action="{{ filament()->getLogoutUrl() }}" class="vestra-sidebar__logout-form">
+            @csrf
+            <button
+                type="submit"
+                class="vestra-sidebar__footer-btn"
+                aria-label="Sign out"
+                x-data="{ tooltip: false }"
+                @mouseenter="if (collapsed) tooltip = true"
+                @mouseleave="tooltip = false"
+            >
+                <x-filament::icon icon="heroicon-o-arrow-right-start-on-rectangle" class="h-5 w-5" />
+                <span class="vestra-sidebar__footer-label">Sign out</span>
+                <span
+                    x-show="tooltip"
+                    x-transition.opacity
+                    class="vestra-sidebar__item-tooltip"
+                    role="tooltip"
+                >Sign out</span>
+            </button>
+        </form>
     </div>
 </aside>

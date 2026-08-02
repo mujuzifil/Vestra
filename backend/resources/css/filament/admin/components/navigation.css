@@ -30,12 +30,6 @@
     gap: var(--space-3);
 }
 
-.vestra-logo-admin {
-    filter: brightness(0) invert(1);
-    height: 2.25rem;
-    width: auto;
-}
-
 .fi-sidebar-nav {
     padding: var(--space-5) var(--space-4);
     gap: var(--space-6);
