@@ -72,6 +72,6 @@ EXPOSE 3000
 # container and the Next.js server binds IPv4 only, so the probe would fail on
 # a healthy container.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/api/health || exit 1
+    CMD node -e "require('http').get('http://127.0.0.1:3000/api/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
 
 CMD ["node", "server.js"]
