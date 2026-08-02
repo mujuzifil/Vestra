@@ -81,6 +81,14 @@ class NotificationDeliveryResource extends Resource
             ->defaultSort('created_at', 'desc');
     }
 
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListNotificationDeliveries::route('/'),
+            'view' => Pages\ViewNotificationDelivery::route('/{record}'),
+        ];
+    }
+
     public static function canCreate(): bool
     {
         return false;
@@ -99,13 +107,5 @@ class NotificationDeliveryResource extends Resource
     public static function canAccess(): bool
     {
         return auth()->user()?->isAdmin() ?? false;
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListNotificationDeliveries::route('/'),
-            'view' => Pages\ViewNotificationDelivery::route('/{record}'),
-        ];
     }
 }
