@@ -8,10 +8,14 @@ use App\Models\AuditLog;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Category;
+use App\Models\CompanyProfile;
 use App\Models\ContactMessage;
 use App\Models\CustomerAddress;
+use App\Models\CustomerDocument;
 use App\Models\CustomerFeedback;
 use App\Models\Distributor;
+use App\Models\SupportTicket;
+use App\Models\Task;
 use App\Models\DistributorBranch;
 use App\Models\DistributorContact;
 use App\Models\DistributorDocument;
@@ -34,8 +38,11 @@ use App\Policies\AuditLogPolicy;
 use App\Policies\CartItemPolicy;
 use App\Policies\CartPolicy;
 use App\Policies\CategoryPolicy;
+use App\Policies\CompanyProfilePolicy;
 use App\Policies\ContactMessagePolicy;
+use App\Policies\CustomerDocumentPolicy;
 use App\Policies\CustomerFeedbackPolicy;
+use App\Policies\SupportTicketPolicy;
 use App\Policies\DistributorBranchPolicy;
 use App\Policies\DistributorContactPolicy;
 use App\Policies\DistributorDocumentPolicy;
@@ -52,6 +59,7 @@ use App\Policies\PaymentTransactionPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ReviewPolicy;
 use App\Policies\SettingPolicy;
+use App\Policies\TaskPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -68,8 +76,11 @@ class AuthServiceProvider extends ServiceProvider
         Category::class => CategoryPolicy::class,
         ContactMessage::class => ContactMessagePolicy::class,
         CustomerAddress::class => CustomerAddressPolicy::class,
+        CustomerDocument::class => CustomerDocumentPolicy::class,
         CustomerFeedback::class => CustomerFeedbackPolicy::class,
+        CompanyProfile::class => CompanyProfilePolicy::class,
         Distributor::class => DistributorPolicy::class,
+        SupportTicket::class => SupportTicketPolicy::class,
         DistributorBranch::class => DistributorBranchPolicy::class,
         DistributorContact::class => DistributorContactPolicy::class,
         DistributorDocument::class => DistributorDocumentPolicy::class,
@@ -84,6 +95,7 @@ class AuthServiceProvider extends ServiceProvider
         Product::class => ProductPolicy::class,
         Review::class => ReviewPolicy::class,
         Setting::class => SettingPolicy::class,
+        Task::class => TaskPolicy::class,
         User::class => UserPolicy::class,
         DatabaseNotification::class => NotificationPolicy::class,
     ];

@@ -3,7 +3,7 @@ import { ActivityPageClient } from "./activity-page-client";
 import { createMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createMetadata({
-  title: "Account Activity",
+  title: "Recent Activity",
   description: "Review recent activity on your VESTRA account.",
   pathname: "/account/activity",
 });

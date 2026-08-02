@@ -22,11 +22,11 @@ use Illuminate\Database\Eloquent\Model;
 class CustomerResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationGroup = 'CRM';
-    protected static ?string $navigationLabel = 'Customers';
+    protected static ?string $navigationIcon = 'heroicon-o-building-office';
+    protected static ?string $navigationGroup = 'Sales';
+    protected static ?string $navigationLabel = 'Companies';
     protected static ?string $label = 'Customer';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

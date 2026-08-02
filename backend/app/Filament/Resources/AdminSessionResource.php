@@ -18,6 +18,8 @@ class AdminSessionResource extends Resource
 {
     protected static ?string $model = AdminSession::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationIcon = 'heroicon-o-computer-desktop';
 
     protected static ?string $navigationGroup = 'Administration';

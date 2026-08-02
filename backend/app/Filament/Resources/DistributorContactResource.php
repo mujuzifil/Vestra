@@ -17,6 +17,8 @@ class DistributorContactResource extends Resource
 {
     protected static ?string $model = DistributorContact::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $navigationGroup = 'Distributors';

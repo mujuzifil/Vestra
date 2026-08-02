@@ -10,9 +10,11 @@ class SearchAnalytics extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-magnifying-glass';
 
-    protected static ?string $navigationGroup = 'Reports';
+    protected static ?string $navigationGroup = 'Analytics';
 
     protected static ?int $navigationSort = 10;
+
+    protected static bool $shouldRegisterNavigation = false;
 
     protected static string $view = 'filament.pages.search-analytics';
 

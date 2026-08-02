@@ -15,11 +15,14 @@ class QuoteRequestService
     public function submit(array $data): QuoteRequest
     {
         return DB::transaction(function () use ($data) {
+            $user = auth('sanctum')->user();
+
             $attachments = $data['attachments'] ?? null;
             unset($data['attachments']);
 
             $quote = QuoteRequest::create([
                 'reference_number' => $this->generateReference(),
+                'user_id' => $user?->id,
                 'full_name' => $data['full_name'],
                 'company_name' => $data['company_name'],
                 'email' => $data['email'],

@@ -10,7 +10,7 @@ class SystemInformation extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-server';
 
-    protected static ?string $navigationGroup = 'System';
+    protected static ?string $navigationGroup = 'Administration';
 
     protected static ?string $navigationLabel = 'System Information';
 
@@ -19,6 +19,8 @@ class SystemInformation extends Page
     protected static string $view = 'filament.pages.settings.system-information';
 
     protected static ?string $slug = 'system-information';
+
+    protected static bool $shouldRegisterNavigation = false;
 
     public function getTitle(): string|Htmlable
     {

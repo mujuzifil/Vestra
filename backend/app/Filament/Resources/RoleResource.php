@@ -29,7 +29,7 @@ class RoleResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Roles';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
 
     public static function getEloquentQuery(): Builder
     {

@@ -1,13 +1,5 @@
-import { Metadata } from "next";
-import { SettingsPageClient } from "./settings-page-client";
-import { createMetadata } from "@/lib/metadata";
-
-export const metadata: Metadata = createMetadata({
-  title: "Account Settings",
-  description: "Update your profile and password.",
-  pathname: "/account/settings",
-});
+import { redirect } from "next/navigation";
 
 export default function SettingsPage() {
-  return <SettingsPageClient />;
+  redirect("/account/profile");
 }

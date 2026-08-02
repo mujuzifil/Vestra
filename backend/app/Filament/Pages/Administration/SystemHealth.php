@@ -20,6 +20,8 @@ class SystemHealth extends Page
 
     protected static ?int $navigationSort = 9;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string $view = 'filament.pages.administration.system-health';
 
     public function getTitle(): string|Htmlable

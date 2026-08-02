@@ -111,10 +111,10 @@ function ApplicationStatusCard({ status }: { status: string }) {
         Your distributor application is currently under review. Our team will get back to you within 5–7 business days.
       </p>
       <Link
-        href="/account"
+        href="/distributor"
         className="inline-flex items-center gap-2 text-green-600 font-semibold hover:text-green-700"
       >
-        Go to My Account
+        Return to Application
         <ArrowRight className="w-4 h-4" />
       </Link>
     </div>

@@ -27,6 +27,8 @@ class OrderResource extends Resource
     protected static ?string $navigationGroup = 'E-Commerce';
     protected static ?int $navigationSort = 1;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     public static function form(Form $form): Form
     {
         return $form

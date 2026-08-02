@@ -17,15 +17,15 @@ class DistributorBranchResource extends Resource
 {
     protected static ?string $model = DistributorBranch::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+    protected static ?string $navigationIcon = 'heroicon-o-map-pin';
 
     protected static ?string $navigationGroup = 'Distributors';
 
-    protected static ?string $navigationLabel = 'Branches';
+    protected static ?string $navigationLabel = 'Territories';
 
     protected static ?string $label = 'Branch';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

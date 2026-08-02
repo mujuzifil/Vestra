@@ -22,13 +22,13 @@ class AutomatedWorkflowResource extends Resource
 
     protected static ?string $navigationGroup = 'Operations';
 
-    protected static ?string $navigationLabel = 'Automated Workflows';
+    protected static ?string $navigationLabel = 'Workflows';
 
     protected static ?string $modelLabel = 'Automated Workflow';
 
     protected static ?string $pluralModelLabel = 'Automated Workflows';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 3;
 
     public static function getCommonEvents(): array
     {

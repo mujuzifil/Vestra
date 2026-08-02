@@ -28,6 +28,8 @@ class AdministrationDashboard extends Page implements HasForms
 
     protected static ?string $slug = 'administration';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string $view = 'filament.pages.administration.administration-dashboard';
 
     public function getTitle(): string

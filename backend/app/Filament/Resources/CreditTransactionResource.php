@@ -17,9 +17,11 @@ class CreditTransactionResource extends Resource
 {
     protected static ?string $model = CreditTransaction::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
 
-    protected static ?string $navigationGroup = 'Finance';
+    protected static ?string $navigationGroup = 'Distributors';
 
     protected static ?string $navigationLabel = 'Credit Transactions';
 

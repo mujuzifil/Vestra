@@ -29,7 +29,7 @@
 @import "./components/empty-state.css";
 @import "./components/charts.css";
 @import "./components/login.css";
-@import "./components/dashboard.css";
+@import "./components/crm-shell.css";
 @import "./components/products.css";
 @import "./components/orders.css";
 @import "./components/customers.css";
@@ -38,6 +38,7 @@
 @import "./components/reports.css";
 @import "./components/settings.css";
 @import "./components/administration.css";
+@import "./components/tasks.css";
 
 /* Base page typography */
 .fi-body {
@@ -59,13 +60,25 @@
 /* Workspace content area */
 .fi-main {
     background-color: var(--surface-page);
-    padding-top: var(--space-8);
-    padding-bottom: var(--space-12);
+    padding: var(--space-6) var(--space-4) var(--space-12);
+}
+
+@media (min-width: 1024px) {
+    .fi-main {
+        padding: var(--space-8) var(--space-8) var(--space-12);
+    }
+}
+
+@media (min-width: 1280px) {
+    .fi-main {
+        padding: var(--space-8) var(--space-10) var(--space-12);
+    }
 }
 
 /* Max content width override for VESTRA workspace */
 .fi-main-ctn .fi-main {
     max-width: var(--workspace-max-width);
+    margin-inline: auto;
 }
 
 /* Monospace technical values */

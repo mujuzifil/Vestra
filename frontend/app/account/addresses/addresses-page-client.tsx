@@ -111,8 +111,8 @@ export function AddressesPageClient() {
   return (
     <>
       <PageHero
-        title="My Addresses"
-        subtitle="Manage your delivery addresses"
+        title="Business Addresses"
+        subtitle="Manage your business delivery addresses"
         breadcrumb={[{ label: "Account", href: "/account" }, { label: "Addresses" }]}
       />
 
@@ -259,7 +259,7 @@ export function AddressesPageClient() {
                       onChange={(e) => setForm({ ...form, is_default_shipping: e.target.checked })}
                       className="w-4 h-4 rounded border-default text-secondary-600 focus:ring-secondary-500"
                     />
-                    <span className="text-sm text-muted">Default Shipping</span>
+                    <span className="text-sm text-muted">Default Delivery</span>
                   </label>
                   <label className="flex items-center gap-2 p-3 rounded-xl border border-default cursor-pointer hover:bg-surface-page">
                     <input
@@ -314,7 +314,7 @@ export function AddressesPageClient() {
               <div className="py-16 text-center">
                 <MapPin className="w-14 h-14 mx-auto mb-4 text-placeholder" />
                 <h3 className="text-lg font-bold text-text-heading mb-2">No addresses saved</h3>
-                <p className="text-muted mb-6">Add a delivery address for faster order processing.</p>
+                <p className="text-muted mb-6">Add a business address for faster quotation and delivery planning.</p>
                 {!showForm && (
                   <button
                     onClick={() => setShowForm(true)}
@@ -347,7 +347,7 @@ export function AddressesPageClient() {
                         )}
                         {addr.is_default_shipping && (
                           <span className="px-2 py-0.5 bg-info-100 text-info-600 text-xs font-medium rounded-full">
-                            Shipping
+                            Delivery
                           </span>
                         )}
                         {addr.is_default_billing && (

@@ -10,6 +10,8 @@ class EngagementReport extends ReportPage
 
     protected static ?int $navigationSort = 50;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static string $view = 'filament.pages.reports.engagement-report';
 
     public function getTitle(): string

@@ -1,0 +1,1284 @@
+:root {
+    --crm-sidebar-width: 280px;
+    --crm-sidebar-collapsed-width: 80px;
+    --crm-header-height: 72px;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+/* ==========================================================================
+   CRM Shell
+   ========================================================================== */
+.vestra-crm {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--surface-page);
+}
+
+.vestra-crm__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background-color: rgba(2, 6, 23, 0.5);
+}
+
+.vestra-crm__main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    margin-left: 0;
+    transition: margin-left var(--duration-slow) var(--ease-base);
+}
+
+@media (min-width: 1024px) {
+    .vestra-crm__main {
+        margin-left: var(--crm-sidebar-width);
+    }
+
+    .vestra-crm--sidebar-collapsed .vestra-crm__main {
+        margin-left: var(--crm-sidebar-collapsed-width);
+    }
+}
+
+/* ==========================================================================
+   Sidebar
+   ========================================================================== */
+.vestra-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 40;
+    display: flex;
+    width: var(--crm-sidebar-width);
+    flex-direction: column;
+    background: linear-gradient(180deg, var(--primary-800) 0%, var(--primary-900) 100%);
+    color: var(--text-on-dark);
+    transition: width var(--duration-slow) var(--ease-base),
+                transform var(--duration-slow) var(--ease-base);
+    transform: translateX(-100%);
+}
+
+.vestra-crm--sidebar-open .vestra-sidebar {
+    transform: translateX(0);
+}
+
+@media (min-width: 1024px) {
+    .vestra-sidebar {
+        transform: translateX(0);
+    }
+
+    .vestra-sidebar.vestra-sidebar--collapsed {
+        width: var(--crm-sidebar-collapsed-width);
+    }
+}
+
+/* Brand */
+.vestra-sidebar__brand {
+    display: flex;
+    height: var(--crm-header-height);
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: 0 var(--space-4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.vestra-sidebar__brand-lockup {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity var(--duration-base) var(--ease-base),
+                width var(--duration-slow) var(--ease-base);
+}
+
+.vestra-sidebar--collapsed .vestra-sidebar__brand-lockup {
+    opacity: 0;
+    width: 0;
+    pointer-events: none;
+}
+
+.vestra-sidebar__logo {
+    height: 2.25rem;
+    width: auto;
+    filter: brightness(0) invert(1);
+}
+
+.vestra-sidebar__portal {
+    font-size: var(--text-caption);
+    font-weight: var(--font-medium);
+    color: rgba(255, 255, 255, 0.65);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+
+.vestra-sidebar__collapse-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    color: rgba(255, 255, 255, 0.5);
+    transition: background-color var(--duration-fast) var(--ease-base),
+                color var(--duration-fast) var(--ease-base),
+                transform var(--duration-base) var(--ease-base);
+}
+
+@media (min-width: 1024px) {
+    .vestra-sidebar__collapse-btn {
+        display: flex;
+    }
+}
+
+.vestra-sidebar__collapse-btn:hover,
+.vestra-sidebar__collapse-btn:focus-visible {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.vestra-sidebar__collapse-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(112, 192, 80, 0.4);
+}
+
+.vestra-sidebar--collapsed .vestra-sidebar__collapse-btn,
+.vestra-sidebar--collapsed .vestra-sidebar__footer-btn--collapse svg {
+    transform: rotate(180deg);
+}
+
+.vestra-sidebar__footer-btn--collapse svg {
+    transition: transform var(--duration-base) var(--ease-base);
+}
+
+/* Navigation */
+.vestra-sidebar__nav {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-5) var(--space-4);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+.vestra-sidebar__nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+.vestra-sidebar__nav::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-full);
+}
+
+.vestra-sidebar__group {
+    margin-bottom: var(--space-5);
+}
+
+.vestra-sidebar__group-button {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    color: rgba(255, 255, 255, 0.5);
+    transition: background-color var(--duration-fast) var(--ease-base),
+                color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-sidebar__group-button:hover,
+.vestra-sidebar__group-button:focus-visible {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.vestra-sidebar__group-button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(112, 192, 80, 0.4);
+}
+
+.vestra-sidebar__group-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.vestra-sidebar__group-label {
+    flex: 1;
+    text-align: left;
+    font-size: 10px;
+    font-weight: var(--font-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 1;
+    transition: opacity var(--duration-base) var(--ease-base);
+}
+
+.vestra-sidebar--collapsed .vestra-sidebar__group-label {
+    opacity: 0;
+}
+
+.vestra-sidebar__group-chevron {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    opacity: 1;
+    transition: transform var(--duration-fast) var(--ease-base),
+                opacity var(--duration-base) var(--ease-base);
+}
+
+.vestra-sidebar__group-chevron--rotated {
+    transform: rotate(180deg);
+}
+
+.vestra-sidebar--collapsed .vestra-sidebar__group-chevron {
+    opacity: 0;
+}
+
+.vestra-sidebar__group-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding-top: var(--space-1);
+}
+
+.vestra-sidebar__item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+    color: rgba(255, 255, 255, 0.75);
+    transition: background-color var(--duration-fast) var(--ease-base),
+                color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-sidebar__item:hover,
+.vestra-sidebar__item:focus-visible {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.vestra-sidebar__item:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(112, 192, 80, 0.4);
+}
+
+.vestra-sidebar__item--active {
+    background: linear-gradient(90deg, rgba(13, 59, 102, 0.85) 0%, rgba(13, 59, 102, 0.55) 100%);
+    color: var(--text-on-dark);
+    box-shadow: inset 3px 0 0 var(--secondary-500);
+}
+
+.vestra-sidebar__item--active:hover {
+    background: linear-gradient(90deg, rgba(13, 59, 102, 0.95) 0%, rgba(13, 59, 102, 0.65) 100%);
+}
+
+.vestra-sidebar__item-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    background-color: rgba(255, 255, 255, 0.08);
+    transition: background-color var(--duration-fast) var(--ease-base);
+    flex-shrink: 0;
+}
+
+.vestra-sidebar__item:hover .vestra-sidebar__item-icon-wrap {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.vestra-sidebar__item--active .vestra-sidebar__item-icon-wrap {
+    background-color: rgba(255, 255, 255, 0.18);
+}
+
+.vestra-sidebar__item-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.vestra-sidebar__item-label {
+    flex: 1;
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+    opacity: 1;
+    white-space: nowrap;
+    transition: opacity var(--duration-base) var(--ease-base);
+}
+
+.vestra-sidebar--collapsed .vestra-sidebar__item-label {
+    opacity: 0;
+}
+
+.vestra-sidebar__item-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    padding: 2px 6px;
+    border-radius: var(--radius-full);
+    background-color: rgba(255, 255, 255, 0.15);
+    font-size: 10px;
+    font-weight: var(--font-bold);
+    color: rgba(255, 255, 255, 0.9);
+    opacity: 1;
+    transition: opacity var(--duration-base) var(--ease-base);
+}
+
+.vestra-sidebar--collapsed .vestra-sidebar__item-badge {
+    opacity: 0;
+}
+
+/* Tooltip for collapsed items */
+.vestra-sidebar__item-tooltip {
+    position: absolute;
+    left: calc(100% + var(--space-3));
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 50;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    background-color: var(--primary-900);
+    color: white;
+    font-size: var(--text-caption);
+    font-weight: var(--font-medium);
+    white-space: nowrap;
+    box-shadow: var(--shadow-lg);
+    pointer-events: none;
+}
+
+.vestra-sidebar__item-tooltip::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-right: 4px solid var(--primary-900);
+}
+
+/* Footer */
+.vestra-sidebar__footer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.vestra-sidebar__logout-form {
+    margin: 0;
+}
+
+.vestra-sidebar__footer-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: 100%;
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+    color: rgba(255, 255, 255, 0.75);
+    transition: background-color var(--duration-fast) var(--ease-base),
+                color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-sidebar__footer-btn:hover,
+.vestra-sidebar__footer-btn:focus-visible {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.vestra-sidebar__footer-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(112, 192, 80, 0.4);
+}
+
+.vestra-sidebar__footer-label {
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+    opacity: 1;
+    white-space: nowrap;
+    transition: opacity var(--duration-base) var(--ease-base);
+}
+
+.vestra-sidebar--collapsed .vestra-sidebar__footer-label {
+    opacity: 0;
+}
+
+.vestra-sidebar--collapsed .vestra-sidebar__footer {
+    align-items: center;
+    padding: var(--space-3) var(--space-2);
+}
+
+.vestra-sidebar--collapsed .vestra-sidebar__footer-btn {
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+.vestra-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    height: var(--crm-header-height);
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: 0 var(--space-4);
+    background-color: var(--surface-page);
+    border-bottom: 1px solid var(--border-default);
+    box-shadow: var(--shadow-sm);
+}
+
+@media (min-width: 1024px) {
+    .vestra-header {
+        padding: 0 var(--space-6) 0 var(--space-4);
+    }
+}
+
+.vestra-header__left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+}
+
+.vestra-header__menu-btn,
+.vestra-header__collapse-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    transition: background-color var(--duration-fast) var(--ease-base),
+                color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-header__menu-btn:hover,
+.vestra-header__collapse-btn:hover {
+    background-color: var(--neutral-100);
+    color: var(--text-heading);
+}
+
+.vestra-header__collapse-btn .collapse-icon {
+    transition: transform var(--duration-base) var(--ease-base);
+}
+
+.vestra-crm--sidebar-collapsed .vestra-header__collapse-btn .collapse-icon {
+    transform: rotate(180deg);
+}
+
+.vestra-header__search {
+    position: relative;
+    display: none;
+    flex: 1;
+    max-width: 480px;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .vestra-header__search {
+        display: flex;
+    }
+}
+
+.vestra-header__search-icon {
+    position: absolute;
+    left: var(--space-3);
+    color: var(--text-muted);
+}
+
+.vestra-header__search-input {
+    width: 100%;
+    height: 44px;
+    padding: 0 var(--space-10) 0 var(--space-10);
+    border: 1px solid transparent;
+    border-radius: var(--radius-xl);
+    background-color: var(--neutral-100);
+    color: var(--text-heading);
+    font-size: var(--text-body-sm);
+    transition: background-color var(--duration-fast) var(--ease-base),
+                border-color var(--duration-fast) var(--ease-base),
+                box-shadow var(--duration-fast) var(--ease-base);
+}
+
+.vestra-header__search-input:hover,
+.vestra-header__search-input:focus {
+    background-color: var(--surface-card);
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-focus);
+    outline: none;
+}
+
+.vestra-header__search-kbd {
+    position: absolute;
+    right: var(--space-3);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    background-color: var(--neutral-200);
+    font-size: var(--text-caption);
+    font-weight: var(--font-semibold);
+    color: var(--text-muted);
+}
+
+.vestra-header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+}
+
+/* Date selector */
+.vestra-header__date {
+    position: relative;
+    display: none;
+    align-items: center;
+}
+
+@media (min-width: 1024px) {
+    .vestra-header__date {
+        display: flex;
+    }
+}
+
+.vestra-header__date-trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    height: 40px;
+    padding: 0 var(--space-3) 0 var(--space-3);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    background-color: var(--surface-card);
+    color: var(--text-heading);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-base),
+                border-color var(--duration-fast) var(--ease-base),
+                box-shadow var(--duration-fast) var(--ease-base);
+}
+
+.vestra-header__date-trigger:hover {
+    background-color: var(--neutral-50);
+    border-color: var(--border-hover);
+}
+
+.vestra-header__date-trigger:focus-visible {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-focus);
+}
+
+.vestra-header__date-label {
+    min-width: 86px;
+    text-align: left;
+}
+
+.vestra-header__date-chevron {
+    color: var(--text-muted);
+    transition: transform var(--duration-fast) var(--ease-base);
+}
+
+.vestra-header__date-chevron--open {
+    transform: rotate(180deg);
+}
+
+.vestra-header__date-dropdown {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    right: 0;
+    z-index: 50;
+    min-width: 180px;
+    padding: var(--space-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background-color: var(--surface-card);
+    box-shadow: var(--shadow-lg);
+}
+
+.vestra-header__date-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-heading);
+    text-align: left;
+    transition: background-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-header__date-option:hover {
+    background-color: var(--neutral-100);
+}
+
+.vestra-header__date-option--active {
+    color: var(--primary-600);
+    background-color: var(--primary-50);
+}
+
+.vestra-header__action {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    transition: background-color var(--duration-fast) var(--ease-base),
+                color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-header__action:hover {
+    background-color: var(--neutral-100);
+    color: var(--text-heading);
+}
+
+.vestra-header__action:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+}
+
+.vestra-header__badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: var(--radius-full);
+    background-color: var(--danger-500);
+    border: 2px solid var(--surface-page);
+    font-size: 10px;
+    font-weight: var(--font-bold);
+    color: white;
+}
+
+.vestra-header__user {
+    position: relative;
+}
+
+.vestra-header__user-trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    height: 42px;
+    padding: var(--space-1) var(--space-2) var(--space-1) var(--space-1);
+    border-radius: var(--radius-md);
+    color: var(--text-body);
+    transition: background-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-header__user-trigger:hover {
+    background-color: var(--neutral-100);
+}
+
+.vestra-header__user-trigger:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+}
+
+.vestra-header__user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--primary-200), var(--primary-400));
+    color: var(--primary-900);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-bold);
+}
+
+.vestra-header__user-name {
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+}
+
+.vestra-header__user-dropdown {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    right: 0;
+    z-index: 50;
+    min-width: 160px;
+    padding: var(--space-1);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background-color: var(--surface-card);
+    box-shadow: var(--shadow-lg);
+}
+
+.vestra-header__user-link {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-heading);
+    transition: background-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-header__user-link:hover {
+    background-color: var(--neutral-100);
+}
+
+/* ==========================================================================
+   Content Shell
+   ========================================================================== */
+.vestra-content-shell {
+    flex: 1;
+    padding: var(--space-6) var(--space-4) var(--space-12);
+}
+
+@media (min-width: 1024px) {
+    .vestra-content-shell {
+        padding: var(--space-8) var(--space-8) var(--space-12);
+    }
+}
+
+@media (min-width: 1280px) {
+    .vestra-content-shell {
+        padding: var(--space-8) var(--space-10) var(--space-12);
+    }
+}
+
+.vestra-content-shell__container {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   Workspace Dashboard
+   ========================================================================== */
+.vestra-workspace {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.vestra-workspace__hero {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: flex-start;
+}
+
+@media (min-width: 768px) {
+    .vestra-workspace__hero {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+}
+
+.vestra-workspace__title {
+    font-size: var(--text-h1);
+    font-weight: var(--font-bold);
+    color: var(--text-heading);
+    line-height: var(--leading-h1);
+    letter-spacing: var(--tracking-h1);
+}
+
+.vestra-workspace__welcome {
+    margin-top: var(--space-2);
+    font-size: var(--text-body);
+    color: var(--text-muted);
+}
+
+.vestra-workspace__meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: flex-start;
+}
+
+@media (min-width: 768px) {
+    .vestra-workspace__meta {
+        align-items: flex-end;
+    }
+}
+
+.vestra-workspace__date {
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-muted);
+}
+
+.vestra-workspace__quick-actions {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.vestra-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-semibold);
+    transition: background-color var(--duration-fast) var(--ease-base),
+                box-shadow var(--duration-fast) var(--ease-base);
+}
+
+.vestra-button--primary {
+    background-color: var(--primary-500);
+    color: white;
+}
+
+.vestra-button--primary:hover {
+    background-color: var(--primary-600);
+}
+
+.vestra-button--secondary {
+    background-color: var(--surface-card);
+    color: var(--text-heading);
+    border: 1px solid var(--border-default);
+}
+
+.vestra-button--secondary:hover {
+    background-color: var(--neutral-100);
+}
+
+/* ==========================================================================
+   Cards
+   ========================================================================== */
+.vestra-card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-5);
+    transition: box-shadow var(--duration-base) var(--ease-base);
+}
+
+.vestra-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.vestra-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-5);
+    gap: var(--space-3);
+}
+
+.vestra-card-title {
+    font-size: var(--text-body);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+}
+
+.vestra-card-link {
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+    color: var(--primary-500);
+    transition: color var(--duration-fast) var(--ease-base);
+    white-space: nowrap;
+}
+
+.vestra-card-link:hover {
+    color: var(--primary-600);
+}
+
+/* ==========================================================================
+   Grids
+   ========================================================================== */
+.vestra-grid {
+    display: grid;
+    gap: var(--space-6);
+}
+
+.vestra-grid--2-1 {
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+    .vestra-grid--2-1 {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.vestra-grid--3 {
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .vestra-grid--3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1280px) {
+    .vestra-grid--3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ==========================================================================
+   KPI Cards
+   ========================================================================== */
+.vestra-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+    .vestra-kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .vestra-kpi-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1280px) {
+    .vestra-kpi-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+.vestra-kpi-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow:
+        0 1px 2px rgba(10, 22, 40, 0.04),
+        0 2px 4px rgba(10, 22, 40, 0.03);
+    transition: box-shadow var(--duration-base) var(--ease-base),
+                transform var(--duration-base) var(--ease-base),
+                border-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-kpi-card:hover {
+    box-shadow:
+        0 4px 12px rgba(10, 22, 40, 0.08),
+        0 1px 2px rgba(10, 22, 40, 0.04);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+}
+
+.vestra-kpi-card__main {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+}
+
+.vestra-kpi-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-lg);
+    flex-shrink: 0;
+}
+
+.vestra-kpi-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    padding-top: 1px;
+}
+
+.vestra-kpi-card__label {
+    font-size: var(--text-caption);
+    font-weight: var(--font-medium);
+    color: var(--text-muted);
+}
+
+.vestra-kpi-card__value {
+    font-size: var(--text-h1);
+    font-weight: var(--font-bold);
+    color: var(--text-heading);
+    line-height: var(--leading-h1);
+    letter-spacing: var(--tracking-h1);
+}
+
+.vestra-kpi-card__trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: fit-content;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: var(--font-semibold);
+    line-height: 1;
+    background-color: var(--neutral-100);
+    color: var(--neutral-600);
+}
+
+.vestra-kpi-card__trend--up {
+    background-color: var(--success-100);
+    color: var(--success-700);
+}
+
+.vestra-kpi-card__trend--down {
+    background-color: var(--danger-100);
+    color: var(--danger-700);
+}
+
+.vestra-kpi-card__trend--neutral {
+    background-color: var(--neutral-100);
+    color: var(--neutral-600);
+}
+
+.vestra-kpi-card__trend-label {
+    font-weight: var(--font-medium);
+    color: inherit;
+}
+
+/* ==========================================================================
+   Chart
+   ========================================================================== */
+.vestra-chart-card__canvas-wrap {
+    position: relative;
+    height: 320px;
+}
+
+/* ==========================================================================
+   Activity
+   ========================================================================== */
+.vestra-activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.vestra-activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+    color: inherit;
+    text-decoration: none;
+    transition: background-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-activity-item:hover {
+    background-color: var(--neutral-50);
+}
+
+.vestra-activity-item__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    flex-shrink: 0;
+}
+
+.vestra-activity-item__content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+    padding-top: 1px;
+}
+
+.vestra-activity-item__title {
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vestra-activity-item__subtitle {
+    font-size: var(--text-caption);
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vestra-activity-item__time {
+    flex-shrink: 0;
+    font-size: var(--text-caption);
+    color: var(--text-muted);
+    padding-top: 2px;
+}
+
+/* ==========================================================================
+   Notifications
+   ========================================================================== */
+.vestra-notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.vestra-notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+    transition: background-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-notification-item--unread {
+    background-color: var(--primary-50);
+}
+
+.vestra-notification-item__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    background-color: var(--primary-100);
+    color: var(--primary-500);
+    flex-shrink: 0;
+}
+
+.vestra-notification-item__content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+    padding-top: 1px;
+}
+
+.vestra-notification-item__title {
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vestra-notification-item--unread .vestra-notification-item__title {
+    color: var(--primary-700);
+}
+
+.vestra-notification-item__body {
+    font-size: var(--text-caption);
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vestra-notification-item__time {
+    flex-shrink: 0;
+    font-size: var(--text-caption);
+    color: var(--text-muted);
+    padding-top: 2px;
+}
+
+/* ==========================================================================
+   Badges
+   ========================================================================== */
+.vestra-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: var(--radius-full);
+    font-size: 10px;
+    font-weight: var(--font-bold);
+}
+
+.vestra-badge--danger {
+    background-color: var(--danger-500);
+    color: white;
+}
+
+/* ==========================================================================
+   Responsive helpers
+   ========================================================================== */
+@media (max-width: 1023px) {
+    .vestra-sidebar__collapse-btn {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .vestra-header__actions {
+        gap: 0;
+    }
+}
+
+@media (max-width: 639px) {
+    .vestra-workspace__quick-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .vestra-workspace__quick-actions .vestra-button {
+        width: 100%;
+    }
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .vestra-sidebar,
+    .vestra-sidebar__brand-lockup,
+    .vestra-sidebar__group-label,
+    .vestra-sidebar__group-chevron,
+    .vestra-sidebar__item-label,
+    .vestra-sidebar__item-badge,
+    .vestra-sidebar__footer-label,
+    .vestra-crm__main,
+    .vestra-kpi-card,
+    .vestra-card,
+    .vestra-header__action,
+    .vestra-header__collapse-btn,
+    .vestra-sidebar__item,
+    .vestra-sidebar__group-button {
+        transition: none !important;
+    }
+
+    .vestra-kpi-card:hover {
+        transform: none;
+    }
+}

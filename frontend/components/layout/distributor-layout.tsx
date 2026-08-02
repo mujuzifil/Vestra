@@ -24,7 +24,7 @@ export function DistributorLayout({
     }
 
     if (!isLoading && isAuthenticated && user && !user.roles?.includes("distributor")) {
-      router.push("/account");
+      router.push("/distributor");
     }
   }, [isLoading, isAuthenticated, user, router]);
 

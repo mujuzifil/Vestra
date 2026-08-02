@@ -17,6 +17,8 @@ class DistributorProductPriceResource extends Resource
 {
     protected static ?string $model = DistributorProductPrice::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
     protected static ?string $navigationGroup = 'Distributors';

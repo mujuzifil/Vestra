@@ -15,6 +15,8 @@ class LoginActivityResource extends Resource
 {
     protected static ?string $model = LoginActivity::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationIcon = 'heroicon-o-arrow-right-on-rectangle';
 
     protected static ?string $navigationGroup = 'Administration';

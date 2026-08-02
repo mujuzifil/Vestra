@@ -3,19 +3,20 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Dashboard;
-use App\Filament\Pages\Administration\AdministrationDashboard;
-use App\Filament\Pages\Administration\SecurityPolicies;
-use App\Filament\Pages\Administration\SystemHealth;
 use App\Filament\Pages\ForcePasswordChange;
-use App\Filament\Pages\Settings\SettingsDashboard;
-use App\Filament\Pages\Settings\SystemInformation;
-use App\Filament\Pages\Reports\CustomerReport;
-use App\Filament\Pages\Reports\DistributorReport;
-use App\Filament\Pages\Reports\EngagementReport;
-use App\Filament\Pages\Reports\InventoryReport;
-use App\Filament\Pages\Reports\ReportsDashboard;
-use App\Filament\Pages\Reports\RevenueReport;
-use App\Filament\Pages\Reports\SalesReport;
+use App\Filament\Pages\Workspace\ActivityPage;
+use App\Filament\Pages\Workspace\NotificationsPage;
+use App\Filament\Pages\Workspace\TasksPage;
+use App\Filament\Pages\Sales\PipelinePage;
+use App\Filament\Pages\Sales\OpportunitiesPage;
+use App\Filament\Pages\CustomerSuccess\SupportPage;
+use App\Filament\Pages\Marketing\MediaPage;
+use App\Filament\Pages\Marketing\SeoPage;
+use App\Filament\Pages\Analytics\ExecutiveAnalyticsPage;
+use App\Filament\Pages\Analytics\SalesAnalyticsPage;
+use App\Filament\Pages\Analytics\OperationsAnalyticsPage;
+use App\Filament\Pages\Analytics\FinanceAnalyticsPage;
+use App\Filament\Pages\Administration\IntegrationsPage;
 use App\Http\Middleware\EnsureAdminPasswordChanged;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -41,8 +42,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('')
             ->login()
             ->brandName('VESTRA')
-            ->brandLogo(fn () => view('filament.components.vestra-logo'))
-            ->brandLogoHeight('2rem')
+            ->brandLogo(fn () => view('filament.components.vestra-logo', ['variant' => 'admin']))
+            ->brandLogoHeight('2.5rem')
             ->favicon(asset('favicon.svg'))
             ->font('Poppins')
             ->colors([
@@ -129,35 +130,35 @@ class AdminPanelProvider extends PanelProvider
             ->maxContentWidth('full')
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->navigationGroups([
-                'E-Commerce',
-                'Catalog',
-                'Inventory',
+                'Workspace',
+                'Sales',
                 'Distributors',
-                'Finance',
-                'CRM',
+                'Customer Success',
+                'Products',
                 'Operations',
-                'Requests',
-                'Reports',
+                'Marketing',
+                'Analytics',
+                'Communications',
                 'Administration',
-                'System',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Dashboard::class,
                 ForcePasswordChange::class,
-                AdministrationDashboard::class,
-                SecurityPolicies::class,
-                SystemHealth::class,
-                SettingsDashboard::class,
-                SystemInformation::class,
-                ReportsDashboard::class,
-                RevenueReport::class,
-                SalesReport::class,
-                CustomerReport::class,
-                InventoryReport::class,
-                EngagementReport::class,
-                DistributorReport::class,
+                TasksPage::class,
+                NotificationsPage::class,
+                ActivityPage::class,
+                PipelinePage::class,
+                OpportunitiesPage::class,
+                SupportPage::class,
+                MediaPage::class,
+                SeoPage::class,
+                ExecutiveAnalyticsPage::class,
+                SalesAnalyticsPage::class,
+                OperationsAnalyticsPage::class,
+                FinanceAnalyticsPage::class,
+                IntegrationsPage::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([])

@@ -35,6 +35,7 @@ class QuoteRequest extends Model
         'assigned_to',
         'attachments',
         'crm_metadata',
+        'user_id',
     ];
 
     protected function casts(): array
@@ -57,6 +58,11 @@ class QuoteRequest extends Model
     public function assignedUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function statusLabel(): string

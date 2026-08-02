@@ -5,18 +5,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
-  User,
-  Camera,
-  Shield,
-  Lock,
-  Settings,
+  FileText,
+  Handshake,
+  Bookmark,
+  FolderOpen,
+  HeadphonesIcon,
+  Building2,
   MapPin,
-  Bell,
+  User,
+  Shield,
+  SlidersHorizontal,
   History,
-  Clock,
-  ShoppingBag,
-  Star,
-  Heart,
+  Bell,
   LogOut,
   Menu,
   X,
@@ -33,16 +33,16 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: "Dashboard", href: "/account", icon: LayoutDashboard },
-  { label: "Orders", href: "/account/orders", icon: ShoppingBag },
-  { label: "Reviews", href: "/account/reviews", icon: Star },
-  { label: "Wishlist", href: "/account/wishlist", icon: Heart },
-  { label: "Recently Viewed", href: "/account/recently-viewed", icon: Clock },
-  { label: "Profile", href: "/account/profile", icon: User },
-  { label: "Photo", href: "/account/profile/photo", icon: Camera },
-  { label: "Security", href: "/account/security", icon: Shield },
-  { label: "Password", href: "/account/password", icon: Lock },
-  { label: "Preferences", href: "/account/preferences", icon: Settings },
+  { label: "My Quotes", href: "/account/quotes", icon: FileText },
+  { label: "Distributor Application", href: "/account/distributor", icon: Handshake },
+  { label: "Saved Products", href: "/account/saved-products", icon: Bookmark },
+  { label: "Documents", href: "/account/documents", icon: FolderOpen },
+  { label: "Support", href: "/account/support", icon: HeadphonesIcon },
+  { label: "Company Information", href: "/account/company", icon: Building2 },
   { label: "Addresses", href: "/account/addresses", icon: MapPin },
+  { label: "Profile", href: "/account/profile", icon: User },
+  { label: "Security", href: "/account/security", icon: Shield },
+  { label: "Preferences", href: "/account/preferences", icon: SlidersHorizontal },
   { label: "Activity", href: "/account/activity", icon: History },
   { label: "Notifications", href: "/notifications", icon: Bell },
 ];
@@ -57,7 +57,7 @@ function CustomerSidebar() {
       <div className="flex items-center justify-between p-4 lg:p-6 border-b border-border-default">
         <Link href="/account" className="flex items-center gap-2" onClick={onNavigate}>
           <span className="text-xl font-extrabold text-primary-900">VESTRA</span>
-          <span className="px-2 py-0.5 text-xs font-semibold text-white bg-primary-500 rounded-full">Account</span>
+          <span className="px-2 py-0.5 text-xs font-semibold text-white bg-primary-500 rounded-full">Business Portal</span>
         </Link>
         <button
           type="button"
@@ -93,14 +93,7 @@ function CustomerSidebar() {
         })}
       </div>
 
-      <div className="p-3 lg:p-4 border-t border-border-default space-y-1">
-        <Link
-          href="/distributor"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-neutral-600 hover:bg-neutral-50 hover:text-primary-900 transition-colors-base"
-        >
-          <LayoutDashboard className="w-5 h-5" />
-          <span>Distributor Portal</span>
-        </Link>
+      <div className="p-3 lg:p-4 border-t border-border-default">
         <button
           type="button"
           onClick={() => logout().then(() => (window.location.href = "/"))}

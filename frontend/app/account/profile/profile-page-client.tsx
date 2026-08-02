@@ -91,18 +91,18 @@ export function ProfilePageClient() {
     <>
       <PageHero
         title="Edit Profile"
-        subtitle="Update your personal information"
-        breadcrumb={[{ label: "Account", href: "/account" }, { label: "Settings", href: "/account/settings" }, { label: "Profile" }]}
+        subtitle="Manage your personal contact information"
+        breadcrumb={[{ label: "Account", href: "/account" }, { label: "Profile" }]}
       />
 
       <section className="py-12 lg:py-20 bg-surface-page">
         <Container>
           <Link
-            href="/account/settings"
+            href="/account"
             className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
-            Back to Settings
+            Back to Account
           </Link>
 
           <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8">

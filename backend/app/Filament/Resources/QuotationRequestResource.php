@@ -20,6 +20,8 @@ class QuotationRequestResource extends Resource
 {
     protected static ?string $model = QuotationRequest::class;
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $navigationGroup = 'Distributors';

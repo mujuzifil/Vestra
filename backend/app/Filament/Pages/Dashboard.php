@@ -2,58 +2,55 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\AlertsWidget;
-use App\Filament\Widgets\ApiHealthWidget;
-use App\Filament\Widgets\CustomerIntelligenceWidget;
-use App\Filament\Widgets\DistributorIntelligenceWidget;
-use App\Filament\Widgets\ExecutiveKpiWidget;
-use App\Filament\Widgets\ForecastWidget;
-use App\Filament\Widgets\InventoryIntelligenceWidget;
-use App\Filament\Widgets\InventoryValueWidget;
-use App\Filament\Widgets\LowStockWidget;
-use App\Filament\Widgets\OperationalKpiWidget;
-use App\Filament\Widgets\OrderStatusChartWidget;
-use App\Filament\Widgets\OutstandingCreditWidget;
-use App\Filament\Widgets\QuickActionsWidget;
-use App\Filament\Widgets\RecentActivityWidget;
-use App\Filament\Widgets\RecentOrdersWidget;
-use App\Filament\Widgets\RevenueChartWidget;
-use App\Filament\Widgets\SearchAnalyticsWidget;
-use App\Filament\Widgets\TopDistributorsWidget;
-use Filament\Pages\Dashboard as BaseDashboard;
+use App\Services\Admin\WorkspaceDataService;
+use Filament\Pages\Page;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 
-class Dashboard extends BaseDashboard
+class Dashboard extends Page
 {
-    protected static string $view = 'filament.pages.dashboard';
+    protected static string $routePath = '/';
+
+    protected static ?int $navigationSort = -2;
+
+    protected static string $layout = 'filament.layouts.crm';
+
+    protected static string $view = 'filament.pages.workspace-dashboard';
 
     protected static ?string $navigationIcon = 'heroicon-o-home';
 
-    public function getTitle(): string
+    protected static ?string $navigationGroup = 'Workspace';
+
+    protected static ?string $navigationLabel = 'Dashboard';
+
+    public static function getRoutePath(): string
     {
-        return 'VESTRA Dashboard';
+        return static::$routePath;
     }
 
-    public function getWidgets(): array
+    #[Url(as: 'range')]
+    public string $dateRange = 'this-week';
+
+    public function getTitle(): string
     {
-        return [
-            ExecutiveKpiWidget::class,
-            OperationalKpiWidget::class,
-            QuickActionsWidget::class,
-            RevenueChartWidget::class,
-            OrderStatusChartWidget::class,
-            ForecastWidget::class,
-            CustomerIntelligenceWidget::class,
-            DistributorIntelligenceWidget::class,
-            InventoryIntelligenceWidget::class,
-            SearchAnalyticsWidget::class,
-            ApiHealthWidget::class,
-            InventoryValueWidget::class,
-            OutstandingCreditWidget::class,
-            RecentOrdersWidget::class,
-            TopDistributorsWidget::class,
-            LowStockWidget::class,
-            AlertsWidget::class,
-            RecentActivityWidget::class,
-        ];
+        return 'Workspace Dashboard';
+    }
+
+    #[On('dashboard-range-changed')]
+    public function updateRange(string $range): void
+    {
+        if (in_array($range, ['this-week', 'this-month', 'last-30-days'], true)) {
+            $this->dateRange = $range;
+        }
+    }
+
+    public function getWorkspaceData(): WorkspaceDataService
+    {
+        return app(WorkspaceDataService::class);
+    }
+
+    public function getHeroDate(): string
+    {
+        return now()->format('l, F j, Y');
     }
 }

@@ -729,3 +729,96 @@ export interface PaginatedBlogPosts {
   per_page: number;
   total: number;
 }
+
+// Customer account portal (B2B)
+
+export interface CustomerQuoteItem {
+  id: number;
+  product_id?: number | null;
+  product_name: string;
+  package_size?: string | null;
+  quantity: number;
+  notes?: string | null;
+}
+
+export interface CustomerQuote {
+  id: number;
+  reference_number: string;
+  company_name?: string | null;
+  status: string;
+  status_label: string;
+  priority?: string | null;
+  estimated_value?: string | null;
+  items: CustomerQuoteItem[];
+  requirements?: string | null;
+  attachments?: string[] | null;
+  sales_representative?: { name: string; email: string } | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CustomerDocument {
+  id: number;
+  title: string;
+  type: string;
+  file_name: string;
+  mime_type?: string | null;
+  size?: number | null;
+  download_url?: string | null;
+  created_at: string;
+}
+
+export interface SupportTicketReply {
+  id: number;
+  message: string;
+  author?: { name: string; type: "staff" | "customer" } | null;
+  attachments?: string[] | null;
+  created_at: string;
+}
+
+export interface SupportTicket {
+  id: number;
+  reference_number: string;
+  subject: string;
+  enquiry_type: string;
+  message: string;
+  status: string;
+  priority: string;
+  assigned_to?: { name: string; email: string } | null;
+  replies: SupportTicketReply[];
+  attachments?: string[] | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CompanyProfile {
+  company_name?: string | null;
+  industry?: string | null;
+  business_type?: string | null;
+  tax_identification?: string | null;
+  registration_number?: string | null;
+  website?: string | null;
+  district?: string | null;
+  city?: string | null;
+  country?: string | null;
+  address?: string | null;
+  primary_contact_name?: string | null;
+  primary_contact_phone?: string | null;
+  primary_contact_email?: string | null;
+  updated_at?: string | null;
+}
+
+export interface AccountDashboard {
+  quotes: {
+    submitted: number;
+    pending: number;
+    approved: number;
+  };
+  support_enquiries: number;
+  documents: number;
+  saved_products: number;
+  unread_notifications: number;
+  distributor_status?: string | null;
+  recent_quotes: CustomerQuote[];
+  recent_documents: CustomerDocument[];
+}

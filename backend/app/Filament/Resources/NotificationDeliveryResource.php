@@ -15,11 +15,13 @@ class NotificationDeliveryResource extends Resource
 {
     protected static ?string $model = NotificationDelivery::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
+    protected static ?string $navigationIcon = 'heroicon-o-bell';
 
-    protected static ?string $navigationGroup = 'System';
+    protected static ?string $navigationGroup = 'Communications';
 
-    protected static ?int $navigationSort = 81;
+    protected static ?string $navigationLabel = 'Notifications';
+
+    protected static ?int $navigationSort = 2;
 
     public static function table(Table $table): Table
     {
@@ -104,5 +106,13 @@ class NotificationDeliveryResource extends Resource
     public static function canAccess(): bool
     {
         return auth()->user()?->isAdmin() ?? false;
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListNotificationDeliveries::route('/'),
+            'view' => Pages\ViewNotificationDelivery::route('/{record}'),
+        ];
     }
 }

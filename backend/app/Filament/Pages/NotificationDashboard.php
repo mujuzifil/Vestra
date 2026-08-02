@@ -12,11 +12,13 @@ class NotificationDashboard extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-bell-alert';
 
-    protected static ?string $navigationGroup = 'System';
+    protected static ?string $navigationGroup = 'Communications';
 
     protected static ?int $navigationSort = 79;
 
     protected static string $view = 'filament.pages.notification-dashboard';
+
+    protected static bool $shouldRegisterNavigation = false;
 
     public function getTitle(): string
     {
