@@ -1,8 +1,10 @@
 # VESTRA Version 2.0 — Final Release Report
 
+> **Update:** The v2.0.0 release was tagged and merged to `master` but the automated production deployment failed. The code was subsequently deployed manually as **v2.0.1**. See `docs/releases/v2.0.1/VERSION_2.0_FINAL_REPORT.md` for the actual deployed release report.
+
 ## Summary
 
-VESTRA Version 2.0 successfully transforms the platform from an e-commerce storefront into a B2B corporate website focused on commercial enquiries, distributor partnerships, and institutional supply.
+VESTRA Version 2.0 transforms the platform from an e-commerce storefront into a B2B corporate website focused on commercial enquiries, distributor partnerships, and institutional supply.
 
 ## Release Details
 
@@ -11,7 +13,6 @@ VESTRA Version 2.0 successfully transforms the platform from an e-commerce store
 | Version | v2.0.0 |
 | Merge commit | `d426966` |
 | Tag | `v2.0.0` |
-| Deploy workflow | https://github.com/mujuzifil/Vestra/actions/runs/30716076211 |
 | Date | 2026-08-01 |
 
 ## What Was Delivered
@@ -28,47 +29,26 @@ VESTRA Version 2.0 successfully transforms the platform from an e-commerce store
 3. **Business Workflows**
    - Fully backend-integrated quote, distributor, and contact forms.
    - Filament admin resources for sales and operations teams.
-   - Email confirmations and admin notifications.
+   - Email confirmations and admin notifications (requires SMTP credentials in production).
 
 4. **Backend Hardening**
    - Admin API routes protected by `can:admin`.
    - Default-password guard active.
-   - Quote request schema fixed with `requirements` column.
 
 5. **Infrastructure**
-   - Docker production stack deployed via GitHub Actions.
-   - SSL, backups, queue workers, scheduler, and monitoring in place.
+   - Docker production stack.
+   - SSL, backups, queue workers, scheduler, and monitoring.
 
-## Validation
+## Deployment Outcome
 
-- Frontend lint, type-check, and production build passed locally.
-- GitHub Actions CI runs backend tests, frontend build, media validation, and Docker production build.
-- Post-deploy verification is documented in `PRODUCTION_VALIDATION.md`.
-- **Production deploy did not complete** due to a Docker registry login failure (missing/incorrect `DOCKER_USERNAME`/`DOCKER_PASSWORD` secrets).
-
-## Known Limitations
-
-See `KNOWN_LIMITATIONS.md`. Key items:
-
-- Legacy commerce APIs remain registered but unreachable from the public site.
-- Blog and distributor directory are CMS-ready but require content population.
-- SMS notifications currently log instead of send.
-- Production deployment is blocked until registry secrets are fixed or the release is deployed manually.
+- Automated GitHub Actions deployment failed at the Docker registry login step.
+- Manual deployment succeeded as v2.0.1 with hotfixes.
+- See `docs/releases/v2.0.1/` for validation results and remaining items.
 
 ## Rollback
 
-Rollback instructions are in `ROLLBACK_PLAN.md`. All v2.0.0 migrations are additive, so a code-only rollback is safe.
+Rollback instructions are in `docs/releases/v2.0.1/ROLLBACK_PLAN.md`.
 
 ## Conclusion
 
-Version 2.0 is tagged and merged to `master`, but the production deploy is **not yet live**. The release code is ready; deployment is blocked only by the GitHub Actions registry-login secrets. Once those secrets are corrected (or the release is deployed manually on the VPS), the platform will be operationally ready for B2B lead generation and distributor recruitment.
-
-## Next Steps
-
-1. Fix `DOCKER_USERNAME` and `DOCKER_PASSWORD` repository secrets, then re-run the deploy workflow.
-2. Alternatively, deploy manually on the VPS with `./scripts/deploy.sh --build`.
-3. Complete post-deploy validation checklist.
-4. Monitor error logs and queue health for 24 hours.
-5. Populate blog articles and distributor records.
-6. Schedule backend commerce cleanup.
-7. Run Lighthouse and accessibility scans in CI.
+Version 2.0 code is merged to `master` and tagged `v2.0.0`. Production is running the hotfixed release `v2.0.1`. The only remaining operational item is configuring SMTP credentials for email delivery.
