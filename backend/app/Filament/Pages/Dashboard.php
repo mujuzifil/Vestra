@@ -2,22 +2,31 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\KpiCardsWidget;
-use App\Filament\Widgets\MyTasksWidget;
-use App\Filament\Widgets\NotificationsWidget;
-use App\Filament\Widgets\RecentActivityWidget;
-use App\Filament\Widgets\SalesOverviewChartWidget;
-use App\Filament\Widgets\UpcomingEventsWidget;
-use Filament\Pages\Dashboard as BaseDashboard;
+use App\Services\Admin\WorkspaceDataService;
+use Filament\Pages\Page;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 
-class Dashboard extends BaseDashboard
+class Dashboard extends Page
 {
-    protected static string $view = 'filament.pages.dashboard';
+    protected static string $routePath = '/';
+
+    protected static ?int $navigationSort = -2;
+
+    protected static string $layout = 'filament.layouts.crm';
+
+    protected static string $view = 'filament.pages.workspace-dashboard';
 
     protected static ?string $navigationIcon = 'heroicon-o-home';
 
     protected static ?string $navigationGroup = 'Workspace';
+
+    protected static ?string $navigationLabel = 'Workspace';
+
+    public static function getRoutePath(): string
+    {
+        return static::$routePath;
+    }
 
     #[Url(as: 'range')]
     public string $dateRange = 'this-week';
@@ -27,15 +36,21 @@ class Dashboard extends BaseDashboard
         return 'Workspace Dashboard';
     }
 
-    public function getWidgets(): array
+    #[On('dashboard-range-changed')]
+    public function updateRange(string $range): void
     {
-        return [
-            KpiCardsWidget::class,
-            SalesOverviewChartWidget::class,
-            RecentActivityWidget::class,
-            MyTasksWidget::class,
-            NotificationsWidget::class,
-            UpcomingEventsWidget::class,
-        ];
+        if (in_array($range, ['this-week', 'this-month', 'last-30-days'], true)) {
+            $this->dateRange = $range;
+        }
+    }
+
+    public function getWorkspaceData(): WorkspaceDataService
+    {
+        return app(WorkspaceDataService::class);
+    }
+
+    public function getHeroDate(): string
+    {
+        return now()->format('l, F j, Y');
     }
 }

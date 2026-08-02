@@ -9,6 +9,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/css/filament/admin/theme.css',
+                'resources/js/admin/dashboard-chart.js',
             ],
             refresh: true,
         }),
