@@ -86,7 +86,7 @@ $notifications = $data->getNotifications();
             <div class="vestra-card">
                 <div class="vestra-card-header">
                     <h3 class="vestra-card-title">My Tasks</h3>
-                    <span class="vestra-card-link text-[var(--text-muted)]">View all</span>
+                    <a href="{{ url('/tasks') }}" class="vestra-card-link">View all</a>
                 </div>
                 <x-admin.empty-state
                     icon="heroicon-o-check-circle"

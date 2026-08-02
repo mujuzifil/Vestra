@@ -15,6 +15,7 @@ use App\Models\CustomerDocument;
 use App\Models\CustomerFeedback;
 use App\Models\Distributor;
 use App\Models\SupportTicket;
+use App\Models\Task;
 use App\Models\DistributorBranch;
 use App\Models\DistributorContact;
 use App\Models\DistributorDocument;
@@ -58,6 +59,7 @@ use App\Policies\PaymentTransactionPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ReviewPolicy;
 use App\Policies\SettingPolicy;
+use App\Policies\TaskPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -93,6 +95,7 @@ class AuthServiceProvider extends ServiceProvider
         Product::class => ProductPolicy::class,
         Review::class => ReviewPolicy::class,
         Setting::class => SettingPolicy::class,
+        Task::class => TaskPolicy::class,
         User::class => UserPolicy::class,
         DatabaseNotification::class => NotificationPolicy::class,
     ];

@@ -347,6 +347,7 @@ class WorkspaceDataService
             str_contains($action, 'product') => 'heroicon-o-cube',
             str_contains($action, 'order') => 'heroicon-o-shopping-cart',
             str_contains($action, 'setting') => 'heroicon-o-cog-6-tooth',
+            str_contains($action, 'task') => 'heroicon-o-check-circle',
             default => 'heroicon-o-bolt',
         };
     }

@@ -38,6 +38,7 @@
 @import "./components/reports.css";
 @import "./components/settings.css";
 @import "./components/administration.css";
+@import "./components/tasks.css";
 
 /* Base page typography */
 .fi-body {
