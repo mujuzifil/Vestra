@@ -11,8 +11,8 @@
     --space-12: 48px;
     --space-16: 64px;
 
-    --sidebar-width: 260px;
-    --sidebar-collapsed-width: 72px;
-    --topbar-height: 64px;
-    --workspace-max-width: 1440px;
+    --sidebar-width: 280px;
+    --sidebar-collapsed-width: 80px;
+    --topbar-height: 72px;
+    --workspace-max-width: 1600px;
 }

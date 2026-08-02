@@ -81,6 +81,12 @@ class SalesOverviewChartWidget extends ChartWidget
             plugins: {
                 legend: { display: false },
                 tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                    titleColor: '#f8fafc',
+                    bodyColor: '#f8fafc',
+                    padding: 12,
+                    cornerRadius: 8,
+                    displayColors: false,
                     callbacks: {
                         label: (context) => 'UGX ' + context.parsed.y.toLocaleString()
                     }
@@ -89,16 +95,32 @@ class SalesOverviewChartWidget extends ChartWidget
             scales: {
                 y: {
                     beginAtZero: true,
+                    border: { display: false },
+                    grid: {
+                        color: 'rgba(226, 232, 240, 0.6)',
+                        drawBorder: false
+                    },
                     ticks: {
+                        color: '#64748b',
+                        font: { size: 11, family: "'Poppins', sans-serif" },
                         callback: (value) => 'UGX ' + (value / 1000) + 'k'
                     }
                 },
                 x: {
-                    grid: { display: false }
+                    border: { display: false },
+                    grid: { display: false },
+                    ticks: {
+                        color: '#64748b',
+                        font: { size: 11, family: "'Poppins', sans-serif" }
+                    }
                 }
             },
             maintainAspectRatio: false,
-            responsive: true
+            responsive: true,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
         }
         JS);
     }
