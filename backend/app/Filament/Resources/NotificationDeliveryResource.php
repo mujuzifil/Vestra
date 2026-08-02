@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Enums\NotificationChannel;
 use App\Enums\NotificationStatus;
+use App\Filament\Resources\NotificationDeliveryResource\Pages;
 use App\Models\NotificationDelivery;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -96,5 +97,13 @@ class NotificationDeliveryResource extends Resource
     public static function canAccess(): bool
     {
         return auth()->user()?->isAdmin() ?? false;
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListNotificationDeliveries::route('/'),
+            'view' => Pages\ViewNotificationDelivery::route('/{record}'),
+        ];
     }
 }
