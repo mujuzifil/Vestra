@@ -3,8 +3,8 @@ import { AddressesPageClient } from "./addresses-page-client";
 import { createMetadata } from "@/lib/metadata";
 
 export const metadata: Metadata = createMetadata({
-  title: "My Addresses",
-  description: "Manage your delivery addresses.",
+  title: "Business Addresses",
+  description: "Manage your business delivery addresses.",
   pathname: "/account/addresses",
 });
 

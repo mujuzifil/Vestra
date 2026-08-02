@@ -45,17 +45,17 @@ export function SecurityPageClient() {
       <PageHero
         title="Security"
         subtitle="Review your account security status"
-        breadcrumb={[{ label: "Account", href: "/account" }, { label: "Settings", href: "/account/settings" }, { label: "Security" }]}
+        breadcrumb={[{ label: "Account", href: "/account" }, { label: "Security" }]}
       />
 
       <section className="py-12 lg:py-20 bg-surface-page">
         <Container>
           <Link
-            href="/account/settings"
+            href="/account"
             className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
-            Back to Settings
+            Back to Account
           </Link>
 
           <div className="grid lg:grid-cols-3 gap-6">
@@ -86,7 +86,15 @@ export function SecurityPageClient() {
                     <Shield className="w-5 h-5 text-secondary-600 mt-0.5" />
                     <div>
                       <p className="font-semibold text-text-heading">Password</p>
-                      <p className="text-sm text-muted">Last changed on {new Date(user.updated_at).toLocaleDateString()}</p>
+                      <p className="text-sm text-muted">
+                        Last changed on{" "}
+                        {(() => {
+                          const dateValue = user.updated_at || user.created_at;
+                          if (!dateValue) return "Unknown";
+                          const date = new Date(dateValue);
+                          return isNaN(date.getTime()) ? "Unknown" : date.toLocaleDateString();
+                        })()}
+                      </p>
                     </div>
                   </div>
 
@@ -141,12 +149,6 @@ export function SecurityPageClient() {
                 <h2 className="text-base font-bold text-text-heading mb-4">Quick Links</h2>
                 <nav className="space-y-2">
                   <Link
-                    href="/account/password"
-                    className="block p-3 rounded-xl text-sm font-medium text-body hover:bg-surface-page hover:text-text-heading"
-                  >
-                    Change Password
-                  </Link>
-                  <Link
                     href="/account/preferences"
                     className="block p-3 rounded-xl text-sm font-medium text-body hover:bg-surface-page hover:text-text-heading"
                   >
@@ -156,7 +158,7 @@ export function SecurityPageClient() {
                     href="/account/activity"
                     className="block p-3 rounded-xl text-sm font-medium text-body hover:bg-surface-page hover:text-text-heading"
                   >
-                    Account Activity
+                    Recent Activity
                   </Link>
                 </nav>
               </div>

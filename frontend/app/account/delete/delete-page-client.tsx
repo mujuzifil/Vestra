@@ -74,17 +74,17 @@ export function DeletePageClient() {
       <PageHero
         title="Delete Account"
         subtitle="Request permanent deletion of your account"
-        breadcrumb={[{ label: "Account", href: "/account" }, { label: "Settings", href: "/account/settings" }, { label: "Delete" }]}
+        breadcrumb={[{ label: "Account", href: "/account" }, { label: "Delete Account" }]}
       />
 
       <section className="py-12 lg:py-20 bg-surface-page">
         <Container>
           <Link
-            href="/account/settings"
+            href="/account"
             className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
-            Back to Settings
+            Back to Account
           </Link>
 
           <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8 max-w-2xl">
@@ -108,7 +108,7 @@ export function DeletePageClient() {
                   <p>Requesting account deletion will start a review process. Once completed:</p>
                   <ul className="list-disc list-inside space-y-1 ml-1">
                     <li>Your personal data will be anonymized or removed.</li>
-                    <li>You will lose access to order history and saved addresses.</li>
+                    <li>You will lose access to account history and saved information.</li>
                     <li>This action cannot be reversed.</li>
                   </ul>
                 </div>

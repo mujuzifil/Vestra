@@ -54,26 +54,26 @@ const NOTIFICATION_ITEMS: PreferenceItem[] = [
   },
   {
     key: "order_updates",
-    label: "Order Updates",
-    description: "Get notified about order status changes.",
+    label: "Quote & Request Updates",
+    description: "Get notified about quote revisions and request status changes.",
     icon: CheckCircle2,
   },
   {
     key: "marketing_emails",
     label: "Marketing Emails",
-    description: "Receive occasional news and offers from VESTRA.",
+    description: "Receive occasional news, insights, and offers from VESTRA.",
     icon: Mail,
   },
   {
     key: "promotional_sms",
     label: "Promotional SMS",
-    description: "Receive special deals and discounts by SMS.",
+    description: "Receive occasional updates and announcements by SMS.",
     icon: MessageSquare,
   },
   {
     key: "newsletter",
     label: "Newsletter",
-    description: "Subscribe to the VESTRA newsletter.",
+    description: "Subscribe to the VESTRA corporate newsletter.",
     icon: Bell,
   },
 ];
@@ -151,17 +151,17 @@ export function PreferencesPageClient() {
       <PageHero
         title="Preferences"
         subtitle="Manage notifications and account preferences"
-        breadcrumb={[{ label: "Account", href: "/account" }, { label: "Settings", href: "/account/settings" }, { label: "Preferences" }]}
+        breadcrumb={[{ label: "Account", href: "/account" }, { label: "Preferences" }]}
       />
 
       <section className="py-12 lg:py-20 bg-surface-page">
         <Container>
           <Link
-            href="/account/settings"
+            href="/account"
             className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
-            Back to Settings
+            Back to Account
           </Link>
 
           <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">

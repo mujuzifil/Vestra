@@ -3,34 +3,47 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, Loader2, Activity, ChevronLeft as PrevIcon, ChevronRight as NextIcon } from "lucide-react";
+import {
+  ChevronLeft,
+  Loader2,
+  Activity,
+  ChevronLeft as PrevIcon,
+  ChevronRight as NextIcon,
+  LogIn,
+  KeyRound,
+  UserCog,
+  MapPin,
+  FileText,
+  SlidersHorizontal,
+  Trash2,
+} from "lucide-react";
 import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
 import { useAuth } from "@/lib/auth-context";
 import { useActivity } from "@/hooks/use-activity";
 import type { ActivityItem } from "@/types";
 
-const ACTIVITY_ICONS: Record<string, string> = {
-  login: "🔐",
-  password_change: "🔑",
-  profile_update: "👤",
-  address_added: "📍",
-  address_updated: "📍",
-  address_deleted: "🗑️",
-  order_placed: "🛒",
-  order_paid: "💳",
-  order_shipped: "🚚",
-  order_delivered: "📦",
-  preference_update: "⚙️",
-  account_deletion_requested: "🚫",
+const ACTIVITY_ICONS: Record<string, React.ElementType> = {
+  login: LogIn,
+  password_change: KeyRound,
+  profile_update: UserCog,
+  address_added: MapPin,
+  address_updated: MapPin,
+  address_deleted: MapPin,
+  order_placed: FileText,
+  order_paid: FileText,
+  order_shipped: FileText,
+  order_delivered: FileText,
+  preference_update: SlidersHorizontal,
+  account_deletion_requested: Trash2,
 };
 
 function ActivityRow({ item }: { item: ActivityItem }) {
-  const icon = ACTIVITY_ICONS[item.type] || "📝";
+  const Icon = ACTIVITY_ICONS[item.type] || Activity;
   return (
     <div className="flex items-start gap-4 p-4 rounded-xl bg-surface-page border border-default">
-      <div className="w-10 h-10 rounded-full bg-surface-card border border-default flex items-center justify-center text-lg flex-shrink-0">
-        {icon}
+      <div className="w-10 h-10 rounded-full bg-surface-card border border-default flex items-center justify-center text-secondary-600 flex-shrink-0">
+        <Icon className="w-5 h-5" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-semibold text-text-heading">{item.description}</p>
@@ -71,19 +84,19 @@ export function ActivityPageClient() {
   return (
     <>
       <PageHero
-        title="Account Activity"
+        title="Recent Activity"
         subtitle="Track recent changes and events on your account"
-        breadcrumb={[{ label: "Account", href: "/account" }, { label: "Settings", href: "/account/settings" }, { label: "Activity" }]}
+        breadcrumb={[{ label: "Account", href: "/account" }, { label: "Activity" }]}
       />
 
       <section className="py-12 lg:py-20 bg-surface-page">
         <Container>
           <Link
-            href="/account/settings"
+            href="/account"
             className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-text-heading mb-6"
           >
             <ChevronLeft className="w-4 h-4" />
-            Back to Settings
+            Back to Account
           </Link>
 
           <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8">
