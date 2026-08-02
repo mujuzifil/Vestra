@@ -23,7 +23,7 @@ class CreditAccountResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
 
-    protected static ?string $navigationGroup = 'Finance';
+    protected static ?string $navigationGroup = 'Distributors';
 
     protected static ?string $navigationLabel = 'Credit Accounts';
 

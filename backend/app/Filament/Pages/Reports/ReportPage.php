@@ -18,7 +18,7 @@ abstract class ReportPage extends Page implements HasForms
     use HasReportFilters;
     use InteractsWithForms;
 
-    protected static ?string $navigationGroup = 'Reports';
+    protected static ?string $navigationGroup = 'Analytics';
 
     protected ReportService $reportService;
 

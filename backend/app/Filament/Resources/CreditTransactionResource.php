@@ -19,7 +19,7 @@ class CreditTransactionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
 
-    protected static ?string $navigationGroup = 'Finance';
+    protected static ?string $navigationGroup = 'Distributors';
 
     protected static ?string $navigationLabel = 'Credit Transactions';
 

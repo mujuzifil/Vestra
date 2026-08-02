@@ -2,25 +2,14 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\AlertsWidget;
-use App\Filament\Widgets\ApiHealthWidget;
-use App\Filament\Widgets\CustomerIntelligenceWidget;
-use App\Filament\Widgets\DistributorIntelligenceWidget;
-use App\Filament\Widgets\ExecutiveKpiWidget;
-use App\Filament\Widgets\ForecastWidget;
-use App\Filament\Widgets\InventoryIntelligenceWidget;
-use App\Filament\Widgets\InventoryValueWidget;
-use App\Filament\Widgets\LowStockWidget;
-use App\Filament\Widgets\OperationalKpiWidget;
-use App\Filament\Widgets\OrderStatusChartWidget;
-use App\Filament\Widgets\OutstandingCreditWidget;
-use App\Filament\Widgets\QuickActionsWidget;
+use App\Filament\Widgets\KpiCardsWidget;
+use App\Filament\Widgets\MyTasksWidget;
+use App\Filament\Widgets\NotificationsWidget;
 use App\Filament\Widgets\RecentActivityWidget;
-use App\Filament\Widgets\RecentOrdersWidget;
-use App\Filament\Widgets\RevenueChartWidget;
-use App\Filament\Widgets\SearchAnalyticsWidget;
-use App\Filament\Widgets\TopDistributorsWidget;
+use App\Filament\Widgets\SalesOverviewChartWidget;
+use App\Filament\Widgets\UpcomingEventsWidget;
 use Filament\Pages\Dashboard as BaseDashboard;
+use Livewire\Attributes\Url;
 
 class Dashboard extends BaseDashboard
 {
@@ -28,32 +17,25 @@ class Dashboard extends BaseDashboard
 
     protected static ?string $navigationIcon = 'heroicon-o-home';
 
+    protected static ?string $navigationGroup = 'Workspace';
+
+    #[Url(as: 'range')]
+    public string $dateRange = 'this-week';
+
     public function getTitle(): string
     {
-        return 'VESTRA Dashboard';
+        return 'Workspace Dashboard';
     }
 
     public function getWidgets(): array
     {
         return [
-            ExecutiveKpiWidget::class,
-            OperationalKpiWidget::class,
-            QuickActionsWidget::class,
-            RevenueChartWidget::class,
-            OrderStatusChartWidget::class,
-            ForecastWidget::class,
-            CustomerIntelligenceWidget::class,
-            DistributorIntelligenceWidget::class,
-            InventoryIntelligenceWidget::class,
-            SearchAnalyticsWidget::class,
-            ApiHealthWidget::class,
-            InventoryValueWidget::class,
-            OutstandingCreditWidget::class,
-            RecentOrdersWidget::class,
-            TopDistributorsWidget::class,
-            LowStockWidget::class,
-            AlertsWidget::class,
+            KpiCardsWidget::class,
+            SalesOverviewChartWidget::class,
             RecentActivityWidget::class,
+            MyTasksWidget::class,
+            NotificationsWidget::class,
+            UpcomingEventsWidget::class,
         ];
     }
 }

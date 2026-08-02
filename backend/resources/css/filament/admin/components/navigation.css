@@ -11,8 +11,18 @@
     background-color: var(--surface-sidebar) !important;
     color: var(--text-on-dark);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    height: var(--topbar-height);
-    padding-inline: var(--space-4);
+    height: auto;
+    min-height: var(--topbar-height);
+    padding: var(--space-3) var(--space-4);
+}
+
+.fi-sidebar-brand {
+    display: flex;
+    align-items: center;
+}
+
+.vestra-logo-admin {
+    filter: brightness(0) invert(1);
 }
 
 .fi-sidebar-nav {
@@ -113,21 +123,12 @@
 }
 
 .fi-sidebar-item.fi-active .fi-sidebar-item-button {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--primary-500);
     color: var(--text-on-dark);
-    position: relative;
 }
 
-.fi-sidebar-item.fi-active .fi-sidebar-item-button::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 18px;
-    background-color: var(--secondary-500);
-    border-radius: 0 var(--radius-full) var(--radius-full) 0;
+.fi-sidebar-item.fi-active .fi-sidebar-item-button:hover {
+    background-color: var(--primary-400);
 }
 
 .fi-sidebar-item.fi-active .fi-sidebar-item-icon,

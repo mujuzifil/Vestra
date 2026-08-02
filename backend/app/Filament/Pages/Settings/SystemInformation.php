@@ -10,7 +10,7 @@ class SystemInformation extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-server';
 
-    protected static ?string $navigationGroup = 'System';
+    protected static ?string $navigationGroup = 'Administration';
 
     protected static ?string $navigationLabel = 'System Information';
 

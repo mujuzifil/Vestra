@@ -28,7 +28,7 @@ class PaymentUploadResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-arrow-up';
 
-    protected static ?string $navigationGroup = 'Finance';
+    protected static ?string $navigationGroup = 'Distributors';
 
     protected static ?string $navigationLabel = 'Payment Uploads';
 

@@ -21,7 +21,7 @@ class DistributorRequestResource extends Resource
 {
     protected static ?string $model = DistributorRequest::class;
     protected static ?string $navigationIcon = 'heroicon-o-truck';
-    protected static ?string $navigationGroup = 'Requests';
+    protected static ?string $navigationGroup = 'Distributors';
     protected static ?string $navigationLabel = 'Distributor Requests';
     protected static ?string $label = 'Distributor Request';
     protected static ?int $navigationSort = 3;

@@ -19,7 +19,7 @@ class DistributorResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
-    protected static ?string $navigationGroup = 'Operations';
+    protected static ?string $navigationGroup = 'Distributors';
 
     protected static ?string $navigationLabel = 'Distributors';
 

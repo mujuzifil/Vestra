@@ -41,8 +41,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('')
             ->login()
             ->brandName('VESTRA')
-            ->brandLogo(fn () => view('filament.components.vestra-logo'))
-            ->brandLogoHeight('2rem')
+            ->brandLogo(fn () => view('filament.components.vestra-logo', ['variant' => 'admin']))
+            ->brandLogoHeight('2.5rem')
             ->favicon(asset('favicon.svg'))
             ->font('Poppins')
             ->colors([
@@ -129,17 +129,16 @@ class AdminPanelProvider extends PanelProvider
             ->maxContentWidth('full')
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->navigationGroups([
-                'E-Commerce',
-                'Catalog',
-                'Inventory',
+                'Workspace',
+                'Sales',
                 'Distributors',
-                'Finance',
-                'CRM',
+                'Customer Success',
+                'Products',
                 'Operations',
-                'Requests',
-                'Reports',
+                'Marketing',
+                'Analytics',
+                'Communications',
                 'Administration',
-                'System',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

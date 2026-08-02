@@ -9,7 +9,7 @@ class ReportsDashboard extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-chart-pie';
 
-    protected static ?string $navigationGroup = 'Reports';
+    protected static ?string $navigationGroup = 'Analytics';
 
     protected static ?string $navigationLabel = 'Reports Dashboard';
 

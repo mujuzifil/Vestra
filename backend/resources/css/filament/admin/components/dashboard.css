@@ -1,63 +1,235 @@
-/* VESTRA Dashboard Layout */
+/* VESTRA Workspace Dashboard v3.0 */
 
-.vestra-dashboard .dashboard-stack {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-8);
+.vestra-workspace-dashboard {
+    --workspace-gap: var(--space-6);
 }
 
-.vestra-dashboard .dashboard-section {
+/* Page header */
+.workspace-header {
+    margin-bottom: var(--space-6);
+}
+
+.workspace-header-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    align-items: flex-start;
+}
+
+@media (min-width: 768px) {
+    .workspace-header-content {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.workspace-title {
+    font-size: var(--text-h1);
+    font-weight: var(--font-bold);
+    color: var(--text-heading);
+    line-height: var(--leading-h1);
+    letter-spacing: var(--tracking-h1);
+    margin: 0;
+}
+
+.workspace-subtitle {
+    margin-top: var(--space-1);
+    font-size: var(--text-body);
+    color: var(--text-muted);
+}
+
+/* Date range selector */
+.workspace-date-selector-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.workspace-date-select {
+    appearance: none;
+    background: transparent;
+    border: none;
+    padding-right: var(--space-4);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-heading);
+    cursor: pointer;
+}
+
+.workspace-date-select:focus {
+    outline: none;
+}
+
+.workspace-date-select:focus-visible + .workspace-date-selector-inner,
+.workspace-date-selector-inner:focus-within {
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-focus);
+}
+
+/* Sections */
+.workspace-section {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
 }
 
-.vestra-dashboard .dashboard-section > h2 {
-    color: var(--text-muted);
-    font-size: var(--text-caption);
-    font-weight: var(--font-semibold);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+/* Grids */
+.workspace-grid {
+    display: grid;
+    gap: var(--workspace-gap);
 }
 
-/* Stats overview card refinements */
-.vestra-dashboard .fi-wi-stats-overview-stats-ctn > div {
+.workspace-grid-2-1 {
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+    .workspace-grid-2-1 {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.workspace-grid-3 {
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .workspace-grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1280px) {
+    .workspace-grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* KPI cards */
+.vestra-workspace-dashboard .fi-wi-stats-overview-stats-ctn {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+    .vestra-workspace-dashboard .fi-wi-stats-overview-stats-ctn {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .vestra-workspace-dashboard .fi-wi-stats-overview-stats-ctn {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1280px) {
+    .vestra-workspace-dashboard .fi-wi-stats-overview-stats-ctn {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+.vestra-workspace-dashboard .fi-wi-stats-overview-stat {
+    background-color: var(--surface-card);
     border: 1px solid var(--border-default);
     border-radius: var(--radius-md);
-    background-color: var(--surface-card);
-    padding: var(--space-5);
     box-shadow: var(--shadow-sm);
+    padding: var(--space-5);
     transition: box-shadow var(--duration-base) var(--ease-base);
 }
 
-.vestra-dashboard .fi-wi-stats-overview-stats-ctn > div:hover {
+.vestra-workspace-dashboard .fi-wi-stats-overview-stat:hover {
     box-shadow: var(--shadow-md);
 }
 
-/* Chart widget refinements */
-.vestra-dashboard .fi-wi-chart canvas {
-    max-height: 300px;
+.vestra-workspace-dashboard .fi-wi-stats-overview-stat-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--text-muted);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
 }
 
-/* Quick action refinements */
-.vestra-dashboard .fi-wi-quick-actions a,
-.vestra-dashboard .fi-wi-quick-actions button {
-    text-decoration: none;
+.vestra-workspace-dashboard .fi-wi-stats-overview-stat-value {
+    margin-top: var(--space-2);
+    color: var(--text-heading);
+    font-size: 1.75rem;
+    font-weight: var(--font-bold);
+    letter-spacing: var(--tracking-h1);
 }
 
-/* Alert and activity widget refinements */
-.vestra-dashboard .fi-wi-alerts .fi-section,
-.vestra-dashboard .fi-wi-recent-activity .fi-section {
+.vestra-workspace-dashboard .fi-wi-stats-overview-stat-description {
+    margin-top: var(--space-1);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-caption);
+    font-weight: var(--font-medium);
+}
+
+.vestra-workspace-dashboard .fi-wi-stats-overview-stat-description-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+}
+
+/* Workspace cards */
+.vestra-card {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-5);
     height: 100%;
 }
 
-/* Table widget header link spacing */
-.vestra-dashboard .fi-wi-table-widget .fi-ta-header-actions {
-    margin-inline-start: auto;
+.vestra-card h3 {
+    color: var(--text-heading);
+    font-size: var(--text-body);
+    font-weight: var(--font-semibold);
 }
 
-/* Smooth widget loading */
-.vestra-dashboard .fi-wi-widget {
+/* Chart widget */
+.vestra-workspace-dashboard .fi-wi-chart {
+    background-color: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-5);
+}
+
+.vestra-workspace-dashboard .fi-wi-chart-heading {
+    color: var(--text-heading);
+    font-size: var(--text-body);
+    font-weight: var(--font-semibold);
+}
+
+.vestra-workspace-dashboard .fi-wi-chart-description {
+    color: var(--text-muted);
+    font-size: var(--text-body-sm);
+}
+
+/* Empty states */
+.vestra-card .empty-state-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-full);
+    background-color: var(--neutral-100);
+    color: var(--neutral-400);
+}
+
+/* Widget loading animation */
+.vestra-workspace-dashboard .fi-wi-widget {
     animation: fade-in var(--duration-base) var(--ease-out);
 }
 
@@ -73,7 +245,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .vestra-dashboard .fi-wi-widget {
+    .vestra-workspace-dashboard .fi-wi-widget {
         animation: none;
     }
 }

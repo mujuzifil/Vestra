@@ -22,7 +22,7 @@ class QuoteRequestResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
 
-    protected static ?string $navigationGroup = 'Requests';
+    protected static ?string $navigationGroup = 'Sales';
 
     protected static ?string $navigationLabel = 'Quote Requests';
 

@@ -21,7 +21,7 @@ class StockMovementResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
 
-    protected static ?string $navigationGroup = 'Inventory';
+    protected static ?string $navigationGroup = 'Products';
 
     protected static ?int $navigationSort = 3;
 

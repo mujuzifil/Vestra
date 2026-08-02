@@ -16,7 +16,7 @@ class BlogAuthorResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
-    protected static ?string $navigationGroup = 'Content';
+    protected static ?string $navigationGroup = 'Marketing';
 
     protected static ?string $navigationLabel = 'Blog Authors';
 

@@ -12,7 +12,7 @@ class NotificationDashboard extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-bell-alert';
 
-    protected static ?string $navigationGroup = 'System';
+    protected static ?string $navigationGroup = 'Communications';
 
     protected static ?int $navigationSort = 79;
 

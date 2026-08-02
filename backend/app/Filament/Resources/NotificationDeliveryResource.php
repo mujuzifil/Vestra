@@ -16,7 +16,7 @@ class NotificationDeliveryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
 
-    protected static ?string $navigationGroup = 'System';
+    protected static ?string $navigationGroup = 'Communications';
 
     protected static ?int $navigationSort = 81;
 

@@ -23,6 +23,7 @@ class ReviewResource extends Resource
     protected static ?string $navigationLabel = 'Reviews';
     protected static ?string $label = 'Review';
     protected static ?int $navigationSort = 3;
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function form(Form $form): Form
     {

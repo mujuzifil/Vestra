@@ -21,7 +21,7 @@ class AnnouncementResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-megaphone';
 
-    protected static ?string $navigationGroup = 'System';
+    protected static ?string $navigationGroup = 'Communications';
 
     protected static ?int $navigationSort = 82;
 
