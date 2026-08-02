@@ -94,14 +94,7 @@ export function DistributorSidebar() {
         })}
       </div>
 
-      <div className="p-3 lg:p-4 border-t border-border space-y-1">
-        <Link
-          href="/account"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-text-body hover:bg-surface-page hover:text-text-heading transition-colors-base"
-        >
-          <Bell className="w-5 h-5" />
-          <span>Customer Portal</span>
-        </Link>
+      <div className="p-3 lg:p-4 border-t border-border-default">
         <button
           type="button"
           onClick={() => logout().then(() => (window.location.href = "/"))}

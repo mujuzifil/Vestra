@@ -99,7 +99,7 @@ function CustomerSidebar() {
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-neutral-600 hover:bg-neutral-50 hover:text-primary-900 transition-colors-base"
         >
           <LayoutDashboard className="w-5 h-5" />
-          <span>Distributor Portal</span>
+          <span>Become a Distributor</span>
         </Link>
         <button
           type="button"
