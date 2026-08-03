@@ -32,6 +32,14 @@ class CompanyService
     {
         $query = CompanyProfile::query()
             ->with(['user', 'accountManager'])
+            ->withCount([
+                'quoteRequests as open_quotes_count' => function (Builder $q): void {
+                    $q->whereNotIn('status', ['closed', 'declined', 'approved']);
+                },
+                'supportTickets as active_tickets_count' => function (Builder $q): void {
+                    $q->whereNotIn('status', ['resolved', 'closed']);
+                },
+            ])
             ->when($filters['search'] ?? null, fn (Builder $q, string $term) => $q->search($term))
             ->when($filters['status'] ?? null, fn (Builder $q, array $statuses) => $q->statusIn($statuses))
             ->when($filters['industry'] ?? null, fn (Builder $q, array $industries) => $q->whereIn('industry', $industries))
@@ -42,7 +50,8 @@ class CompanyService
             ->when($filters['date_from'] ?? null, fn (Builder $q, string $from) => $q->whereDate('created_at', '>=', $from))
             ->when($filters['date_until'] ?? null, fn (Builder $q, string $until) => $q->whereDate('created_at', '<=', $until))
             ->when($filters['has_open_quotes'] ?? false, fn (Builder $q) => $q->withOpenQuotes())
-            ->when($filters['has_active_tickets'] ?? false, fn (Builder $q) => $q->withActiveTickets());
+            ->when($filters['has_active_tickets'] ?? false, fn (Builder $q) => $q->withActiveTickets())
+            ->when($filters['has_distributor'] ?? false, fn (Builder $q) => $q->withDistributor());
 
         return $this->applySorting($query, $sort, $direction);
     }
@@ -464,10 +473,15 @@ class CompanyService
 
         return match ($sort) {
             'company_name' => $query->orderBy('company_name', $direction),
+            'primary_contact_name' => $query->orderBy('primary_contact_name', $direction),
+            'primary_contact_phone' => $query->orderBy('primary_contact_phone', $direction),
             'status' => $query->orderBy('status', $direction),
             'created_at' => $query->orderBy('created_at', $direction),
+            'updated_at' => $query->orderBy('updated_at', $direction),
             'industry' => $query->orderBy('industry', $direction),
             'country' => $query->orderBy('country', $direction),
+            'region' => $query->orderBy('region', $direction),
+            'district' => $query->orderBy('district', $direction),
             'account_manager' => $query->orderBy(
                 User::select('name')
                     ->whereColumn('users.id', 'company_profiles.account_manager_id')

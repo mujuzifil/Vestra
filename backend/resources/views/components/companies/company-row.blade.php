@@ -1,4 +1,7 @@
-@props(['company'])
+@props([
+    'company',
+    'selectedIds' => [],
+])
 
 @php
 $status = $company->status;
@@ -8,11 +11,23 @@ $initials = collect(explode(' ', (string) $company->company_name))
     ->map(fn ($part) => strtoupper(substr((string) $part, 0, 1)))
     ->implode('');
 $initials = $initials ?: strtoupper(substr((string) $company->company_name, 0, 1)) ?: '—';
-$openQuotes = $company->quoteRequests()->whereNotIn('status', ['closed', 'declined', 'approved'])->count();
-$activeTickets = $company->supportTickets()->whereNotIn('status', ['resolved', 'closed'])->count();
+$openQuotes = (int) ($company->open_quotes_count ?? 0);
+$activeTickets = (int) ($company->active_tickets_count ?? 0);
+$isSelected = in_array($company->id, $selectedIds, true);
 @endphp
 
 <tr class="vestra-companies__row" wire:key="company-{{ $company->id }}">
+    <td class="vestra-companies__td vestra-companies__td--select">
+        <input
+            type="checkbox"
+            class="vestra-companies__filter-checkbox"
+            wire:model.live="selectedCompanyIds"
+            value="{{ $company->id }}"
+            @checked($isSelected)
+            aria-label="Select {{ $company->company_name }}"
+        />
+    </td>
+
     <td class="vestra-companies__td vestra-companies__td--company">
         <div class="vestra-companies__company-primary">
             <span class="vestra-companies__avatar">{{ $initials }}</span>
@@ -31,12 +46,28 @@ $activeTickets = $company->supportTickets()->whereNotIn('status', ['resolved', '
         </div>
     </td>
 
+    <td class="vestra-companies__td vestra-companies__td--contact">
+        <span class="vestra-companies__cell-text">{{ $company->primary_contact_name ?: '—' }}</span>
+    </td>
+
     <td class="vestra-companies__td vestra-companies__td--industry">
         <span class="vestra-companies__cell-text">{{ $company->industry ?? '—' }}</span>
     </td>
 
+    <td class="vestra-companies__td vestra-companies__td--phone">
+        <span class="vestra-companies__cell-text">{{ $company->primary_contact_phone ?: '—' }}</span>
+    </td>
+
     <td class="vestra-companies__td vestra-companies__td--country">
         <span class="vestra-companies__cell-text">{{ $company->country ?? '—' }}</span>
+    </td>
+
+    <td class="vestra-companies__td vestra-companies__td--region">
+        <span class="vestra-companies__cell-text">{{ $company->region ?: '—' }}</span>
+    </td>
+
+    <td class="vestra-companies__td vestra-companies__td--district">
+        <span class="vestra-companies__cell-text">{{ $company->district ?: '—' }}</span>
     </td>
 
     <td class="vestra-companies__td vestra-companies__td--account-manager">
@@ -66,32 +97,36 @@ $activeTickets = $company->supportTickets()->whereNotIn('status', ['resolved', '
     </td>
 
     <td class="vestra-companies__td vestra-companies__td--created">
-        <span class="vestra-companies__created">{{ $company->created_at?->diffForHumans() ?? '—' }}</span>
+        <span class="vestra-companies__created">{{ $company->created_at?->format('M j, Y') ?? '—' }}</span>
+    </td>
+
+    <td class="vestra-companies__td vestra-companies__td--activity">
+        <span class="vestra-companies__created">{{ $company->updated_at?->diffForHumans() ?? '—' }}</span>
     </td>
 
     <td class="vestra-companies__td vestra-companies__td--actions">
         <div class="vestra-companies__actions" x-data="{ open: false }" @click.outside="open = false">
-            <button type="button" @click="open = !open" class="vestra-companies__action-trigger" aria-label="Company actions">
+            <button type="button" @click="open = !open" class="vestra-companies__action-trigger" aria-label="Company actions" aria-haspopup="true">
                 <x-filament::icon icon="heroicon-m-ellipsis-vertical" class="h-5 w-5" />
             </button>
-            <div x-show="open" x-transition class="vestra-companies__action-menu">
-                <button type="button" wire:click="openDetailDrawer({{ $company->id }})" class="vestra-companies__action-item">
+            <div x-show="open" x-transition class="vestra-companies__action-menu" role="menu">
+                <button type="button" wire:click="openDetailDrawer({{ $company->id }})" class="vestra-companies__action-item" role="menuitem">
                     <x-filament::icon icon="heroicon-o-eye" class="h-4 w-4" />
                     <span>View</span>
                 </button>
-                <button type="button" wire:click="openEditDrawer({{ $company->id }})" class="vestra-companies__action-item">
+                <button type="button" wire:click="openEditDrawer({{ $company->id }})" class="vestra-companies__action-item" role="menuitem">
                     <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
                     <span>Edit</span>
                 </button>
-                <a href="/quote-requests/create?user_id={{ $company->user_id }}" class="vestra-companies__action-item">
+                <a href="/quote-requests/create?user_id={{ $company->user_id }}" class="vestra-companies__action-item" role="menuitem">
                     <x-filament::icon icon="heroicon-o-document-plus" class="h-4 w-4" />
                     <span>Create Quote</span>
                 </a>
-                <a href="/workspace/activity?user={{ $company->user_id }}" class="vestra-companies__action-item">
+                <a href="/workspace/activity?user={{ $company->user_id }}" class="vestra-companies__action-item" role="menuitem">
                     <x-filament::icon icon="heroicon-o-clock" class="h-4 w-4" />
                     <span>View Activity</span>
                 </a>
-                <button type="button" wire:click="deleteCompany({{ $company->id }})" wire:confirm="Are you sure you want to delete this company?" class="vestra-companies__action-item vestra-companies__action-item--danger">
+                <button type="button" wire:click="deleteCompany({{ $company->id }})" wire:confirm="Are you sure you want to delete this company?" class="vestra-companies__action-item vestra-companies__action-item--danger" role="menuitem">
                     <x-filament::icon icon="heroicon-o-trash" class="h-4 w-4" />
                     <span>Delete</span>
                 </button>

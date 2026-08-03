@@ -1465,3 +1465,199 @@
         transition: none !important;
     }
 }
+
+/* ==========================================================================
+   Phase 13.6r — Layout, filter panel, denser table
+   ========================================================================== */
+
+.vestra-companies__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: start;
+}
+
+@media (min-width: 1280px) {
+    .vestra-companies__layout {
+        grid-template-columns: minmax(0, 1fr) 300px;
+    }
+}
+
+.vestra-companies__main {
+    min-width: 0;
+}
+
+.vestra-companies__filters-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    height: 40px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background-color: var(--surface-card);
+    color: var(--text-heading);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+    cursor: pointer;
+}
+
+.vestra-companies__filters-toggle:hover {
+    background-color: var(--neutral-50);
+}
+
+.vestra-companies__filters-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background-color: var(--primary-500, #0052ff);
+    color: #fff;
+    font-size: 11px;
+    font-weight: var(--font-semibold);
+}
+
+.vestra-companies__filter-panel {
+    display: none;
+    flex-direction: column;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-xl);
+    background-color: var(--surface-card);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.vestra-companies__filter-panel--open {
+    display: flex;
+}
+
+.vestra-companies__filter-panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-bottom: 1px solid var(--border-default);
+}
+
+.vestra-companies__filter-panel-title {
+    margin: 0;
+    font-size: var(--text-body);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+}
+
+.vestra-companies__filter-panel-subtitle {
+    margin: 2px 0 0;
+    font-size: var(--text-caption);
+    color: var(--text-muted);
+}
+
+.vestra-companies__filter-panel-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.vestra-companies__filter-panel-close:hover {
+    background-color: var(--neutral-50);
+    color: var(--text-heading);
+}
+
+.vestra-companies__filter-panel-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    max-height: min(70vh, 720px);
+    overflow-y: auto;
+}
+
+.vestra-companies__filter-panel-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.vestra-companies__filter-panel-legend {
+    margin: 0;
+    font-size: var(--text-caption);
+    font-weight: var(--font-semibold);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.vestra-companies__filter-panel-select {
+    width: 100%;
+    min-height: 36px;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background-color: var(--surface-card);
+    color: var(--text-heading);
+    font-size: var(--text-body-sm);
+}
+
+.vestra-companies__filter-panel-footer {
+    display: flex;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    border-top: 1px solid var(--border-default);
+}
+
+.vestra-companies__filter-panel-footer .vestra-button {
+    flex: 1;
+}
+
+.vestra-companies__bulk-bar {
+    display: flex;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border-default);
+    background-color: var(--primary-50, #eff6ff);
+}
+
+.vestra-companies__bulk-count {
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-heading);
+}
+
+.vestra-companies__th--select,
+.vestra-companies__td--select {
+    width: 40px;
+    text-align: center;
+}
+
+.vestra-companies__th--contact,
+.vestra-companies__td--contact,
+.vestra-companies__th--phone,
+.vestra-companies__td--phone,
+.vestra-companies__th--region,
+.vestra-companies__td--region,
+.vestra-companies__th--district,
+.vestra-companies__td--district,
+.vestra-companies__th--activity,
+.vestra-companies__td--activity {
+    min-width: 110px;
+}
+
+@media (max-width: 1279px) {
+    .vestra-companies__filter-panel--open {
+        order: 2;
+    }
+}

@@ -40,6 +40,7 @@ class CompanyExportController
             'date_until' => $request->input('date_until'),
             'has_open_quotes' => $request->boolean('has_open_quotes'),
             'has_active_tickets' => $request->boolean('has_active_tickets'),
+            'has_distributor' => $request->boolean('has_distributor'),
         ];
 
         $rows = $companyService->exportCompanies($filters);
