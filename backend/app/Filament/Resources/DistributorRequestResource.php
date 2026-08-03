@@ -26,6 +26,17 @@ class DistributorRequestResource extends Resource
     protected static ?string $label = 'Distributor Request';
     protected static ?int $navigationSort = 1;
 
+    /**
+     * Distributors → Applications is served by ApplicationsPage.
+     * Keep this resource only for deep links (view/edit) into individual requests.
+     */
+    protected static bool $shouldRegisterNavigation = false;
+
+    public static function getNavigationItems(): array
+    {
+        return [];
+    }
+
     public static function form(Form $form): Form
     {
         return $form
