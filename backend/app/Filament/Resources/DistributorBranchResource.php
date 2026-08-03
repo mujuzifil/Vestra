@@ -27,17 +27,6 @@ class DistributorBranchResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
-    /**
-     * Distributors → Territories is served by TerritoriesPage.
-     * Keep this resource only for branch record create/edit deep links.
-     */
-    protected static bool $shouldRegisterNavigation = false;
-
-    public static function getNavigationItems(): array
-    {
-        return [];
-    }
-
     public static function form(Form $form): Form
     {
         return $form
