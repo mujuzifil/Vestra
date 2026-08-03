@@ -9,6 +9,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -184,7 +185,7 @@ class NotificationService
         ];
     }
 
-    private function baseQuery(): Builder
+    private function baseQuery(): MorphMany
     {
         return $this->currentUser()
             ->notifications()
@@ -192,10 +193,10 @@ class NotificationService
     }
 
     /**
-     * @param  Builder<DatabaseNotification>  $query
+     * @param  MorphMany  $query
      * @param  array<string, mixed>  $filters
      */
-    private function applyFilters(Builder $query, array $filters): void
+    private function applyFilters(MorphMany $query, array $filters): void
     {
         $search = $filters['search'] ?? null;
         $status = $filters['status'] ?? null;
@@ -241,9 +242,9 @@ class NotificationService
     }
 
     /**
-     * @param  Builder<DatabaseNotification>  $query
+     * @param  MorphMany  $query
      */
-    private function applySorting(Builder $query, string $sortField, string $sortDirection): void
+    private function applySorting(MorphMany $query, string $sortField, string $sortDirection): void
     {
         $direction = in_array(strtolower($sortDirection), ['asc', 'desc'], true)
             ? strtolower($sortDirection)
