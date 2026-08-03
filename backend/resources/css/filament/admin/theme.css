@@ -40,6 +40,7 @@
 @import "./components/administration.css";
 @import "./components/tasks.css";
 @import "./components/activity.css";
+@import "./components/companies.css";
 
 /* Base page typography */
 .fi-body {
