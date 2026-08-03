@@ -44,6 +44,7 @@
 @import "./components/quotes.css";
 @import "./components/partners.css";
 @import "./components/territories.css";
+@import "./components/credit-workspace.css";
 
 /* Base page typography */
 .fi-body {

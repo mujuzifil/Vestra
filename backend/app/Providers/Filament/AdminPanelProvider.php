@@ -13,6 +13,7 @@ use App\Filament\Pages\Sales\QuotesPage;
 use App\Filament\Pages\Sales\PipelinePage;
 use App\Filament\Pages\Sales\OpportunitiesPage;
 use App\Filament\Pages\Distributors\ActivePartnersPage;
+use App\Filament\Pages\Distributors\CreditPage;
 use App\Filament\Pages\CustomerSuccess\SupportPage;
 use App\Filament\Pages\Marketing\MediaPage;
 use App\Filament\Pages\Marketing\SeoPage;
@@ -23,6 +24,7 @@ use App\Filament\Pages\Analytics\FinanceAnalyticsPage;
 use App\Filament\Pages\Administration\IntegrationsPage;
 use App\Http\Controllers\Admin\ActivityExportController;
 use App\Http\Controllers\Admin\CompanyExportController;
+use App\Http\Controllers\Admin\CreditExportController;
 use App\Http\Controllers\Admin\QuoteExportController;
 use App\Http\Controllers\Admin\PartnerExportController;
 use App\Http\Controllers\Admin\TerritoryExportController;
@@ -162,6 +164,7 @@ class AdminPanelProvider extends PanelProvider
                 CompaniesPage::class,
                 QuotesPage::class,
                 TerritoriesPage::class,
+                CreditPage::class,
                 PipelinePage::class,
                 OpportunitiesPage::class,
                 ActivePartnersPage::class,
@@ -187,6 +190,8 @@ class AdminPanelProvider extends PanelProvider
                     ->name('distributors.active-partners.export');
                 Route::get('distributors/territories/export', TerritoryExportController::class)
                     ->name('distributors.territories.export');
+                Route::get('distributors/credit/export', CreditExportController::class)
+                    ->name('distributors.credit.export');
             })
             ->middleware([
                 EncryptCookies::class,
