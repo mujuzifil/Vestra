@@ -10,7 +10,6 @@ use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\CompanyProfile;
 use App\Models\ContactMessage;
-use App\Models\CreditAccount;
 use App\Models\CustomerAddress;
 use App\Models\CustomerDocument;
 use App\Models\CustomerFeedback;
@@ -41,7 +40,6 @@ use App\Policies\CartPolicy;
 use App\Policies\CategoryPolicy;
 use App\Policies\CompanyProfilePolicy;
 use App\Policies\ContactMessagePolicy;
-use App\Policies\CreditAccountPolicy;
 use App\Policies\CustomerDocumentPolicy;
 use App\Policies\CustomerFeedbackPolicy;
 use App\Policies\SupportTicketPolicy;
@@ -81,7 +79,6 @@ class AuthServiceProvider extends ServiceProvider
         CustomerDocument::class => CustomerDocumentPolicy::class,
         CustomerFeedback::class => CustomerFeedbackPolicy::class,
         CompanyProfile::class => CompanyProfilePolicy::class,
-        CreditAccount::class => CreditAccountPolicy::class,
         Distributor::class => DistributorPolicy::class,
         SupportTicket::class => SupportTicketPolicy::class,
         DistributorBranch::class => DistributorBranchPolicy::class,
