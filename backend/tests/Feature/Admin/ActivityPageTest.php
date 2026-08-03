@@ -276,6 +276,21 @@ class ActivityPageTest extends TestCase
         $this->assertEquals('Products', $rows[0]['category']);
     }
 
+    public function test_export_action_does_not_error_for_admin(): void
+    {
+        $admin = $this->admin();
+
+        AuditLog::factory()->create([
+            'action' => 'product_updated',
+            'user_id' => $admin->id,
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(\App\Filament\Pages\Workspace\ActivityPage::class)
+            ->call('export', 'csv')
+            ->assertOk();
+    }
+
     public function test_csv_export_service_streams_data(): void
     {
         $admin = $this->admin();
