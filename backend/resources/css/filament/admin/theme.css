@@ -43,6 +43,7 @@
 @import "./components/companies.css";
 @import "./components/quotes.css";
 @import "./components/partners.css";
+@import "./components/territories.css";
 
 /* Base page typography */
 .fi-body {
