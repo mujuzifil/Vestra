@@ -2,7 +2,10 @@
 
 namespace App\Notifications;
 
+use App\Enums\NotificationCategory;
 use App\Enums\NotificationChannel;
+use App\Enums\NotificationPriority;
+use App\Enums\NotificationType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -25,7 +28,12 @@ class SystemNotification extends Notification
         private readonly array $variables = [],
         private readonly array $channels = [NotificationChannel::IN_APP->value],
         private readonly ?string $actionUrl = null,
-        private readonly string $priority = 'normal',
+        private readonly NotificationPriority|string $priority = NotificationPriority::INFORMATION,
+        private readonly NotificationCategory|string|null $category = null,
+        private readonly NotificationType|string|null $type = null,
+        private readonly ?string $relatedType = null,
+        private readonly ?int $relatedId = null,
+        private readonly ?int $triggeredByUserId = null,
     ) {}
 
     public function via(object $notifiable): array
@@ -67,13 +75,22 @@ class SystemNotification extends Notification
 
     public function toDatabase(object $notifiable): array
     {
+        $type = $this->resolveType();
+        $category = $this->resolveCategory($type);
+        $priority = $this->resolvePriority();
+
         return [
             'template_key' => $this->templateKey,
             'title' => $this->replaceVariables($this->title),
             'message' => $this->replaceVariables($this->inAppBody ?? $this->emailBody ?? $this->smsBody ?? ''),
-            'priority' => $this->priority,
+            'priority' => $priority->value,
+            'category' => $category->value,
+            'type' => $type->value,
             'action_url' => $this->actionUrl,
             'variables' => $this->variables,
+            'related_type' => $this->relatedType,
+            'related_id' => $this->relatedId,
+            'triggered_by_user_id' => $this->triggeredByUserId,
         ];
     }
 
@@ -84,12 +101,47 @@ class SystemNotification extends Notification
 
     public function toPush(object $notifiable): array
     {
+        $type = $this->resolveType();
+        $category = $this->resolveCategory($type);
+        $priority = $this->resolvePriority();
+
         return [
             'title' => $this->replaceVariables($this->title),
             'body' => $this->replaceVariables($this->inAppBody ?? $this->smsBody ?? $this->title),
             'action_url' => $this->actionUrl,
-            'priority' => $this->priority,
+            'priority' => $priority->value,
+            'category' => $category->value,
+            'type' => $type->value,
         ];
+    }
+
+    private function resolveType(): NotificationType
+    {
+        if ($this->type === null) {
+            return NotificationType::SYSTEM;
+        }
+
+        return $this->type instanceof NotificationType
+            ? $this->type
+            : NotificationType::tryFrom($this->type) ?? NotificationType::SYSTEM;
+    }
+
+    private function resolveCategory(?NotificationType $type): NotificationCategory
+    {
+        if ($this->category === null) {
+            return $type?->category() ?? NotificationCategory::SYSTEM;
+        }
+
+        return $this->category instanceof NotificationCategory
+            ? $this->category
+            : NotificationCategory::tryFrom($this->category) ?? ($type?->category() ?? NotificationCategory::SYSTEM);
+    }
+
+    private function resolvePriority(): NotificationPriority
+    {
+        return $this->priority instanceof NotificationPriority
+            ? $this->priority
+            : NotificationPriority::tryFrom($this->priority) ?? NotificationPriority::INFORMATION;
     }
 
     private function replaceVariables(?string $content): string

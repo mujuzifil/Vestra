@@ -16,9 +16,9 @@
             class="h-6 w-6"
         />
 
-        @if ($unreadCount > 0)
+        @if ($this->unreadCount > 0)
             <span class="fi-notification-badge">
-                {{ $unreadCount > 9 ? '9+' : $unreadCount }}
+                {{ $this->unreadCount > 9 ? '9+' : $this->unreadCount }}
             </span>
         @endif
     </button>
@@ -44,7 +44,7 @@
                 {{ __('Notifications') }}
             </h3>
 
-            @if ($unreadCount > 0)
+            @if ($this->unreadCount > 0)
                 <button
                     type="button"
                     wire:click="markAllRead"
@@ -56,18 +56,21 @@
         </div>
 
         <div class="max-h-96 overflow-y-auto">
-            @forelse ($notifications as $notification)
-                <div
+            @forelse ($this->notifications as $notification)
+                <a
+                    href="{{ $notification['action_url'] ?: filament()->getUrl('/workspace/notifications') }}"
+                    wire:click="close"
                     class="flex gap-3 px-4 py-3 transition-colors hover:bg-neutral-50 {{ $notification['read'] ? 'opacity-75' : 'bg-primary-50/30' }}"
                     role="menuitem"
                 >
                     <div class="shrink-0 pt-0.5">
                         <div @class([
                             'flex h-8 w-8 items-center justify-center rounded-full',
-                            'bg-info-100 text-info-600' => $notification['priority'] === 'info',
+                            'bg-info-100 text-info-600' => $notification['priority'] === 'information',
                             'bg-warning-100 text-warning-600' => $notification['priority'] === 'warning',
                             'bg-success-100 text-success-600' => $notification['priority'] === 'success',
-                            'bg-danger-100 text-danger-600' => $notification['priority'] === 'danger',
+                            'bg-danger-100 text-danger-600' => $notification['priority'] === 'critical',
+                            'bg-neutral-100 text-neutral-600' => ! in_array($notification['priority'], ['information', 'warning', 'success', 'critical']),
                         ])>
                             <x-filament::icon
                                 :icon="$notification['icon']"
@@ -91,7 +94,7 @@
                     @if (! $notification['read'])
                         <span class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary-500"></span>
                     @endif
-                </div>
+                </a>
             @empty
                 <div class="px-4 py-8 text-center">
                     <x-filament::icon
@@ -106,9 +109,12 @@
         </div>
 
         <div class="border-t border-neutral-200 bg-neutral-50 px-4 py-2">
-            <p class="text-xs text-neutral-400">
-                {{ __('Notification centre foundation — backend integration pending') }}
-            </p>
+            <a
+                href="{{ filament()->getUrl('/workspace/notifications') }}"
+                class="text-xs font-medium text-primary-600 hover:text-primary-500"
+            >
+                {{ __('View all notifications') }}
+            </a>
         </div>
     </div>
 </div>

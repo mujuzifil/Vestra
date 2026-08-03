@@ -7,6 +7,11 @@ use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationPolicy
 {
+    public function viewAny(User $user): bool
+    {
+        return $user->isAdmin();
+    }
+
     public function view(User $user, DatabaseNotification $notification): bool
     {
         return $notification->notifiable_type === User::class

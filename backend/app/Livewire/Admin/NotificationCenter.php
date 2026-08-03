@@ -2,46 +2,15 @@
 
 namespace App\Livewire\Admin;
 
+use App\Enums\NotificationPriority;
+use App\Enums\NotificationType;
+use App\Services\Admin\NotificationService;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class NotificationCenter extends Component
 {
     public bool $isOpen = false;
-
-    public int $unreadCount = 3;
-
-    public array $notifications = [
-        [
-            'id' => 1,
-            'type' => 'order',
-            'priority' => 'info',
-            'title' => 'New order received',
-            'message' => 'Order #10042 from Clarissa Mraz',
-            'time' => '2 minutes ago',
-            'read' => false,
-            'icon' => 'heroicon-o-shopping-cart',
-        ],
-        [
-            'id' => 2,
-            'type' => 'inventory',
-            'priority' => 'warning',
-            'title' => 'Low stock alert',
-            'message' => 'EcoSuit Cleaner is below threshold',
-            'time' => '1 hour ago',
-            'read' => false,
-            'icon' => 'heroicon-o-exclamation-triangle',
-        ],
-        [
-            'id' => 3,
-            'type' => 'message',
-            'priority' => 'success',
-            'title' => 'Feedback resolved',
-            'message' => 'Customer feedback #128 marked resolved',
-            'time' => '3 hours ago',
-            'read' => true,
-            'icon' => 'heroicon-o-check-circle',
-        ],
-    ];
 
     public function toggle(): void
     {
@@ -55,13 +24,53 @@ class NotificationCenter extends Component
 
     public function markAllRead(): void
     {
-        $this->notifications = array_map(function (array $notification): array {
-            $notification['read'] = true;
+        app(NotificationService::class)->markAllRead();
+    }
 
-            return $notification;
-        }, $this->notifications);
+    public function getUnreadCountProperty(): int
+    {
+        return app(NotificationService::class)->getUnreadCount();
+    }
 
-        $this->unreadCount = 0;
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getNotificationsProperty(): array
+    {
+        $user = Auth::user();
+
+        if ($user === null) {
+            return [];
+        }
+
+        return $user->notifications()
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get()
+            ->map(fn ($notification) => $this->formatNotification($notification))
+            ->toArray();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function formatNotification($notification): array
+    {
+        $data = $notification->data ?? [];
+        $type = NotificationType::tryFromString($data['type'] ?? null) ?? NotificationType::SYSTEM;
+        $priority = NotificationPriority::tryFromString($data['priority'] ?? null) ?? NotificationPriority::INFORMATION;
+
+        return [
+            'id' => $notification->id,
+            'type' => $type->value,
+            'priority' => $priority->value,
+            'title' => $data['title'] ?? $type->label(),
+            'message' => $data['message'] ?? '',
+            'time' => $notification->created_at?->diffForHumans() ?? '',
+            'read' => $notification->read_at !== null,
+            'icon' => $type->icon(),
+            'action_url' => $data['action_url'] ?? null,
+        ];
     }
 
     public function render()
