@@ -128,7 +128,12 @@ class NotificationDispatcherService
             variables: $variables,
             channels: [NotificationChannel::IN_APP->value],
             actionUrl: $metadata['action_url'] ?? null,
-            priority: $metadata['priority'] ?? 'normal'
+            priority: $metadata['priority'] ?? 'normal',
+            category: $metadata['category'] ?? null,
+            type: $metadata['type'] ?? null,
+            relatedType: $metadata['related_type'] ?? null,
+            relatedId: $metadata['related_id'] ?? null,
+            triggeredByUserId: $metadata['triggered_by_user_id'] ?? null,
         );
 
         $user->notify($notification);
