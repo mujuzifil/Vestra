@@ -17,6 +17,7 @@ use App\Filament\Pages\Analytics\SalesAnalyticsPage;
 use App\Filament\Pages\Analytics\OperationsAnalyticsPage;
 use App\Filament\Pages\Analytics\FinanceAnalyticsPage;
 use App\Filament\Pages\Administration\IntegrationsPage;
+use App\Http\Controllers\Admin\ActivityExportController;
 use App\Http\Middleware\EnsureAdminPasswordChanged;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -29,6 +30,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -162,6 +164,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([])
+            ->authenticatedRoutes(function (): void {
+                Route::get('workspace/activity/export', ActivityExportController::class)
+                    ->name('workspace.activity.export');
+            })
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
