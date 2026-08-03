@@ -65,6 +65,13 @@ class CompaniesPage extends Page
 
     public bool $hasActiveTickets = false;
 
+    public bool $hasDistributor = false;
+
+    public bool $showFilterPanel = true;
+
+    /** @var array<int, int> */
+    public array $selectedCompanyIds = [];
+
     #[Url(as: 'sort')]
     public string $sortField = 'created_at';
 
@@ -200,6 +207,7 @@ class CompaniesPage extends Page
             'date_until' => $this->dateUntil,
             'has_open_quotes' => $this->hasOpenQuotes,
             'has_active_tickets' => $this->hasActiveTickets,
+            'has_distributor' => $this->hasDistributor,
         ];
     }
 
@@ -445,9 +453,72 @@ class CompaniesPage extends Page
         $this->dateUntil = null;
         $this->hasOpenQuotes = false;
         $this->hasActiveTickets = false;
+        $this->hasDistributor = false;
         $this->sortField = 'created_at';
         $this->sortDirection = 'desc';
+        $this->selectedCompanyIds = [];
         $this->resetPage();
+    }
+
+    public function applyFilters(): void
+    {
+        $this->selectedCompanyIds = [];
+        $this->resetPage();
+        $this->showFilterPanel = true;
+    }
+
+    public function toggleFilterPanel(): void
+    {
+        $this->showFilterPanel = ! $this->showFilterPanel;
+    }
+
+    public function toggleSelectAll(): void
+    {
+        $pageIds = $this->getCompaniesProperty()->pluck('id')->map(fn ($id) => (int) $id)->all();
+
+        if (count(array_intersect($this->selectedCompanyIds, $pageIds)) === count($pageIds) && count($pageIds) > 0) {
+            $this->selectedCompanyIds = array_values(array_diff($this->selectedCompanyIds, $pageIds));
+        } else {
+            $this->selectedCompanyIds = array_values(array_unique(array_merge($this->selectedCompanyIds, $pageIds)));
+        }
+    }
+
+    public function activeFilterCount(): int
+    {
+        $count = 0;
+
+        if (filled($this->statusFilter)) {
+            $count++;
+        }
+        if (filled($this->industryFilter)) {
+            $count++;
+        }
+        if (filled($this->countryFilter)) {
+            $count++;
+        }
+        if (filled($this->regionFilter)) {
+            $count++;
+        }
+        if (filled($this->districtFilter)) {
+            $count++;
+        }
+        if (filled($this->accountManagerFilter)) {
+            $count++;
+        }
+        if (filled($this->dateFrom) || filled($this->dateUntil)) {
+            $count++;
+        }
+        if ($this->hasOpenQuotes) {
+            $count++;
+        }
+        if ($this->hasActiveTickets) {
+            $count++;
+        }
+        if ($this->hasDistributor) {
+            $count++;
+        }
+
+        return $count;
     }
 
     public function updatedSearch(): void
@@ -505,6 +576,11 @@ class CompaniesPage extends Page
         $this->resetPage();
     }
 
+    public function updatedHasDistributor(): void
+    {
+        $this->resetPage();
+    }
+
     public function hasActiveFilters(): bool
     {
         return filled($this->search)
@@ -517,7 +593,8 @@ class CompaniesPage extends Page
             || filled($this->dateFrom)
             || filled($this->dateUntil)
             || $this->hasOpenQuotes
-            || $this->hasActiveTickets;
+            || $this->hasActiveTickets
+            || $this->hasDistributor;
     }
 
     public function getExportUrl(string $format): string
@@ -535,6 +612,7 @@ class CompaniesPage extends Page
             'date_until' => $this->dateUntil,
             'has_open_quotes' => $this->hasOpenQuotes ?: null,
             'has_active_tickets' => $this->hasActiveTickets ?: null,
+            'has_distributor' => $this->hasDistributor ?: null,
         ]);
     }
 }

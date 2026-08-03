@@ -386,4 +386,86 @@ class CompaniesPageTest extends TestCase
             ->set('search', 'company')
             ->assertSet('paginators.page', 1);
     }
+
+    public function test_table_shows_polished_columns_and_with_count(): void
+    {
+        $admin = $this->admin();
+        $profile = CompanyProfile::factory()->create([
+            'company_name' => 'Bright Era',
+            'primary_contact_name' => 'Jane Contact',
+            'primary_contact_phone' => '+256700000001',
+            'region' => 'Central',
+            'district' => 'Kampala',
+        ]);
+
+        QuoteRequest::factory()->create([
+            'user_id' => $profile->user_id,
+            'status' => 'pending',
+        ]);
+
+        SupportTicket::factory()->create([
+            'user_id' => $profile->user_id,
+            'status' => 'open',
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(CompaniesPage::class)
+            ->assertSee('Jane Contact')
+            ->assertSee('+256700000001')
+            ->assertSee('Central')
+            ->assertSee('Kampala')
+            ->assertSee('Last Activity')
+            ->assertSee('Open Quotes')
+            ->assertSee('Active Tickets');
+
+        $companies = app(CompanyService::class)->paginateCompanies([], 'created_at', 'desc', 10);
+        $this->assertSame(1, (int) $companies->first()->open_quotes_count);
+        $this->assertSame(1, (int) $companies->first()->active_tickets_count);
+    }
+
+    public function test_has_distributor_filter_works(): void
+    {
+        $admin = $this->admin();
+
+        $withDistributor = CompanyProfile::factory()->create(['company_name' => 'Distributor Linked Co']);
+        \App\Models\Distributor::factory()->create(['user_id' => $withDistributor->user_id]);
+
+        CompanyProfile::factory()->create(['company_name' => 'No Distributor Co']);
+
+        Livewire::actingAs($admin)
+            ->test(CompaniesPage::class)
+            ->set('hasDistributor', true)
+            ->call('applyFilters')
+            ->assertSee('Distributor Linked Co')
+            ->assertDontSee('No Distributor Co');
+    }
+
+    public function test_bulk_select_toggle_selects_page_ids(): void
+    {
+        $admin = $this->admin();
+        $profiles = CompanyProfile::factory()->count(3)->create();
+
+        $component = Livewire::actingAs($admin)->test(CompaniesPage::class);
+
+        $component->call('toggleSelectAll')
+            ->assertCount('selectedCompanyIds', 3);
+
+        $component->call('toggleSelectAll')
+            ->assertCount('selectedCompanyIds', 0);
+
+        $this->assertNotEmpty($profiles);
+    }
+
+    public function test_active_filter_count_includes_distributor_toggle(): void
+    {
+        $admin = $this->admin();
+
+        $component = Livewire::actingAs($admin)->test(CompaniesPage::class);
+
+        $this->assertSame(0, $component->instance()->activeFilterCount());
+
+        $component->set('hasDistributor', true);
+
+        $this->assertSame(1, $component->instance()->activeFilterCount());
+    }
 }

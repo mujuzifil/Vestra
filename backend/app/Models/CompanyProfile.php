@@ -85,6 +85,11 @@ class CompanyProfile extends Model
         });
     }
 
+    public function scopeWithDistributor(Builder $query): Builder
+    {
+        return $query->whereHas('user.distributor');
+    }
+
     public function scopeCreatedThisMonth(Builder $query): Builder
     {
         return $query->whereMonth('created_at', now()->month)

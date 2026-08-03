@@ -4,6 +4,7 @@ $kpiCards = $this->kpiCards;
 $filterOptions = $this->filterOptions;
 $assignees = $this->assignees;
 $selectedCompany = $this->selectedCompany;
+$activeFilterCount = $this->activeFilterCount();
 @endphp
 
 <x-filament-panels::page>
@@ -21,29 +22,51 @@ $selectedCompany = $this->selectedCompany;
         </section>
 
         <section class="vestra-workspace__section vestra-companies__content" aria-label="Company list">
-            <div class="vestra-card vestra-companies__table-card">
-                <x-companies.filter-bar
+            <div class="vestra-companies__layout">
+                <div class="vestra-companies__main">
+                    <div class="vestra-card vestra-companies__table-card">
+                        <x-companies.filter-bar
+                            :status-options="\App\Enums\CompanyStatus::cases()"
+                            :industry-options="$filterOptions['industries'] ?? []"
+                            :country-options="$filterOptions['countries'] ?? []"
+                            :account-manager-options="$filterOptions['account_managers'] ?? []"
+                            :active-filter-count="$activeFilterCount"
+                            :show-filter-panel="$showFilterPanel"
+                        />
+
+                        @if (count($selectedCompanyIds) > 0)
+                            <div class="vestra-companies__bulk-bar" role="region" aria-label="Bulk selection">
+                                <span class="vestra-companies__bulk-count">{{ count($selectedCompanyIds) }} selected</span>
+                            </div>
+                        @endif
+
+                        @if ($companies->total() > 0)
+                            <x-companies.company-table
+                                :companies="$companies"
+                                :sort-field="$sortField"
+                                :sort-direction="$sortDirection"
+                                :selected-ids="$selectedCompanyIds"
+                            />
+
+                            <x-companies.pagination :paginator="$companies" />
+                        @else
+                            <x-companies.empty-state
+                                :has-filters="$this->hasActiveFilters()"
+                            />
+                        @endif
+                    </div>
+                </div>
+
+                <x-companies.filter-panel
+                    :show="$showFilterPanel"
                     :status-options="\App\Enums\CompanyStatus::cases()"
                     :industry-options="$filterOptions['industries'] ?? []"
                     :country-options="$filterOptions['countries'] ?? []"
                     :region-options="$filterOptions['regions'] ?? []"
                     :district-options="$filterOptions['districts'] ?? []"
                     :account-manager-options="$filterOptions['account_managers'] ?? []"
+                    :active-filter-count="$activeFilterCount"
                 />
-
-                @if ($companies->total() > 0)
-                    <x-companies.company-table
-                        :companies="$companies"
-                        :sort-field="$sortField"
-                        :sort-direction="$sortDirection"
-                    />
-
-                    <x-companies.pagination :paginator="$companies" />
-                @else
-                    <x-companies.empty-state
-                        :has-filters="$this->hasActiveFilters()"
-                    />
-                @endif
             </div>
         </section>
 
