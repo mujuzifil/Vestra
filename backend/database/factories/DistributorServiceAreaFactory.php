@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Distributor;
-use App\Models\DistributorBranch;
 use App\Models\DistributorServiceArea;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -23,13 +22,5 @@ class DistributorServiceAreaFactory extends Factory
             'district' => fake()->city(),
             'status' => 'covered',
         ];
-    }
-
-    public function forBranch(?DistributorBranch $branch = null): static
-    {
-        return $this->state(fn (): array => [
-            'branch_id' => $branch?->id ?? DistributorBranch::factory(),
-            'status' => 'active',
-        ]);
     }
 }

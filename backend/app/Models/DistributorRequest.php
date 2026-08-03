@@ -52,6 +52,42 @@ class DistributorRequest extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    public function scopeSearch(Builder $query, string $term): Builder
+    {
+        $term = '%'.mb_strtolower(trim($term)).'%';
+
+        return $query->where(function (Builder $q) use ($term): void {
+            $q->whereRaw('LOWER(company_name) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(contact_person) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(email) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(phone) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(address) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(business_description) LIKE ?', [$term]);
+        });
+    }
+
+    public function scopeStatusIn(Builder $query, array $statuses): Builder
+    {
+        $statuses = array_values(array_filter($statuses));
+
+        if ($statuses === []) {
+            return $query;
+        }
+
+        return $query->whereIn('status', $statuses);
+    }
+
+    public function scopePriorityIn(Builder $query, array $priorities): Builder
+    {
+        $priorities = array_values(array_filter($priorities));
+
+        if ($priorities === []) {
+            return $query;
+        }
+
+        return $query->whereIn('priority', $priorities);
+    }
+
     public function scopePending(Builder $query): Builder
     {
         return $query->where('status', DistributorStatus::PENDING);

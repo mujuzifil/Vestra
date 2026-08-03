@@ -8,6 +8,7 @@ use App\Filament\Pages\Workspace\ActivityPage;
 use App\Filament\Pages\Workspace\NotificationsPage;
 use App\Filament\Pages\Workspace\TasksPage;
 use App\Filament\Pages\Distributors\TerritoriesPage;
+use App\Filament\Pages\Distributors\ApplicationsPage;
 use App\Filament\Pages\Sales\CompaniesPage;
 use App\Filament\Pages\Sales\QuotesPage;
 use App\Filament\Pages\Sales\PipelinePage;
@@ -23,6 +24,7 @@ use App\Filament\Pages\Analytics\OperationsAnalyticsPage;
 use App\Filament\Pages\Analytics\FinanceAnalyticsPage;
 use App\Filament\Pages\Administration\IntegrationsPage;
 use App\Http\Controllers\Admin\ActivityExportController;
+use App\Http\Controllers\Admin\ApplicationExportController;
 use App\Http\Controllers\Admin\CompanyExportController;
 use App\Http\Controllers\Admin\CreditExportController;
 use App\Http\Controllers\Admin\QuoteExportController;
@@ -163,6 +165,7 @@ class AdminPanelProvider extends PanelProvider
                 ActivityPage::class,
                 CompaniesPage::class,
                 QuotesPage::class,
+                ApplicationsPage::class,
                 TerritoriesPage::class,
                 CreditPage::class,
                 PipelinePage::class,
@@ -186,6 +189,8 @@ class AdminPanelProvider extends PanelProvider
                     ->name('sales.companies.export');
                 Route::get('sales/quotes/export', QuoteExportController::class)
                     ->name('sales.quotes.export');
+                Route::get('distributors/applications/export', ApplicationExportController::class)
+                    ->name('distributors.applications.export');
                 Route::get('distributors/active-partners/export', PartnerExportController::class)
                     ->name('distributors.active-partners.export');
                 Route::get('distributors/territories/export', TerritoryExportController::class)
