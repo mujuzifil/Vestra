@@ -3,58 +3,20 @@
    ========================================================================== */
 
 .vestra-companies__hero {
+    display: flex;
     flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
     gap: var(--space-4);
 }
 
-.vestra-companies__hero-main {
-    display: flex;
-    flex: 1;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-4);
+.vestra-companies__hero-copy {
     min-width: 0;
-}
-
-.vestra-companies__search {
-    position: relative;
-    display: flex;
-    flex: 1;
-    min-width: 240px;
-    max-width: 360px;
-    align-items: center;
-}
-
-.vestra-companies__search-icon {
-    position: absolute;
-    left: var(--space-3);
-    color: var(--text-muted);
-    width: 18px;
-    height: 18px;
-}
-
-.vestra-companies__search-input {
-    width: 100%;
-    height: 40px;
-    padding: 0 var(--space-4) 0 var(--space-10);
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-lg);
-    background-color: var(--surface-card);
-    color: var(--text-heading);
-    font-size: var(--text-body-sm);
-    transition: border-color var(--duration-fast) var(--ease-base),
-                box-shadow var(--duration-fast) var(--ease-base);
-}
-
-.vestra-companies__search-input:hover,
-.vestra-companies__search-input:focus {
-    border-color: var(--border-focus);
-    box-shadow: var(--shadow-focus);
-    outline: none;
 }
 
 .vestra-companies__header-actions {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--space-2);
 }
@@ -132,6 +94,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
     gap: var(--space-3);
     padding: var(--space-4);
     border-bottom: 1px solid var(--border-default);
@@ -143,6 +106,8 @@
     flex-wrap: wrap;
     gap: var(--space-2);
     align-items: center;
+    flex: 1;
+    min-width: 0;
 }
 
 .vestra-companies__filter {
@@ -321,7 +286,7 @@
 .vestra-companies__table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 900px;
+    min-width: 1100px;
 }
 
 .vestra-companies__table thead {
@@ -1466,9 +1431,21 @@
     }
 }
 
+
 /* ==========================================================================
-   Phase 13.6r — Layout, filter panel, denser table
+   Phase 13.6r â€” Layout matching Companies.png + Quotes polish
    ========================================================================== */
+
+.vestra-companies__hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+}
+
+.vestra-companies__hero-copy {
+    min-width: 0;
+}
 
 .vestra-companies__layout {
     display: grid;
@@ -1477,14 +1454,49 @@
     align-items: start;
 }
 
-@media (min-width: 1280px) {
-    .vestra-companies__layout {
-        grid-template-columns: minmax(0, 1fr) 300px;
+@media (min-width: 1100px) {
+    .vestra-companies__layout--with-panel {
+        grid-template-columns: minmax(0, 1fr) 280px;
     }
 }
 
 .vestra-companies__main {
     min-width: 0;
+}
+
+.vestra-companies__toolbar-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 200px;
+    max-width: 260px;
+    flex: 1;
+}
+
+.vestra-companies__toolbar-search-icon {
+    position: absolute;
+    left: var(--space-3);
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.vestra-companies__toolbar-search-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 var(--space-3) 0 var(--space-10);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background-color: var(--surface-card);
+    color: var(--text-heading);
+    font-size: var(--text-body-sm);
+}
+
+.vestra-companies__toolbar-search-input:focus {
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-focus);
+    outline: none;
 }
 
 .vestra-companies__filters-toggle {
@@ -1500,10 +1512,15 @@
     font-size: var(--text-body-sm);
     font-weight: var(--font-medium);
     cursor: pointer;
+    margin-left: auto;
+    flex-shrink: 0;
 }
 
-.vestra-companies__filters-toggle:hover {
-    background-color: var(--neutral-50);
+.vestra-companies__filters-toggle:hover,
+.vestra-companies__filters-toggle--active {
+    background-color: var(--primary-50, #eff6ff);
+    border-color: var(--primary-300, #93c5fd);
+    color: var(--primary-700, #1d4ed8);
 }
 
 .vestra-companies__filters-badge {
@@ -1521,8 +1538,11 @@
 }
 
 .vestra-companies__filter-panel {
-    display: none;
+    display: flex;
     flex-direction: column;
+    position: sticky;
+    top: var(--space-4);
+    max-height: calc(100vh - 6rem);
     border: 1px solid var(--border-default);
     border-radius: var(--radius-xl);
     background-color: var(--surface-card);
@@ -1530,13 +1550,9 @@
     overflow: hidden;
 }
 
-.vestra-companies__filter-panel--open {
-    display: flex;
-}
-
 .vestra-companies__filter-panel-header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: var(--space-3);
     padding: var(--space-4);
@@ -1550,37 +1566,27 @@
     color: var(--text-heading);
 }
 
-.vestra-companies__filter-panel-subtitle {
-    margin: 2px 0 0;
-    font-size: var(--text-caption);
-    color: var(--text-muted);
-}
-
-.vestra-companies__filter-panel-close {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
+.vestra-companies__filter-panel-clear {
     border: none;
-    border-radius: var(--radius-md);
     background: transparent;
-    color: var(--text-muted);
+    color: var(--primary-600, #0052ff);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
     cursor: pointer;
+    padding: 0;
 }
 
-.vestra-companies__filter-panel-close:hover {
-    background-color: var(--neutral-50);
-    color: var(--text-heading);
+.vestra-companies__filter-panel-clear:hover {
+    text-decoration: underline;
 }
 
 .vestra-companies__filter-panel-body {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-5);
     padding: var(--space-4);
-    max-height: min(70vh, 720px);
     overflow-y: auto;
+    flex: 1;
 }
 
 .vestra-companies__filter-panel-group {
@@ -1593,20 +1599,18 @@
 }
 
 .vestra-companies__filter-panel-legend {
-    margin: 0;
+    margin: 0 0 var(--space-1);
     font-size: var(--text-caption);
     font-weight: var(--font-semibold);
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    color: var(--text-heading);
 }
 
 .vestra-companies__filter-panel-select {
     width: 100%;
-    min-height: 36px;
-    padding: var(--space-2) var(--space-3);
+    height: 40px;
+    padding: 0 var(--space-3);
     border: 1px solid var(--border-default);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     background-color: var(--surface-card);
     color: var(--text-heading);
     font-size: var(--text-body-sm);
@@ -1614,13 +1618,14 @@
 
 .vestra-companies__filter-panel-footer {
     display: flex;
-    gap: var(--space-2);
     padding: var(--space-4);
     border-top: 1px solid var(--border-default);
+    margin-top: auto;
 }
 
-.vestra-companies__filter-panel-footer .vestra-button {
-    flex: 1;
+.vestra-companies__filter-panel-apply {
+    width: 100%;
+    justify-content: center;
 }
 
 .vestra-companies__bulk-bar {
@@ -1637,27 +1642,37 @@
     color: var(--text-heading);
 }
 
+.vestra-companies__country {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    white-space: nowrap;
+}
+
+.vestra-companies__country-flag {
+    font-size: 14px;
+    line-height: 1;
+}
+
 .vestra-companies__th--select,
 .vestra-companies__td--select {
     width: 40px;
     text-align: center;
 }
 
-.vestra-companies__th--contact,
-.vestra-companies__td--contact,
-.vestra-companies__th--phone,
-.vestra-companies__td--phone,
-.vestra-companies__th--region,
-.vestra-companies__td--region,
-.vestra-companies__th--district,
-.vestra-companies__td--district,
-.vestra-companies__th--activity,
-.vestra-companies__td--activity {
-    min-width: 110px;
+.vestra-companies__th--contacts,
+.vestra-companies__td--contacts,
+.vestra-companies__th--quotes,
+.vestra-companies__td--quotes,
+.vestra-companies__th--tickets,
+.vestra-companies__td--tickets {
+    text-align: center;
+    min-width: 88px;
 }
 
-@media (max-width: 1279px) {
-    .vestra-companies__filter-panel--open {
-        order: 2;
+@media (max-width: 1099px) {
+    .vestra-companies__filter-panel {
+        position: static;
+        max-height: none;
     }
 }

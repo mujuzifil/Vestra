@@ -22,11 +22,34 @@ use Illuminate\Database\Eloquent\Model;
 class CustomerResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $navigationIcon = 'heroicon-o-building-office';
+
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+
     protected static ?string $navigationGroup = 'Sales';
-    protected static ?string $navigationLabel = 'Companies';
+
+    protected static ?string $navigationLabel = 'Customers';
+
     protected static ?string $label = 'Customer';
-    protected static ?int $navigationSort = 1;
+
+    protected static ?string $pluralLabel = 'Customers';
+
+    protected static ?int $navigationSort = 99;
+
+    /**
+     * Sales → Companies is served by CompaniesPage.
+     * Keep this resource only for customer record view/edit deep links.
+     */
+    protected static bool $shouldRegisterNavigation = false;
+
+    public static function getNavigationItems(): array
+    {
+        return [];
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 
     public static function form(Form $form): Form
     {

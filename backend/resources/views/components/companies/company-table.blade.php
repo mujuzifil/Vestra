@@ -9,18 +9,14 @@
 $columns = [
     ['key' => 'select', 'label' => '', 'sortable' => false],
     ['key' => 'company', 'label' => 'Company', 'sortable' => true, 'field' => 'company_name'],
-    ['key' => 'contact', 'label' => 'Contact', 'sortable' => true, 'field' => 'primary_contact_name'],
     ['key' => 'industry', 'label' => 'Industry', 'sortable' => true, 'field' => 'industry'],
-    ['key' => 'phone', 'label' => 'Phone', 'sortable' => true, 'field' => 'primary_contact_phone'],
     ['key' => 'country', 'label' => 'Country', 'sortable' => true, 'field' => 'country'],
-    ['key' => 'region', 'label' => 'Region', 'sortable' => true, 'field' => 'region'],
-    ['key' => 'district', 'label' => 'District', 'sortable' => true, 'field' => 'district'],
     ['key' => 'account_manager', 'label' => 'Account Manager', 'sortable' => true, 'field' => 'account_manager'],
     ['key' => 'status', 'label' => 'Status', 'sortable' => true, 'field' => 'status'],
+    ['key' => 'contacts', 'label' => 'Contacts', 'sortable' => false],
     ['key' => 'quotes', 'label' => 'Open Quotes', 'sortable' => false],
     ['key' => 'tickets', 'label' => 'Active Tickets', 'sortable' => false],
     ['key' => 'created', 'label' => 'Created', 'sortable' => true, 'field' => 'created_at'],
-    ['key' => 'activity', 'label' => 'Last Activity', 'sortable' => true, 'field' => 'updated_at'],
     ['key' => 'actions', 'label' => '', 'sortable' => false],
 ];
 $pageIds = $companies->pluck('id')->map(fn ($id) => (int) $id)->all();
