@@ -12,6 +12,11 @@ class DistributorBranchPolicy
         return $user->distributor?->id === $branch->distributor_id;
     }
 
+    public function viewAny(User $user): bool
+    {
+        return $user->isAdmin();
+    }
+
     public function view(User $user, DistributorBranch $branch): bool
     {
         return $user->isAdmin() || $this->owns($user, $branch);
@@ -25,5 +30,10 @@ class DistributorBranchPolicy
     public function delete(User $user, DistributorBranch $branch): bool
     {
         return $user->isAdmin() || $this->owns($user, $branch);
+    }
+
+    public function export(User $user): bool
+    {
+        return $user->isAdmin();
     }
 }
