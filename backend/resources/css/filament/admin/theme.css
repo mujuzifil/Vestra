@@ -41,6 +41,7 @@
 @import "./components/tasks.css";
 @import "./components/activity.css";
 @import "./components/companies.css";
+@import "./components/quotes.css";
 
 /* Base page typography */
 .fi-body {

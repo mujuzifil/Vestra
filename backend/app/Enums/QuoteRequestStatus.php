@@ -23,6 +23,18 @@ enum QuoteRequestStatus: string
         };
     }
 
+    public function icon(): string
+    {
+        return match ($this) {
+            self::PENDING => 'heroicon-o-clock',
+            self::CONTACTED => 'heroicon-o-phone',
+            self::QUOTED => 'heroicon-o-document-text',
+            self::APPROVED => 'heroicon-o-check-circle',
+            self::DECLINED => 'heroicon-o-x-circle',
+            self::CLOSED => 'heroicon-o-archive-box',
+        };
+    }
+
     public function color(): string
     {
         return match ($this) {
