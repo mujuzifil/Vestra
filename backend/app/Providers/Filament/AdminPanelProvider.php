@@ -8,6 +8,7 @@ use App\Filament\Pages\Workspace\ActivityPage;
 use App\Filament\Pages\Workspace\NotificationsPage;
 use App\Filament\Pages\Workspace\TasksPage;
 use App\Filament\Pages\Sales\CompaniesPage;
+use App\Filament\Pages\Sales\QuotesPage;
 use App\Filament\Pages\Sales\PipelinePage;
 use App\Filament\Pages\Sales\OpportunitiesPage;
 use App\Filament\Pages\CustomerSuccess\SupportPage;
@@ -20,6 +21,7 @@ use App\Filament\Pages\Analytics\FinanceAnalyticsPage;
 use App\Filament\Pages\Administration\IntegrationsPage;
 use App\Http\Controllers\Admin\ActivityExportController;
 use App\Http\Controllers\Admin\CompanyExportController;
+use App\Http\Controllers\Admin\QuoteExportController;
 use App\Http\Middleware\EnsureAdminPasswordChanged;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -154,6 +156,7 @@ class AdminPanelProvider extends PanelProvider
                 NotificationsPage::class,
                 ActivityPage::class,
                 CompaniesPage::class,
+                QuotesPage::class,
                 PipelinePage::class,
                 OpportunitiesPage::class,
                 SupportPage::class,
@@ -172,6 +175,8 @@ class AdminPanelProvider extends PanelProvider
                     ->name('workspace.activity.export');
                 Route::get('sales/companies/export', CompanyExportController::class)
                     ->name('sales.companies.export');
+                Route::get('sales/quotes/export', QuoteExportController::class)
+                    ->name('sales.quotes.export');
             })
             ->middleware([
                 EncryptCookies::class,

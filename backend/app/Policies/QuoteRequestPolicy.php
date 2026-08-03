@@ -42,6 +42,11 @@ class QuoteRequestPolicy
         return $user->isAdmin();
     }
 
+    public function export(User $user): bool
+    {
+        return $user->isAdmin();
+    }
+
     public function viewAsCustomer(User $user, QuoteRequest $quoteRequest): bool
     {
         return $quoteRequest->user_id === $user->id;
