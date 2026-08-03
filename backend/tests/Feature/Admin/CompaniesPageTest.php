@@ -48,6 +48,22 @@ class CompaniesPageTest extends TestCase
     {
         $this->assertTrue(Route::has('filament.admin.pages.sales.companies'));
         $this->assertTrue(Route::has('filament.admin.sales.companies.export'));
+        $this->assertStringContainsString('/sales/companies', CompaniesPage::getUrl());
+    }
+
+    public function test_customer_resource_is_hidden_from_navigation(): void
+    {
+        $this->assertFalse(\App\Filament\Resources\CustomerResource::shouldRegisterNavigation());
+        $this->assertSame([], \App\Filament\Resources\CustomerResource::getNavigationItems());
+    }
+
+    public function test_customers_index_redirects_to_companies_workspace(): void
+    {
+        $admin = $this->admin();
+
+        $this->actingAs($admin)
+            ->get('/customers')
+            ->assertRedirect(CompaniesPage::getUrl());
     }
 
     public function test_guest_is_redirected_from_companies_route(): void
@@ -393,9 +409,9 @@ class CompaniesPageTest extends TestCase
         $profile = CompanyProfile::factory()->create([
             'company_name' => 'Bright Era',
             'primary_contact_name' => 'Jane Contact',
-            'primary_contact_phone' => '+256700000001',
-            'region' => 'Central',
-            'district' => 'Kampala',
+            'primary_contact_email' => 'jane@brightera.test',
+            'industry' => 'Technology',
+            'country' => 'Uganda',
         ]);
 
         QuoteRequest::factory()->create([
@@ -410,13 +426,16 @@ class CompaniesPageTest extends TestCase
 
         Livewire::actingAs($admin)
             ->test(CompaniesPage::class)
-            ->assertSee('Jane Contact')
-            ->assertSee('+256700000001')
-            ->assertSee('Central')
-            ->assertSee('Kampala')
-            ->assertSee('Last Activity')
+            ->assertSee('Bright Era')
+            ->assertSee('jane@brightera.test')
+            ->assertSee('Technology')
+            ->assertSee('Uganda')
+            ->assertSee('Contacts')
             ->assertSee('Open Quotes')
-            ->assertSee('Active Tickets');
+            ->assertSee('Active Tickets')
+            ->assertSee('Filters')
+            ->assertSee('Clear all')
+            ->assertSee('Apply Filters');
 
         $companies = app(CompanyService::class)->paginateCompanies([], 'created_at', 'desc', 10);
         $this->assertSame(1, (int) $companies->first()->open_quotes_count);

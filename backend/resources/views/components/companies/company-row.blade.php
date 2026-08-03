@@ -13,7 +13,24 @@ $initials = collect(explode(' ', (string) $company->company_name))
 $initials = $initials ?: strtoupper(substr((string) $company->company_name, 0, 1)) ?: '—';
 $openQuotes = (int) ($company->open_quotes_count ?? 0);
 $activeTickets = (int) ($company->active_tickets_count ?? 0);
+$contactCount = filled($company->primary_contact_name) || filled($company->primary_contact_email) ? 1 : 0;
 $isSelected = in_array($company->id, $selectedIds, true);
+
+$countryFlags = [
+    'Uganda' => '🇺🇬',
+    'Kenya' => '🇰🇪',
+    'Tanzania' => '🇹🇿',
+    'Rwanda' => '🇷🇼',
+    'Malaysia' => '🇲🇾',
+    'Singapore' => '🇸🇬',
+    'United States' => '🇺🇸',
+    'United Kingdom' => '🇬🇧',
+    'South Africa' => '🇿🇦',
+    'Nigeria' => '🇳🇬',
+    'Ghana' => '🇬🇭',
+];
+$country = $company->country;
+$countryFlag = $countryFlags[$country] ?? null;
 @endphp
 
 <tr class="vestra-companies__row" wire:key="company-{{ $company->id }}">
@@ -46,28 +63,21 @@ $isSelected = in_array($company->id, $selectedIds, true);
         </div>
     </td>
 
-    <td class="vestra-companies__td vestra-companies__td--contact">
-        <span class="vestra-companies__cell-text">{{ $company->primary_contact_name ?: '—' }}</span>
-    </td>
-
     <td class="vestra-companies__td vestra-companies__td--industry">
         <span class="vestra-companies__cell-text">{{ $company->industry ?? '—' }}</span>
     </td>
 
-    <td class="vestra-companies__td vestra-companies__td--phone">
-        <span class="vestra-companies__cell-text">{{ $company->primary_contact_phone ?: '—' }}</span>
-    </td>
-
     <td class="vestra-companies__td vestra-companies__td--country">
-        <span class="vestra-companies__cell-text">{{ $company->country ?? '—' }}</span>
-    </td>
-
-    <td class="vestra-companies__td vestra-companies__td--region">
-        <span class="vestra-companies__cell-text">{{ $company->region ?: '—' }}</span>
-    </td>
-
-    <td class="vestra-companies__td vestra-companies__td--district">
-        <span class="vestra-companies__cell-text">{{ $company->district ?: '—' }}</span>
+        @if ($country)
+            <span class="vestra-companies__country">
+                @if ($countryFlag)
+                    <span class="vestra-companies__country-flag" aria-hidden="true">{{ $countryFlag }}</span>
+                @endif
+                <span class="vestra-companies__cell-text">{{ $country }}</span>
+            </span>
+        @else
+            <span class="vestra-companies__empty-cell">—</span>
+        @endif
     </td>
 
     <td class="vestra-companies__td vestra-companies__td--account-manager">
@@ -88,6 +98,10 @@ $isSelected = in_array($company->id, $selectedIds, true);
         </span>
     </td>
 
+    <td class="vestra-companies__td vestra-companies__td--contacts">
+        <span class="vestra-companies__count">{{ $contactCount }}</span>
+    </td>
+
     <td class="vestra-companies__td vestra-companies__td--quotes">
         <span class="vestra-companies__count @if ($openQuotes > 0) vestra-companies__count--active @endif">{{ $openQuotes }}</span>
     </td>
@@ -98,10 +112,6 @@ $isSelected = in_array($company->id, $selectedIds, true);
 
     <td class="vestra-companies__td vestra-companies__td--created">
         <span class="vestra-companies__created">{{ $company->created_at?->format('M j, Y') ?? '—' }}</span>
-    </td>
-
-    <td class="vestra-companies__td vestra-companies__td--activity">
-        <span class="vestra-companies__created">{{ $company->updated_at?->diffForHumans() ?? '—' }}</span>
     </td>
 
     <td class="vestra-companies__td vestra-companies__td--actions">

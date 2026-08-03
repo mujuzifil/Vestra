@@ -467,6 +467,62 @@ class CompaniesPage extends Page
         $this->showFilterPanel = true;
     }
 
+    public function clearStatusFilter(): void
+    {
+        $this->statusFilter = [];
+        $this->resetPage();
+    }
+
+    public function setDatePreset(?string $preset): void
+    {
+        $preset = $preset ?: null;
+
+        if ($preset === null || $preset === '') {
+            $this->dateFrom = null;
+            $this->dateUntil = null;
+            $this->resetPage();
+
+            return;
+        }
+
+        $until = now()->toDateString();
+
+        $this->dateUntil = $until;
+        $this->dateFrom = match ($preset) {
+            'this_week' => now()->startOfWeek()->toDateString(),
+            'this_month' => now()->startOfMonth()->toDateString(),
+            'last_30' => now()->subDays(29)->toDateString(),
+            'last_90' => now()->subDays(89)->toDateString(),
+            default => null,
+        };
+
+        if ($this->dateFrom === null) {
+            $this->dateUntil = null;
+        }
+
+        $this->resetPage();
+    }
+
+    public function getDatePresetProperty(): string
+    {
+        if (! filled($this->dateFrom) || ! filled($this->dateUntil)) {
+            return '';
+        }
+
+        $until = now()->toDateString();
+        if ($this->dateUntil !== $until) {
+            return '';
+        }
+
+        return match ($this->dateFrom) {
+            now()->startOfWeek()->toDateString() => 'this_week',
+            now()->startOfMonth()->toDateString() => 'this_month',
+            now()->subDays(29)->toDateString() => 'last_30',
+            now()->subDays(89)->toDateString() => 'last_90',
+            default => '',
+        };
+    }
+
     public function toggleFilterPanel(): void
     {
         $this->showFilterPanel = ! $this->showFilterPanel;
