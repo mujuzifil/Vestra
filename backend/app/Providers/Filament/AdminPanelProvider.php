@@ -11,6 +11,7 @@ use App\Filament\Pages\Sales\CompaniesPage;
 use App\Filament\Pages\Sales\QuotesPage;
 use App\Filament\Pages\Sales\PipelinePage;
 use App\Filament\Pages\Sales\OpportunitiesPage;
+use App\Filament\Pages\Distributors\ActivePartnersPage;
 use App\Filament\Pages\CustomerSuccess\SupportPage;
 use App\Filament\Pages\Marketing\MediaPage;
 use App\Filament\Pages\Marketing\SeoPage;
@@ -22,6 +23,7 @@ use App\Filament\Pages\Administration\IntegrationsPage;
 use App\Http\Controllers\Admin\ActivityExportController;
 use App\Http\Controllers\Admin\CompanyExportController;
 use App\Http\Controllers\Admin\QuoteExportController;
+use App\Http\Controllers\Admin\PartnerExportController;
 use App\Http\Middleware\EnsureAdminPasswordChanged;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -159,6 +161,7 @@ class AdminPanelProvider extends PanelProvider
                 QuotesPage::class,
                 PipelinePage::class,
                 OpportunitiesPage::class,
+                ActivePartnersPage::class,
                 SupportPage::class,
                 MediaPage::class,
                 SeoPage::class,
@@ -177,6 +180,8 @@ class AdminPanelProvider extends PanelProvider
                     ->name('sales.companies.export');
                 Route::get('sales/quotes/export', QuoteExportController::class)
                     ->name('sales.quotes.export');
+                Route::get('distributors/active-partners/export', PartnerExportController::class)
+                    ->name('distributors.active-partners.export');
             })
             ->middleware([
                 EncryptCookies::class,

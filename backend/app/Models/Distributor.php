@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\DistributorAccountStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -139,5 +140,37 @@ class Distributor extends Model
     public function logoUrl(): ?string
     {
         return $this->logo_path ? asset($this->logo_path) : null;
+    }
+
+    public function scopeSearch(Builder $query, string $term): Builder
+    {
+        $term = '%'.mb_strtolower($term).'%';
+
+        return $query->where(function (Builder $q) use ($term): void {
+            $q->whereRaw('LOWER(company_name) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(trading_name) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(email) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(phone) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(registration_number) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(primary_contact_name) LIKE ?', [$term]);
+        });
+    }
+
+    /**
+     * @param  array<int, string>  $statuses
+     */
+    public function scopeStatusIn(Builder $query, array $statuses): Builder
+    {
+        return $query->whereIn('status', $statuses);
+    }
+
+    /**
+     * @param  array<int, string>  $regions
+     */
+    public function scopeInRegions(Builder $query, array $regions): Builder
+    {
+        return $query->whereHas('serviceAreas', function (Builder $q) use ($regions): void {
+            $q->whereIn('region', $regions);
+        });
     }
 }
