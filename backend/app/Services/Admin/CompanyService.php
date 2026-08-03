@@ -78,8 +78,8 @@ class CompanyService
         $withActiveTickets = CompanyProfile::query()->withActiveTickets()->count();
 
         return [
-            $this->buildCard('Total Companies', $totalCurrent, $totalPrevious, 'vs last month', 'heroicon-o-building-office-2', 'primary'),
-            $this->buildCard('Active Companies', $activeCurrent, $activePrevious, 'vs last month', 'heroicon-o-check-badge', 'success'),
+            $this->buildCard('Total Companies', $totalCurrent, $totalPrevious, 'vs last month', 'heroicon-o-building-office', 'primary'),
+            $this->buildCard('Active Companies', $activeCurrent, $activePrevious, 'vs last month', 'heroicon-o-check-circle', 'success'),
             $this->buildCard('New This Month', $newThisMonth, $newPreviousMonth, 'vs last month', 'heroicon-o-sparkles', 'warning'),
             $this->buildCard('With Open Quotes', $withOpenQuotes, 0, 'vs last month', 'heroicon-o-document-text', 'info', false),
             $this->buildCard('With Active Tickets', $withActiveTickets, 0, 'vs last month', 'heroicon-o-ticket', 'danger', false),
