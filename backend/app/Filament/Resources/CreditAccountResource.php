@@ -33,17 +33,6 @@ class CreditAccountResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
-    /**
-     * Distributors → Credit is served by CreditPage.
-     * Keep this resource only for legacy deep links; hide it from navigation.
-     */
-    protected static bool $shouldRegisterNavigation = false;
-
-    public static function getNavigationItems(): array
-    {
-        return [];
-    }
-
     public static function form(Form $form): Form
     {
         return $form
