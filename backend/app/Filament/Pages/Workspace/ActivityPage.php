@@ -7,6 +7,7 @@ use App\Enums\ActivityStatus;
 use App\Models\AuditLog;
 use App\Services\Admin\ActivityService;
 use App\Services\ReportExportService;
+use Carbon\Carbon;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Url;
@@ -289,14 +290,28 @@ class ActivityPage extends Page
 
     protected function getFilterPeriodLabel(): ?string
     {
-        $start = $this->dateFrom ? Carbon\Carbon::parse($this->dateFrom)->format('M d, Y') : null;
-        $end = $this->dateUntil ? Carbon\Carbon::parse($this->dateUntil)->format('M d, Y') : null;
+        $start = $this->dateFrom ? Carbon::parse($this->dateFrom)->format('M d, Y') : null;
+        $end = $this->dateUntil ? Carbon::parse($this->dateUntil)->format('M d, Y') : null;
 
         if ($start && $end) {
             return "{$start} - {$end}";
         }
 
         return null;
+    }
+
+    public function getExportUrl(string $format): string
+    {
+        return route('filament.admin.workspace.activity.export', [
+            'format' => $format,
+            'search' => $this->search ?: null,
+            'category' => $this->categoryFilter ?: null,
+            'status' => $this->statusFilter ?: null,
+            'module' => $this->moduleFilter ?: null,
+            'user' => $this->userFilter,
+            'date_from' => $this->dateFrom,
+            'date_until' => $this->dateUntil,
+        ]);
     }
 
     /**

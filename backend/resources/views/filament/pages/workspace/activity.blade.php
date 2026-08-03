@@ -10,6 +10,9 @@ $filterOptions = $this->filterOptions;
         <x-activity.page-header
             title="Activity"
             description="Track and review all activities across the system in real time."
+            :csv-url="$this->getExportUrl('csv')"
+            :excel-url="$this->getExportUrl('excel')"
+            :pdf-url="$this->getExportUrl('pdf')"
         />
 
         <section class="vestra-workspace__section" aria-label="Activity metrics">

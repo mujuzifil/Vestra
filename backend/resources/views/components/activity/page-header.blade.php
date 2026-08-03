@@ -1,6 +1,9 @@
 @props([
     'title' => 'Activity',
     'description' => '',
+    'csvUrl' => null,
+    'excelUrl' => null,
+    'pdfUrl' => null,
 ])
 
 <section class="vestra-workspace__hero">
@@ -41,18 +44,18 @@
                 class="vestra-activity__export-menu"
                 role="menu"
             >
-                <button type="button" wire:click="export('csv')" class="vestra-activity__export-option" role="menuitem">
+                <a href="{{ $csvUrl }}" class="vestra-activity__export-option" role="menuitem">
                     <x-filament::icon icon="heroicon-o-document-text" class="h-4 w-4" />
                     <span>Export CSV</span>
-                </button>
-                <button type="button" wire:click="export('excel')" class="vestra-activity__export-option" role="menuitem">
+                </a>
+                <a href="{{ $excelUrl }}" class="vestra-activity__export-option" role="menuitem">
                     <x-filament::icon icon="heroicon-o-table-cells" class="h-4 w-4" />
                     <span>Export Excel</span>
-                </button>
-                <button type="button" wire:click="export('pdf')" class="vestra-activity__export-option" role="menuitem">
+                </a>
+                <a href="{{ $pdfUrl }}" class="vestra-activity__export-option" role="menuitem">
                     <x-filament::icon icon="heroicon-o-document-arrow-down" class="h-4 w-4" />
                     <span>Export PDF</span>
-                </button>
+                </a>
             </div>
         </div>
     </div>
