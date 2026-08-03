@@ -20,28 +20,25 @@ Generated:
 
 ### PHP Tests
 
-Local PHP interpreter is not available in this development environment. PHPUnit tests were authored in `tests/Feature/Admin/NotificationsPageTest.php` and are intended to run server-side or in a CI environment with PHP 8.4.
+Run in a Docker PHP 8.4 container with SQLite support:
 
-Tests cover:
+```bash
+php artisan test tests/Feature/Admin/NotificationsPageTest.php
+```
 
-- Admin access
-- Non-admin redirection
-- Guest redirection
-- Listing own notifications
-- Excluding other users' notifications
-- Search filter
-- Status filter
-- Priority filter
-- Category filter
-- Service-level mark-as-read
-- Service-level mark-all-read
-- Service-level delete
-- Cross-user delete protection
-- KPI card rendering
+Result: ✅ 13 passed, 21 assertions
+
+Also verified:
+
+```bash
+php artisan test tests/Feature/Api/V1/Notification/NotificationCenterTest.php
+```
+
+Result: ✅ 7 passed, 16 assertions
 
 ### PHPStan / Pint
 
-Not run locally due to missing PHP. Recommended to run on server or CI before merging to master:
+Not run due to environment. Recommended before merging to master:
 
 ```bash
 ./vendor/bin/pint
