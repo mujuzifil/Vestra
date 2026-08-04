@@ -513,8 +513,8 @@ class ActivityService
         }
 
         $resource = match (class_basename($log->subject_type)) {
-            'QuoteRequest' => 'quote-requests',
-            'DistributorRequest' => 'distributor-requests',
+            'QuoteRequest' => 'sales/quotes',
+            'DistributorRequest' => 'distributors/applications',
             'ContactMessage' => 'contact-messages',
             'CustomerFeedback' => 'customer-feedback',
             'BlogPost' => 'blog-posts',
@@ -525,6 +525,10 @@ class ActivityService
             'Task' => 'tasks',
             default => null,
         };
+
+        if (in_array($resource, ['sales/quotes', 'distributors/applications'], true)) {
+            return url("/{$resource}");
+        }
 
         return $resource ? url("/{$resource}/{$log->subject_id}") : null;
     }

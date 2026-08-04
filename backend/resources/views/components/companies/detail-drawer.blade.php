@@ -66,7 +66,7 @@
                 </div>
 
                 <div class="vestra-companies-detail__quick-actions">
-                    <a href="/quote-requests/create?user_id={{ $company['primary_contact']['user_id'] }}" class="vestra-companies-detail__quick-action">
+                    <a href="{{ \App\Filament\Pages\Sales\QuotesPage::getUrl() }}" class="vestra-companies-detail__quick-action">
                         <x-filament::icon icon="heroicon-o-document-plus" class="h-4 w-4" />
                         <span>Create Quote</span>
                     </a>
@@ -170,7 +170,7 @@
                 <div class="vestra-companies-detail__section">
                     <div class="vestra-companies-detail__section-header">
                         <h3 class="vestra-companies-detail__section-title">Recent Quotes</h3>
-                        <a href="/quote-requests/create?user_id={{ $company['primary_contact']['user_id'] }}" class="vestra-companies-detail__section-action">
+                        <a href="{{ \App\Filament\Pages\Sales\QuotesPage::getUrl() }}" class="vestra-companies-detail__section-action">
                             <x-filament::icon icon="heroicon-o-plus" class="h-3.5 w-3.5" />
                             <span>New</span>
                         </a>

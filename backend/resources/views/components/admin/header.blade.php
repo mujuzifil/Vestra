@@ -1,6 +1,5 @@
 @php
 $user = filament()->auth()->user();
-$unreadCount = $user?->unreadNotifications()->count() ?? 0;
 
 $rangeOptions = [
     'this-week' => 'This Week',
@@ -41,7 +40,6 @@ $rangeOptions = [
             class="vestra-header__search-input"
             aria-label="Global search"
         />
-        <span class="vestra-header__search-kbd">⌘ K</span>
     </div>
 
     <div class="vestra-header__actions">
@@ -93,19 +91,6 @@ $rangeOptions = [
                 @endforeach
             </div>
         </div>
-
-        {{-- Notifications --}}
-        <button type="button" class="vestra-header__action" aria-label="Notifications">
-            <x-filament::icon icon="heroicon-o-bell" class="h-5 w-5" />
-            @if ($unreadCount > 0)
-                <span class="vestra-header__badge">{{ $unreadCount }}</span>
-            @endif
-        </button>
-
-        {{-- Help --}}
-        <button type="button" class="vestra-header__action" aria-label="Help">
-            <x-filament::icon icon="heroicon-o-question-mark-circle" class="h-5 w-5" />
-        </button>
 
         {{-- User menu --}}
         <div x-data="{ open: false }" class="vestra-header__user">

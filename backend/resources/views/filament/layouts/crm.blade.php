@@ -4,9 +4,12 @@
 
 <x-filament-panels::layout.base :livewire="$livewire">
     <div
-        x-data="{ mobileSidebarOpen: false, sidebarCollapsed: JSON.parse(localStorage.getItem('vestra-sidebar-collapsed') || 'false') }"
+        x-data="{
+            mobileSidebarOpen: false,
+            sidebarCollapsed: JSON.parse(localStorage.getItem('vestra-sidebar-collapsed') || 'false'),
+        }"
         @toggle-mobile-sidebar.window="mobileSidebarOpen = !mobileSidebarOpen"
-        @toggle-sidebar-collapse.window="sidebarCollapsed = !sidebarCollapsed"
+        @toggle-sidebar-collapse.window="if (window.innerWidth >= 1024) { sidebarCollapsed = !sidebarCollapsed }"
         x-init="$watch('sidebarCollapsed', value => localStorage.setItem('vestra-sidebar-collapsed', JSON.stringify(value)))"
         class="vestra-crm"
         :class="{

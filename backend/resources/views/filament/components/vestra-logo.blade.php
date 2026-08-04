@@ -14,7 +14,10 @@ $isAdmin = $variant === 'admin';
         <img
             src="{{ $src }}"
             alt="{{ $alt }}"
-            style="height: {{ $height }}; width: auto; object-fit: contain;"
+            width="857"
+            height="474"
+            decoding="async"
+            style="height: {{ $height }}; width: auto; max-width: 11rem; object-fit: contain; object-position: left center;"
             class="block vestra-logo-admin"
         />
         <span class="text-xs font-medium text-white/70 tracking-wide">Admin Portal</span>
@@ -23,6 +26,9 @@ $isAdmin = $variant === 'admin';
     <img
         src="{{ $src }}"
         alt="{{ $alt }}"
+        width="857"
+        height="474"
+        decoding="async"
         style="height: {{ $height }}; width: auto; object-fit: contain;"
         class="block"
     />
