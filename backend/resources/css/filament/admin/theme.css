@@ -50,6 +50,7 @@
 @import "./components/enquiries.css";
 @import "./components/feedback.css";
 @import "./components/products-workspace.css";
+@import "./components/categories.css";
 
 /* Base page typography */
 .fi-body {

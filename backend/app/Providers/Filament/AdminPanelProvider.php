@@ -19,6 +19,7 @@ use App\Filament\Pages\CustomerSuccess\SupportPage;
 use App\Filament\Pages\CustomerSuccess\EnquiriesPage;
 use App\Filament\Pages\CustomerSuccess\FeedbackPage;
 use App\Filament\Pages\Products\ProductsPage;
+use App\Filament\Pages\Products\CategoriesPage;
 use App\Filament\Pages\Marketing\MediaPage;
 use App\Filament\Pages\Marketing\SeoPage;
 use App\Filament\Pages\Analytics\ExecutiveAnalyticsPage;
@@ -36,6 +37,7 @@ use App\Http\Controllers\Admin\SupportExportController;
 use App\Http\Controllers\Admin\EnquiryExportController;
 use App\Http\Controllers\Admin\FeedbackExportController;
 use App\Http\Controllers\Admin\ProductExportController;
+use App\Http\Controllers\Admin\CategoryExportController;
 use App\Http\Controllers\Admin\TerritoryExportController;
 use App\Http\Middleware\EnsureAdminPasswordChanged;
 use Filament\Http\Middleware\Authenticate;
@@ -182,6 +184,7 @@ class AdminPanelProvider extends PanelProvider
                 EnquiriesPage::class,
                 FeedbackPage::class,
                 ProductsPage::class,
+                CategoriesPage::class,
                 MediaPage::class,
                 SeoPage::class,
                 ExecutiveAnalyticsPage::class,
@@ -215,6 +218,8 @@ class AdminPanelProvider extends PanelProvider
                     ->name('customer-success.feedback.export');
                 Route::get('products/catalog/export', ProductExportController::class)
                     ->name('products.catalog.export');
+                Route::get('products/categories/export', CategoryExportController::class)
+                    ->name('products.categories.export');
             })
             ->middleware([
                 EncryptCookies::class,
