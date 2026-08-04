@@ -20,6 +20,8 @@ abstract class ReportPage extends Page implements HasForms
 
     protected static ?string $navigationGroup = 'Analytics';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     protected ReportService $reportService;
 
     protected ForecastingService $forecastingService;

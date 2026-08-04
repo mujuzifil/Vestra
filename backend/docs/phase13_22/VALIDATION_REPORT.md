@@ -1,0 +1,3 @@
+﻿# Phase 13.22 Staff — Validation Report
+
+Feature tests run in isolate Docker at integrate. Analytics/Communications/Settings/Audit/Integrations CRM UI removed.

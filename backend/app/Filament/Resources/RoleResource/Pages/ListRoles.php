@@ -2,18 +2,16 @@
 
 namespace App\Filament\Resources\RoleResource\Pages;
 
+use App\Filament\Pages\Administration\RolesPage;
 use App\Filament\Resources\RoleResource;
-use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListRoles extends ListRecords
 {
     protected static string $resource = RoleResource::class;
 
-    protected function getHeaderActions(): array
+    public function mount(): void
     {
-        return [
-            Actions\CreateAction::make(),
-        ];
+        $this->redirect(RolesPage::getUrl(), navigate: true);
     }
 }
