@@ -15,3 +15,6 @@ Route::get('/', function () {
 Route::middleware(['web'])
     ->post('/api/v1/auth/exchange', [ExchangeTokenController::class, 'store'])
     ->name('auth.exchange');
+
+Route::permanentRedirect('/quote-requests', '/sales/quotes');
+Route::permanentRedirect('/quote-requests/{any}', '/sales/quotes')->where('any', '.*');

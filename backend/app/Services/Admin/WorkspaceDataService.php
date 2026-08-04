@@ -12,7 +12,6 @@ use App\Models\Product;
 use App\Models\QuoteRequest;
 use App\Models\SupportTicket;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class WorkspaceDataService
@@ -68,7 +67,7 @@ class WorkspaceDataService
                 ->whereNotIn('action', ['password_change.required', 'password_changed', 'password_change.bypass_attempt'])
                 ->where('action', 'not like', '%login%')
                 ->latest()
-                ->limit(8)
+                ->limit(6)
                 ->get();
 
             return $logs->map(fn (AuditLog $log): array => [
@@ -81,37 +80,6 @@ class WorkspaceDataService
                 'url' => $this->activityUrl($log),
             ])->toArray();
         });
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function getNotifications(): array
-    {
-        $user = Auth::user();
-
-        if (! $user) {
-            return ['unread_count' => 0, 'items' => []];
-        }
-
-        $items = $user->notifications()
-            ->latest()
-            ->limit(10)
-            ->get()
-            ->map(fn ($notification) => [
-                'id' => $notification->id,
-                'title' => $notification->data['title'] ?? $notification->data['subject'] ?? 'Notification',
-                'body' => $notification->data['body'] ?? $notification->data['message'] ?? null,
-                'read' => ! is_null($notification->read_at),
-                'time' => $notification->created_at?->diffForHumans() ?? '',
-                'icon' => $notification->data['icon'] ?? 'heroicon-o-bell',
-            ])
-            ->toArray();
-
-        return [
-            'unread_count' => $user->unreadNotifications()->count(),
-            'items' => $items,
-        ];
     }
 
     private function openQuotesCard(): array
@@ -322,8 +290,8 @@ class WorkspaceDataService
         }
 
         $resource = match (class_basename($log->subject_type)) {
-            'QuoteRequest' => 'quote-requests',
-            'DistributorRequest' => 'distributor-requests',
+            'QuoteRequest' => 'sales/quotes',
+            'DistributorRequest' => 'distributors/applications',
             'ContactMessage' => 'contact-messages',
             'CustomerFeedback' => 'customer-feedback',
             'BlogPost' => 'blog-posts',
@@ -332,7 +300,7 @@ class WorkspaceDataService
             default => null,
         };
 
-        return $resource ? url("/{$resource}/{$log->subject_id}") : null;
+        return $resource ? url("/{$resource}") : null;
     }
 
     private function activityIcon(string $action): string
