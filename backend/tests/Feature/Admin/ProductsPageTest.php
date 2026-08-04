@@ -42,9 +42,11 @@ class ProductsPageTest extends TestCase
 
     private function makeProduct(array $overrides = []): Product
     {
+        $suffix = uniqid();
+
         return Product::factory()->create(array_merge([
-            'name' => 'Test Catalog Product',
-            'sku' => 'SKU-TEST-001',
+            'name' => 'Test Catalog Product '.$suffix,
+            'sku' => 'SKU-TEST-'.$suffix,
             'status' => ProductStatus::ACTIVE->value,
             'stock_quantity' => 50,
             'price' => 99.50,
