@@ -3,7 +3,6 @@
 namespace App\Filament\Pages\Settings;
 
 use App\Enums\SettingGroup;
-use App\Filament\Resources\SettingResource;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -62,13 +61,9 @@ class SettingsDashboard extends Page implements HasForms
 
     public function searchSettings(): void
     {
-        $term = $this->data['search'] ?? '';
-
-        if (blank($term)) {
-            return;
-        }
-
-        $this->redirect(SettingResource::getUrl('index', ['tableSearch' => $term]));
+        // The dedicated Settings resource has been retired; configuration is
+        // now managed via the Setting model directly. This search is a no-op
+        // placeholder until a replacement workspace is built.
     }
 
     public function getSettingGroups(): array
@@ -112,7 +107,7 @@ class SettingsDashboard extends Page implements HasForms
     {
         return match ($group) {
             SettingGroup::SYSTEM => SystemInformation::getUrl(),
-            default => SettingResource::getUrl("edit-{$group->value}"),
+            default => '#',
         };
     }
 

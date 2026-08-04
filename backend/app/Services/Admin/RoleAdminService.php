@@ -91,15 +91,6 @@ class RoleAdminService
 
         $isSystem = self::isSystemRole($role);
 
-        $groupedPermissions = $role->permissions
-            ->groupBy(fn (Permission $permission): string => filled($permission->group) ? (string) $permission->group : 'General')
-            ->map(fn ($items, string $group): array => [
-                'group' => $group,
-                'items' => $items->pluck('name')->values()->all(),
-            ])
-            ->values()
-            ->all();
-
         return [
             'id' => $role->id,
             'name' => $role->name,
@@ -108,7 +99,14 @@ class RoleAdminService
             'type_label' => $isSystem ? 'System' : 'Custom',
             'users_count' => $role->users_count,
             'permissions_count' => $role->permissions_count,
-            'permissions' => $groupedPermissions,
+            'permissions' => $role->permissions
+                ->map(fn (Permission $permission): array => [
+                    'id' => $permission->id,
+                    'name' => $permission->name,
+                    'group' => filled($permission->group) ? (string) $permission->group : 'General',
+                ])
+                ->values()
+                ->all(),
             'users' => $role->users
                 ->take(25)
                 ->map(fn ($user): array => [

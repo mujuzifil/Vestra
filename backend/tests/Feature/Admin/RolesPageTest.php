@@ -96,7 +96,7 @@ class RolesPageTest extends TestCase
 
         Livewire::actingAs($this->admin())
             ->test(RolesPage::class)
-            ->set('typeFilter', ['system'])
+            ->set('typeFilter', 'system')
             ->assertSee('Administrator')
             ->assertDontSee($customName);
     }
