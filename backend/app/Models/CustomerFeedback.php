@@ -17,9 +17,13 @@ class CustomerFeedback extends Model
     protected $table = 'customer_feedback';
 
     protected $fillable = [
+        'user_id',
         'category',
         'subject',
         'message',
+        'status',
+        'priority',
+        'read_at',
     ];
 
     protected function casts(): array

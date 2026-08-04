@@ -16,6 +16,8 @@ use App\Filament\Pages\Sales\OpportunitiesPage;
 use App\Filament\Pages\Distributors\ActivePartnersPage;
 use App\Filament\Pages\Distributors\CreditPage;
 use App\Filament\Pages\CustomerSuccess\SupportPage;
+use App\Filament\Pages\CustomerSuccess\EnquiriesPage;
+use App\Filament\Pages\CustomerSuccess\FeedbackPage;
 use App\Filament\Pages\Marketing\MediaPage;
 use App\Filament\Pages\Marketing\SeoPage;
 use App\Filament\Pages\Analytics\ExecutiveAnalyticsPage;
@@ -29,6 +31,9 @@ use App\Http\Controllers\Admin\CompanyExportController;
 use App\Http\Controllers\Admin\CreditExportController;
 use App\Http\Controllers\Admin\QuoteExportController;
 use App\Http\Controllers\Admin\PartnerExportController;
+use App\Http\Controllers\Admin\SupportExportController;
+use App\Http\Controllers\Admin\EnquiryExportController;
+use App\Http\Controllers\Admin\FeedbackExportController;
 use App\Http\Controllers\Admin\TerritoryExportController;
 use App\Http\Middleware\EnsureAdminPasswordChanged;
 use Filament\Http\Middleware\Authenticate;
@@ -172,6 +177,8 @@ class AdminPanelProvider extends PanelProvider
                 OpportunitiesPage::class,
                 ActivePartnersPage::class,
                 SupportPage::class,
+                EnquiriesPage::class,
+                FeedbackPage::class,
                 MediaPage::class,
                 SeoPage::class,
                 ExecutiveAnalyticsPage::class,
@@ -197,6 +204,12 @@ class AdminPanelProvider extends PanelProvider
                     ->name('distributors.territories.export');
                 Route::get('distributors/credit/export', CreditExportController::class)
                     ->name('distributors.credit.export');
+                Route::get('customer-success/support/export', SupportExportController::class)
+                    ->name('customer-success.support.export');
+                Route::get('customer-success/enquiries/export', EnquiryExportController::class)
+                    ->name('customer-success.enquiries.export');
+                Route::get('customer-success/feedback/export', FeedbackExportController::class)
+                    ->name('customer-success.feedback.export');
             })
             ->middleware([
                 EncryptCookies::class,

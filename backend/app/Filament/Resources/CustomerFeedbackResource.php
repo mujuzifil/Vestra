@@ -26,6 +26,17 @@ class CustomerFeedbackResource extends Resource
     protected static ?string $label = 'Customer Feedback';
     protected static ?int $navigationSort = 2;
 
+    /**
+     * CustomerSuccess → Feedback is served by FeedbackPage.
+     * Keep this resource only for deep-link view/edit access.
+     */
+    protected static bool $shouldRegisterNavigation = false;
+
+    public static function getNavigationItems(): array
+    {
+        return [];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

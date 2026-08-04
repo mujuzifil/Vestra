@@ -14,7 +14,7 @@ class SupportTicketFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'reference_number' => 'ST-' . now()->format('Ymd') . '-' . str_pad((string) random_int(1, 9999), 4, '0', STR_PAD_LEFT),
+            'reference_number' => 'ST-'.now()->format('Ymd').'-'.strtoupper(substr(uniqid(), -4)),
             'subject' => $this->faker->sentence(),
             'enquiry_type' => 'general',
             'message' => $this->faker->paragraph(),
