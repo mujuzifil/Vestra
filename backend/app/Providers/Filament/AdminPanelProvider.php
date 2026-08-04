@@ -28,6 +28,7 @@ use App\Filament\Pages\Analytics\SalesAnalyticsPage;
 use App\Filament\Pages\Analytics\OperationsAnalyticsPage;
 use App\Filament\Pages\Analytics\FinanceAnalyticsPage;
 use App\Filament\Pages\Administration\IntegrationsPage;
+use App\Filament\Pages\Administration\StaffPage;
 use App\Http\Controllers\Admin\ActivityExportController;
 use App\Http\Controllers\Admin\ApplicationExportController;
 use App\Http\Controllers\Admin\CompanyExportController;
@@ -42,6 +43,7 @@ use App\Http\Controllers\Admin\BlogExportController;
 use App\Http\Controllers\Admin\CategoryExportController;
 use App\Http\Controllers\Admin\InventoryExportController;
 use App\Http\Controllers\Admin\MediaExportController;
+use App\Http\Controllers\Admin\StaffExportController;
 use App\Http\Controllers\Admin\TerritoryExportController;
 use App\Http\Middleware\EnsureAdminPasswordChanged;
 use Filament\Http\Middleware\Authenticate;
@@ -197,6 +199,7 @@ class AdminPanelProvider extends PanelProvider
                 OperationsAnalyticsPage::class,
                 FinanceAnalyticsPage::class,
                 IntegrationsPage::class,
+                StaffPage::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([])
@@ -231,6 +234,8 @@ class AdminPanelProvider extends PanelProvider
                     ->name('marketing.blog.export');
                 Route::get('marketing/media/export', MediaExportController::class)
                     ->name('marketing.media.export');
+                Route::get('administration/staff/export', StaffExportController::class)
+                    ->name('administration.staff.export');
             })
             ->middleware([
                 EncryptCookies::class,

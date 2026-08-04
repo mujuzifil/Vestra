@@ -30,4 +30,9 @@ class UserPolicy
     {
         return $user->isAdmin() && $user->id !== $model->id;
     }
+
+    public function export(User $user): bool
+    {
+        return $user->isAdmin();
+    }
 }
