@@ -42,6 +42,10 @@
 @import "./components/activity.css";
 @import "./components/companies.css";
 @import "./components/quotes.css";
+@import "./components/applications.css";
+@import "./components/partners.css";
+@import "./components/territories.css";
+@import "./components/credit-workspace.css";
 
 /* Base page typography */
 .fi-body {

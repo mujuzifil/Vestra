@@ -31,4 +31,9 @@ class DistributorRequestPolicy
     {
         return $user->isAdmin();
     }
+
+    public function export(User $user): bool
+    {
+        return $user->isAdmin();
+    }
 }
