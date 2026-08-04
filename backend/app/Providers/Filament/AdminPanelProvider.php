@@ -21,6 +21,7 @@ use App\Filament\Pages\CustomerSuccess\FeedbackPage;
 use App\Filament\Pages\Products\ProductsPage;
 use App\Filament\Pages\Products\CategoriesPage;
 use App\Filament\Pages\Products\InventoryPage;
+use App\Filament\Pages\Marketing\BlogPage;
 use App\Filament\Pages\Marketing\MediaPage;
 use App\Filament\Pages\Marketing\SeoPage;
 use App\Filament\Pages\Analytics\ExecutiveAnalyticsPage;
@@ -38,6 +39,7 @@ use App\Http\Controllers\Admin\SupportExportController;
 use App\Http\Controllers\Admin\EnquiryExportController;
 use App\Http\Controllers\Admin\FeedbackExportController;
 use App\Http\Controllers\Admin\ProductExportController;
+use App\Http\Controllers\Admin\BlogExportController;
 use App\Http\Controllers\Admin\CategoryExportController;
 use App\Http\Controllers\Admin\InventoryExportController;
 use App\Http\Controllers\Admin\TerritoryExportController;
@@ -188,6 +190,7 @@ class AdminPanelProvider extends PanelProvider
                 ProductsPage::class,
                 CategoriesPage::class,
                 InventoryPage::class,
+                BlogPage::class,
                 MediaPage::class,
                 SeoPage::class,
                 ExecutiveAnalyticsPage::class,
@@ -225,6 +228,8 @@ class AdminPanelProvider extends PanelProvider
                     ->name('products.categories.export');
                 Route::get('products/inventory/export', InventoryExportController::class)
                     ->name('products.inventory.export');
+                Route::get('marketing/blog/export', BlogExportController::class)
+                    ->name('marketing.blog.export');
             })
             ->middleware([
                 EncryptCookies::class,

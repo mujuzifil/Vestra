@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\AdminSession;
 use App\Models\Announcement;
 use App\Models\AuditLog;
+use App\Models\BlogPost;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Category;
@@ -37,6 +38,7 @@ use App\Policies\AdminSessionPolicy;
 use App\Policies\AnnouncementPolicy;
 use App\Policies\CustomerAddressPolicy;
 use App\Policies\AuditLogPolicy;
+use App\Policies\BlogPostPolicy;
 use App\Policies\CartItemPolicy;
 use App\Policies\CartPolicy;
 use App\Policies\CategoryPolicy;
@@ -75,6 +77,7 @@ class AuthServiceProvider extends ServiceProvider
         AdminSession::class => AdminSessionPolicy::class,
         Announcement::class => AnnouncementPolicy::class,
         AuditLog::class => AuditLogPolicy::class,
+        BlogPost::class => BlogPostPolicy::class,
         Cart::class => CartPolicy::class,
         CartItem::class => CartItemPolicy::class,
         Category::class => CategoryPolicy::class,

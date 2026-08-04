@@ -52,6 +52,7 @@
 @import "./components/products-workspace.css";
 @import "./components/categories.css";
 @import "./components/inventory.css";
+@import "./components/blog.css";
 
 /* Base page typography */
 .fi-body {
