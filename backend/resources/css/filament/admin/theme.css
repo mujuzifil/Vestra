@@ -49,6 +49,7 @@
 @import "./components/support.css";
 @import "./components/enquiries.css";
 @import "./components/feedback.css";
+@import "./components/inventory.css";
 
 /* Base page typography */
 .fi-body {

@@ -24,6 +24,17 @@ class WarehouseResource extends Resource
 
     protected static ?int $navigationSort = 4;
 
+    /**
+     * Warehouses are absorbed into Products → Inventory.
+     * Keep CRUD routes for deep links / FKs; hide from navigation permanently.
+     */
+    protected static bool $shouldRegisterNavigation = false;
+
+    public static function getNavigationItems(): array
+    {
+        return [];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

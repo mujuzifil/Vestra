@@ -28,6 +28,7 @@ use App\Models\QuotationRequest;
 use App\Models\Order;
 use App\Models\PaymentTransaction;
 use App\Models\Product;
+use App\Models\ProductWarehouseStock;
 use App\Models\QuoteRequest;
 use App\Models\Review;
 use App\Models\Setting;
@@ -59,6 +60,7 @@ use App\Policies\OrderPolicy;
 use App\Policies\QuoteRequestPolicy;
 use App\Policies\PaymentTransactionPolicy;
 use App\Policies\ProductPolicy;
+use App\Policies\ProductWarehouseStockPolicy;
 use App\Policies\ReviewPolicy;
 use App\Policies\SettingPolicy;
 use App\Policies\TaskPolicy;
@@ -96,6 +98,7 @@ class AuthServiceProvider extends ServiceProvider
         Order::class => OrderPolicy::class,
         PaymentTransaction::class => PaymentTransactionPolicy::class,
         Product::class => ProductPolicy::class,
+        ProductWarehouseStock::class => ProductWarehouseStockPolicy::class,
         Review::class => ReviewPolicy::class,
         Setting::class => SettingPolicy::class,
         Task::class => TaskPolicy::class,
