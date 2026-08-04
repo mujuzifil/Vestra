@@ -75,7 +75,6 @@ These pages remain registered but are hidden from navigation:
 | Sales | Opportunities | Sales\OpportunitiesPage | sales/opportunities |
 | Customer Success | Support | CustomerSuccess\SupportPage | customer-success/support |
 | Marketing | Media | Marketing\MediaPage | marketing/media |
-| Marketing | SEO | Marketing\SeoPage | marketing/seo |
 | Analytics | Executive | Analytics\ExecutiveAnalyticsPage | analytics/executive |
 | Analytics | Sales | Analytics\SalesAnalyticsPage | analytics/sales |
 | Analytics | Operations | Analytics\OperationsAnalyticsPage | analytics/operations |
