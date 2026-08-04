@@ -2,18 +2,16 @@
 
 namespace App\Filament\Resources\UserResource\Pages;
 
+use App\Filament\Pages\Administration\StaffPage;
 use App\Filament\Resources\UserResource;
-use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListUsers extends ListRecords
 {
     protected static string $resource = UserResource::class;
 
-    protected function getHeaderActions(): array
+    public function mount(): void
     {
-        return [
-            Actions\CreateAction::make(),
-        ];
+        $this->redirect(StaffPage::getUrl(), navigate: true);
     }
 }
