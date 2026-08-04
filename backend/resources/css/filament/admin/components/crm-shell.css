@@ -103,9 +103,12 @@
 }
 
 .vestra-sidebar__logo {
-    height: 2.25rem;
+    height: 2.5rem;
     width: auto;
-    filter: brightness(0) invert(1);
+    max-width: 9rem;
+    object-fit: contain;
+    object-position: left center;
+    display: block;
 }
 
 .vestra-sidebar__portal {
@@ -114,45 +117,6 @@
     color: rgba(255, 255, 255, 0.65);
     letter-spacing: 0.02em;
     white-space: nowrap;
-}
-
-.vestra-sidebar__collapse-btn {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-md);
-    color: rgba(255, 255, 255, 0.5);
-    transition: background-color var(--duration-fast) var(--ease-base),
-                color var(--duration-fast) var(--ease-base),
-                transform var(--duration-base) var(--ease-base);
-}
-
-@media (min-width: 1024px) {
-    .vestra-sidebar__collapse-btn {
-        display: flex;
-    }
-}
-
-.vestra-sidebar__collapse-btn:hover,
-.vestra-sidebar__collapse-btn:focus-visible {
-    background-color: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.vestra-sidebar__collapse-btn:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(112, 192, 80, 0.4);
-}
-
-.vestra-sidebar--collapsed .vestra-sidebar__collapse-btn,
-.vestra-sidebar--collapsed .vestra-sidebar__footer-btn--collapse svg {
-    transform: rotate(180deg);
-}
-
-.vestra-sidebar__footer-btn--collapse svg {
-    transition: transform var(--duration-base) var(--ease-base);
 }
 
 /* Navigation */
@@ -527,17 +491,6 @@
     outline: none;
 }
 
-.vestra-header__search-kbd {
-    position: absolute;
-    right: var(--space-3);
-    padding: var(--space-1) var(--space-2);
-    border-radius: var(--radius-sm);
-    background-color: var(--neutral-200);
-    font-size: var(--text-caption);
-    font-weight: var(--font-semibold);
-    color: var(--text-muted);
-}
-
 .vestra-header__actions {
     display: flex;
     align-items: center;
@@ -636,47 +589,6 @@
 .vestra-header__date-option--active {
     color: var(--primary-600);
     background-color: var(--primary-50);
-}
-
-.vestra-header__action {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    border-radius: var(--radius-md);
-    color: var(--text-muted);
-    transition: background-color var(--duration-fast) var(--ease-base),
-                color var(--duration-fast) var(--ease-base);
-}
-
-.vestra-header__action:hover {
-    background-color: var(--neutral-100);
-    color: var(--text-heading);
-}
-
-.vestra-header__action:focus-visible {
-    outline: none;
-    box-shadow: var(--shadow-focus);
-}
-
-.vestra-header__badge {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 5px;
-    border-radius: var(--radius-full);
-    background-color: var(--danger-500);
-    border: 2px solid var(--surface-page);
-    font-size: 10px;
-    font-weight: var(--font-bold);
-    color: white;
 }
 
 .vestra-header__user {
@@ -927,22 +839,6 @@
     }
 }
 
-.vestra-grid--3 {
-    grid-template-columns: 1fr;
-}
-
-@media (min-width: 768px) {
-    .vestra-grid--3 {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 1280px) {
-    .vestra-grid--3 {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
 /* ==========================================================================
    KPI Cards
    ========================================================================== */
@@ -1078,10 +974,31 @@
 /* ==========================================================================
    Activity
    ========================================================================== */
+.vestra-activity-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    max-height: 100%;
+}
+
+.vestra-activity-card .vestra-card-header {
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+}
+
+.vestra-activity-card .vestra-card-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
 .vestra-activity-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
+    gap: var(--space-2);
+    max-height: 280px;
+    overflow: hidden;
 }
 
 .vestra-activity-item {
@@ -1112,6 +1029,7 @@
 .vestra-activity-item__content {
     display: flex;
     flex-direction: column;
+    gap: 2px;
     min-width: 0;
     flex: 1;
     padding-top: 1px;
@@ -1129,9 +1047,9 @@
 .vestra-activity-item__subtitle {
     font-size: var(--text-caption);
     color: var(--text-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .vestra-activity-item__time {
@@ -1139,76 +1057,7 @@
     font-size: var(--text-caption);
     color: var(--text-muted);
     padding-top: 2px;
-}
-
-/* ==========================================================================
-   Notifications
-   ========================================================================== */
-.vestra-notification-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-}
-
-.vestra-notification-item {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-3);
-    padding: var(--space-2);
-    border-radius: var(--radius-md);
-    transition: background-color var(--duration-fast) var(--ease-base);
-}
-
-.vestra-notification-item--unread {
-    background-color: var(--primary-50);
-}
-
-.vestra-notification-item__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-lg);
-    background-color: var(--primary-100);
-    color: var(--primary-500);
-    flex-shrink: 0;
-}
-
-.vestra-notification-item__content {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    flex: 1;
-    padding-top: 1px;
-}
-
-.vestra-notification-item__title {
-    font-size: var(--text-body-sm);
-    font-weight: var(--font-semibold);
-    color: var(--text-heading);
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.vestra-notification-item--unread .vestra-notification-item__title {
-    color: var(--primary-700);
-}
-
-.vestra-notification-item__body {
-    font-size: var(--text-caption);
-    color: var(--text-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.vestra-notification-item__time {
-    flex-shrink: 0;
-    font-size: var(--text-caption);
-    color: var(--text-muted);
-    padding-top: 2px;
 }
 
 /* ==========================================================================
@@ -1234,12 +1083,6 @@
 /* ==========================================================================
    Responsive helpers
    ========================================================================== */
-@media (max-width: 1023px) {
-    .vestra-sidebar__collapse-btn {
-        display: none;
-    }
-}
-
 @media (max-width: 767px) {
     .vestra-header__actions {
         gap: 0;
@@ -1271,7 +1114,6 @@
     .vestra-crm__main,
     .vestra-kpi-card,
     .vestra-card,
-    .vestra-header__action,
     .vestra-header__collapse-btn,
     .vestra-sidebar__item,
     .vestra-sidebar__group-button {

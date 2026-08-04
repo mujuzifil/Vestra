@@ -128,7 +128,7 @@ $countryFlag = $countryFlags[$country] ?? null;
                     <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
                     <span>Edit</span>
                 </button>
-                <a href="/quote-requests/create?user_id={{ $company->user_id }}" class="vestra-companies__action-item" role="menuitem">
+                <a href="{{ \App\Filament\Pages\Sales\QuotesPage::getUrl() }}" class="vestra-companies__action-item" role="menuitem">
                     <x-filament::icon icon="heroicon-o-document-plus" class="h-4 w-4" />
                     <span>Create Quote</span>
                 </a>

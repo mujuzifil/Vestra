@@ -8,17 +8,9 @@ $user = filament()->auth()->user();
         open: true,
         mobileOpen: false,
         collapsed: JSON.parse(localStorage.getItem('vestra-sidebar-collapsed') || 'false'),
-        init() {
-            this.$watch('collapsed', value => localStorage.setItem('vestra-sidebar-collapsed', JSON.stringify(value)));
-        },
-        toggleCollapse() {
-            if (window.innerWidth < 1024) return;
-            this.collapsed = !this.collapsed;
-        }
     }"
     @toggle-mobile-sidebar.window="mobileOpen = !mobileOpen"
-    @toggle-sidebar-collapse.window="toggleCollapse()"
-    x-init="init()"
+    @toggle-sidebar-collapse.window="if (window.innerWidth >= 1024) collapsed = !collapsed"
     class="vestra-sidebar"
     :class="{
         'vestra-sidebar--collapsed': collapsed,
@@ -34,19 +26,10 @@ $user = filament()->auth()->user();
                 class="vestra-sidebar__logo"
                 width="857"
                 height="474"
+                decoding="async"
             />
             <span class="vestra-sidebar__portal">Admin Portal</span>
         </div>
-
-        <button
-            type="button"
-            class="vestra-sidebar__collapse-btn"
-            @click="toggleCollapse()"
-            aria-label="Collapse sidebar"
-            :aria-label="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
-        >
-            <x-filament::icon icon="heroicon-o-chevron-double-left" class="h-5 w-5" />
-        </button>
     </div>
 
     <nav class="vestra-sidebar__nav" aria-label="Main">
@@ -141,25 +124,5 @@ $user = filament()->auth()->user();
                 role="tooltip"
             >Settings</span>
         </a>
-
-        <button
-            type="button"
-            class="vestra-sidebar__footer-btn vestra-sidebar__footer-btn--collapse"
-            @click="toggleCollapse()"
-            aria-label="Collapse sidebar"
-            :aria-label="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
-            x-data="{ tooltip: false }"
-            @mouseenter="if (collapsed) tooltip = true"
-            @mouseleave="tooltip = false"
-        >
-            <x-filament::icon icon="heroicon-o-chevron-double-left" class="h-5 w-5" />
-            <span class="vestra-sidebar__footer-label">Collapse</span>
-            <span
-                x-show="tooltip"
-                x-transition.opacity
-                class="vestra-sidebar__item-tooltip"
-                role="tooltip"
-            >Collapse</span>
-        </button>
     </div>
 </aside>
