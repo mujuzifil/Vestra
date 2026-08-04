@@ -15,6 +15,7 @@ use App\Filament\Pages\Sales\PipelinePage;
 use App\Filament\Pages\Sales\OpportunitiesPage;
 use App\Filament\Pages\Distributors\ActivePartnersPage;
 use App\Filament\Pages\Distributors\CreditPage;
+use App\Filament\Pages\CustomerSuccess\FeedbackPage;
 use App\Filament\Pages\CustomerSuccess\SupportPage;
 use App\Filament\Pages\Marketing\MediaPage;
 use App\Filament\Pages\Marketing\SeoPage;
@@ -29,6 +30,7 @@ use App\Http\Controllers\Admin\CompanyExportController;
 use App\Http\Controllers\Admin\CreditExportController;
 use App\Http\Controllers\Admin\QuoteExportController;
 use App\Http\Controllers\Admin\PartnerExportController;
+use App\Http\Controllers\Admin\FeedbackExportController;
 use App\Http\Controllers\Admin\TerritoryExportController;
 use App\Http\Middleware\EnsureAdminPasswordChanged;
 use Filament\Http\Middleware\Authenticate;
@@ -171,6 +173,7 @@ class AdminPanelProvider extends PanelProvider
                 PipelinePage::class,
                 OpportunitiesPage::class,
                 ActivePartnersPage::class,
+                FeedbackPage::class,
                 SupportPage::class,
                 MediaPage::class,
                 SeoPage::class,
@@ -197,6 +200,8 @@ class AdminPanelProvider extends PanelProvider
                     ->name('distributors.territories.export');
                 Route::get('distributors/credit/export', CreditExportController::class)
                     ->name('distributors.credit.export');
+                Route::get('customer-success/feedback/export', FeedbackExportController::class)
+                    ->name('customer-success.feedback.export');
             })
             ->middleware([
                 EncryptCookies::class,
