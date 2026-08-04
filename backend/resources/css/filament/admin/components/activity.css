@@ -18,18 +18,24 @@
 }
 
 .vestra-kpi-grid--5 {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 
 @media (min-width: 640px) {
     .vestra-kpi-grid--5 {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (min-width: 1024px) {
     .vestra-kpi-grid--5 {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1280px) {
+    .vestra-kpi-grid--5 {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
     }
 }
 
@@ -375,9 +381,14 @@
     display: flex;
     align-items: flex-start;
     gap: var(--space-3);
-    padding: var(--space-3) var(--space-4);
+    padding: var(--space-2) var(--space-4);
+    border-bottom: 1px solid var(--border-default);
     background-color: var(--surface-card);
     transition: background-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-activity-card:last-child {
+    border-bottom: 0;
 }
 
 .vestra-activity-card:last-child .vestra-activity-card__timeline-line {
@@ -395,9 +406,9 @@
 .vestra-activity-card__select {
     display: flex;
     align-items: center;
-    padding-top: var(--space-3);
+    padding-top: var(--space-1);
     flex-shrink: 0;
-    width: 40px;
+    width: 28px;
 }
 
 .vestra-activity-card__checkbox {
@@ -408,46 +419,20 @@
 }
 
 .vestra-activity-card__timeline-marker {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 20px;
-    flex-shrink: 0;
-    padding-top: var(--space-4);
-}
-
-.vestra-activity-card__timeline-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: var(--neutral-300);
-    z-index: 1;
-}
-
-.vestra-activity-card__timeline-line {
-    position: absolute;
-    top: var(--space-4);
-    bottom: calc(-1 * var(--space-3));
-    left: 50%;
-    width: 2px;
-    transform: translateX(-50%);
-    background-color: var(--border-default);
-    z-index: 0;
+    display: none;
 }
 
 .vestra-activity-card__icon-wrapper {
     flex-shrink: 0;
-    margin-left: var(--space-3);
 }
 
 .vestra-activity-card__icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: var(--radius-lg);
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
 }
 
 .vestra-activity-card__icon--primary {
@@ -499,7 +484,7 @@
 }
 
 .vestra-activity-card__title {
-    font-size: var(--text-body);
+    font-size: var(--text-body-sm);
     font-weight: var(--font-semibold);
     color: var(--text-heading);
     margin: 0;
@@ -509,7 +494,7 @@
 }
 
 .vestra-activity-card__description {
-    font-size: var(--text-body-sm);
+    font-size: var(--text-caption);
     color: var(--text-muted);
     margin: 0;
     overflow: hidden;
@@ -561,8 +546,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-3);
-    margin-top: var(--space-1);
+    gap: var(--space-2);
+    margin-top: 0;
 }
 
 .vestra-activity-card__meta-item {
@@ -600,20 +585,16 @@
 }
 
 .vestra-activity-card__actions {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    flex-shrink: 0;
-    padding-top: var(--space-1);
+    display: none;
 }
 
 .vestra-activity-card__status {
     display: inline-flex;
     align-items: center;
     gap: var(--space-1);
-    padding: 2px 8px;
+    padding: 1px 8px;
     border-radius: var(--radius-full);
-    font-size: var(--text-caption);
+    font-size: 11px;
     font-weight: var(--font-medium);
     white-space: nowrap;
 }

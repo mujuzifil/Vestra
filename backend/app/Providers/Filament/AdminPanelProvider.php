@@ -5,7 +5,6 @@ namespace App\Providers\Filament;
 use App\Filament\Pages\Dashboard;
 use App\Filament\Pages\ForcePasswordChange;
 use App\Filament\Pages\Workspace\ActivityPage;
-use App\Filament\Pages\Workspace\NotificationsPage;
 use App\Filament\Pages\Workspace\TasksPage;
 use App\Filament\Pages\Distributors\TerritoriesPage;
 use App\Filament\Pages\Distributors\ApplicationsPage;
@@ -154,6 +153,7 @@ class AdminPanelProvider extends PanelProvider
                 ],
             ])
             ->sidebarCollapsibleOnDesktop()
+            ->globalSearch(false)
             ->maxContentWidth('full')
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->navigationGroups([
@@ -171,7 +171,6 @@ class AdminPanelProvider extends PanelProvider
                 Dashboard::class,
                 ForcePasswordChange::class,
                 TasksPage::class,
-                NotificationsPage::class,
                 ActivityPage::class,
                 CompaniesPage::class,
                 QuotesPage::class,

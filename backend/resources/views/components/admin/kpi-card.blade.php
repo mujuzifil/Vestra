@@ -39,8 +39,8 @@ $trendClass = match (true) {
         </div>
     </div>
 
-    <span class="vestra-kpi-card__trend {{ $trendAvailable ? $trendClass : 'vestra-kpi-card__trend--neutral' }}">
-        @if ($trendAvailable)
+    @if ($trendAvailable)
+        <span class="vestra-kpi-card__trend {{ $trendClass }}">
             @if ($trendClass === 'vestra-kpi-card__trend--up')
                 <x-filament::icon icon="heroicon-m-arrow-trending-up" class="h-3 w-3" />
             @elseif ($trendClass === 'vestra-kpi-card__trend--down')
@@ -49,12 +49,9 @@ $trendClass = match (true) {
                 <x-filament::icon icon="heroicon-m-minus" class="h-3 w-3" />
             @endif
             <span>{{ $trend }}</span>
-        @else
-            <x-filament::icon icon="heroicon-o-minus" class="h-3 w-3" />
-            <span>No comparison available</span>
-        @endif
-        @if ($trendLabel && $trendAvailable)
-            <span class="vestra-kpi-card__trend-label">{{ $trendLabel }}</span>
-        @endif
-    </span>
+            @if ($trendLabel)
+                <span class="vestra-kpi-card__trend-label">{{ $trendLabel }}</span>
+            @endif
+        </span>
+    @endif
 </div>

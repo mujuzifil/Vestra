@@ -58,11 +58,7 @@ class ActivityPage extends Page
     #[Url(as: 'direction')]
     public string $sortDirection = 'desc';
 
-    public int $perPage = 20;
-
-    public bool $showDetailPanel = false;
-
-    public ?string $selectedActivityId = null;
+    public int $perPage = 30;
 
     /**
      * @var array<int, string>
@@ -72,6 +68,11 @@ class ActivityPage extends Page
     public function getTitle(): string
     {
         return 'Activity';
+    }
+
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
     }
 
     public function mount(): void
@@ -103,23 +104,6 @@ class ActivityPage extends Page
         return $this->getActivityServiceProperty()->getKpiCards($this->buildFilters());
     }
 
-    public function getSelectedActivityProperty(): ?array
-    {
-        if (empty($this->selectedActivityId)) {
-            return null;
-        }
-
-        $activity = $this->getActivityServiceProperty()->findActivity($this->selectedActivityId);
-
-        if ($activity === null) {
-            return null;
-        }
-
-        $this->authorizeActivity($activity);
-
-        return $activity;
-    }
-
     /**
      * @return array<string, mixed>
      */
@@ -142,26 +126,6 @@ class ActivityPage extends Page
             'date_from' => $this->dateFrom,
             'date_until' => $this->dateUntil,
         ];
-    }
-
-    public function openDetailPanel(string $id): void
-    {
-        $activity = $this->getActivityServiceProperty()->findActivity($id);
-
-        if ($activity === null) {
-            return;
-        }
-
-        $this->authorizeActivity($activity);
-
-        $this->selectedActivityId = $id;
-        $this->showDetailPanel = true;
-    }
-
-    public function closeDetailPanel(): void
-    {
-        $this->showDetailPanel = false;
-        $this->selectedActivityId = null;
     }
 
     public function export(string $format)
@@ -312,23 +276,5 @@ class ActivityPage extends Page
             'date_from' => $this->dateFrom,
             'date_until' => $this->dateUntil,
         ]);
-    }
-
-    /**
-     * @param  array<string, mixed>  $activity
-     */
-    private function authorizeActivity(array $activity): void
-    {
-        if ($activity['source'] === 'audit_log') {
-            $log = AuditLog::query()->find((int) str_replace('audit-', '', $activity['id']));
-
-            if ($log !== null) {
-                Gate::authorize('view', $log);
-            }
-
-            return;
-        }
-
-        Gate::authorize('viewAny', AuditLog::class);
     }
 }

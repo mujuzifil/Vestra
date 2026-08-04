@@ -35,5 +35,7 @@
                 {{ $slot }}
             </x-admin.content-shell>
         </div>
+
+        @livewire(\App\Livewire\Admin\GlobalSearchCommandPalette::class)
     </div>
 </x-filament-panels::layout.base>

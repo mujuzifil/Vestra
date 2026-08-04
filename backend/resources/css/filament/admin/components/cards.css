@@ -33,7 +33,13 @@ a.fi-card:hover {
                 border-color var(--duration-fast) var(--ease-base);
 }
 
-/* Page header */
+/* Page header — CRM workspaces use custom heroes; hide Filament duplicate titles */
+.vestra-crm .fi-header,
+.vestra-crm .fi-page-header {
+    display: none !important;
+}
+
+/* Page header (legacy Filament pages outside CRM shell) */
 .fi-header-heading {
     color: var(--text-heading);
     font-size: var(--text-display);
