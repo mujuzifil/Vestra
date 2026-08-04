@@ -71,6 +71,26 @@ class SupportTicketService
         return $reply;
     }
 
+    public function adminReply(SupportTicket $ticket, User $staff, array $data): SupportTicketReply
+    {
+        $attachmentPaths = $this->storeAttachments($data['attachments'] ?? [], "support_tickets/{$ticket->id}/replies");
+
+        $reply = SupportTicketReply::create([
+            'support_ticket_id' => $ticket->id,
+            'staff_id' => $staff->id,
+            'user_id' => null,
+            'message' => $data['message'],
+            'attachments' => $attachmentPaths,
+            'is_internal' => (bool) ($data['is_internal'] ?? false),
+        ]);
+
+        if (! ($data['is_internal'] ?? false) && ! in_array($ticket->status, ['resolved', 'closed'])) {
+            $ticket->update(['status' => 'in_progress']);
+        }
+
+        return $reply;
+    }
+
     /**
      * @param  array<int, UploadedFile>  $attachments
      * @return array<int, string>

@@ -29,6 +29,16 @@ class ContactMessageResource extends Resource
     protected static ?string $label = 'Contact Message';
     protected static ?int $navigationSort = 1;
 
+    /**
+     * Enquiries workspace is served by EnquiriesPage; keep this resource for deep-links only.
+     */
+    protected static bool $shouldRegisterNavigation = false;
+
+    public static function getNavigationItems(): array
+    {
+        return [];
+    }
+
     public static function form(Form $form): Form
     {
         return $form
