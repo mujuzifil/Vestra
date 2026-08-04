@@ -41,6 +41,7 @@ use App\Http\Controllers\Admin\InventoryExportController;
 use App\Http\Controllers\Admin\MediaExportController;
 use App\Http\Controllers\Admin\StaffExportController;
 use App\Http\Controllers\Admin\RoleExportController;
+use App\Http\Controllers\Admin\TaskExportController;
 use App\Http\Controllers\Admin\TerritoryExportController;
 use App\Http\Middleware\EnsureAdminPasswordChanged;
 use Filament\Http\Middleware\Authenticate;
@@ -228,6 +229,8 @@ class AdminPanelProvider extends PanelProvider
                     ->name('administration.staff.export');
                 Route::get('administration/roles/export', RoleExportController::class)
                     ->name('administration.roles.export');
+                Route::get('workspace/tasks/export', TaskExportController::class)
+                    ->name('workspace.tasks.export');
             })
             ->middleware([
                 EncryptCookies::class,

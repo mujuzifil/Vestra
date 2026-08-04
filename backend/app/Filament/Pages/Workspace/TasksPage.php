@@ -314,4 +314,19 @@ class TasksPage extends Page
             || filled($this->dueFrom)
             || filled($this->dueUntil);
     }
+
+    public function getExportUrl(string $format): string
+    {
+        return route('filament.admin.workspace.tasks.export', [
+            'format' => $format,
+            'search' => $this->search ?: null,
+            'status' => $this->statusFilter ?: null,
+            'priority' => $this->priorityFilter ?: null,
+            'assignee' => $this->assigneeFilter,
+            'due_from' => $this->dueFrom,
+            'due_until' => $this->dueUntil,
+            'sort' => $this->sortField,
+            'direction' => $this->sortDirection,
+        ]);
+    }
 }

@@ -8,7 +8,9 @@ $assignees = $this->assignees;
     <x-tasks.page-header
         title="Tasks"
         description="Manage work, assignments, and priorities across your organisation."
-        :tasks="$tasks"
+        :csv-url="$this->getExportUrl('csv')"
+        :excel-url="$this->getExportUrl('excel')"
+        :pdf-url="$this->getExportUrl('pdf')"
     />
 
     <section class="vestra-workspace__section" aria-label="Task metrics">
@@ -38,7 +40,7 @@ $assignees = $this->assignees;
                     :description="$this->hasActiveFilters()
                         ? 'Try adjusting your filters to find what you are looking for.'
                         : 'Tasks will appear here once they are created. Create your first task to begin managing work.'"
-                    action-text="Create task"
+                    action-text="Create Task"
                     action-click="openCreateDrawer"
                     :show-action="! $this->hasActiveFilters()"
                 />
