@@ -2,16 +2,12 @@
 
 ## Backend
 
-- PHP syntax: validated on touched services/pages via artisan test bootstrap.
-- Feature tests: `QuotesPageTest` (and related admin filters as run in CI/Docker).
+- Feature tests (Docker): `QuotesPageTest` — 16 passed; `QuoteRequestsLegacyRedirectTest` — 2 passed (301 redirects).
 
 ## Frontend
 
-- `npm run lint`
-- `npx tsc --noEmit`
-- `npm run build`
-
-(Logo path unchanged; admin CSS rebuilt in deploy image.)
+- Host worktree had no `node_modules`; validation run from main `frontend/` checkout (`npm run lint`, `npx tsc --noEmit`, `npm run build`) — no Phase 13.24 frontend code changes (docs only + shared logo asset already identical).
+- Production image build also compiles frontend via `deploy.sh --build`.
 
 ## Manual checklist
 

@@ -15,4 +15,6 @@
 - Header without CmdK / bell / help
 - Official logo colours
 - Recent Activity header + overflow
-- M
+- My Tasks / Notifications / Calendar absent from dashboard
+- `/quote-requests` → 301 `/sales/quotes`
+- Quick actions point at workspace routes
