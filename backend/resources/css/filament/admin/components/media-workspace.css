@@ -1,0 +1,994 @@
+/* ==========================================================================
+   Media Workspace
+   ========================================================================== */
+
+.vestra-media__hero {
+    flex-wrap: wrap;
+    gap: var(--space-4);
+}
+
+.vestra-media__hero-main {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    min-width: 0;
+}
+
+.vestra-media__search {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-width: 240px;
+    max-width: 360px;
+    align-items: center;
+}
+
+.vestra-media__search-icon {
+    position: absolute;
+    left: var(--space-3);
+    color: var(--text-muted);
+    width: 18px;
+    height: 18px;
+}
+
+.vestra-media__search-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 var(--space-4) 0 var(--space-10);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background-color: var(--surface-card);
+    color: var(--text-heading);
+    font-size: var(--text-body-sm);
+    transition: border-color var(--duration-fast) var(--ease-base),
+                box-shadow var(--duration-fast) var(--ease-base);
+}
+
+.vestra-media__search-input:hover,
+.vestra-media__search-input:focus {
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-focus);
+    outline: none;
+}
+
+.vestra-media__header-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+/* ==========================================================================
+   View Toggle
+   ========================================================================== */
+
+.vestra-media__view-toggle {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background-color: var(--neutral-50);
+    gap: 2px;
+}
+
+.vestra-media__view-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    height: 34px;
+    padding: 0 var(--space-3);
+    border: none;
+    border-radius: var(--radius-md);
+    background-color: transparent;
+    color: var(--text-muted);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-base),
+                color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-media__view-toggle-btn:hover {
+    color: var(--text-heading);
+}
+
+.vestra-media__view-toggle-btn--active {
+    background-color: var(--surface-card);
+    color: var(--primary-700, #1d4ed8);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   Dropdowns (Export / Upload)
+   ========================================================================== */
+
+.vestra-media__export-dropdown,
+.vestra-media__upload-dropdown {
+    position: relative;
+}
+
+.vestra-media__export-menu {
+    position: absolute;
+    top: calc(100% + var(--space-1));
+    right: 0;
+    z-index: 20;
+    display: flex;
+    min-width: 200px;
+    flex-direction: column;
+    gap: var(--space-0-5);
+    padding: var(--space-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background-color: var(--surface-card);
+    box-shadow: var(--shadow-lg);
+}
+
+.vestra-media__export-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    border: none;
+    background: none;
+    width: 100%;
+    color: var(--text-body);
+    font-size: var(--text-body-sm);
+    text-decoration: none;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-media__export-option:hover {
+    background-color: var(--surface-hover);
+}
+
+/* ==========================================================================
+   Filter Bar
+   ========================================================================== */
+
+.vestra-media__filter-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.vestra-media__filters {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.vestra-media__filter {
+    position: relative;
+}
+
+.vestra-media__filter-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    height: 34px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background-color: var(--surface-card);
+    color: var(--text-body);
+    font-size: var(--text-body-sm);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color var(--duration-fast) var(--ease-base),
+                background-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-media__filter-trigger:hover {
+    border-color: var(--border-focus);
+    background-color: var(--surface-hover);
+}
+
+.vestra-media__filter-dropdown {
+    position: absolute;
+    top: calc(100% + var(--space-1));
+    left: 0;
+    z-index: 30;
+    min-width: 180px;
+    padding: var(--space-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background-color: var(--surface-card);
+    box-shadow: var(--shadow-lg);
+}
+
+.vestra-media__filter-dropdown--wide {
+    min-width: 240px;
+}
+
+.vestra-media__filter-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-media__filter-option:hover {
+    background-color: var(--surface-hover);
+}
+
+.vestra-media__filter-option--button {
+    width: 100%;
+    border: none;
+    background: none;
+    text-align: left;
+}
+
+.vestra-media__filter-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-500);
+    cursor: pointer;
+}
+
+.vestra-media__filter-option-label {
+    font-size: var(--text-body-sm);
+    color: var(--text-body);
+}
+
+.vestra-media__filter-date-fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.vestra-media__filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.vestra-media__filter-field-label {
+    font-size: var(--text-body-xs);
+    font-weight: var(--font-medium);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.vestra-media__filter-input {
+    height: 34px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background-color: var(--surface-card);
+    color: var(--text-body);
+    font-size: var(--text-body-sm);
+}
+
+.vestra-media__reset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    height: 34px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: var(--text-body-sm);
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-base),
+                border-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-media__reset-btn:hover {
+    color: var(--text-body);
+    border-color: var(--border-focus);
+}
+
+/* ==========================================================================
+   KPI Grid (5 columns)
+   ========================================================================== */
+
+.vestra-kpi-grid--5 {
+    grid-template-columns: repeat(1, 1fr);
+}
+
+@media (min-width: 640px) {
+    .vestra-kpi-grid--5 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .vestra-kpi-grid--5 {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* ==========================================================================
+   Grid View
+   ========================================================================== */
+
+.vestra-media__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: var(--space-4);
+    padding: var(--space-4);
+}
+
+.vestra-media__card-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background-color: var(--surface-card);
+    overflow: hidden;
+    transition: border-color var(--duration-fast) var(--ease-base),
+                box-shadow var(--duration-fast) var(--ease-base);
+}
+
+.vestra-media__card-item:hover {
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-md);
+}
+
+.vestra-media__card-select {
+    position: absolute;
+    top: var(--space-2);
+    left: var(--space-2);
+    z-index: 2;
+}
+
+.vestra-media__card-select input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-500);
+    cursor: pointer;
+}
+
+.vestra-media__card-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1;
+    border: none;
+    padding: 0;
+    background-color: var(--surface-muted);
+    cursor: pointer;
+}
+
+.vestra-media__card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vestra-media__card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+.vestra-media__card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-3);
+}
+
+.vestra-media__card-name {
+    display: block;
+    width: 100%;
+    border: none;
+    background: none;
+    padding: 0;
+    text-align: left;
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vestra-media__card-owner {
+    font-size: var(--text-body-xs);
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vestra-media__card-footer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    margin-top: var(--space-1);
+}
+
+/* ==========================================================================
+   List View (Table)
+   ========================================================================== */
+
+.vestra-media__table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.vestra-media__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-body-sm);
+}
+
+.vestra-media__th {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+    background-color: var(--surface-subtle);
+    color: var(--text-muted);
+    font-size: var(--text-body-xs);
+    font-weight: var(--font-semibold);
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.vestra-media__sort-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.vestra-media__sort-icons {
+    color: var(--text-muted);
+}
+
+.vestra-media__sort-inactive {
+    opacity: 0.4;
+}
+
+.vestra-media__row {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-media__row:hover {
+    background-color: var(--surface-hover);
+}
+
+.vestra-media__td {
+    padding: var(--space-3) var(--space-4);
+    vertical-align: middle;
+}
+
+.vestra-media__file-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    color: inherit;
+}
+
+.vestra-media__thumb {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background-color: var(--surface-muted);
+}
+
+.vestra-media__thumb--icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+.vestra-media__file-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 2px;
+}
+
+.vestra-media__file-name {
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 260px;
+}
+
+.vestra-media__row-meta {
+    display: block;
+    font-size: var(--text-body-xs);
+    color: var(--text-muted);
+}
+
+.vestra-media__cell-text {
+    font-size: var(--text-body-sm);
+    color: var(--text-body);
+}
+
+.vestra-media__owner-link {
+    font-size: var(--text-body-sm);
+    color: var(--primary-600);
+    text-decoration: none;
+}
+
+.vestra-media__owner-link:hover {
+    text-decoration: underline;
+}
+
+.vestra-media__created {
+    font-size: var(--text-body-sm);
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.vestra-media__action-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-base),
+                border-color var(--duration-fast) var(--ease-base),
+                background-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-media__action-trigger:hover {
+    color: var(--text-body);
+    border-color: var(--border-default);
+    background-color: var(--surface-hover);
+}
+
+/* ==========================================================================
+   Badges
+   ========================================================================== */
+
+.vestra-media__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    height: 22px;
+    padding: 0 8px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: var(--font-semibold);
+    white-space: nowrap;
+}
+
+.vestra-media__badge--image {
+    background-color: var(--info-100);
+    color: var(--info-700);
+}
+
+.vestra-media__badge--document {
+    background-color: var(--warning-100);
+    color: var(--warning-700);
+}
+
+.vestra-media__badge--video {
+    background-color: var(--success-100);
+    color: var(--success-700);
+}
+
+.vestra-media__badge--other {
+    background-color: var(--neutral-100);
+    color: var(--neutral-700);
+}
+
+.vestra-media__source-pill {
+    display: inline-flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: var(--radius-full);
+    background-color: var(--neutral-100);
+    color: var(--neutral-700);
+    font-size: 11px;
+    font-weight: var(--font-semibold);
+    white-space: nowrap;
+}
+
+.vestra-media__source-pill--blog {
+    background-color: var(--primary-100);
+    color: var(--primary-700);
+}
+
+.vestra-media__source-pill--product {
+    background-color: var(--success-100);
+    color: var(--success-700);
+}
+
+.vestra-media__source-pill--settings,
+.vestra-media__source-pill--spatie {
+    background-color: var(--warning-100);
+    color: var(--warning-700);
+}
+
+/* ==========================================================================
+   Pagination
+   ========================================================================== */
+
+.vestra-media__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.vestra-media__pagination-info {
+    font-size: var(--text-body-sm);
+    color: var(--text-muted);
+}
+
+.vestra-media__pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+}
+
+.vestra-media__pagination-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 var(--space-2);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background-color: var(--surface-card);
+    color: var(--text-body);
+    font-size: var(--text-body-sm);
+    cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-base),
+                border-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-media__pagination-btn:hover:not(:disabled) {
+    background-color: var(--surface-hover);
+    border-color: var(--border-focus);
+}
+
+.vestra-media__pagination-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.vestra-media__pagination-btn--active {
+    background-color: var(--primary-500);
+    border-color: var(--primary-500);
+    color: #fff;
+}
+
+.vestra-media__pagination-ellipsis {
+    padding: 0 var(--space-1);
+    color: var(--text-muted);
+    font-size: var(--text-body-sm);
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+
+.vestra-media__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    padding: var(--space-16) var(--space-4);
+    text-align: center;
+}
+
+.vestra-media__empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-full);
+    background-color: var(--surface-subtle);
+    color: var(--text-muted);
+}
+
+.vestra-media__empty-title {
+    font-size: var(--text-heading-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+}
+
+.vestra-media__empty-description {
+    max-width: 420px;
+    font-size: var(--text-body-sm);
+    color: var(--text-muted);
+}
+
+.vestra-media__empty-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+}
+
+/* ==========================================================================
+   Detail Drawer
+   ========================================================================== */
+
+.vestra-media-detail {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.vestra-media-detail__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+}
+
+.vestra-media-detail__panel {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    height: 100%;
+    background-color: var(--surface-card);
+    border-left: 1px solid var(--border-default);
+    box-shadow: var(--shadow-2xl);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.vestra-media-detail__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-5) var(--space-6);
+    border-bottom: 1px solid var(--border-subtle);
+    background-color: var(--surface-card);
+}
+
+.vestra-media-detail__header-main {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.vestra-media-detail__avatar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-full);
+    background-color: var(--primary-100);
+    color: var(--primary-700);
+}
+
+.vestra-media-detail__header-text {
+    min-width: 0;
+}
+
+.vestra-media-detail__title {
+    font-size: var(--text-heading-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vestra-media-detail__subtitle {
+    font-size: var(--text-body-sm);
+    color: var(--text-muted);
+    margin-top: var(--space-0-5);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vestra-media-detail__close {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-base),
+                background-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-media-detail__close:hover {
+    color: var(--text-body);
+    background-color: var(--surface-hover);
+}
+
+.vestra-media-detail__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-5) var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+.vestra-media-detail__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.vestra-media-detail__preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-height: 260px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-subtle);
+    background-color: var(--surface-muted);
+    overflow: hidden;
+}
+
+.vestra-media-detail__preview img {
+    width: 100%;
+    height: 100%;
+    max-height: 260px;
+    object-fit: contain;
+}
+
+.vestra-media-detail__preview--icon {
+    padding: var(--space-8);
+    color: var(--text-muted);
+}
+
+.vestra-media-detail__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.vestra-media-detail__section-title {
+    font-size: var(--text-body-xs);
+    font-weight: var(--font-semibold);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.vestra-media-detail__definition-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.vestra-media-detail__definition-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    align-items: start;
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: var(--text-body-sm);
+}
+
+.vestra-media-detail__definition-row:last-child {
+    border-bottom: none;
+}
+
+.vestra-media-detail__definition-row dt {
+    color: var(--text-muted);
+    font-weight: var(--font-medium);
+}
+
+.vestra-media-detail__definition-row dd {
+    color: var(--text-body);
+    margin-left: 0;
+    word-break: break-word;
+}
+
+.vestra-media-detail__path {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: var(--text-body-xs);
+}
+
+.vestra-media-detail__owner-cta {
+    align-self: flex-start;
+}
+
+.vestra-media-detail__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-size: var(--text-body-sm);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 640px) {
+    .vestra-media__view-toggle {
+        width: 100%;
+    }
+
+    .vestra-media-detail__panel {
+        max-width: none;
+    }
+
+    .vestra-media__grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .vestra-media__row,
+    .vestra-media__filter-trigger,
+    .vestra-media__action-trigger,
+    .vestra-media__pagination-btn,
+    .vestra-media-detail__close,
+    .vestra-media__card-item,
+    .vestra-media__view-toggle-btn {
+        transition: none !important;
+    }
+}

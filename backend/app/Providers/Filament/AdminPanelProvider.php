@@ -23,7 +23,6 @@ use App\Filament\Pages\Products\CategoriesPage;
 use App\Filament\Pages\Products\InventoryPage;
 use App\Filament\Pages\Marketing\BlogPage;
 use App\Filament\Pages\Marketing\MediaPage;
-use App\Filament\Pages\Marketing\SeoPage;
 use App\Filament\Pages\Analytics\ExecutiveAnalyticsPage;
 use App\Filament\Pages\Analytics\SalesAnalyticsPage;
 use App\Filament\Pages\Analytics\OperationsAnalyticsPage;
@@ -42,6 +41,7 @@ use App\Http\Controllers\Admin\ProductExportController;
 use App\Http\Controllers\Admin\BlogExportController;
 use App\Http\Controllers\Admin\CategoryExportController;
 use App\Http\Controllers\Admin\InventoryExportController;
+use App\Http\Controllers\Admin\MediaExportController;
 use App\Http\Controllers\Admin\TerritoryExportController;
 use App\Http\Middleware\EnsureAdminPasswordChanged;
 use Filament\Http\Middleware\Authenticate;
@@ -192,7 +192,6 @@ class AdminPanelProvider extends PanelProvider
                 InventoryPage::class,
                 BlogPage::class,
                 MediaPage::class,
-                SeoPage::class,
                 ExecutiveAnalyticsPage::class,
                 SalesAnalyticsPage::class,
                 OperationsAnalyticsPage::class,
@@ -230,6 +229,8 @@ class AdminPanelProvider extends PanelProvider
                     ->name('products.inventory.export');
                 Route::get('marketing/blog/export', BlogExportController::class)
                     ->name('marketing.blog.export');
+                Route::get('marketing/media/export', MediaExportController::class)
+                    ->name('marketing.media.export');
             })
             ->middleware([
                 EncryptCookies::class,
