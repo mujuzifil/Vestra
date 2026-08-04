@@ -44,7 +44,9 @@ class RoleAdminService
             ->when($filters['search'] ?? null, function (Builder $q, string $term): void {
                 $q->where('name', 'like', "%{$term}%");
             })
-            ->when($filters['type'] ?? null, function (Builder $q, array $types): void {
+            ->when($filters['type'] ?? null, function (Builder $q, string|array $types): void {
+                $types = is_array($types) ? $types : [$types];
+
                 $q->where(function (Builder $inner) use ($types): void {
                     if (in_array('system', $types, true)) {
                         $inner->orWhereIn('name', self::SYSTEM_ROLE_NAMES);
@@ -85,20 +87,37 @@ class RoleAdminService
     public function getDetail(Role $role): array
     {
         $role->loadCount(['users', 'permissions']);
-        $role->load('permissions');
+        $role->load(['permissions', 'users']);
+
+        $isSystem = self::isSystemRole($role);
+
+        $groupedPermissions = $role->permissions
+            ->groupBy(fn (Permission $permission): string => filled($permission->group) ? (string) $permission->group : 'General')
+            ->map(fn ($items, string $group): array => [
+                'group' => $group,
+                'items' => $items->pluck('name')->values()->all(),
+            ])
+            ->values()
+            ->all();
 
         return [
             'id' => $role->id,
             'name' => $role->name,
             'description' => $role->description,
-            'is_system' => self::isSystemRole($role),
+            'is_system' => $isSystem,
+            'type_label' => $isSystem ? 'System' : 'Custom',
             'users_count' => $role->users_count,
             'permissions_count' => $role->permissions_count,
-            'permissions' => $role->permissions->map(fn (Permission $permission) => [
-                'id' => $permission->id,
-                'name' => $permission->name,
-                'group' => $permission->group,
-            ])->values()->toArray(),
+            'permissions' => $groupedPermissions,
+            'users' => $role->users
+                ->take(25)
+                ->map(fn ($user): array => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                ])
+                ->values()
+                ->all(),
             'created_at' => $role->created_at,
             'updated_at' => $role->updated_at,
             'edit_url' => \App\Filament\Resources\RoleResource::getUrl('edit', ['record' => $role]),

@@ -91,13 +91,14 @@ class RolesPageTest extends TestCase
 
     public function test_type_filter_system(): void
     {
-        Role::create(['name' => 'Custom Role '.uniqid(), 'guard_name' => 'web']);
+        $customName = 'Unique Custom Role '.uniqid();
+        Role::create(['name' => $customName, 'guard_name' => 'web']);
 
         Livewire::actingAs($this->admin())
             ->test(RolesPage::class)
-            ->set('typeFilter', 'system')
+            ->set('typeFilter', ['system'])
             ->assertSee('Administrator')
-            ->assertDontSee('Custom Role', false);
+            ->assertDontSee($customName);
     }
 
     public function test_admin_can_open_detail_drawer(): void
