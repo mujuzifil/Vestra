@@ -7,10 +7,14 @@ use App\Filament\Pages\ForcePasswordChange;
 use App\Filament\Pages\Workspace\ActivityPage;
 use App\Filament\Pages\Workspace\NotificationsPage;
 use App\Filament\Pages\Workspace\TasksPage;
+use App\Filament\Pages\Distributors\TerritoriesPage;
+use App\Filament\Pages\Distributors\ApplicationsPage;
 use App\Filament\Pages\Sales\CompaniesPage;
 use App\Filament\Pages\Sales\QuotesPage;
 use App\Filament\Pages\Sales\PipelinePage;
 use App\Filament\Pages\Sales\OpportunitiesPage;
+use App\Filament\Pages\Distributors\ActivePartnersPage;
+use App\Filament\Pages\Distributors\CreditPage;
 use App\Filament\Pages\CustomerSuccess\SupportPage;
 use App\Filament\Pages\Marketing\MediaPage;
 use App\Filament\Pages\Marketing\SeoPage;
@@ -20,8 +24,12 @@ use App\Filament\Pages\Analytics\OperationsAnalyticsPage;
 use App\Filament\Pages\Analytics\FinanceAnalyticsPage;
 use App\Filament\Pages\Administration\IntegrationsPage;
 use App\Http\Controllers\Admin\ActivityExportController;
+use App\Http\Controllers\Admin\ApplicationExportController;
 use App\Http\Controllers\Admin\CompanyExportController;
+use App\Http\Controllers\Admin\CreditExportController;
 use App\Http\Controllers\Admin\QuoteExportController;
+use App\Http\Controllers\Admin\PartnerExportController;
+use App\Http\Controllers\Admin\TerritoryExportController;
 use App\Http\Middleware\EnsureAdminPasswordChanged;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -157,8 +165,12 @@ class AdminPanelProvider extends PanelProvider
                 ActivityPage::class,
                 CompaniesPage::class,
                 QuotesPage::class,
+                ApplicationsPage::class,
+                TerritoriesPage::class,
+                CreditPage::class,
                 PipelinePage::class,
                 OpportunitiesPage::class,
+                ActivePartnersPage::class,
                 SupportPage::class,
                 MediaPage::class,
                 SeoPage::class,
@@ -177,6 +189,14 @@ class AdminPanelProvider extends PanelProvider
                     ->name('sales.companies.export');
                 Route::get('sales/quotes/export', QuoteExportController::class)
                     ->name('sales.quotes.export');
+                Route::get('distributors/applications/export', ApplicationExportController::class)
+                    ->name('distributors.applications.export');
+                Route::get('distributors/active-partners/export', PartnerExportController::class)
+                    ->name('distributors.active-partners.export');
+                Route::get('distributors/territories/export', TerritoryExportController::class)
+                    ->name('distributors.territories.export');
+                Route::get('distributors/credit/export', CreditExportController::class)
+                    ->name('distributors.credit.export');
             })
             ->middleware([
                 EncryptCookies::class,

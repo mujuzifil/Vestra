@@ -29,6 +29,17 @@ class DistributorResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    /**
+     * Distributors → Active Partners is served by ActivePartnersPage.
+     * Keep this resource only for deep-link view/edit access.
+     */
+    protected static bool $shouldRegisterNavigation = false;
+
+    public static function getNavigationItems(): array
+    {
+        return [];
+    }
+
     public static function form(Form $form): Form
     {
         return $form
