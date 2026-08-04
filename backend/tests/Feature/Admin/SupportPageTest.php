@@ -42,7 +42,6 @@ class SupportPageTest extends TestCase
     {
         return SupportTicket::factory()->create(array_merge([
             'user_id' => $user->id,
-            'reference_number' => 'ST-'.now()->format('Ymd').'-0001',
             'subject' => 'Test Support Request',
             'enquiry_type' => 'general',
             'message' => 'Please help me.',

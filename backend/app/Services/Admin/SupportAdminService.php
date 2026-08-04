@@ -190,16 +190,23 @@ class SupportAdminService
 
     private function getAvgResolutionHours(): ?float
     {
-        $avg = SupportTicket::query()
+        $resolved = SupportTicket::query()
             ->whereNotNull('resolved_at')
-            ->selectRaw('AVG(TIMESTAMPDIFF(SECOND, created_at, resolved_at)) as avg_seconds')
-            ->value('avg_seconds');
+            ->get(['created_at', 'resolved_at']);
 
-        if ($avg === null) {
+        if ($resolved->isEmpty()) {
             return null;
         }
 
-        return (float) $avg / 3600;
+        $avgSeconds = $resolved->avg(
+            fn (SupportTicket $ticket): float => (float) $ticket->created_at->diffInSeconds($ticket->resolved_at)
+        );
+
+        if ($avgSeconds === null) {
+            return null;
+        }
+
+        return (float) $avgSeconds / 3600;
     }
 
     private function applySorting(Builder $query, string $sort, string $direction): Builder
