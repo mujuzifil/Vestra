@@ -35,6 +35,27 @@ class TaskService
     }
 
     /**
+     * @param  array<string, mixed>  $filters
+     * @return array<int, array<string, mixed>>
+     */
+    public function exportRows(array $filters = [], string $sort = 'due_date', string $direction = 'asc'): array
+    {
+        return $this->queryTasks($filters, $sort, $direction)
+            ->get()
+            ->map(fn (Task $task): array => [
+                'title' => $task->title,
+                'status' => $task->status?->label() ?? (string) $task->status,
+                'priority' => $task->priority?->label() ?? (string) $task->priority,
+                'assignee' => $task->assignee?->name ?? 'Unassigned',
+                'creator' => $task->creator?->name ?? '—',
+                'due_date' => $task->due_date?->format('Y-m-d H:i:s'),
+                'completed_at' => $task->completed_at?->format('Y-m-d H:i:s'),
+                'created_at' => $task->created_at?->format('Y-m-d H:i:s'),
+            ])
+            ->toArray();
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function getKpiCards(): array
