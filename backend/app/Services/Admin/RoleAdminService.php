@@ -9,8 +9,22 @@ use Spatie\Permission\Models\Role;
 
 class RoleAdminService
 {
-    /** @var list<string> */
-    public const SYSTEM_ROLE_NAMES = ['Super Administrator', 'Administrator', 'Manager', 'customer'];
+    /**
+     * System roles are seeded by RolePermissionSeeder and cannot be deleted or renamed.
+     *
+     * @var array<int, string>
+     */
+    public const SYSTEM_ROLE_NAMES = [
+        'Super Administrator',
+        'Administrator',
+        'Manager',
+        'customer',
+    ];
+
+    public static function isSystemRole(Role $role): bool
+    {
+        return in_array($role->name, self::SYSTEM_ROLE_NAMES, true);
+    }
 
     /**
      * @param  array<string, mixed>  $filters
@@ -28,13 +42,19 @@ class RoleAdminService
         $query = Role::query()
             ->withCount(['users', 'permissions'])
             ->when($filters['search'] ?? null, function (Builder $q, string $term): void {
-                $q->where(function (Builder $inner) use ($term): void {
-                    $inner->where('name', 'like', "%{$term}%")
-                        ->orWhere('description', 'like', "%{$term}%");
-                });
+                $q->where('name', 'like', "%{$term}%");
             })
-            ->when(($filters['type'] ?? null) === 'system', fn (Builder $q) => $q->whereIn('name', self::SYSTEM_ROLE_NAMES))
-            ->when(($filters['type'] ?? null) === 'custom', fn (Builder $q) => $q->whereNotIn('name', self::SYSTEM_ROLE_NAMES));
+            ->when($filters['type'] ?? null, function (Builder $q, array $types): void {
+                $q->where(function (Builder $inner) use ($types): void {
+                    if (in_array('system', $types, true)) {
+                        $inner->orWhereIn('name', self::SYSTEM_ROLE_NAMES);
+                    }
+
+                    if (in_array('custom', $types, true)) {
+                        $inner->orWhereNotIn('name', self::SYSTEM_ROLE_NAMES);
+                    }
+                });
+            });
 
         return $this->applySorting($query, $sort, $direction);
     }
@@ -44,18 +64,18 @@ class RoleAdminService
      */
     public function getKpiCards(): array
     {
-        $total = Role::query()->count();
-        $system = Role::query()->whereIn('name', self::SYSTEM_ROLE_NAMES)->count();
-        $custom = max(0, $total - $system);
-        $usersAssigned = (int) Role::query()->withCount('users')->get()->sum('users_count');
-        $permissions = Permission::query()->count();
+        $totalRoles = Role::query()->count();
+        $systemRoles = Role::query()->whereIn('name', self::SYSTEM_ROLE_NAMES)->count();
+        $customRoles = $totalRoles - $systemRoles;
+        $usersAssigned = Role::query()->withCount('users')->get()->sum('users_count');
+        $permissionCount = Permission::query()->count();
 
         return [
-            $this->buildCard('Total Roles', $total, 'heroicon-o-shield-check', 'primary'),
-            $this->buildCard('System Roles', $system, 'heroicon-o-lock-closed', 'info'),
-            $this->buildCard('Custom Roles', $custom, 'heroicon-o-puzzle-piece', 'warning'),
-            $this->buildCard('Users Assigned', $usersAssigned, 'heroicon-o-users', 'success'),
-            $this->buildCard('Permissions', $permissions, 'heroicon-o-key', 'gray'),
+            $this->buildCard('Total Roles', $totalRoles, 'heroicon-o-shield-check', 'primary'),
+            $this->buildCard('System Roles', $systemRoles, 'heroicon-o-lock-closed', 'info'),
+            $this->buildCard('Custom Roles', $customRoles, 'heroicon-o-adjustments-horizontal', 'success'),
+            $this->buildCard('Users Assigned', $usersAssigned, 'heroicon-o-users', 'warning'),
+            $this->buildCard('Permissions', $permissionCount, 'heroicon-o-key', 'gray'),
         ];
     }
 
@@ -64,33 +84,23 @@ class RoleAdminService
      */
     public function getDetail(Role $role): array
     {
-        $role->load(['permissions', 'users']);
-        $isSystem = $this->isSystemRole($role);
+        $role->loadCount(['users', 'permissions']);
+        $role->load('permissions');
 
         return [
             'id' => $role->id,
             'name' => $role->name,
             'description' => $role->description,
-            'type' => $isSystem ? 'system' : 'custom',
-            'type_label' => $isSystem ? 'System' : 'Custom',
-            'users_count' => $role->users->count(),
-            'permissions_count' => $role->permissions->count(),
-            'permissions' => $role->permissions
-                ->groupBy(fn (Permission $p) => $p->group ?: 'General')
-                ->map(fn ($group, $name) => [
-                    'group' => $name,
-                    'items' => $group->pluck('name')->values()->toArray(),
-                ])
-                ->values()
-                ->toArray(),
-            'users' => $role->users->take(20)->map(fn ($user) => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
+            'is_system' => self::isSystemRole($role),
+            'users_count' => $role->users_count,
+            'permissions_count' => $role->permissions_count,
+            'permissions' => $role->permissions->map(fn (Permission $permission) => [
+                'id' => $permission->id,
+                'name' => $permission->name,
+                'group' => $permission->group,
             ])->values()->toArray(),
             'created_at' => $role->created_at,
             'updated_at' => $role->updated_at,
-            'is_system' => $isSystem,
             'edit_url' => \App\Filament\Resources\RoleResource::getUrl('edit', ['record' => $role]),
         ];
     }
@@ -118,18 +128,13 @@ class RoleAdminService
             ->get()
             ->map(fn (Role $role) => [
                 'name' => $role->name,
+                'type' => self::isSystemRole($role) ? 'System' : 'Custom',
                 'description' => $role->description,
-                'type' => $this->isSystemRole($role) ? 'System' : 'Custom',
                 'users_count' => $role->users_count,
                 'permissions_count' => $role->permissions_count,
                 'created_at' => $role->created_at?->format('Y-m-d H:i:s'),
             ])
             ->toArray();
-    }
-
-    public function isSystemRole(Role $role): bool
-    {
-        return in_array($role->name, self::SYSTEM_ROLE_NAMES, true);
     }
 
     private function applySorting(Builder $query, string $sort, string $direction): Builder
