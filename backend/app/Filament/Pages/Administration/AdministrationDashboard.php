@@ -3,7 +3,6 @@
 namespace App\Filament\Pages\Administration;
 
 use App\Filament\Resources\AdminSessionResource;
-use App\Filament\Resources\AuditLogResource;
 use App\Filament\Resources\LoginActivityResource;
 use App\Filament\Resources\PermissionResource;
 use App\Filament\Resources\RoleResource;
@@ -48,7 +47,7 @@ class AdministrationDashboard extends Page implements HasForms
             ->schema([
                 TextInput::make('term')
                     ->label('Search administration')
-                    ->placeholder('Search users, roles, permissions, audit logs...')
+                    ->placeholder('Search users, roles, permissions...')
                     ->prefixIcon('heroicon-o-magnifying-glass')
                     ->live(debounce: 300)
                     ->extraAlpineAttributes([
@@ -92,11 +91,6 @@ class AdministrationDashboard extends Page implements HasForms
                 'route' => PermissionResource::getUrl('index', ['tableSearch' => $term]),
                 'icon' => 'heroicon-o-key',
             ],
-            [
-                'label' => 'Audit Logs',
-                'route' => AuditLogResource::getUrl('index', ['tableSearch' => $term]),
-                'icon' => 'heroicon-o-clipboard-document-list',
-            ],
         ];
     }
 
@@ -123,13 +117,6 @@ class AdministrationDashboard extends Page implements HasForms
                 'icon' => 'heroicon-o-key',
                 'route' => PermissionResource::getUrl(),
                 'color' => 'success',
-            ],
-            [
-                'label' => 'Audit Logs',
-                'description' => 'Review administrator actions, changes, and access history.',
-                'icon' => 'heroicon-o-clipboard-document-list',
-                'route' => AuditLogResource::getUrl(),
-                'color' => 'warning',
             ],
             [
                 'label' => 'Login Activity',

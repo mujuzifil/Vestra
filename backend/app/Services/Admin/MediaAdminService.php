@@ -4,7 +4,6 @@ namespace App\Services\Admin;
 
 use App\Filament\Resources\BlogPostResource;
 use App\Filament\Resources\ProductResource;
-use App\Filament\Resources\SettingResource;
 use App\Models\BlogPost;
 use App\Models\ProductImage;
 use App\Models\Setting;
@@ -386,10 +385,6 @@ class MediaAdminService
 
     private function resolveMediaOwnerUrl(Media $media): ?string
     {
-        if ($media->model_type === Setting::class) {
-            return SettingResource::getUrl('edit', ['record' => $media->model_id]);
-        }
-
         return null;
     }
 

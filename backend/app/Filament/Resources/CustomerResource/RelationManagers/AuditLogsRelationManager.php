@@ -55,10 +55,7 @@ class AuditLogsRelationManager extends RelationManager
                     ->options(fn (): array => AuditLog::distinct()->pluck('action')->sort()->mapWithKeys(fn ($action): array => [$action => $action])->toArray())
                     ->multiple(),
             ])
-            ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->url(fn (AuditLog $record): string => route('filament.admin.resources.audit-logs.view', $record)),
-            ])
+            ->actions([])
             ->bulkActions([]);
     }
 }

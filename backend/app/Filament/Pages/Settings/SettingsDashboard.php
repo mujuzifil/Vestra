@@ -3,18 +3,10 @@
 namespace App\Filament\Pages\Settings;
 
 use App\Enums\SettingGroup;
-use App\Filament\Resources\SettingResource;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Pages\Page;
-use Illuminate\Support\Facades\Redirect;
 
-class SettingsDashboard extends Page implements HasForms
+class SettingsDashboard extends Page
 {
-    use InteractsWithForms;
-
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
 
     protected static ?string $navigationGroup = 'Administration';
@@ -27,8 +19,6 @@ class SettingsDashboard extends Page implements HasForms
 
     protected static string $view = 'filament.pages.settings.settings-dashboard';
 
-    public ?string $search = '';
-
     public function getTitle(): string
     {
         return 'Platform Configuration';
@@ -39,52 +29,12 @@ class SettingsDashboard extends Page implements HasForms
         return auth()->user()?->isAdmin() ?? false;
     }
 
-    public function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                TextInput::make('search')
-                    ->label('Search settings')
-                    ->placeholder('Search by keyword, label, or group...')
-                    ->prefixIcon('heroicon-o-magnifying-glass')
-                    ->live(debounce: 300)
-                    ->extraAlpineAttributes([
-                        '@keydown.enter' => '$wire.searchSettings()',
-                    ]),
-            ])
-            ->statePath('data');
-    }
-
-    public function mount(): void
-    {
-        $this->form->fill();
-    }
-
-    public function searchSettings(): void
-    {
-        $term = $this->data['search'] ?? '';
-
-        if (blank($term)) {
-            return;
-        }
-
-        $this->redirect(SettingResource::getUrl('index', ['tableSearch' => $term]));
-    }
-
+    /**
+     * @return array<int, SettingGroup>
+     */
     public function getSettingGroups(): array
     {
         return [
-            SettingGroup::GENERAL,
-            SettingGroup::BUSINESS,
-            SettingGroup::COMMERCE,
-            SettingGroup::ORDERS,
-            SettingGroup::PAYMENTS,
-            SettingGroup::INVENTORY,
-            SettingGroup::NOTIFICATIONS,
-            SettingGroup::EMAIL,
-            SettingGroup::LOCALIZATION,
-            SettingGroup::SECURITY,
-            SettingGroup::INTEGRATIONS,
             SettingGroup::SYSTEM,
         ];
     }
@@ -112,7 +62,7 @@ class SettingsDashboard extends Page implements HasForms
     {
         return match ($group) {
             SettingGroup::SYSTEM => SystemInformation::getUrl(),
-            default => SettingResource::getUrl("edit-{$group->value}"),
+            default => '#',
         };
     }
 

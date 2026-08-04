@@ -23,11 +23,7 @@ use App\Filament\Pages\Products\CategoriesPage;
 use App\Filament\Pages\Products\InventoryPage;
 use App\Filament\Pages\Marketing\BlogPage;
 use App\Filament\Pages\Marketing\MediaPage;
-use App\Filament\Pages\Analytics\ExecutiveAnalyticsPage;
-use App\Filament\Pages\Analytics\SalesAnalyticsPage;
-use App\Filament\Pages\Analytics\OperationsAnalyticsPage;
-use App\Filament\Pages\Analytics\FinanceAnalyticsPage;
-use App\Filament\Pages\Administration\IntegrationsPage;
+use App\Filament\Pages\Administration\RolesPage;
 use App\Http\Controllers\Admin\ActivityExportController;
 use App\Http\Controllers\Admin\ApplicationExportController;
 use App\Http\Controllers\Admin\CompanyExportController;
@@ -42,6 +38,7 @@ use App\Http\Controllers\Admin\BlogExportController;
 use App\Http\Controllers\Admin\CategoryExportController;
 use App\Http\Controllers\Admin\InventoryExportController;
 use App\Http\Controllers\Admin\MediaExportController;
+use App\Http\Controllers\Admin\RoleExportController;
 use App\Http\Controllers\Admin\TerritoryExportController;
 use App\Http\Middleware\EnsureAdminPasswordChanged;
 use Filament\Http\Middleware\Authenticate;
@@ -164,8 +161,6 @@ class AdminPanelProvider extends PanelProvider
                 'Products',
                 'Operations',
                 'Marketing',
-                'Analytics',
-                'Communications',
                 'Administration',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
@@ -192,11 +187,7 @@ class AdminPanelProvider extends PanelProvider
                 InventoryPage::class,
                 BlogPage::class,
                 MediaPage::class,
-                ExecutiveAnalyticsPage::class,
-                SalesAnalyticsPage::class,
-                OperationsAnalyticsPage::class,
-                FinanceAnalyticsPage::class,
-                IntegrationsPage::class,
+                RolesPage::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([])
@@ -231,6 +222,8 @@ class AdminPanelProvider extends PanelProvider
                     ->name('marketing.blog.export');
                 Route::get('marketing/media/export', MediaExportController::class)
                     ->name('marketing.media.export');
+                Route::get('administration/roles/export', RoleExportController::class)
+                    ->name('administration.roles.export');
             })
             ->middleware([
                 EncryptCookies::class,
