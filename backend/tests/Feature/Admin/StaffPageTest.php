@@ -103,14 +103,15 @@ class StaffPageTest extends TestCase
             ->assertSee('Pending Password Reset');
     }
 
-    public function test_empty_state_renders_when_no_staff(): void
+    public function test_empty_state_does_not_render_when_admin_exists(): void
     {
         $admin = $this->admin();
 
         Livewire::actingAs($admin)
             ->test(StaffPage::class)
             ->assertSuccessful()
-            ->assertSee('No staff members yet');
+            ->assertDontSee('No staff yet')
+            ->assertDontSee('No staff members yet');
     }
 
     public function test_staff_appear_in_table(): void
