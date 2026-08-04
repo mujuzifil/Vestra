@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\CompanyExportController;
 use App\Http\Controllers\Admin\CreditExportController;
 use App\Http\Controllers\Admin\QuoteExportController;
 use App\Http\Controllers\Admin\PartnerExportController;
+use App\Http\Controllers\Admin\SupportExportController;
 use App\Http\Controllers\Admin\TerritoryExportController;
 use App\Http\Middleware\EnsureAdminPasswordChanged;
 use Filament\Http\Middleware\Authenticate;
@@ -197,6 +198,8 @@ class AdminPanelProvider extends PanelProvider
                     ->name('distributors.territories.export');
                 Route::get('distributors/credit/export', CreditExportController::class)
                     ->name('distributors.credit.export');
+                Route::get('customer-success/support/export', SupportExportController::class)
+                    ->name('customer-success.support.export');
             })
             ->middleware([
                 EncryptCookies::class,
