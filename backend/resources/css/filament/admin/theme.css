@@ -51,6 +51,7 @@
 @import "./components/feedback.css";
 @import "./components/products-workspace.css";
 @import "./components/categories.css";
+@import "./components/inventory.css";
 
 /* Base page typography */
 .fi-body {

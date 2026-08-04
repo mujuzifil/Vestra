@@ -27,6 +27,17 @@ class StockMovementResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
+    /**
+     * Products → Inventory is served by InventoryPage (stock levels).
+     * Keep this resource only for legacy deep links; hide it from navigation.
+     */
+    protected static bool $shouldRegisterNavigation = false;
+
+    public static function getNavigationItems(): array
+    {
+        return [];
+    }
+
     public static function form(Form $form): Form
     {
         return $form
