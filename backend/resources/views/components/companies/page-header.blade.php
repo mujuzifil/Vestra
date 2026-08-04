@@ -15,16 +15,6 @@
     </div>
 
     <div class="vestra-workspace__quick-actions vestra-companies__header-actions">
-        <button
-            type="button"
-            wire:click="$set('showImportDrawer', true)"
-            class="vestra-button vestra-button--secondary"
-            aria-label="Import companies"
-        >
-            <x-filament::icon icon="heroicon-o-arrow-up-on-square" class="h-4 w-4" />
-            <span>Import</span>
-        </button>
-
         <div class="vestra-companies__export-dropdown" x-data="{ open: false }" @click.outside="open = false">
             <button
                 type="button"

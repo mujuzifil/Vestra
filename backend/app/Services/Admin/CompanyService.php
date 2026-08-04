@@ -11,9 +11,7 @@ use App\Services\AuditService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class CompanyService
 {
@@ -339,115 +337,6 @@ class CompanyService
     /**
      * @return array<string, mixed>
      */
-    public function importCompanies(UploadedFile $file): array
-    {
-        $path = $file->getRealPath();
-        $handle = fopen($path, 'r');
-
-        if ($handle === false) {
-            return [
-                'total' => 0,
-                'created' => 0,
-                'updated' => 0,
-                'skipped' => 1,
-                'errors' => ['Unable to read uploaded file.'],
-            ];
-        }
-
-        // Skip BOM if present
-        $bom = fread($handle, 3);
-        if ($bom !== "\xEF\xBB\xBF") {
-            rewind($handle);
-        }
-
-        $headers = fgetcsv($handle);
-        if ($headers === false) {
-            fclose($handle);
-
-            return [
-                'total' => 0,
-                'created' => 0,
-                'updated' => 0,
-                'skipped' => 1,
-                'errors' => ['Uploaded file is empty or not a valid CSV.'],
-            ];
-        }
-
-        $headers = array_map(fn ($h) => strtolower(trim((string) $h)), $headers);
-
-        $total = 0;
-        $created = 0;
-        $updated = 0;
-        $skipped = 0;
-        $errors = [];
-
-        while (($row = fgetcsv($handle)) !== false) {
-            if (count($row) !== count($headers)) {
-                continue;
-            }
-
-            $record = array_combine($headers, $row);
-            $total++;
-
-            $email = trim($record['primary_contact_email'] ?? '');
-
-            if (empty($email)) {
-                $skipped++;
-                $errors[] = "Row {$total}: missing primary contact email.";
-                continue;
-            }
-
-            $user = User::query()->where('email', $email)->first();
-
-            if ($user === null) {
-                $skipped++;
-                $errors[] = "Row {$total}: no user found for {$email}.";
-                continue;
-            }
-
-            try {
-                $profile = CompanyProfile::query()->updateOrCreate(
-                    ['user_id' => $user->id],
-                    [
-                        'company_name' => $this->value($record, 'company_name') ?? $user->name,
-                        'industry' => $this->value($record, 'industry'),
-                        'business_type' => $this->value($record, 'business_type'),
-                        'tax_identification' => $this->value($record, 'tax_identification'),
-                        'registration_number' => $this->value($record, 'registration_number'),
-                        'website' => $this->value($record, 'website'),
-                        'district' => $this->value($record, 'district'),
-                        'city' => $this->value($record, 'city'),
-                        'country' => $this->value($record, 'country') ?? 'Uganda',
-                        'address' => $this->value($record, 'address'),
-                        'primary_contact_name' => $this->value($record, 'primary_contact_name') ?? $user->name,
-                        'primary_contact_phone' => $this->value($record, 'primary_contact_phone') ?? $user->phone,
-                        'primary_contact_email' => $email,
-                        'status' => $this->value($record, 'status') ?? CompanyStatus::PROSPECT->value,
-                        'region' => $this->value($record, 'region'),
-                        'notes' => $this->value($record, 'notes'),
-                    ]
-                );
-
-                if ($profile->wasRecentlyCreated) {
-                    $created++;
-                } else {
-                    $updated++;
-                }
-            } catch (\Throwable $e) {
-                $skipped++;
-                $errors[] = "Row {$total}: {$e->getMessage()}";
-                Log::error('Company import failed', ['row' => $record, 'error' => $e->getMessage()]);
-            }
-        }
-
-        fclose($handle);
-
-        return compact('total', 'created', 'updated', 'skipped', 'errors');
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
     public function getFilterOptions(): array
     {
         $profiles = CompanyProfile::query();
@@ -544,15 +433,5 @@ class CompanyService
             'label' => $positive ? 'Up' : 'Down',
             'positive' => $positive,
         ];
-    }
-
-    /**
-     * @param  array<string, string|null>  $record
-     */
-    private function value(array $record, string $key): ?string
-    {
-        $value = $record[$key] ?? null;
-
-        return $value !== null && $value !== '' ? trim($value) : null;
     }
 }

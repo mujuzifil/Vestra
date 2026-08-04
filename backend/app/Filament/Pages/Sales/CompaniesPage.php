@@ -12,12 +12,10 @@ use Filament\Pages\Page;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Url;
-use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 class CompaniesPage extends Page
 {
-    use WithFileUploads;
     use WithPagination;
 
     protected static string $layout = 'filament.layouts.crm';
@@ -67,7 +65,7 @@ class CompaniesPage extends Page
 
     public bool $hasDistributor = false;
 
-    public bool $showFilterPanel = true;
+    public bool $showFilterPanel = false;
 
     /** @var array<int, int> */
     public array $selectedCompanyIds = [];
@@ -111,10 +109,6 @@ class CompaniesPage extends Page
         'notes' => '',
     ];
 
-    public bool $showImportDrawer = false;
-
-    public $importFile;
-
     public string $ticketSubject = '';
 
     public string $ticketMessage = '';
@@ -122,6 +116,11 @@ class CompaniesPage extends Page
     public function getTitle(): string
     {
         return 'Companies';
+    }
+
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
     }
 
     public function mount(): void
@@ -405,29 +404,6 @@ class CompaniesPage extends Page
         return redirect()->to($this->getExportUrl($format));
     }
 
-    public function import(): void
-    {
-        Gate::authorize('import', CompanyProfile::class);
-
-        $this->validate([
-            'importFile' => ['required', 'file', 'mimes:csv,txt', 'max:10240'],
-        ]);
-
-        $summary = $this->getCompanyServiceProperty()->importCompanies($this->importFile);
-
-        $this->importFile = null;
-        $this->showImportDrawer = false;
-        $this->resetPage();
-
-        $message = "Imported {$summary['created']} created, {$summary['updated']} updated, {$summary['skipped']} skipped of {$summary['total']} rows.";
-
-        Notification::make()
-            ->title('Import complete')
-            ->body($message)
-            ->success()
-            ->send();
-    }
-
     public function sortBy(string $field): void
     {
         if ($this->sortField === $field) {
@@ -464,7 +440,6 @@ class CompaniesPage extends Page
     {
         $this->selectedCompanyIds = [];
         $this->resetPage();
-        $this->showFilterPanel = true;
     }
 
     public function clearStatusFilter(): void

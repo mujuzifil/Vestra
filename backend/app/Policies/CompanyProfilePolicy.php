@@ -36,9 +36,4 @@ class CompanyProfilePolicy
     {
         return $user->isAdmin();
     }
-
-    public function import(User $user): bool
-    {
-        return $user->isAdmin();
-    }
 }
