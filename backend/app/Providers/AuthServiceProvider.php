@@ -64,10 +64,10 @@ use App\Policies\PaymentTransactionPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ProductWarehouseStockPolicy;
 use App\Policies\ReviewPolicy;
+use App\Policies\RolePolicy;
 use App\Policies\SettingPolicy;
 use App\Policies\TaskPolicy;
 use App\Policies\UserPolicy;
-use App\Policies\RolePolicy;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -105,10 +105,10 @@ class AuthServiceProvider extends ServiceProvider
         Product::class => ProductPolicy::class,
         ProductWarehouseStock::class => ProductWarehouseStockPolicy::class,
         Review::class => ReviewPolicy::class,
+        Role::class => RolePolicy::class,
         Setting::class => SettingPolicy::class,
         Task::class => TaskPolicy::class,
         User::class => UserPolicy::class,
-        Role::class => RolePolicy::class,
         DatabaseNotification::class => NotificationPolicy::class,
     ];
 
