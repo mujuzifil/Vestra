@@ -4,6 +4,6 @@
 |-------|--------|
 | `npm run lint` | Pass |
 | `npx tsc --noEmit` | Pass |
-| `npm run build` | Recorded at commit time |
+| `npm run build` | Pass |
 
 No customer-facing frontend code changes in this phase.
