@@ -73,6 +73,7 @@ class QuotesPageTest extends TestCase
             ->test(QuotesPage::class)
             ->assertSuccessful()
             ->assertSee('Quotes')
+            ->assertSee('Manage and track all sales quotes and proposals.')
             ->assertSee('Total Quotes')
             ->assertSee('Pending')
             ->assertSee('Approved')

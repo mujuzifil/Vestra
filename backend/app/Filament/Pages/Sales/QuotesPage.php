@@ -104,6 +104,11 @@ class QuotesPage extends Page
         return 'Quotes';
     }
 
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
+    }
+
     public function mount(): void
     {
         Gate::authorize('viewAny', QuoteRequest::class);
