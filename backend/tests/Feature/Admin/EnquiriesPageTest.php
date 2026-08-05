@@ -91,9 +91,8 @@ class EnquiriesPageTest extends TestCase
             ->assertSee('Enquiries')
             ->assertSee('Total')
             ->assertSee('New')
-            ->assertSee('In Progress')
             ->assertSee('Resolved')
-            ->assertSee('Unassigned');
+            ->assertDontSeeHtml('>Assigned To<');
     }
 
     public function test_empty_state_renders_when_no_enquiries_exist(): void
@@ -199,8 +198,9 @@ class EnquiriesPageTest extends TestCase
 
         $this->assertEquals('4', $byLabel['Total']['value']);
         $this->assertEquals('2', $byLabel['New']['value']);
-        $this->assertEquals('1', $byLabel['In Progress']['value']);
         $this->assertEquals('1', $byLabel['Resolved']['value']);
+        $this->assertArrayNotHasKey('In Progress', $byLabel->all());
+        $this->assertArrayNotHasKey('Unassigned', $byLabel->all());
     }
 
     public function test_detail_drawer_shows_live_enquiry_data(): void
@@ -278,23 +278,6 @@ class EnquiriesPageTest extends TestCase
         $this->assertDatabaseHas('contact_messages', [
             'id'     => $enquiry->id,
             'status' => ContactStatus::IN_PROGRESS->value,
-        ]);
-    }
-
-    public function test_admin_can_assign_enquiry(): void
-    {
-        $admin    = $this->admin();
-        $assignee = User::factory()->create(['is_admin' => true]);
-        $enquiry  = ContactMessage::factory()->create(['assigned_to' => null]);
-
-        Livewire::actingAs($admin)
-            ->test(EnquiriesPage::class)
-            ->call('assign', $enquiry->id, $assignee->id)
-            ->assertHasNoErrors();
-
-        $this->assertDatabaseHas('contact_messages', [
-            'id'          => $enquiry->id,
-            'assigned_to' => $assignee->id,
         ]);
     }
 

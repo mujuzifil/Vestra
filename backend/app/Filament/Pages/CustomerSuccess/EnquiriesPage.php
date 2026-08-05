@@ -43,9 +43,6 @@ class EnquiriesPage extends Page
     #[Url(as: 'priority')]
     public array $priorityFilter = [];
 
-    #[Url(as: 'assigned_to')]
-    public ?int $assignedToFilter = null;
-
     #[Url(as: 'date_from')]
     public ?string $dateFrom = null;
 
@@ -134,14 +131,13 @@ class EnquiriesPage extends Page
     protected function buildFilters(): array
     {
         return [
-            'search'       => $this->search,
-            'status'       => $this->statusFilter,
-            'source'       => $this->sourceFilter,
+            'search' => $this->search,
+            'status' => $this->statusFilter,
+            'source' => $this->sourceFilter,
             'enquiry_type' => $this->enquiryTypeFilter,
-            'priority'     => $this->priorityFilter,
-            'assigned_to'  => $this->assignedToFilter,
-            'date_from'    => $this->dateFrom,
-            'date_until'   => $this->dateUntil,
+            'priority' => $this->priorityFilter,
+            'date_from' => $this->dateFrom,
+            'date_until' => $this->dateUntil,
         ];
     }
 
@@ -151,8 +147,8 @@ class EnquiriesPage extends Page
         Gate::authorize('view', $enquiry);
 
         $this->selectedEnquiryId = $id;
-        $this->replyDraft        = $enquiry->reply ?? '';
-        $this->showDetailDrawer  = true;
+        $this->replyDraft = $enquiry->reply ?? '';
+        $this->showDetailDrawer = true;
 
         if (! $enquiry->isRead()) {
             $enquiry->markAsRead();
@@ -161,9 +157,9 @@ class EnquiriesPage extends Page
 
     public function closeDetailDrawer(): void
     {
-        $this->showDetailDrawer  = false;
+        $this->showDetailDrawer = false;
         $this->selectedEnquiryId = null;
-        $this->replyDraft        = '';
+        $this->replyDraft = '';
     }
 
     public function saveReply(): void
@@ -202,22 +198,12 @@ class EnquiriesPage extends Page
 
         $enquiry->update([
             'replied_at' => now(),
-            'status'     => \App\Enums\ContactStatus::RESOLVED,
+            'status' => \App\Enums\ContactStatus::RESOLVED,
         ]);
 
         Notification::make()->title('Reply sent successfully')->success()->send();
 
         $this->closeDetailDrawer();
-    }
-
-    public function assign(int $id, int $userId): void
-    {
-        $enquiry = ContactMessage::query()->findOrFail($id);
-        Gate::authorize('update', $enquiry);
-
-        $enquiry->update(['assigned_to' => $userId]);
-
-        Notification::make()->title('Enquiry assigned')->success()->send();
     }
 
     public function updateStatus(int $id, string $status): void
@@ -250,7 +236,7 @@ class EnquiriesPage extends Page
         if ($this->sortField === $field) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
         } else {
-            $this->sortField     = $field;
+            $this->sortField = $field;
             $this->sortDirection = 'asc';
         }
 
@@ -259,16 +245,15 @@ class EnquiriesPage extends Page
 
     public function resetFilters(): void
     {
-        $this->search          = '';
-        $this->statusFilter    = [];
-        $this->sourceFilter    = [];
+        $this->search = '';
+        $this->statusFilter = [];
+        $this->sourceFilter = [];
         $this->enquiryTypeFilter = [];
-        $this->priorityFilter  = [];
-        $this->assignedToFilter = null;
-        $this->dateFrom        = null;
-        $this->dateUntil       = null;
-        $this->sortField       = 'created_at';
-        $this->sortDirection   = 'desc';
+        $this->priorityFilter = [];
+        $this->dateFrom = null;
+        $this->dateUntil = null;
+        $this->sortField = 'created_at';
+        $this->sortDirection = 'desc';
         $this->resetPage();
     }
 
@@ -297,11 +282,6 @@ class EnquiriesPage extends Page
         $this->resetPage();
     }
 
-    public function updatedAssignedToFilter(): void
-    {
-        $this->resetPage();
-    }
-
     public function updatedDateFrom(): void
     {
         $this->resetPage();
@@ -319,7 +299,6 @@ class EnquiriesPage extends Page
             || filled($this->sourceFilter)
             || filled($this->enquiryTypeFilter)
             || filled($this->priorityFilter)
-            || filled($this->assignedToFilter)
             || filled($this->dateFrom)
             || filled($this->dateUntil);
     }
@@ -327,15 +306,14 @@ class EnquiriesPage extends Page
     public function getExportUrl(string $format): string
     {
         return route('filament.admin.customer-success.enquiries.export', [
-            'format'       => $format,
-            'search'       => $this->search ?: null,
-            'status'       => $this->statusFilter ?: null,
-            'source'       => $this->sourceFilter ?: null,
+            'format' => $format,
+            'search' => $this->search ?: null,
+            'status' => $this->statusFilter ?: null,
+            'source' => $this->sourceFilter ?: null,
             'enquiry_type' => $this->enquiryTypeFilter ?: null,
-            'priority'     => $this->priorityFilter ?: null,
-            'assigned_to'  => $this->assignedToFilter,
-            'date_from'    => $this->dateFrom,
-            'date_until'   => $this->dateUntil,
+            'priority' => $this->priorityFilter ?: null,
+            'date_from' => $this->dateFrom,
+            'date_until' => $this->dateUntil,
         ]);
     }
 }

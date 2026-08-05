@@ -1,6 +1,6 @@
 @props(['cards' => []])
 
-<div class="vestra-kpi-grid vestra-kpi-grid--5">
+<div class="vestra-kpi-grid vestra-kpi-grid--3">
     @foreach ($cards as $card)
         <x-admin.kpi-card
             :icon="$card['icon']"
