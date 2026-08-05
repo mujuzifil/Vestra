@@ -4,8 +4,6 @@ $kpiCards = $this->kpiCards;
 $filterOptions = $this->filterOptions;
 $selectedStock = $this->selectedStock;
 @endphp
-
-<x-filament-panels::page>
     <div class="vestra-workspace vestra-inventory">
         <x-inventory.page-header
             title="Inventory"
@@ -46,4 +44,3 @@ $selectedStock = $this->selectedStock;
             :stock="$selectedStock"
         />
     </div>
-</x-filament-panels::page>

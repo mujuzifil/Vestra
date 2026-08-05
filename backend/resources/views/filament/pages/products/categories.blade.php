@@ -3,8 +3,6 @@ $categories = $this->categories;
 $kpiCards = $this->kpiCards;
 $selectedCategory = $this->selectedCategory;
 @endphp
-
-<x-filament-panels::page>
     <div class="vestra-workspace vestra-categories">
         <x-categories.page-header
             title="Categories"
@@ -47,4 +45,3 @@ $selectedCategory = $this->selectedCategory;
             :category="$selectedCategory"
         />
     </div>
-</x-filament-panels::page>

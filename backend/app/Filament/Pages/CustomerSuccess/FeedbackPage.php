@@ -64,6 +64,11 @@ class FeedbackPage extends Page
         return 'Feedback';
     }
 
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
+    }
+
     public function mount(): void
     {
         Gate::authorize('viewAny', CustomerFeedback::class);

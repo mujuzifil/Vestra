@@ -71,6 +71,11 @@ class EnquiriesPage extends Page
         return 'Enquiries';
     }
 
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
+    }
+
     public function mount(): void
     {
         Gate::authorize('viewAny', ContactMessage::class);

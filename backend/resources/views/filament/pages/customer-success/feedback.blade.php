@@ -3,8 +3,6 @@ $feedback = $this->feedback;
 $kpiCards = $this->kpiCards;
 $selectedFeedback = $this->selectedFeedback;
 @endphp
-
-<x-filament-panels::page>
     <div class="vestra-workspace vestra-feedback">
         <x-feedback.page-header
             title="Feedback"
@@ -45,4 +43,3 @@ $selectedFeedback = $this->selectedFeedback;
             :feedback="$selectedFeedback"
         />
     </div>
-</x-filament-panels::page>
