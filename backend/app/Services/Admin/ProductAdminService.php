@@ -11,6 +11,7 @@ use App\Models\ProductImage;
 use App\Models\ProductWarehouseStock;
 use App\Models\Setting;
 use App\Models\User;
+use App\Services\Catalog\CatalogSyncService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
@@ -20,6 +21,8 @@ use Illuminate\Support\Str;
 
 class ProductAdminService
 {
+    public function __construct(private readonly CatalogSyncService $catalogSync) {}
+
     /**
      * @param  array<string, mixed>  $filters
      */
@@ -224,8 +227,10 @@ class ProductAdminService
         return DB::transaction(function () use ($data, $images, $actor) {
             $product = Product::create($this->preparePayload($data, $actor, creating: true));
             $this->storeImages($product, $images);
+            $product = $product->fresh(['category', 'images']);
+            $this->catalogSync->syncProducts($product->id, $product->category_id);
 
-            return $product->fresh(['category', 'images']);
+            return $product;
         });
     }
 
@@ -238,8 +243,10 @@ class ProductAdminService
         return DB::transaction(function () use ($product, $data, $images, $actor) {
             $product->update($this->preparePayload($data, $actor, creating: false));
             $this->storeImages($product, $images);
+            $product = $product->fresh(['category', 'images']);
+            $this->catalogSync->syncProducts($product->id, $product->category_id);
 
-            return $product->fresh(['category', 'images']);
+            return $product;
         });
     }
 
@@ -252,6 +259,7 @@ class ProductAdminService
         }
 
         $image->delete();
+        $this->catalogSync->syncProducts($product->id, $product->category_id);
     }
 
     /**

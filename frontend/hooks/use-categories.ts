@@ -10,5 +10,7 @@ export function useCategories() {
   return useQuery<Category[], Error>({
     queryKey: [CATEGORIES_KEY],
     queryFn: getCategories,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 }

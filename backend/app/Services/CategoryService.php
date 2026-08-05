@@ -4,11 +4,15 @@ namespace App\Services;
 
 use App\Models\Category;
 use App\Repositories\CategoryRepository;
+use App\Services\Catalog\CatalogSyncService;
 use Illuminate\Database\Eloquent\Collection;
 
 class CategoryService
 {
-    public function __construct(private readonly CategoryRepository $repository) {}
+    public function __construct(
+        private readonly CategoryRepository $repository,
+        private readonly CatalogSyncService $catalogSync,
+    ) {}
 
     public function listActive(): Collection
     {
@@ -22,16 +26,25 @@ class CategoryService
 
     public function create(array $data): Category
     {
-        return $this->repository->create($data);
+        $category = $this->repository->create($data);
+        $this->catalogSync->syncCategories($category->id);
+
+        return $category;
     }
 
     public function update(Category $category, array $data): bool
     {
-        return $this->repository->update($category, $data);
+        $updated = $this->repository->update($category, $data);
+        $this->catalogSync->syncCategories($category->id);
+
+        return $updated;
     }
 
     public function delete(Category $category): ?bool
     {
-        return $this->repository->delete($category);
+        $deleted = $this->repository->delete($category);
+        $this->catalogSync->syncCategories();
+
+        return $deleted;
     }
 }
