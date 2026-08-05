@@ -4,10 +4,11 @@ namespace App\Notifications;
 
 use App\Models\Distributor;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class DistributorApprovedNotification extends Notification
+class DistributorApprovedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

@@ -14,20 +14,53 @@ use App\Models\DistributorRequest;
 use App\Models\User;
 use App\Notifications\DistributorApprovedNotification;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
 
 class DistributorOnboardingService
 {
-    public function __construct(
-        private readonly AuditService $auditService,
-    ) {}
-
     public function approve(DistributorRequest $request, ?User $admin = null): Distributor
     {
         return DB::transaction(function () use ($request, $admin) {
+            $request->refresh();
+
+            $existingForRequest = Distributor::query()
+                ->where('distributor_request_id', $request->id)
+                ->first();
+
+            if ($existingForRequest !== null) {
+                if ($request->status !== DistributorStatus::APPROVED) {
+                    $request->update(['status' => DistributorStatus::APPROVED]);
+                }
+
+                return $existingForRequest->load(['branches', 'contacts', 'creditAccount']);
+            }
+
+            if ($request->status === DistributorStatus::REJECTED) {
+                throw ValidationException::withMessages([
+                    'application' => 'Rejected applications cannot be approved.',
+                ]);
+            }
+
+            if ($request->status === DistributorStatus::APPROVED) {
+                throw ValidationException::withMessages([
+                    'application' => 'This application is marked approved but no distributor record exists. Retry approval.',
+                ]);
+            }
+
             $request->update(['status' => DistributorStatus::APPROVED]);
 
             $user = $this->resolveUser($request);
+
+            $existingForUser = Distributor::query()
+                ->where('user_id', $user->id)
+                ->first();
+
+            if ($existingForUser !== null) {
+                throw ValidationException::withMessages([
+                    'application' => 'A distributor account already exists for this applicant email.',
+                ]);
+            }
 
             $distributor = Distributor::create([
                 'user_id' => $user->id,
@@ -36,14 +69,16 @@ class DistributorOnboardingService
                 'company_name' => $request->company_name,
                 'trading_name' => $request->company_name,
                 'business_type' => $request->business_type,
-                'years_in_business' => $request->years_in_operation,
+                'years_in_business' => $this->normalizeYearsInBusiness($request->years_in_operation),
                 'primary_contact_name' => $request->contact_person,
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'address' => $request->address,
                 'country' => $request->country,
                 'district' => $request->region,
-                'products_of_interest' => $request->products_interested_in,
+                'products_of_interest' => is_array($request->products_interested_in)
+                    ? implode(', ', $request->products_interested_in)
+                    : $request->products_interested_in,
                 'expected_monthly_volume' => $request->estimated_volume,
                 'approved_at' => now(),
             ]);
@@ -53,11 +88,7 @@ class DistributorOnboardingService
             $this->seedCreditAccount($distributor);
             $this->assignDistributorRole($user);
 
-            $user->notify(new DistributorApprovedNotification($distributor));
-
-            event(new DistributorApplicationApproved($distributor));
-
-            $this->auditService::log(
+            AuditService::log(
                 $admin ?? $user,
                 'distributor_approved',
                 $distributor,
@@ -66,26 +97,65 @@ class DistributorOnboardingService
                 request()?->userAgent()
             );
 
+            $distributorId = $distributor->id;
+            $userId = $user->id;
+
+            DB::afterCommit(function () use ($distributorId, $userId): void {
+                $distributor = Distributor::query()->with('user')->find($distributorId);
+                $user = User::query()->find($userId);
+
+                if ($distributor === null || $user === null) {
+                    return;
+                }
+
+                $user->notify(new DistributorApprovedNotification($distributor));
+                event(new DistributorApplicationApproved($distributor));
+            });
+
             return $distributor->load(['branches', 'contacts', 'creditAccount']);
         });
     }
 
     public function reject(DistributorRequest $request, ?string $reason = null, ?User $admin = null): DistributorRequest
     {
-        $request->update(['status' => DistributorStatus::REJECTED]);
+        return DB::transaction(function () use ($request, $reason, $admin) {
+            $request->refresh();
 
-        event(new DistributorApplicationRejected($request, $reason));
+            if ($request->status === DistributorStatus::APPROVED) {
+                throw ValidationException::withMessages([
+                    'application' => 'Approved applications cannot be rejected.',
+                ]);
+            }
 
-        $this->auditService::log(
-            $admin,
-            'distributor_rejected',
-            $request,
-            ['reason' => $reason],
-            request()?->ip(),
-            request()?->userAgent()
-        );
+            if ($request->status === DistributorStatus::REJECTED) {
+                return $request;
+            }
 
-        return $request;
+            $request->update(['status' => DistributorStatus::REJECTED]);
+
+            AuditService::log(
+                $admin,
+                'distributor_rejected',
+                $request,
+                ['reason' => $reason],
+                request()?->ip(),
+                request()?->userAgent()
+            );
+
+            $requestId = $request->id;
+
+            DB::afterCommit(function () use ($requestId, $reason): void {
+                $fresh = DistributorRequest::query()->find($requestId);
+
+                if ($fresh === null) {
+                    return;
+                }
+
+                event(new DistributorApplicationRejected($fresh, $reason));
+            });
+
+            return $request;
+        });
     }
 
     private function resolveUser(DistributorRequest $request): User
@@ -94,7 +164,7 @@ class DistributorOnboardingService
 
         if (! $user) {
             $user = User::create([
-                'name' => $request->contact_person,
+                'name' => $request->contact_person ?: $request->company_name ?: 'Distributor',
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'password' => bcrypt(uniqid('tmp_', true)),
@@ -103,6 +173,15 @@ class DistributorOnboardingService
         }
 
         return $user;
+    }
+
+    private function normalizeYearsInBusiness(?int $years): ?int
+    {
+        if ($years === null) {
+            return null;
+        }
+
+        return max(0, min(255, $years));
     }
 
     private function seedDefaultBranch(Distributor $distributor, DistributorRequest $request): void
@@ -125,7 +204,7 @@ class DistributorOnboardingService
     {
         DistributorContact::create([
             'distributor_id' => $distributor->id,
-            'name' => $request->contact_person,
+            'name' => $request->contact_person ?: 'Primary Contact',
             'role' => 'Primary Contact',
             'phone' => $request->phone,
             'email' => $request->email,

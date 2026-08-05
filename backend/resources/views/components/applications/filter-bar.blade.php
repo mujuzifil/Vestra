@@ -3,7 +3,6 @@
     'priorityOptions' => [],
     'countryOptions' => [],
     'regionOptions' => [],
-    'assigneeOptions' => [],
 ])
 
 @php
@@ -11,7 +10,6 @@ $statusOptions = is_array($statusOptions) ? $statusOptions : [];
 $priorityOptions = is_array($priorityOptions) ? $priorityOptions : [];
 $countryOptions = is_array($countryOptions) ? $countryOptions : [];
 $regionOptions = is_array($regionOptions) ? $regionOptions : [];
-$assigneeOptions = is_array($assigneeOptions) ? $assigneeOptions : [];
 @endphp
 
 <div class="vestra-applications__filter-bar">
@@ -94,37 +92,6 @@ $assigneeOptions = is_array($assigneeOptions) ? $assigneeOptions : [];
                                 class="vestra-applications__filter-checkbox"
                             />
                             <span class="vestra-applications__filter-option-label">{{ $region }}</span>
-                        </label>
-                    @endforeach
-                </div>
-            </div>
-        @endif
-
-        @if (! empty($assigneeOptions))
-            <div class="vestra-applications__filter" x-data="{ open: false }" @click.outside="open = false">
-                <button type="button" @click="open = !open" class="vestra-applications__filter-trigger" aria-haspopup="listbox">
-                    <span>Assigned To</span>
-                    <x-filament::icon icon="heroicon-m-chevron-down" class="h-4 w-4" x-bind:class="{ 'rotate-180': open }" />
-                </button>
-                <div x-show="open" x-transition class="vestra-applications__filter-dropdown vestra-applications__filter-dropdown--wide" role="listbox">
-                    <label class="vestra-applications__filter-option">
-                        <input
-                            type="radio"
-                            wire:model.live="assignedToFilter"
-                            value=""
-                            class="vestra-applications__filter-radio"
-                        />
-                        <span class="vestra-applications__filter-option-label">All administrators</span>
-                    </label>
-                    @foreach ($assigneeOptions as $assignee)
-                        <label class="vestra-applications__filter-option">
-                            <input
-                                type="radio"
-                                wire:model.live="assignedToFilter"
-                                value="{{ $assignee['id'] }}"
-                                class="vestra-applications__filter-radio"
-                            />
-                            <span class="vestra-applications__filter-option-label">{{ $assignee['name'] }}</span>
                         </label>
                     @endforeach
                 </div>
