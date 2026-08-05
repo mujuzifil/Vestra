@@ -16,7 +16,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ProductAdminService
@@ -37,7 +36,7 @@ class ProductAdminService
     public function queryProducts(array $filters = [], string $sort = 'created_at', string $direction = 'desc'): Builder
     {
         $query = Product::query()
-            ->with(['category', 'images'])
+            ->with(['category', 'images.mediaAsset'])
             ->when($filters['search'] ?? null, function (Builder $q, string $term): void {
                 $q->where(function (Builder $inner) use ($term): void {
                     $inner->where('name', 'like', "%{$term}%")
@@ -82,7 +81,7 @@ class ProductAdminService
      */
     public function getDetail(Product $product): array
     {
-        $product->load(['category', 'images', 'warehouseStocks.warehouse', 'creator', 'updater']);
+        $product->load(['category', 'images.mediaAsset', 'warehouseStocks.warehouse', 'creator', 'updater']);
 
         $stockStatus = $product->resolvedStockStatus();
 
@@ -116,9 +115,10 @@ class ProductAdminService
             ] : null,
             'images' => $product->images->map(fn (ProductImage $image) => [
                 'id' => $image->id,
-                'url' => $this->imageUrl($image->image),
-                'path' => $image->image,
-                'alt_text' => $image->alt_text,
+                'url' => $image->resolvedUrl() ?? $this->imageUrl($image->image),
+                'path' => $image->mediaAsset?->publicPath() ?? $image->image,
+                'media_asset_id' => $image->media_asset_id,
+                'alt_text' => $image->alt_text ?: $image->mediaAsset?->alt_text,
                 'sort_order' => $image->sort_order,
             ])->values()->toArray(),
             'warehouse_stocks' => $product->warehouseStocks->map(fn (ProductWarehouseStock $stock) => [
@@ -220,14 +220,14 @@ class ProductAdminService
 
     /**
      * @param  array<string, mixed>  $data
-     * @param  array<int, UploadedFile>  $images
+     * @param  array<int, int>  $mediaAssetIds
      */
-    public function createProduct(array $data, array $images = [], ?User $actor = null): Product
+    public function createProduct(array $data, array $mediaAssetIds = [], ?User $actor = null): Product
     {
-        return DB::transaction(function () use ($data, $images, $actor) {
+        return DB::transaction(function () use ($data, $mediaAssetIds, $actor) {
             $product = Product::create($this->preparePayload($data, $actor, creating: true));
-            $this->storeImages($product, $images);
-            $product = $product->fresh(['category', 'images']);
+            $this->attachMediaAssets($product, $mediaAssetIds);
+            $product = $product->fresh(['category', 'images.mediaAsset']);
             $this->catalogSync->syncProducts($product->id, $product->category_id);
 
             return $product;
@@ -236,14 +236,14 @@ class ProductAdminService
 
     /**
      * @param  array<string, mixed>  $data
-     * @param  array<int, UploadedFile>  $images
+     * @param  array<int, int>  $mediaAssetIds
      */
-    public function updateProduct(Product $product, array $data, array $images = [], ?User $actor = null): Product
+    public function updateProduct(Product $product, array $data, array $mediaAssetIds = [], ?User $actor = null): Product
     {
-        return DB::transaction(function () use ($product, $data, $images, $actor) {
+        return DB::transaction(function () use ($product, $data, $mediaAssetIds, $actor) {
             $product->update($this->preparePayload($data, $actor, creating: false));
-            $this->storeImages($product, $images);
-            $product = $product->fresh(['category', 'images']);
+            $this->attachMediaAssets($product, $mediaAssetIds);
+            $product = $product->fresh(['category', 'images.mediaAsset']);
             $this->catalogSync->syncProducts($product->id, $product->category_id);
 
             return $product;
@@ -253,13 +253,7 @@ class ProductAdminService
     public function removeImage(Product $product, int $imageId): void
     {
         $image = $product->images()->whereKey($imageId)->firstOrFail();
-
-        if (filled($image->image) && Storage::disk('public')->exists($image->image)) {
-            Storage::disk('public')->delete($image->image);
-        }
-
-        $image->delete();
-        $this->catalogSync->syncProducts($product->id, $product->category_id);
+        app(MediaAdminService::class)->unlinkProductImage($product, $image);
     }
 
     /**
@@ -348,6 +342,31 @@ class ProductAdminService
     }
 
     /**
+     * @param  array<int, int>  $mediaAssetIds
+     */
+    private function attachMediaAssets(Product $product, array $mediaAssetIds): void
+    {
+        $media = app(MediaAdminService::class);
+
+        foreach (array_values(array_unique(array_map('intval', $mediaAssetIds))) as $assetId) {
+            $asset = \App\Models\MediaAsset::query()->find($assetId);
+            if (! $asset) {
+                continue;
+            }
+
+            if ($product->images()->where('media_asset_id', $asset->id)->exists()) {
+                continue;
+            }
+
+            $media->linkToProduct(
+                $product,
+                $asset,
+                asPrimary: $product->images()->count() === 0
+            );
+        }
+    }
+
+    /**
      * @param  array<int, UploadedFile>  $images
      */
     private function storeImages(Product $product, array $images): void
@@ -356,22 +375,15 @@ class ProductAdminService
             return;
         }
 
-        $sort = (int) $product->images()->max('sort_order');
+        $media = app(MediaAdminService::class);
 
         foreach ($images as $upload) {
             if (! $upload instanceof UploadedFile) {
                 continue;
             }
 
-            $path = $upload->store('products', 'public');
-            $sort++;
-
-            ProductImage::create([
-                'product_id' => $product->id,
-                'image' => $path,
-                'alt_text' => $product->name,
-                'sort_order' => $sort,
-            ]);
+            $asset = $media->upload($upload);
+            $media->linkToProduct($product, $asset, asPrimary: $product->images()->count() === 0);
         }
     }
 

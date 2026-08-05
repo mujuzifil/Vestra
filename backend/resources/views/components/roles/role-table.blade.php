@@ -8,6 +8,7 @@ $columns = [
     ['key' => 'users', 'label' => 'Users', 'sortable' => true, 'field' => 'users_count'],
     ['key' => 'permissions', 'label' => 'Permissions', 'sortable' => true, 'field' => 'permissions_count'],
     ['key' => 'created', 'label' => 'Created', 'sortable' => true, 'field' => 'created_at'],
+    ['key' => 'status', 'label' => 'Status', 'sortable' => true, 'field' => 'status'],
     ['key' => 'actions', 'label' => '', 'sortable' => false],
 ];
 $systemNames = \App\Services\Admin\RoleAdminService::SYSTEM_ROLE_NAMES;

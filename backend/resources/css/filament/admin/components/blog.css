@@ -274,7 +274,7 @@
    ========================================================================== */
 
 .vestra-blog__table-card {
-    overflow: hidden;
+    overflow: visible;
 }
 
 .vestra-blog__table-wrap {
@@ -431,8 +431,8 @@
     position: absolute;
     top: calc(100% + var(--space-1));
     right: 0;
-    z-index: 40;
-    min-width: 180px;
+    z-index: 80;
+    min-width: 190px;
     padding: var(--space-1-5);
     border: 1px solid var(--border-default);
     border-radius: var(--radius-lg);
@@ -837,3 +837,415 @@
     color: var(--text-heading);
     font-variant-numeric: tabular-nums;
 }
+
+/* ==========================================================================
+   New / Edit Article page
+   ========================================================================== */
+
+.vestra-blog-article__hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+    flex-wrap: wrap;
+}
+
+.vestra-blog-article__breadcrumb {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+}
+
+.vestra-blog-article__breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.vestra-blog-article__breadcrumb a:hover {
+    color: var(--text-body);
+}
+
+.vestra-blog-article__hero-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.vestra-blog-article__more {
+    position: relative;
+}
+
+.vestra-blog-article__more-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    z-index: 40;
+    min-width: 180px;
+    padding: var(--space-1-5);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    box-shadow: var(--shadow-lg);
+}
+
+.vestra-blog-article__more-item {
+    display: block;
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: none;
+    border-radius: var(--radius-md);
+    background: none;
+    color: var(--text-body);
+    text-align: left;
+    text-decoration: none;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.vestra-blog-article__more-item:hover {
+    background: var(--surface-hover);
+}
+
+.vestra-blog-article__more-item--danger {
+    color: #dc2626;
+}
+
+.vestra-blog-article__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: var(--space-5);
+    align-items: start;
+}
+
+.vestra-blog-article__main,
+.vestra-blog-article__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.vestra-blog-article__card {
+    padding: var(--space-5);
+}
+
+.vestra-blog-article__card-title {
+    margin: 0 0 var(--space-4);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-heading);
+}
+
+.vestra-blog-article__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+    margin-bottom: var(--space-4);
+}
+
+.vestra-blog-article__field:last-child {
+    margin-bottom: 0;
+}
+
+.vestra-blog-article__label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-body);
+}
+
+.vestra-blog-article__required {
+    color: #dc2626;
+}
+
+.vestra-blog-article__input,
+.vestra-blog-article__select,
+.vestra-blog-article__textarea {
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-default, #cbd5e1);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--text-body);
+    font-size: 0.875rem;
+}
+
+.vestra-blog-article__textarea {
+    min-height: 5rem;
+    resize: vertical;
+}
+
+.vestra-blog-article__select--multi {
+    min-height: 7rem;
+}
+
+.vestra-blog-article__input--error {
+    border-color: #dc2626;
+}
+
+.vestra-blog-article__hint {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.vestra-blog-article__error {
+    color: #dc2626;
+    font-size: 0.75rem;
+}
+
+.vestra-blog-article__editor {
+    border: 1px solid var(--border-default, #cbd5e1);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.vestra-blog-article__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--surface-muted, #f8fafc);
+}
+
+.vestra-blog-article__toolbar button {
+    border: none;
+    background: transparent;
+    border-radius: 4px;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    color: var(--text-body);
+}
+
+.vestra-blog-article__toolbar button:hover {
+    background: #e2e8f0;
+}
+
+.vestra-blog-article__toolbar-sep {
+    width: 1px;
+    background: var(--border-subtle);
+    margin: 0 0.25rem;
+}
+
+.vestra-blog-article__editor-body {
+    min-height: 220px;
+    padding: 1rem;
+    outline: none;
+}
+
+.vestra-blog-article__editor-body:empty:before {
+    content: attr(data-placeholder);
+    color: var(--text-muted);
+}
+
+.vestra-blog-article__editor-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.5rem 0.75rem;
+    border-top: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+}
+
+.vestra-blog-article__dropzone {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: 160px;
+    padding: var(--space-5);
+    border: 1px dashed var(--border-default);
+    border-radius: 8px;
+    background: var(--surface-muted, #f8fafc);
+    color: var(--text-muted);
+    text-align: center;
+    cursor: pointer;
+}
+
+.vestra-blog-article__dropzone strong {
+    color: #2563eb;
+}
+
+.vestra-blog-article__file-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.vestra-blog-article__image-preview {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.vestra-blog-article__image-preview img {
+    width: 160px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--border-subtle);
+}
+
+.vestra-blog-article__toggles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.vestra-blog-article__toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    cursor: pointer;
+}
+
+.vestra-blog-article__toggle-input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+
+.vestra-blog-article__toggle-track {
+    position: relative;
+    width: 2.75rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background: #cbd5e1;
+    margin-top: 0.15rem;
+}
+
+.vestra-blog-article__toggle-track::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 999px;
+    background: #fff;
+    transition: transform 150ms ease;
+}
+
+.vestra-blog-article__toggle-input:checked + .vestra-blog-article__toggle-track {
+    background: var(--color-primary, #1e3a5f);
+}
+
+.vestra-blog-article__toggle-input:checked + .vestra-blog-article__toggle-track::after {
+    transform: translateX(1.25rem);
+}
+
+.vestra-blog-article__toggle strong {
+    display: block;
+    font-size: 0.875rem;
+}
+
+.vestra-blog-article__toggle small {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.vestra-blog-article__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+}
+
+.vestra-blog-article__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: var(--surface-muted);
+    font-size: 0.75rem;
+}
+
+.vestra-blog-article__tag button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+
+.vestra-blog-article__tag-input {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.vestra-blog-article__slug-preview {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    background: var(--surface-muted);
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+}
+
+.vestra-blog-detail__quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.vestra-blog-detail__quick-action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background: var(--surface-card);
+    color: var(--text-body);
+    font-size: var(--text-body-sm);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.vestra-blog-detail__quick-action--danger {
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+.vestra-blog-detail__content {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--text-body);
+}
+
+.vestra-blog-detail__content img {
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 960px) {
+    .vestra-blog-article__layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .vestra-blog-article__hero-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .vestra-blog-article__hero-actions .vestra-button {
+        flex: 1 1 auto;
+        justify-content: center;
+    }
+}
+

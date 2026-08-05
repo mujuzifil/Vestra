@@ -50,6 +50,11 @@ export async function getFeaturedPost(): Promise<BlogPost | null> {
   return response.data;
 }
 
+export async function getHomepagePosts(limit = 6): Promise<BlogPost[]> {
+  const response = await apiGet<ApiResponse<BlogPost[]>>(`/blog/posts/homepage?limit=${limit}`);
+  return Array.isArray(response.data) ? response.data : [];
+}
+
 export async function getBlogPost(slug: string): Promise<BlogPost> {
   const response = await apiGet<ApiResponse<BlogPost>>(`/blog/posts/${slug}`);
   return response.data;

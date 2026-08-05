@@ -26,17 +26,23 @@ class BlogPost extends Model
         'excerpt',
         'content',
         'featured_image',
+        'featured_media_asset_id',
         'gallery',
         'content_blocks',
         'status',
         'visibility',
         'is_featured',
+        'show_on_homepage',
+        'is_pinned',
+        'allow_comments',
         'reading_time_minutes',
         'published_at',
         'scheduled_at',
         'meta_title',
         'meta_description',
         'canonical_url',
+        'og_title',
+        'og_description',
         'view_count',
     ];
 
@@ -46,6 +52,9 @@ class BlogPost extends Model
             'status' => BlogPostStatus::class,
             'visibility' => BlogPostVisibility::class,
             'is_featured' => 'boolean',
+            'show_on_homepage' => 'boolean',
+            'is_pinned' => 'boolean',
+            'allow_comments' => 'boolean',
             'reading_time_minutes' => 'integer',
             'published_at' => 'datetime',
             'scheduled_at' => 'datetime',
@@ -58,6 +67,11 @@ class BlogPost extends Model
     public function author(): BelongsTo
     {
         return $this->belongsTo(BlogAuthor::class, 'author_id');
+    }
+
+    public function featuredMediaAsset(): BelongsTo
+    {
+        return $this->belongsTo(MediaAsset::class, 'featured_media_asset_id');
     }
 
     public function categories(): BelongsToMany

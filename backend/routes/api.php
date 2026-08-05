@@ -37,6 +37,8 @@ use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\InvoiceController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\PublicDistributorController;
+use App\Http\Controllers\Api\V1\Admin\RoleController as AdminRoleController;
+use App\Http\Controllers\Api\V1\Admin\StaffController as AdminStaffController;
 use App\Http\Controllers\Api\V1\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Api\V1\Admin\AutomatedWorkflowController as AdminAutomatedWorkflowController;
 use App\Http\Controllers\Api\V1\Admin\CreditAccountController as AdminCreditAccountController;
@@ -90,6 +92,7 @@ Route::prefix('v1')->group(function () {
     // Public blog / knowledge centre
     Route::get('/blog/posts', [BlogPostController::class, 'index']);
     Route::get('/blog/posts/featured', [BlogPostController::class, 'featured']);
+    Route::get('/blog/posts/homepage', [BlogPostController::class, 'homepage']);
     Route::get('/blog/posts/{slug}', [BlogPostController::class, 'show']);
     Route::get('/blog/categories', [BlogPostController::class, 'categories']);
     Route::get('/blog/tags', [BlogPostController::class, 'tags']);
@@ -267,6 +270,30 @@ Route::prefix('v1')->group(function () {
 
         // Admin-only routes
         Route::middleware(['can:admin', \App\Http\Middleware\RequireAdminPasswordChange::class])->group(function () {
+            // Roles administration
+            Route::get('/admin/roles', [AdminRoleController::class, 'index']);
+            Route::post('/admin/roles', [AdminRoleController::class, 'store']);
+            Route::get('/admin/roles/{role}', [AdminRoleController::class, 'show']);
+            Route::put('/admin/roles/{role}', [AdminRoleController::class, 'update']);
+            Route::delete('/admin/roles/{role}', [AdminRoleController::class, 'destroy']);
+            Route::patch('/admin/roles/{role}/status', [AdminRoleController::class, 'updateStatus']);
+            Route::get('/admin/roles/{role}/users', [AdminRoleController::class, 'assignedUsers']);
+            Route::get('/admin/roles/{role}/audit', [AdminRoleController::class, 'audit']);
+            Route::get('/admin/roles-permission-tree', [AdminRoleController::class, 'permissionTree']);
+
+            // Staff administration
+            Route::get('/admin/staff-role-options', [AdminStaffController::class, 'roles']);
+            Route::get('/admin/permissions', [AdminStaffController::class, 'permissions']);
+            Route::get('/admin/permission-tree', [AdminStaffController::class, 'permissionTree']);
+            Route::get('/admin/staff', [AdminStaffController::class, 'index']);
+            Route::post('/admin/staff', [AdminStaffController::class, 'store'])->middleware('throttle:10,1');
+            Route::get('/admin/staff/{staff}', [AdminStaffController::class, 'show']);
+            Route::put('/admin/staff/{staff}', [AdminStaffController::class, 'update']);
+            Route::patch('/admin/staff/{staff}/status', [AdminStaffController::class, 'updateStatus']);
+            Route::patch('/admin/staff/{staff}/password-reset', [AdminStaffController::class, 'resetPassword']);
+            Route::delete('/admin/staff/{staff}', [AdminStaffController::class, 'destroy']);
+            Route::get('/admin/staff/{staff}/audit', [AdminStaffController::class, 'audit']);
+
             Route::get('/admin/reviews', [ReviewController::class, 'adminIndex']);
             Route::put('/admin/reviews/{review}/status', [ReviewController::class, 'updateStatus']);
             Route::post('/admin/reviews/{review}/reply', [ReviewController::class, 'reply']);

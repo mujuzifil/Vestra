@@ -55,6 +55,7 @@
 @import "./components/media-workspace.css";
 @import "./components/staff.css";
 @import "./components/roles.css";
+@import "./components/profile.css";
 
 /* Base page typography */
 .fi-body {

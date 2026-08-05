@@ -4,20 +4,20 @@ namespace App\Filament\Pages\Products;
 
 use App\Enums\ProductStatus;
 use App\Enums\ProductStockStatus;
+use App\Models\MediaAsset;
 use App\Models\Product;
+use App\Services\Admin\MediaAdminService;
 use App\Services\Admin\ProductAdminService;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 class ProductsPage extends Page
 {
-    use WithFileUploads;
     use WithPagination;
 
     protected static string $layout = 'filament.layouts.crm';
@@ -73,8 +73,8 @@ class ProductsPage extends Page
      */
     public array $form = [];
 
-    /** @var array<int, TemporaryUploadedFile> */
-    public array $imageUploads = [];
+    /** @var array<int, array{id: int, url: ?string}> */
+    public array $pendingMediaAssets = [];
 
     public function getTitle(): string
     {
@@ -90,6 +90,11 @@ class ProductsPage extends Page
     {
         Gate::authorize('viewAny', Product::class);
         $this->resetForm();
+    }
+
+    public static function canAccess(): bool
+    {
+        return Gate::allows('viewAny', Product::class);
     }
 
     public function getProductServiceProperty(): ProductAdminService
@@ -248,7 +253,7 @@ class ProductsPage extends Page
             'status' => $product->status instanceof ProductStatus ? $product->status->value : (string) $product->status,
             'tax_rate' => $product->tax_rate !== null ? (string) $product->tax_rate : '',
         ];
-        $this->imageUploads = [];
+        $this->pendingMediaAssets = [];
         $this->resetErrorBag();
         $this->showFormModal = true;
     }
@@ -257,9 +262,40 @@ class ProductsPage extends Page
     {
         $this->showFormModal = false;
         $this->editingProductId = null;
-        $this->imageUploads = [];
+        $this->pendingMediaAssets = [];
         $this->resetForm();
         $this->resetErrorBag();
+    }
+
+    public function openMediaPicker(): void
+    {
+        $this->dispatch('open-media-picker', context: 'product');
+    }
+
+    #[On('media-asset-selected')]
+    public function handleMediaAssetSelected(int $id, string $context = 'default', ?string $url = null): void
+    {
+        if ($context !== 'product' && $context !== 'default') {
+            return;
+        }
+
+        if ($this->editingProductId) {
+            $product = Product::query()->findOrFail($this->editingProductId);
+            Gate::authorize('update', $product);
+            $asset = MediaAsset::query()->findOrFail($id);
+            app(MediaAdminService::class)->linkToProduct($product, $asset, asPrimary: $product->images()->count() === 0);
+            Notification::make()->title('Image linked')->success()->send();
+
+            return;
+        }
+
+        foreach ($this->pendingMediaAssets as $pending) {
+            if ((int) $pending['id'] === $id) {
+                return;
+            }
+        }
+
+        $this->pendingMediaAssets[] = ['id' => $id, 'url' => $url];
     }
 
     public function saveProduct(): void
@@ -267,10 +303,7 @@ class ProductsPage extends Page
         $validated = $this->validate($this->formRules());
 
         $service = $this->getProductServiceProperty();
-        $uploads = array_values(array_filter(
-            $this->imageUploads,
-            fn ($file) => $file instanceof TemporaryUploadedFile
-        ));
+        $mediaIds = array_map(fn (array $item) => (int) $item['id'], $this->pendingMediaAssets);
 
         $wasEditing = $this->editingProductId !== null;
         $keepDetailsOpen = $this->showDetailDrawer;
@@ -278,12 +311,12 @@ class ProductsPage extends Page
         if ($wasEditing) {
             $product = Product::query()->findOrFail($this->editingProductId);
             Gate::authorize('update', $product);
-            $product = $service->updateProduct($product, $validated['form'], $uploads, auth()->user());
+            $product = $service->updateProduct($product, $validated['form'], $mediaIds, auth()->user());
 
             Notification::make()->title('Product updated')->success()->send();
         } else {
             Gate::authorize('create', Product::class);
-            $product = $service->createProduct($validated['form'], $uploads, auth()->user());
+            $product = $service->createProduct($validated['form'], $mediaIds, auth()->user());
 
             Notification::make()->title('Product created')->success()->send();
         }
@@ -310,10 +343,10 @@ class ProductsPage extends Page
         Notification::make()->title('Image removed')->success()->send();
     }
 
-    public function removeUpload(int $index): void
+    public function removePendingMedia(int $index): void
     {
-        unset($this->imageUploads[$index]);
-        $this->imageUploads = array_values($this->imageUploads);
+        unset($this->pendingMediaAssets[$index]);
+        $this->pendingMediaAssets = array_values($this->pendingMediaAssets);
     }
 
     /**
@@ -347,8 +380,6 @@ class ProductsPage extends Page
             'form.featured' => ['sometimes', 'boolean'],
             'form.status' => ['required', Rule::in(array_column(ProductStatus::cases(), 'value'))],
             'form.tax_rate' => ['nullable', 'numeric', 'min:0', 'max:100'],
-            'imageUploads' => ['nullable', 'array'],
-            'imageUploads.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ];
     }
 
@@ -377,7 +408,7 @@ class ProductsPage extends Page
             'status' => ProductStatus::ACTIVE->value,
             'tax_rate' => ($defaultTax !== null && $defaultTax !== '') ? (string) $defaultTax : '',
         ];
-        $this->imageUploads = [];
+        $this->pendingMediaAssets = [];
     }
 
     public function toggleSelectAll(): void

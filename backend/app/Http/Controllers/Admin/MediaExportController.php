@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Product;
+use App\Models\MediaAsset;
 use App\Services\Admin\MediaAdminService;
 use App\Services\ReportExportService;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ class MediaExportController
         MediaAdminService $mediaService,
         ReportExportService $exportService
     ): StreamedResponse|BinaryFileResponse|Response {
-        Gate::authorize('export', Product::class);
+        Gate::authorize('export', MediaAsset::class);
 
         $format = strtolower((string) $request->input('format', 'csv'));
 
@@ -31,7 +31,9 @@ class MediaExportController
         $filters = [
             'search' => $request->input('search'),
             'type' => array_filter((array) $request->input('type', [])),
-            'source' => array_filter((array) $request->input('source', [])),
+            'usage' => $request->input('usage'),
+            'format' => $request->input('format_filter'),
+            'uploader_id' => $request->input('uploader'),
             'date_from' => $request->input('date_from'),
             'date_until' => $request->input('date_until'),
         ];
@@ -43,7 +45,7 @@ class MediaExportController
         return match ($format) {
             'csv' => $exportService->csv($filename, $columns, $rows),
             'excel' => $exportService->excel($filename, $columns, $rows),
-            'pdf' => $exportService->pdf($filename, 'Media Export', $columns, $rows),
+            'pdf' => $exportService->pdf($filename, 'Media Library Export', $columns, $rows),
         };
     }
 
@@ -53,13 +55,17 @@ class MediaExportController
     private function columns(): array
     {
         return [
-            ['name' => 'name', 'label' => 'File Name'],
+            ['name' => 'file_name', 'label' => 'File Name'],
+            ['name' => 'original_file_name', 'label' => 'Original Name'],
             ['name' => 'type', 'label' => 'Type'],
-            ['name' => 'source', 'label' => 'Source'],
-            ['name' => 'owner', 'label' => 'Owner'],
-            ['name' => 'size', 'label' => 'Size'],
             ['name' => 'mime', 'label' => 'MIME Type'],
+            ['name' => 'size', 'label' => 'Size'],
+            ['name' => 'dimensions', 'label' => 'Dimensions'],
+            ['name' => 'status', 'label' => 'Status'],
+            ['name' => 'used_in', 'label' => 'Used In'],
+            ['name' => 'uploader', 'label' => 'Uploader'],
             ['name' => 'created_at', 'label' => 'Uploaded At'],
+            ['name' => 'public_url', 'label' => 'Public URL'],
         ];
     }
 }

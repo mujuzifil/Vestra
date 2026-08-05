@@ -25,9 +25,14 @@ class ChangePasswordController extends Controller
             ]);
         }
 
-        $user->update([
-            'password' => Hash::make($request->validated('password')),
-        ]);
+        if (Hash::check($request->validated('password'), $user->password)) {
+            throw ValidationException::withMessages([
+                'password' => ['Choose a new password that is different from your temporary password.'],
+            ]);
+        }
+
+        $user->password = $request->validated('password');
+        $user->save();
 
         // Invalidate all other personal access tokens so old credentials cannot
         // continue to be used after a password change.

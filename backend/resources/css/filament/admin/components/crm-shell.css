@@ -650,6 +650,13 @@
     color: var(--primary-900);
     font-size: var(--text-body-sm);
     font-weight: var(--font-bold);
+    overflow: hidden;
+}
+
+.vestra-header__user-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .vestra-header__user-name {

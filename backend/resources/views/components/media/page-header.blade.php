@@ -1,13 +1,11 @@
 @props([
-    'title' => 'Media',
+    'title' => 'Media Library',
     'description' => '',
     'viewMode' => 'grid',
     'csvUrl' => null,
     'excelUrl' => null,
     'pdfUrl' => null,
-    'canUploadProduct' => false,
-    'blogUploadUrl' => null,
-    'productUploadUrl' => null,
+    'canUpload' => false,
 ])
 
 <section class="vestra-workspace__hero vestra-media__hero">
@@ -24,7 +22,7 @@
             <input
                 type="text"
                 wire:model.live.debounce.300ms="search"
-                placeholder="Search files, owners..."
+                placeholder="Search filename, product, blog, uploader, tags…"
                 class="vestra-media__search-input"
                 aria-label="Search media"
             />
@@ -53,72 +51,29 @@
             </button>
         </div>
 
-        <button
-            type="button"
-            wire:click="$refresh"
-            class="vestra-button vestra-button--secondary"
-            aria-label="Refresh media"
-        >
+        <button type="button" wire:click="$refresh" class="vestra-button vestra-button--secondary" aria-label="Refresh media">
             <x-filament::icon icon="heroicon-o-arrow-path" class="h-4 w-4" />
             <span>Refresh</span>
         </button>
 
         <div class="vestra-media__export-dropdown" x-data="{ open: false }" @click.outside="open = false">
-            <button
-                type="button"
-                @click="open = !open"
-                class="vestra-button vestra-button--secondary"
-                aria-haspopup="true"
-                :aria-expanded="open"
-                aria-label="Export media"
-            >
+            <button type="button" @click="open = !open" class="vestra-button vestra-button--secondary" aria-haspopup="true" :aria-expanded="open">
                 <x-filament::icon icon="heroicon-o-arrow-down-tray" class="h-4 w-4" />
                 <span>Export</span>
-                <x-filament::icon icon="heroicon-m-chevron-down" class="h-4 w-4" x-bind:class="{ 'rotate-180': open }" />
+                <x-filament::icon icon="heroicon-m-chevron-down" class="h-4 w-4" />
             </button>
-
             <div x-show="open" x-transition class="vestra-media__export-menu" role="menu">
-                <a href="{{ $csvUrl }}" class="vestra-media__export-option" role="menuitem">
-                    <x-filament::icon icon="heroicon-o-document-text" class="h-4 w-4" />
-                    <span>Export CSV</span>
-                </a>
-                <a href="{{ $excelUrl }}" class="vestra-media__export-option" role="menuitem">
-                    <x-filament::icon icon="heroicon-o-table-cells" class="h-4 w-4" />
-                    <span>Export Excel</span>
-                </a>
-                <a href="{{ $pdfUrl }}" class="vestra-media__export-option" role="menuitem">
-                    <x-filament::icon icon="heroicon-o-document-arrow-down" class="h-4 w-4" />
-                    <span>Export PDF</span>
-                </a>
+                <a href="{{ $csvUrl }}" class="vestra-media__export-option" role="menuitem">Export CSV</a>
+                <a href="{{ $excelUrl }}" class="vestra-media__export-option" role="menuitem">Export Excel</a>
+                <a href="{{ $pdfUrl }}" class="vestra-media__export-option" role="menuitem">Export PDF</a>
             </div>
         </div>
 
-        <div class="vestra-media__upload-dropdown" x-data="{ open: false }" @click.outside="open = false">
-            <button
-                type="button"
-                @click="open = !open"
-                class="vestra-button vestra-button--primary"
-                aria-haspopup="true"
-                :aria-expanded="open"
-                aria-label="Upload media"
-            >
-                <x-filament::icon icon="heroicon-o-plus" class="h-4 w-4" />
-                <span>Upload</span>
-                <x-filament::icon icon="heroicon-m-chevron-down" class="h-4 w-4" x-bind:class="{ 'rotate-180': open }" />
+        @if ($canUpload)
+            <button type="button" wire:click="openUploadModal" class="vestra-button vestra-button--primary">
+                <x-filament::icon icon="heroicon-o-arrow-up-tray" class="h-4 w-4" />
+                <span>Upload Asset</span>
             </button>
-
-            <div x-show="open" x-transition class="vestra-media__export-menu" role="menu">
-                <a href="{{ $blogUploadUrl }}" class="vestra-media__export-option" role="menuitem">
-                    <x-filament::icon icon="heroicon-o-newspaper" class="h-4 w-4" />
-                    <span>Via New Blog Post</span>
-                </a>
-                @if ($canUploadProduct)
-                    <a href="{{ $productUploadUrl }}" class="vestra-media__export-option" role="menuitem">
-                        <x-filament::icon icon="heroicon-o-cube" class="h-4 w-4" />
-                        <span>Via New Product</span>
-                    </a>
-                @endif
-            </div>
-        </div>
+        @endif
     </div>
 </section>

@@ -1,11 +1,26 @@
 @props([
     'show' => false,
     'post' => null,
+    'canEdit' => false,
+    'canDelete' => false,
 ])
+
+@php
+$display = function ($value, string $fallback = 'Not provided') {
+    if ($value === null) {
+        return $fallback;
+    }
+    if (is_string($value) && trim($value) === '') {
+        return $fallback;
+    }
+
+    return $value;
+};
+@endphp
 
 <div
     class="vestra-blog-detail @if ($show) vestra-blog-detail--open @endif"
-    x-data="{ open: @js($show) }"
+    x-data="{ open: @entangle('showDetailDrawer') }"
     x-show="open"
     x-cloak
     @keydown.escape.window="if (open) $wire.closeDetailDrawer()"
@@ -29,17 +44,12 @@
                         <x-filament::icon icon="heroicon-o-newspaper" class="h-5 w-5" />
                     </span>
                     <div class="vestra-blog-detail__header-text">
-                        <h2 class="vestra-blog-detail__title">{{ $post['title'] ?? 'Article' }}</h2>
-                        <p class="vestra-blog-detail__subtitle">{{ $post['slug'] ?? '' }}</p>
+                        <h2 class="vestra-blog-detail__title">{{ $display($post['title'] ?? null, 'Article') }}</h2>
+                        <p class="vestra-blog-detail__subtitle">{{ $display($post['slug'] ?? null) }}</p>
                     </div>
                 </div>
 
-                <button
-                    type="button"
-                    wire:click="closeDetailDrawer"
-                    class="vestra-blog-detail__close"
-                    aria-label="Close details"
-                >
+                <button type="button" wire:click="closeDetailDrawer" class="vestra-blog-detail__close" aria-label="Close details">
                     <x-filament::icon icon="heroicon-o-x-mark" class="h-5 w-5" />
                 </button>
             </div>
@@ -50,6 +60,29 @@
                     <x-blog.visibility-badge :visibility="$post['visibility'] ?? null" />
                     @if ($post['is_featured'] ?? false)
                         <span class="vestra-blog__featured-pill">Featured</span>
+                    @endif
+                    @if ($post['is_pinned'] ?? false)
+                        <span class="vestra-blog__featured-pill">Pinned</span>
+                    @endif
+                </div>
+
+                <div class="vestra-blog-detail__quick-actions">
+                    @if ($canEdit && ! empty($post['edit_url']))
+                        <a href="{{ $post['edit_url'] }}" class="vestra-blog-detail__quick-action">
+                            <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
+                            <span>Edit Article</span>
+                        </a>
+                    @endif
+                    @if ($canDelete)
+                        <button
+                            type="button"
+                            wire:click="deleteSelectedPost"
+                            wire:confirm="Delete this article permanently? It will be removed from the public website."
+                            class="vestra-blog-detail__quick-action vestra-blog-detail__quick-action--danger"
+                        >
+                            <x-filament::icon icon="heroicon-o-trash" class="h-4 w-4" />
+                            <span>Delete</span>
+                        </button>
                     @endif
                 </div>
 
@@ -64,113 +97,68 @@
                 <div class="vestra-blog-detail__section">
                     <h3 class="vestra-blog-detail__section-title">Details</h3>
                     <dl class="vestra-blog-detail__definition-list">
-                        <div class="vestra-blog-detail__definition-row">
-                            <dt>Title</dt>
-                            <dd>{{ $post['title'] ?? '—' }}</dd>
+                        <div class="vestra-blog-detail__definition-row"><dt>Title</dt><dd>{{ $display($post['title'] ?? null) }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Slug</dt><dd>{{ $display($post['slug'] ?? null) }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Author</dt><dd>{{ $display($post['author']['name'] ?? null) }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Category</dt><dd>{{ ! empty($post['categories']) ? collect($post['categories'])->pluck('name')->implode(', ') : 'Not provided' }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Publish Status</dt><dd>{{ $display($post['status_label'] ?? null) }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Featured</dt><dd>{{ ($post['is_featured'] ?? false) ? 'Yes' : 'No' }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Homepage</dt><dd>{{ ($post['show_on_homepage'] ?? false) ? 'Yes' : 'No' }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Pinned</dt><dd>{{ ($post['is_pinned'] ?? false) ? 'Yes' : 'No' }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Views</dt><dd>{{ number_format((int) ($post['view_count'] ?? 0)) }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Public URL</dt>
+                            <dd>
+                                @if (! empty($post['public_path']))
+                                    <a href="{{ $post['public_url'] }}" target="_blank" rel="noopener noreferrer">{{ $post['public_path'] }}</a>
+                                @else
+                                    Not provided
+                                @endif
+                            </dd>
                         </div>
-                        <div class="vestra-blog-detail__definition-row">
-                            <dt>Slug</dt>
-                            <dd>{{ $post['slug'] ?? '—' }}</dd>
-                        </div>
-                        <div class="vestra-blog-detail__definition-row">
-                            <dt>Author</dt>
-                            <dd>{{ $post['author']['name'] ?? 'No author' }}</dd>
-                        </div>
-                        <div class="vestra-blog-detail__definition-row">
-                            <dt>Reading time</dt>
-                            <dd>{{ $post['reading_time_minutes'] ?? 0 }} min</dd>
-                        </div>
-                        <div class="vestra-blog-detail__definition-row">
-                            <dt>Views</dt>
-                            <dd>{{ number_format((int) ($post['view_count'] ?? 0)) }}</dd>
-                        </div>
-                        <div class="vestra-blog-detail__definition-row">
-                            <dt>Published</dt>
-                            <dd>{{ $post['published_at']?->format('M j, Y g:i A') ?? '—' }}</dd>
-                        </div>
-                        <div class="vestra-blog-detail__definition-row">
-                            <dt>Scheduled</dt>
-                            <dd>{{ $post['scheduled_at']?->format('M j, Y g:i A') ?? '—' }}</dd>
-                        </div>
-                        <div class="vestra-blog-detail__definition-row">
-                            <dt>Created</dt>
-                            <dd>{{ $post['created_at']?->format('M j, Y g:i A') ?? '—' }}</dd>
-                        </div>
-                        <div class="vestra-blog-detail__definition-row">
-                            <dt>Updated</dt>
-                            <dd>{{ $post['updated_at']?->format('M j, Y g:i A') ?? '—' }}</dd>
-                        </div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Created Date</dt><dd>{{ $post['created_at']?->format('M j, Y g:i A') ?? 'Not provided' }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Updated Date</dt><dd>{{ $post['updated_at']?->format('M j, Y g:i A') ?? 'Not provided' }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Scheduled Date</dt><dd>{{ $post['scheduled_at']?->format('M j, Y g:i A') ?? 'Not provided' }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Published Date</dt><dd>{{ $post['published_at']?->format('M j, Y g:i A') ?? 'Not provided' }}</dd></div>
                     </dl>
-                    @if (! empty($post['excerpt']))
-                        <p class="vestra-blog-detail__text">{{ $post['excerpt'] }}</p>
-                    @endif
                 </div>
 
                 <div class="vestra-blog-detail__section">
-                    <h3 class="vestra-blog-detail__section-title">Categories</h3>
-                    @if (! empty($post['categories']))
-                        <div class="vestra-blog-detail__badges">
-                            @foreach ($post['categories'] as $category)
-                                <span class="vestra-blog__category-pill">{{ $category['name'] }}</span>
-                            @endforeach
-                        </div>
-                    @else
-                        <p class="vestra-blog-detail__text">No categories assigned.</p>
-                    @endif
+                    <h3 class="vestra-blog-detail__section-title">Excerpt</h3>
+                    <p class="vestra-blog-detail__message">{{ $display($post['excerpt'] ?? null) }}</p>
                 </div>
 
                 <div class="vestra-blog-detail__section">
-                    <h3 class="vestra-blog-detail__section-title">Tags</h3>
-                    @if (! empty($post['tags']))
-                        <div class="vestra-blog-detail__badges">
-                            @foreach ($post['tags'] as $tag)
-                                <span class="vestra-blog__category-pill">{{ $tag['name'] }}</span>
-                            @endforeach
-                        </div>
-                    @else
-                        <p class="vestra-blog-detail__text">No tags assigned.</p>
-                    @endif
+                    <h3 class="vestra-blog-detail__section-title">Content</h3>
+                    <div class="vestra-blog-detail__content">{!! $post['content'] ?: '<p>Not provided</p>' !!}</div>
                 </div>
 
                 <div class="vestra-blog-detail__section">
                     <h3 class="vestra-blog-detail__section-title">SEO</h3>
                     <dl class="vestra-blog-detail__definition-list">
-                        <div class="vestra-blog-detail__definition-row">
-                            <dt>Meta Title</dt>
-                            <dd>{{ $post['meta_title'] ?? '—' }}</dd>
-                        </div>
-                        <div class="vestra-blog-detail__definition-row">
-                            <dt>Meta Description</dt>
-                            <dd>{{ $post['meta_description'] ?? '—' }}</dd>
-                        </div>
-                        <div class="vestra-blog-detail__definition-row">
-                            <dt>Canonical URL</dt>
-                            <dd>{{ $post['canonical_url'] ?? '—' }}</dd>
-                        </div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Meta Title</dt><dd>{{ $display($post['meta_title'] ?? null) }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Meta Description</dt><dd>{{ $display($post['meta_description'] ?? null) }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>OG Title</dt><dd>{{ $display($post['og_title'] ?? null) }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>OG Description</dt><dd>{{ $display($post['og_description'] ?? null) }}</dd></div>
+                        <div class="vestra-blog-detail__definition-row"><dt>Canonical URL</dt><dd>{{ $display($post['canonical_url'] ?? null) }}</dd></div>
                     </dl>
                 </div>
 
-                @if (! empty($post['gallery']))
-                    <div class="vestra-blog-detail__section">
-                        <h3 class="vestra-blog-detail__section-title">Gallery</h3>
-                        <div class="vestra-blog-detail__images">
-                            @foreach ($post['gallery'] as $image)
-                                <figure class="vestra-blog-detail__image">
-                                    <img src="{{ $image }}" alt="" loading="lazy" onerror="this.style.display='none'" />
-                                </figure>
+                <div class="vestra-blog-detail__section">
+                    <h3 class="vestra-blog-detail__section-title">Tags</h3>
+                    @if (! empty($post['tags']))
+                        <div class="vestra-blog-detail__tags">
+                            @foreach ($post['tags'] as $tag)
+                                <span class="vestra-blog__category-pill">{{ $tag['name'] }}</span>
                             @endforeach
                         </div>
-                    </div>
-                @endif
-
-                @if (! empty($post['edit_url']))
-                    <div class="vestra-blog-detail__section">
-                        <a href="{{ $post['edit_url'] }}" class="vestra-button vestra-button--primary">
-                            <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
-                            <span>Edit Article</span>
-                        </a>
-                    </div>
-                @endif
+                    @else
+                        <p class="vestra-blog-detail__text">Not provided</p>
+                    @endif
+                </div>
+            </div>
+        @else
+            <div class="vestra-blog-detail__empty">
+                <p>Select an article to view details.</p>
             </div>
         @endif
     </div>

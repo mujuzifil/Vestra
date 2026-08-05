@@ -2,7 +2,7 @@
 
 namespace App\Filament\Pages\Marketing;
 
-use App\Filament\Resources\BlogPostResource;
+use App\Filament\Pages\Marketing\BlogArticlePage;
 use App\Models\BlogPost;
 use App\Services\Admin\BlogAdminService;
 use Filament\Pages\Page;
@@ -73,6 +73,11 @@ class BlogPage extends Page
         Gate::authorize('viewAny', BlogPost::class);
     }
 
+    public static function canAccess(): bool
+    {
+        return Gate::allows('viewAny', BlogPost::class);
+    }
+
     public function getBlogServiceProperty(): BlogAdminService
     {
         return app(BlogAdminService::class);
@@ -125,9 +130,55 @@ class BlogPage extends Page
         return Gate::allows('create', BlogPost::class);
     }
 
+    public function getCanUpdateSelectedProperty(): bool
+    {
+        if (empty($this->selectedPostId)) {
+            return false;
+        }
+
+        $post = BlogPost::query()->find($this->selectedPostId);
+
+        return $post !== null && Gate::allows('update', $post);
+    }
+
+    public function getCanDeleteSelectedProperty(): bool
+    {
+        if (empty($this->selectedPostId)) {
+            return false;
+        }
+
+        $post = BlogPost::query()->find($this->selectedPostId);
+
+        return $post !== null && Gate::allows('delete', $post);
+    }
+
     public function getCreateUrlProperty(): string
     {
-        return BlogPostResource::getUrl('create');
+        return BlogArticlePage::getUrl();
+    }
+
+    public function getEditUrl(int $id): string
+    {
+        return BlogArticlePage::getUrl(['id' => $id]);
+    }
+
+    public function deleteSelectedPost(): void
+    {
+        if (! $this->selectedPostId) {
+            return;
+        }
+
+        $post = BlogPost::query()->findOrFail($this->selectedPostId);
+        Gate::authorize('delete', $post);
+
+        $this->getBlogServiceProperty()->deletePost($post);
+
+        \Filament\Notifications\Notification::make()
+            ->title('Article deleted')
+            ->success()
+            ->send();
+
+        $this->closeDetailDrawer();
     }
 
     /**

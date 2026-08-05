@@ -14,6 +14,7 @@ use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 
 class ForcePasswordChange extends Page implements HasForms
 {
@@ -35,7 +36,8 @@ class ForcePasswordChange extends Page implements HasForms
         $user = auth()->user();
 
         if (! $user->mustChangePassword()) {
-            $this->redirectRoute('filament.admin.pages.dashboard');
+            $this->redirect('/administration/staff');
+
             return;
         }
 
@@ -56,7 +58,7 @@ class ForcePasswordChange extends Page implements HasForms
         return $form
             ->schema([
                 TextInput::make('current_password')
-                    ->label('Current password')
+                    ->label('Current (temporary) password')
                     ->password()
                     ->required()
                     ->currentPassword(),
@@ -69,6 +71,13 @@ class ForcePasswordChange extends Page implements HasForms
                         ->mixedCase()
                         ->numbers()
                         ->symbols())
+                    ->rule(function () {
+                        return function (string $attribute, mixed $value, \Closure $fail): void {
+                            if (Hash::check((string) $value, auth()->user()->password)) {
+                                $fail('Choose a new password that is different from your temporary password.');
+                            }
+                        };
+                    })
                     ->confirmed(),
 
                 TextInput::make('password_confirmation')
@@ -87,21 +96,25 @@ class ForcePasswordChange extends Page implements HasForms
     public function changePassword(): void
     {
         $data = $this->form->getState();
-
         $user = auth()->user();
 
-        $user->update([
-            'password' => Hash::make($data['password']),
-        ]);
+        if (Hash::check($data['password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'data.password' => 'Choose a new password that is different from your temporary password.',
+            ]);
+        }
 
-        $user->clearPasswordChangeRequired();
+        // `password` cast hashes; pass plain text only.
+        $user->password = $data['password'];
+        $user->force_password_change_at = null;
+        $user->password_changed_at = now();
+        $user->save();
 
-        // Revoke any Sanctum tokens issued before the forced password change.
         $user->tokens()->delete();
 
         if (request()->hasSession()) {
             request()->session()->put([
-                'password_hash_' . Filament::getAuthGuard() => $user->getAuthPassword(),
+                'password_hash_'.Filament::getAuthGuard() => $user->getAuthPassword(),
             ]);
         }
 
@@ -117,7 +130,7 @@ class ForcePasswordChange extends Page implements HasForms
             ->success()
             ->send();
 
-        $this->redirectRoute('filament.admin.pages.dashboard');
+        $this->redirect('/administration/staff');
     }
 
     protected function getFormActions(): array

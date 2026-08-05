@@ -2,9 +2,9 @@
 
 namespace App\Filament\Pages\Administration;
 
-use App\Filament\Resources\UserResource;
 use App\Models\User;
 use App\Services\Admin\StaffAdminService;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Url;
@@ -64,6 +64,11 @@ class StaffPage extends Page
         Gate::authorize('viewAny', User::class);
     }
 
+    public static function canAccess(): bool
+    {
+        return Gate::allows('viewAny', User::class);
+    }
+
     public function getStaffServiceProperty(): StaffAdminService
     {
         return app(StaffAdminService::class);
@@ -118,7 +123,7 @@ class StaffPage extends Page
 
     public function getCreateUrlProperty(): string
     {
-        return UserResource::getUrl('create');
+        return StaffFormPage::getUrl();
     }
 
     /**
@@ -146,6 +151,71 @@ class StaffPage extends Page
     {
         $this->showDetailDrawer = false;
         $this->selectedStaffId = null;
+    }
+
+    public function disableStaff(int $id): void
+    {
+        $this->mutateStaff($id, fn (User $staff, User $actor) => $this->getStaffServiceProperty()->setStatus($staff, 'inactive', $actor), 'Account disabled');
+    }
+
+    public function enableStaff(int $id): void
+    {
+        $this->mutateStaff($id, fn (User $staff, User $actor) => $this->getStaffServiceProperty()->setStatus($staff, 'active', $actor), 'Account enabled');
+    }
+
+    public function resetStaffPassword(int $id): void
+    {
+        $this->mutateStaff($id, function (User $staff, User $actor): void {
+            $this->getStaffServiceProperty()->resetPassword($staff, $actor);
+        }, 'Temporary password emailed');
+    }
+
+    public function forceStaffPasswordChange(int $id): void
+    {
+        $this->mutateStaff($id, fn (User $staff, User $actor) => $this->getStaffServiceProperty()->forcePasswordChange($staff, $actor), 'Password change required on next login');
+    }
+
+    public function lockStaff(int $id): void
+    {
+        $this->mutateStaff($id, fn (User $staff, User $actor) => $this->getStaffServiceProperty()->lock($staff, $actor), 'Account locked');
+    }
+
+    public function unlockStaff(int $id): void
+    {
+        $this->mutateStaff($id, fn (User $staff, User $actor) => $this->getStaffServiceProperty()->unlock($staff, $actor), 'Account unlocked');
+    }
+
+    public function resendStaffWelcome(int $id): void
+    {
+        $this->mutateStaff($id, function (User $staff, User $actor): void {
+            $this->getStaffServiceProperty()->resendWelcome($staff, $actor);
+        }, 'Welcome email resent');
+    }
+
+    public function deleteStaff(int $id): void
+    {
+        $staff = User::query()->where('is_admin', true)->findOrFail($id);
+        Gate::authorize('delete', $staff);
+
+        $this->getStaffServiceProperty()->deleteStaff($staff, auth()->user());
+        $this->closeDetailDrawer();
+
+        Notification::make()->title('Staff deleted')->success()->send();
+    }
+
+    /**
+     * @param  callable(User, User): mixed  $callback
+     */
+    private function mutateStaff(int $id, callable $callback, string $successMessage): void
+    {
+        $staff = User::query()->where('is_admin', true)->findOrFail($id);
+        Gate::authorize('update', $staff);
+        $actor = auth()->user();
+        $callback($staff, $actor);
+
+        Notification::make()->title($successMessage)->success()->send();
+        $this->selectedStaffId = $id;
+        $this->showDetailDrawer = true;
     }
 
     public function sortBy(string $field): void

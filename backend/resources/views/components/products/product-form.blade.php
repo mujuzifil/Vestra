@@ -4,7 +4,7 @@
     'formOptions' => [],
     'form' => [],
     'existingImages' => [],
-    'imageUploads' => [],
+    'pendingMediaAssets' => [],
 ])
 
 @php
@@ -191,55 +191,35 @@
             <div class="vestra-products-form__field">
                 <span class="vestra-products-form__label">Product Images</span>
 
-                @if ($isEditing)
-                    <div class="vestra-products-form__image-row">
-                        @foreach ($existingImages as $image)
-                            <div class="vestra-products-form__thumb" wire:key="existing-image-{{ $image['id'] }}">
-                                <img src="{{ $image['url'] }}" alt="{{ $image['alt_text'] ?? 'Product image' }}" />
+                <div class="vestra-products-form__image-row">
+                    @foreach ($existingImages as $image)
+                        <div class="vestra-products-form__thumb" wire:key="existing-image-{{ $image['id'] }}">
+                            <img src="{{ $image['url'] }}" alt="{{ $image['alt_text'] ?? 'Product image' }}" />
+                            @if ($isEditing)
                                 <button type="button" wire:click="removeProductImage({{ $image['id'] }})" class="vestra-products-form__thumb-remove" aria-label="Remove image">
                                     <x-filament::icon icon="heroicon-o-x-mark" class="h-3.5 w-3.5" />
                                 </button>
-                            </div>
-                        @endforeach
+                            @endif
+                        </div>
+                    @endforeach
 
-                        <label for="product-images-input" class="vestra-products-form__add-image">
-                            <x-filament::icon icon="heroicon-o-plus" class="h-5 w-5" />
-                            <span>Add Image</span>
-                        </label>
+                    @foreach ($pendingMediaAssets as $index => $pending)
+                        <div class="vestra-products-form__thumb" wire:key="pending-media-{{ $pending['id'] }}">
+                            @if (! empty($pending['url']))
+                                <img src="{{ $pending['url'] }}" alt="Pending media" />
+                            @endif
+                            <button type="button" wire:click="removePendingMedia({{ $index }})" class="vestra-products-form__thumb-remove" aria-label="Remove pending image">
+                                <x-filament::icon icon="heroicon-o-x-mark" class="h-3.5 w-3.5" />
+                            </button>
+                        </div>
+                    @endforeach
 
-                        <label class="vestra-products-form__dropzone">
-                            <input id="product-images-input" type="file" wire:model="imageUploads" multiple accept="image/jpeg,image/png,image/webp" class="vestra-products-form__file-input" />
-                            <x-filament::icon icon="heroicon-o-cloud-arrow-up" class="h-7 w-7" />
-                            <span>Drag and drop images here or <strong>click to browse</strong></span>
-                            <span class="vestra-products-form__dropzone-hint">Supports JPG, PNG, WebP up to 5MB each</span>
-                        </label>
-                    </div>
-                @else
-                    <label class="vestra-products-form__dropzone">
-                        <input type="file" wire:model="imageUploads" multiple accept="image/jpeg,image/png,image/webp" class="vestra-products-form__file-input" />
-                        <x-filament::icon icon="heroicon-o-cloud-arrow-up" class="h-8 w-8" />
-                        <span>Drag and drop images here or <strong>click to browse</strong></span>
-                        <span class="vestra-products-form__dropzone-hint">Supports JPG, PNG, WebP up to 5MB each</span>
-                    </label>
-                @endif
-
-                @error('imageUploads.*')<span class="vestra-products-form__error">{{ $message }}</span>@enderror
-                @error('imageUploads')<span class="vestra-products-form__error">{{ $message }}</span>@enderror
-
-                @if (! empty($imageUploads))
-                    <div class="vestra-products-form__upload-previews">
-                        @foreach ($imageUploads as $index => $upload)
-                            <div class="vestra-products-form__thumb" wire:key="upload-{{ $index }}">
-                                @if (method_exists($upload, 'temporaryUrl'))
-                                    <img src="{{ $upload->temporaryUrl() }}" alt="Upload preview" />
-                                @endif
-                                <button type="button" wire:click="removeUpload({{ $index }})" class="vestra-products-form__thumb-remove" aria-label="Remove upload">
-                                    <x-filament::icon icon="heroicon-o-x-mark" class="h-3.5 w-3.5" />
-                                </button>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
+                    <button type="button" wire:click="openMediaPicker" class="vestra-products-form__add-image">
+                        <x-filament::icon icon="heroicon-o-plus" class="h-5 w-5" />
+                        <span>Add Image</span>
+                    </button>
+                </div>
+                <p class="vestra-products-form__dropzone-hint">Choose an existing Media Library asset or upload a new one. Files are stored once and reused.</p>
             </div>
 
             <div class="vestra-products-modal__footer">

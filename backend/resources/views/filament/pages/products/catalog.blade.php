@@ -60,6 +60,8 @@ $existingImages = $this->editingProductImages;
         :form-options="$formOptions"
         :form="$form"
         :existing-images="$existingImages"
-        :image-uploads="$imageUploads"
+        :pending-media-assets="$pendingMediaAssets"
     />
+
+    @livewire(\App\Livewire\Admin\MediaAssetPicker::class)
 </div>

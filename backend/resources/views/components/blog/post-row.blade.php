@@ -2,11 +2,14 @@
 
 @php
 use App\Enums\BlogPostStatus;
+use App\Filament\Pages\Marketing\BlogArticlePage;
 
 $statusValue = $post->status instanceof BlogPostStatus ? $post->status->value : (string) $post->status;
 $imageUrl = $post->featured_image
     ? (str_starts_with($post->featured_image, 'http') ? $post->featured_image : asset('storage/'.$post->featured_image))
     : asset('images/placeholder.svg');
+$canUpdate = auth()->user()?->can('update', $post) ?? false;
+$editUrl = $canUpdate ? BlogArticlePage::getUrl(['id' => $post->id]) : null;
 @endphp
 
 <tr class="vestra-blog__row" wire:key="blog-post-{{ $post->id }}">
@@ -60,20 +63,49 @@ $imageUrl = $post->featured_image
     </td>
 
     <td class="vestra-blog__td vestra-blog__td--actions">
-        <div class="vestra-blog__actions" x-data="{ open: false }" @click.outside="open = false">
-            <button type="button" @click="open = !open" class="vestra-blog__action-trigger" aria-label="Article actions" aria-haspopup="true">
+        <div
+            class="vestra-blog__actions"
+            x-data="{
+                open: false,
+                menuStyle: {},
+                toggle() {
+                    this.open = !this.open;
+                    if (!this.open) { return; }
+                    const rect = this.$refs.trigger.getBoundingClientRect();
+                    this.menuStyle = {
+                        position: 'fixed',
+                        top: (rect.bottom + 4) + 'px',
+                        right: (window.innerWidth - rect.right) + 'px',
+                        left: 'auto',
+                        zIndex: 80,
+                    };
+                },
+            }"
+            @click.outside="open = false"
+            @keydown.escape.window="open = false"
+        >
+            <button
+                type="button"
+                x-ref="trigger"
+                @click="toggle()"
+                class="vestra-blog__action-trigger"
+                aria-label="Article actions"
+                aria-haspopup="true"
+                :aria-expanded="open.toString()"
+            >
                 <x-filament::icon icon="heroicon-m-ellipsis-vertical" class="h-5 w-5" />
             </button>
-            <div x-show="open" x-transition class="vestra-blog__action-menu" role="menu">
-                <button
-                    type="button"
-                    wire:click="openDetailDrawer({{ $post->id }})"
-                    class="vestra-blog__action-item"
-                    role="menuitem"
-                >
+            <div x-show="open" x-cloak x-transition :style="menuStyle" class="vestra-blog__action-menu" role="menu">
+                <button type="button" wire:click="openDetailDrawer({{ $post->id }})" class="vestra-blog__action-item" role="menuitem">
                     <x-filament::icon icon="heroicon-o-eye" class="h-4 w-4" />
                     <span>View Details</span>
                 </button>
+                @if ($editUrl)
+                    <a href="{{ $editUrl }}" class="vestra-blog__action-item" role="menuitem">
+                        <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
+                        <span>Edit Article</span>
+                    </a>
+                @endif
             </div>
         </div>
     </td>

@@ -48,5 +48,7 @@ $selectedPost = $this->selectedPost;
         <x-blog.detail-drawer
             :show="$showDetailDrawer"
             :post="$selectedPost"
+            :can-edit="$this->canUpdateSelected"
+            :can-delete="$this->canDeleteSelected"
         />
     </div>

@@ -35,6 +35,93 @@ class CatalogSyncService
         ]);
     }
 
+    public function syncBlog(?int $postId = null, ?string $slug = null): void
+    {
+        Cache::forget('blog.categories.active');
+        Cache::forget('blog.tags.active');
+        Cache::forget('blog.posts.featured');
+
+        $paths = ['/blog', '/'];
+        if (filled($slug)) {
+            $paths[] = '/blog/'.$slug;
+        }
+
+        $this->notifyFrontend([
+            'type' => 'blog',
+            'post_id' => $postId,
+            'slug' => $slug,
+            'paths' => $paths,
+            'tags' => ['blog', 'blog-posts'],
+        ]);
+    }
+
+    public function syncMedia(?\App\Models\MediaAsset $asset = null): void
+    {
+        Cache::forget('media.assets.index');
+
+        if ($asset === null) {
+            $this->notifyFrontend([
+                'type' => 'media',
+                'paths' => ['/', '/products', '/blog'],
+                'tags' => ['products', 'categories', 'blog', 'blog-posts', 'media'],
+            ]);
+
+            return;
+        }
+
+        $asset->loadMissing('usages');
+
+        $productIds = [];
+        $blogIds = [];
+        $needsHome = false;
+        $needsProducts = false;
+        $needsBlog = false;
+
+        foreach ($asset->usages as $usage) {
+            if ($usage->usable_type === \App\Models\Product::class) {
+                $productIds[] = (int) $usage->usable_id;
+                $needsProducts = true;
+            }
+            if ($usage->usable_type === \App\Models\BlogPost::class) {
+                $blogIds[] = (int) $usage->usable_id;
+                $needsBlog = true;
+            }
+            $context = $usage->context?->value ?? (string) $usage->context;
+            if (in_array($context, ['homepage', 'marketing'], true)) {
+                $needsHome = true;
+            }
+        }
+
+        if ($needsProducts || $productIds !== []) {
+            foreach (array_unique($productIds) ?: [null] as $productId) {
+                $this->syncProducts($productId);
+            }
+        }
+
+        if ($needsBlog || $blogIds !== []) {
+            $posts = \App\Models\BlogPost::query()
+                ->whereIn('id', array_unique($blogIds) ?: [-1])
+                ->get(['id', 'slug']);
+
+            if ($posts->isEmpty()) {
+                $this->syncBlog();
+            } else {
+                foreach ($posts as $post) {
+                    $this->syncBlog($post->id, $post->slug);
+                }
+            }
+        }
+
+        if ($needsHome || (! $needsProducts && ! $needsBlog)) {
+            $this->notifyFrontend([
+                'type' => 'media',
+                'media_asset_id' => $asset->id,
+                'paths' => ['/', '/products', '/blog'],
+                'tags' => ['products', 'blog', 'media'],
+            ]);
+        }
+    }
+
     private function forgetSharedCaches(): void
     {
         Cache::forget('admin.products.low_stock_count');

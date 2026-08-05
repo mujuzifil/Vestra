@@ -32,11 +32,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const image = getBlogImageUrl(post.featured_image) ?? undefined;
+  const title = post.og_title ?? post.meta_title ?? post.title;
+  const description = post.og_description ?? post.meta_description ?? post.excerpt ?? "";
+  const pathname =
+    post.canonical_url && !/^https?:\/\//i.test(post.canonical_url)
+      ? post.canonical_url
+      : `/blog/${post.slug}`;
 
   return createMetadata({
-    title: post.meta_title ?? post.title,
-    description: post.meta_description ?? post.excerpt ?? "",
-    pathname: `/blog/${post.slug}`,
+    title,
+    description,
+    pathname,
     image,
   });
 }

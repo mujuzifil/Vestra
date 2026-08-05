@@ -96,7 +96,11 @@ $rangeOptions = [
                 :aria-expanded="open"
             >
                 <span class="vestra-header__user-avatar">
-                    {{ $user ? strtoupper(substr($user->name, 0, 1)) : 'A' }}
+                    @if ($user?->avatarUrl())
+                        <img src="{{ $user->avatarUrl() }}" alt="" class="vestra-header__user-avatar-img" />
+                    @else
+                        {{ $user ? strtoupper(substr($user->name, 0, 1)) : 'A' }}
+                    @endif
                 </span>
                 <span class="vestra-header__user-name hidden sm:block">{{ $user?->name ?? 'Admin' }}</span>
                 <x-filament::icon icon="heroicon-m-chevron-down" class="h-4 w-4 hidden sm:block" />
@@ -108,7 +112,7 @@ $rangeOptions = [
                 x-transition
                 class="vestra-header__user-dropdown"
             >
-                <a href="{{ url('/profile') }}" class="vestra-header__user-link">Profile</a>
+                <a href="{{ \App\Filament\Pages\ProfilePage::getUrl() }}" class="vestra-header__user-link">Profile</a>
                 <form method="POST" action="{{ filament()->getLogoutUrl() }}" class="block">
                     @csrf
                     <button type="submit" class="vestra-header__user-link w-full text-left">

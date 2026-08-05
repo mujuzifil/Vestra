@@ -699,12 +699,17 @@ export interface BlogPost {
   status_label: string;
   visibility: string;
   is_featured: boolean;
+  show_on_homepage: boolean;
+  is_pinned: boolean;
+  allow_comments: boolean;
   reading_time_minutes: number;
   published_at: string | null;
   scheduled_at: string | null;
   meta_title: string | null;
   meta_description: string | null;
   canonical_url: string | null;
+  og_title: string | null;
+  og_description: string | null;
   view_count: number;
   author: BlogAuthor | null;
   categories: BlogCategory[];

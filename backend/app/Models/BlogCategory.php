@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\BlogPostStatus;
+use App\Enums\BlogPostVisibility;
 use App\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
