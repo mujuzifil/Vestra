@@ -5,11 +5,23 @@
 
 @php
 use App\Enums\DistributorStatus;
+
+$display = function ($value, string $fallback = 'Not provided') {
+    if ($value === null) {
+        return $fallback;
+    }
+
+    if (is_string($value) && trim($value) === '') {
+        return $fallback;
+    }
+
+    return $value;
+};
 @endphp
 
 <div
     class="vestra-applications-detail @if ($show) vestra-applications-detail--open @endif"
-    x-data="{ open: @js($show) }"
+    x-data="{ open: @entangle('showDetailDrawer') }"
     x-show="open"
     x-cloak
     @keydown.escape.window="if (open) $wire.closeDetailDrawer()"
@@ -29,16 +41,21 @@ use App\Enums\DistributorStatus;
         @if ($application)
             @php
             $status = $application['status'];
+            $address = collect([
+                $application['address'] ?? null,
+                $application['region'] ?? null,
+                $application['country'] ?? null,
+            ])->filter(fn ($part) => filled($part))->implode(', ');
             @endphp
 
             <div class="vestra-applications-detail__header">
                 <div class="vestra-applications-detail__header-main">
                     <span class="vestra-applications-detail__avatar">{{ strtoupper(substr($application['company_name'] ?? '?', 0, 2)) }}</span>
                     <div class="vestra-applications-detail__header-text">
-                        <h2 class="vestra-applications-detail__title">{{ $application['company_name'] ?? 'Application' }}</h2>
+                        <h2 class="vestra-applications-detail__title">{{ $display($application['company_name'] ?? null, 'Application') }}</h2>
                         <p class="vestra-applications-detail__subtitle">
-                            {{ $application['contact_person'] ?? 'No contact' }}
-                            @if ($application['business_type'] ?? null)
+                            {{ $display($application['contact_person'] ?? null, 'No contact') }}
+                            @if (filled($application['business_type'] ?? null))
                                 • {{ $application['business_type'] }}
                             @endif
                         </p>
@@ -100,94 +117,96 @@ use App\Enums\DistributorStatus;
                 @endif
 
                 <div class="vestra-applications-detail__section">
-                    <h3 class="vestra-applications-detail__section-title">Business Information</h3>
+                    <h3 class="vestra-applications-detail__section-title">Company</h3>
                     <dl class="vestra-applications-detail__definition-list">
                         <div class="vestra-applications-detail__definition-row">
+                            <dt>Company</dt>
+                            <dd>{{ $display($application['company_name'] ?? null) }}</dd>
+                        </div>
+                        <div class="vestra-applications-detail__definition-row">
                             <dt>Business Type</dt>
-                            <dd>{{ $application['business_type'] ?: '—' }}</dd>
+                            <dd>{{ $display($application['business_type'] ?? null) }}</dd>
+                        </div>
+                        <div class="vestra-applications-detail__definition-row">
+                            <dt>Business Registration</dt>
+                            <dd>Not provided</dd>
                         </div>
                         <div class="vestra-applications-detail__definition-row">
                             <dt>Years in Operation</dt>
-                            <dd>{{ $application['years_in_operation'] ?? '—' }}</dd>
+                            <dd>{{ $display($application['years_in_operation'] ?? null) }}</dd>
                         </div>
                         <div class="vestra-applications-detail__definition-row">
                             <dt>Existing Customer</dt>
-                            <dd>{{ $application['existing_customer'] ? 'Yes' : 'No' }}</dd>
+                            <dd>{{ ($application['existing_customer'] ?? false) ? 'Yes' : 'No' }}</dd>
                         </div>
                         <div class="vestra-applications-detail__definition-row">
-                            <dt>Previous Applications</dt>
-                            <dd>{{ $application['previous_applications'] ?? 0 }}</dd>
+                            <dt>Current Status</dt>
+                            <dd>{{ $display($application['status_label'] ?? null) }}</dd>
                         </div>
                         <div class="vestra-applications-detail__definition-row">
-                            <dt>Submitted</dt>
-                            <dd>{{ $application['created_at']?->format('M j, Y g:i A') ?? '—' }}</dd>
-                        </div>
-                        <div class="vestra-applications-detail__definition-row">
-                            <dt>Updated</dt>
-                            <dd>{{ $application['updated_at']?->format('M j, Y g:i A') ?? '—' }}</dd>
+                            <dt>Submitted Date</dt>
+                            <dd>{{ $application['created_at']?->format('M j, Y g:i A') ?? 'Not provided' }}</dd>
                         </div>
                     </dl>
                 </div>
 
                 <div class="vestra-applications-detail__section">
-                    <h3 class="vestra-applications-detail__section-title">Primary Contact</h3>
-                    <div class="vestra-applications-detail__contact">
-                        <p class="vestra-applications-detail__contact-name">{{ $application['contact_person'] ?? '—' }}</p>
-                        <p class="vestra-applications-detail__contact-meta">{{ $application['email'] ?? '—' }}</p>
-                        @if ($application['phone'] ?? null)
-                            <p class="vestra-applications-detail__contact-meta">{{ $application['phone'] }}</p>
-                        @endif
-                    </div>
+                    <h3 class="vestra-applications-detail__section-title">Contact Person</h3>
+                    <dl class="vestra-applications-detail__definition-list">
+                        <div class="vestra-applications-detail__definition-row">
+                            <dt>Contact Person</dt>
+                            <dd>{{ $display($application['contact_person'] ?? null) }}</dd>
+                        </div>
+                        <div class="vestra-applications-detail__definition-row">
+                            <dt>Email</dt>
+                            <dd>{{ $display($application['email'] ?? null) }}</dd>
+                        </div>
+                        <div class="vestra-applications-detail__definition-row">
+                            <dt>Telephone</dt>
+                            <dd>{{ $display($application['phone'] ?? null) }}</dd>
+                        </div>
+                    </dl>
                 </div>
 
                 <div class="vestra-applications-detail__section">
-                    <h3 class="vestra-applications-detail__section-title">Location</h3>
-                    <p class="vestra-applications-detail__text">{{ $application['formatted_address'] ?? 'No location on file.' }}</p>
+                    <h3 class="vestra-applications-detail__section-title">Address &amp; Territory</h3>
+                    <dl class="vestra-applications-detail__definition-list">
+                        <div class="vestra-applications-detail__definition-row">
+                            <dt>Address</dt>
+                            <dd>{{ $display($address !== '' ? $address : null) }}</dd>
+                        </div>
+                        <div class="vestra-applications-detail__definition-row">
+                            <dt>Territory</dt>
+                            <dd>{{ $display($application['territory'] ?? $application['target_region'] ?? $application['region'] ?? null) }}</dd>
+                        </div>
+                        <div class="vestra-applications-detail__definition-row">
+                            <dt>Country</dt>
+                            <dd>{{ $display($application['country'] ?? null) }}</dd>
+                        </div>
+                    </dl>
                 </div>
 
                 <div class="vestra-applications-detail__section">
                     <h3 class="vestra-applications-detail__section-title">Business Description</h3>
-                    <p class="vestra-applications-detail__text">{{ $application['business_description'] ?: 'No description provided.' }}</p>
+                    <p class="vestra-applications-detail__text">{{ $display($application['business_description'] ?? null) }}</p>
                 </div>
 
                 <div class="vestra-applications-detail__section">
-                    <h3 class="vestra-applications-detail__section-title">Products &amp; Volume</h3>
+                    <h3 class="vestra-applications-detail__section-title">Product Interests</h3>
                     <dl class="vestra-applications-detail__definition-list">
                         <div class="vestra-applications-detail__definition-row">
                             <dt>Products of Interest</dt>
-                            <dd>{{ $application['products_interested_in'] ?: '—' }}</dd>
-                        </div>
-                        <div class="vestra-applications-detail__definition-row">
-                            <dt>Target Region</dt>
-                            <dd>{{ $application['target_region'] ?: '—' }}</dd>
+                            <dd>{{ $display($application['products_interested_in'] ?? null) }}</dd>
                         </div>
                         <div class="vestra-applications-detail__definition-row">
                             <dt>Estimated Volume</dt>
-                            <dd>{{ $application['estimated_volume'] ?: '—' }}</dd>
+                            <dd>{{ $display($application['estimated_volume'] ?? null) }}</dd>
                         </div>
                     </dl>
                 </div>
 
-                @if ($application['assignee'])
-                    <div class="vestra-applications-detail__section">
-                        <h3 class="vestra-applications-detail__section-title">Assigned Administrator</h3>
-                        <div class="vestra-applications-detail__account-manager">
-                            <span class="vestra-applications-detail__account-manager-avatar">{{ $application['assignee']['initials'] }}</span>
-                            <div>
-                                <p class="vestra-applications-detail__account-manager-name">{{ $application['assignee']['name'] }}</p>
-                                <p class="vestra-applications-detail__account-manager-email">{{ $application['assignee']['email'] }}</p>
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <div class="vestra-applications-detail__section">
-                        <h3 class="vestra-applications-detail__section-title">Assigned Administrator</h3>
-                        <p class="vestra-applications-detail__text">No administrator assigned.</p>
-                    </div>
-                @endif
-
                 <div class="vestra-applications-detail__section">
-                    <h3 class="vestra-applications-detail__section-title">Documents</h3>
+                    <h3 class="vestra-applications-detail__section-title">Attachments</h3>
                     @if (! empty($application['documents']))
                         <ul class="vestra-applications-detail__address-list">
                             @foreach ($application['documents'] as $document)
@@ -198,19 +217,19 @@ use App\Enums\DistributorStatus;
                                             {{ $document['name'] ?? 'Document' }}
                                         </a>
                                     @else
-                                        <span>{{ is_string($document) ? $document : 'Document' }}</span>
+                                        <span>{{ is_array($document) ? ($document['name'] ?? 'Document') : (is_string($document) ? $document : 'Document') }}</span>
                                     @endif
                                 </li>
                             @endforeach
                         </ul>
                     @else
-                        <p class="vestra-applications-detail__text">No documents uploaded.</p>
+                        <p class="vestra-applications-detail__text">Not provided</p>
                     @endif
                 </div>
 
                 <div class="vestra-applications-detail__section">
                     <h3 class="vestra-applications-detail__section-title">Internal Notes</h3>
-                    <p class="vestra-applications-detail__text">{{ $application['internal_notes'] ?: 'No internal notes.' }}</p>
+                    <p class="vestra-applications-detail__text">{{ $display($application['internal_notes'] ?? null) }}</p>
                 </div>
             </div>
         @else

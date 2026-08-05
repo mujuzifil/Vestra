@@ -106,7 +106,7 @@
 
 .vestra-applications__table-card {
     padding: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .vestra-kpi-grid--6 {
@@ -290,6 +290,7 @@
    ========================================================================== */
 .vestra-applications__table-wrap {
     overflow-x: auto;
+    overflow-y: visible;
 }
 
 .vestra-applications__table {
@@ -486,6 +487,12 @@
 /* ==========================================================================
    Action Menu
    ========================================================================== */
+.vestra-applications__td--actions {
+    overflow: visible;
+    position: relative;
+    z-index: 2;
+}
+
 .vestra-applications__actions {
     position: relative;
     display: inline-flex;
@@ -509,10 +516,8 @@
 }
 
 .vestra-applications__action-menu {
-    position: absolute;
-    top: calc(100% + var(--space-1));
-    right: 0;
-    z-index: 50;
+    position: fixed;
+    z-index: 80;
     min-width: 180px;
     padding: var(--space-1);
     border: 1px solid var(--border-default);

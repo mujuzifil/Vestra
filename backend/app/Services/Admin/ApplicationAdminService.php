@@ -5,7 +5,6 @@ namespace App\Services\Admin;
 use App\Enums\Priority;
 use App\Models\Distributor;
 use App\Models\DistributorRequest;
-use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -25,13 +24,11 @@ class ApplicationAdminService
     public function queryApplications(array $filters = [], string $sort = 'created_at', string $direction = 'desc'): Builder
     {
         $query = DistributorRequest::query()
-            ->with(['assignedAdministrator'])
             ->when($filters['search'] ?? null, fn (Builder $q, string $term) => $q->search($term))
             ->when($filters['status'] ?? null, fn (Builder $q, array $statuses) => $q->statusIn($statuses))
             ->when($filters['priority'] ?? null, fn (Builder $q, array $priorities) => $q->priorityIn($priorities))
             ->when($filters['country'] ?? null, fn (Builder $q, array $countries) => $q->whereIn('country', $countries))
             ->when($filters['region'] ?? null, fn (Builder $q, array $regions) => $q->whereIn('region', $regions))
-            ->when($filters['assigned_to'] ?? null, fn (Builder $q, int $id) => $q->where('assigned_to', $id))
             ->when($filters['date_from'] ?? null, fn (Builder $q, string $from) => $q->whereDate('created_at', '>=', $from))
             ->when($filters['date_until'] ?? null, fn (Builder $q, string $until) => $q->whereDate('created_at', '<=', $until));
 
@@ -78,11 +75,33 @@ class ApplicationAdminService
      */
     public function getDetail(DistributorRequest $application): array
     {
-        $application->load('assignedAdministrator');
-
         $distributor = Distributor::query()
             ->where('distributor_request_id', $application->id)
             ->first();
+
+        $documents = collect($application->documents ?? [])
+            ->map(function ($document) {
+                if (is_string($document)) {
+                    return [
+                        'name' => basename($document) ?: $document,
+                        'url' => null,
+                        'path' => $document,
+                    ];
+                }
+
+                if (! is_array($document)) {
+                    return null;
+                }
+
+                return [
+                    'name' => $document['name'] ?? $document['filename'] ?? 'Document',
+                    'url' => $document['url'] ?? null,
+                    'path' => $document['path'] ?? null,
+                ];
+            })
+            ->filter()
+            ->values()
+            ->all();
 
         return [
             'id' => $application->id,
@@ -95,6 +114,7 @@ class ApplicationAdminService
             'address' => $application->address,
             'country' => $application->country,
             'region' => $application->region,
+            'territory' => $application->target_region ?: $application->region,
             'formatted_address' => $application->formattedAddress(),
             'business_description' => $application->business_description,
             'products_interested_in' => $application->products_interested_in,
@@ -109,15 +129,9 @@ class ApplicationAdminService
             'priority_label' => $application->priorityLabel(),
             'priority_color' => $application->priorityColor(),
             'internal_notes' => $application->internal_notes,
-            'documents' => $application->documents ?? [],
+            'documents' => $documents,
             'created_at' => $application->created_at,
             'updated_at' => $application->updated_at,
-            'assignee' => $application->assignedAdministrator ? [
-                'id' => $application->assignedAdministrator->id,
-                'name' => $application->assignedAdministrator->name,
-                'email' => $application->assignedAdministrator->email,
-                'initials' => $application->assignedAdministrator->initials(),
-            ] : null,
             'distributor' => $distributor ? [
                 'id' => $distributor->id,
                 'status' => $distributor->status,
@@ -136,18 +150,6 @@ class ApplicationAdminService
             'countries' => (clone $base)->whereNotNull('country')->where('country', '!=', '')->distinct()->orderBy('country')->pluck('country')->toArray(),
             'regions' => (clone $base)->whereNotNull('region')->where('region', '!=', '')->distinct()->orderBy('region')->pluck('region')->toArray(),
             'priorities' => Priority::cases(),
-            'assignees' => User::query()
-                ->where(function (Builder $q): void {
-                    $q->where('is_admin', true)
-                        ->orWhereHas('roles')
-                        ->orWhereIn('id', DistributorRequest::query()->whereNotNull('assigned_to')->distinct()->pluck('assigned_to'));
-                })
-                ->orderBy('name')
-                ->get(['id', 'name'])
-                ->map(fn (User $user) => ['id' => $user->id, 'name' => $user->name])
-                ->unique('id')
-                ->values()
-                ->toArray(),
         ];
     }
 
@@ -170,7 +172,6 @@ class ApplicationAdminService
                 'region' => $application->region,
                 'status' => $application->statusLabel(),
                 'priority' => $application->priorityLabel(),
-                'assigned_to' => $application->assignedAdministrator?->name,
                 'estimated_volume' => $application->estimated_volume,
                 'existing_customer' => $application->isExistingCustomer() ? 'Yes' : 'No',
                 'created_at' => $application->created_at?->format('Y-m-d H:i:s'),
@@ -190,12 +191,6 @@ class ApplicationAdminService
             'region' => $query->orderBy('region', $direction),
             'created_at' => $query->orderBy('created_at', $direction),
             'updated_at' => $query->orderBy('updated_at', $direction),
-            'assigned_to' => $query->orderBy(
-                User::select('name')
-                    ->whereColumn('users.id', 'distributor_requests.assigned_to')
-                    ->limit(1),
-                $direction
-            ),
             default => $query->orderBy('created_at', 'desc'),
         };
     }

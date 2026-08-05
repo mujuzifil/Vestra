@@ -89,6 +89,8 @@ class ApplicationsPageTest extends TestCase
             ->test(ApplicationsPage::class)
             ->assertSuccessful()
             ->assertSee('Applications')
+            ->assertSee('Review and manage incoming distributor applications.')
+            ->assertDontSeeHtml('>Assigned To<')
             ->assertSee('Total')
             ->assertSee('Pending')
             ->assertSee('Under Review')
@@ -224,6 +226,11 @@ class ApplicationsPageTest extends TestCase
             'distributor_request_id' => $application->id,
             'company_name' => $application->company_name,
         ]);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'action' => 'distributor_approved',
+            'user_id' => $admin->id,
+        ]);
     }
 
     public function test_admin_can_reject_application(): void
@@ -241,6 +248,11 @@ class ApplicationsPageTest extends TestCase
         $this->assertDatabaseHas('distributor_requests', [
             'id' => $application->id,
             'status' => DistributorStatus::REJECTED->value,
+        ]);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'action' => 'distributor_rejected',
+            'user_id' => $admin->id,
         ]);
     }
 
