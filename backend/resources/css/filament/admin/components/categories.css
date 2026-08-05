@@ -241,7 +241,7 @@
    ========================================================================== */
 
 .vestra-categories__table-card {
-    overflow: hidden;
+    overflow: visible;
 }
 
 .vestra-categories__table-wrap {
@@ -446,8 +446,8 @@
     position: absolute;
     top: calc(100% + var(--space-1));
     right: 0;
-    z-index: 40;
-    min-width: 180px;
+    z-index: 80;
+    min-width: 190px;
     padding: var(--space-1-5);
     border: 1px solid var(--border-default);
     border-radius: var(--radius-lg);
@@ -940,3 +940,236 @@
 .vestra-categories-detail__quick-action {
     text-decoration: none;
 }
+
+/* ==========================================================================
+   Add / Edit Category modal
+   ========================================================================== */
+
+.vestra-categories-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+}
+
+.vestra-categories-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.45);
+}
+
+.vestra-categories-modal__panel {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: min(720px, 100%);
+    max-height: min(92vh, 900px);
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: var(--surface-card, #fff);
+    box-shadow: 0 24px 48px rgba(15, 23, 42, 0.18);
+}
+
+.vestra-categories-modal__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-5) var(--space-6) var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.vestra-categories-modal__title {
+    margin: 0;
+    color: var(--text-heading, #0f172a);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.vestra-categories-modal__subtitle {
+    margin: var(--space-1) 0 0;
+    color: var(--text-muted, #64748b);
+    font-size: 0.875rem;
+}
+
+.vestra-categories-modal__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.vestra-categories-modal__close:hover {
+    background-color: var(--surface-hover);
+    color: var(--text-body);
+}
+
+.vestra-categories-modal__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-5) var(--space-6);
+    overflow-y: auto;
+}
+
+.vestra-categories-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+    margin-top: var(--space-2);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.vestra-categories-modal__footer--split {
+    justify-content: space-between;
+}
+
+.vestra-categories-modal__footer-actions {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.vestra-categories-form__row {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.vestra-categories-form__row--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.vestra-categories-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+    min-width: 0;
+}
+
+.vestra-categories-form__label {
+    color: var(--text-body, #334155);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.vestra-categories-form__required {
+    color: #dc2626;
+}
+
+.vestra-categories-form__input,
+.vestra-categories-form__select,
+.vestra-categories-form__textarea {
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-default, #cbd5e1);
+    border-radius: 6px;
+    background-color: #fff;
+    color: var(--text-body);
+    font-size: 0.875rem;
+}
+
+.vestra-categories-form__textarea {
+    min-height: 5rem;
+    resize: vertical;
+}
+
+.vestra-categories-form__input:focus,
+.vestra-categories-form__select:focus,
+.vestra-categories-form__textarea:focus {
+    outline: none;
+    border-color: var(--border-focus, #1e3a5f);
+    box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.12);
+}
+
+.vestra-categories-form__input--error {
+    border-color: #dc2626;
+}
+
+.vestra-categories-form__hint {
+    color: var(--text-muted, #64748b);
+    font-size: 0.75rem;
+}
+
+.vestra-categories-form__error {
+    color: #dc2626;
+    font-size: 0.75rem;
+}
+
+.vestra-categories-form__info {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: 8px;
+    background-color: #eff6ff;
+    color: #1e40af;
+    font-size: 0.875rem;
+}
+
+.vestra-categories-form__info strong {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.vestra-categories-form__info p {
+    margin: 0;
+    color: #1e3a8a;
+}
+
+.vestra-categories-detail__quick-action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    background: var(--surface-card);
+    color: var(--text-body);
+    font-size: var(--text-body-sm);
+    cursor: pointer;
+}
+
+.vestra-button--danger-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0.5rem 1rem;
+    border: 1px solid #fecaca;
+    border-radius: var(--radius-md);
+    background: #fff;
+    color: #dc2626;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.vestra-button--danger-outline:hover {
+    background: #fef2f2;
+}
+
+@media (max-width: 640px) {
+    .vestra-categories-form__row--2 {
+        grid-template-columns: 1fr;
+    }
+
+    .vestra-categories-modal__footer--split {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .vestra-categories-modal__footer-actions {
+        flex-direction: column-reverse;
+    }
+}
+

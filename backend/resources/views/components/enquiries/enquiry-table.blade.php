@@ -1,21 +1,18 @@
 @props([
-    'enquiries'     => null,
-    'sortField'     => 'created_at',
+    'enquiries' => null,
+    'sortField' => 'created_at',
     'sortDirection' => 'desc',
 ])
 
 @php
 $columns = [
-    ['key' => 'sender',       'label' => 'Sender',       'sortable' => true,  'field' => 'name'],
-    ['key' => 'subject',      'label' => 'Subject',      'sortable' => false],
-    ['key' => 'enquiry_type', 'label' => 'Type',         'sortable' => true,  'field' => 'enquiry_type'],
-    ['key' => 'priority',     'label' => 'Priority',     'sortable' => true,  'field' => 'priority'],
-    ['key' => 'status',       'label' => 'Status',       'sortable' => true,  'field' => 'status'],
-    ['key' => 'assigned',     'label' => 'Assigned To',  'sortable' => true,  'field' => 'assigned_to'],
-    ['key' => 'read',         'label' => 'Read',         'sortable' => false],
-    ['key' => 'replied',      'label' => 'Replied',      'sortable' => false],
-    ['key' => 'received',     'label' => 'Received',     'sortable' => true,  'field' => 'created_at'],
-    ['key' => 'actions',      'label' => '',             'sortable' => false],
+    ['key' => 'sender', 'label' => 'Sender', 'sortable' => true, 'field' => 'name'],
+    ['key' => 'subject', 'label' => 'Subject', 'sortable' => false],
+    ['key' => 'enquiry_type', 'label' => 'Type', 'sortable' => true, 'field' => 'enquiry_type'],
+    ['key' => 'priority', 'label' => 'Priority', 'sortable' => true, 'field' => 'priority'],
+    ['key' => 'status', 'label' => 'Status', 'sortable' => true, 'field' => 'status'],
+    ['key' => 'received', 'label' => 'Received', 'sortable' => true, 'field' => 'created_at'],
+    ['key' => 'actions', 'label' => '', 'sortable' => false],
 ];
 @endphp
 

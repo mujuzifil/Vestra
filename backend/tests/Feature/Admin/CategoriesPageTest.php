@@ -251,4 +251,99 @@ class CategoriesPageTest extends TestCase
             ->assertSee('Counted Category')
             ->assertSee('3');
     }
+
+    public function test_view_details_loads_products_without_server_error(): void
+    {
+        $admin = $this->admin();
+        $category = $this->category(['name' => 'Viewable Category', 'slug' => 'viewable-category']);
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'name' => 'Linked Product Alpha',
+            'sku' => 'LPA-001',
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(CategoriesPage::class)
+            ->call('openDetailDrawer', $category->id)
+            ->assertSuccessful()
+            ->assertSet('showDetailDrawer', true)
+            ->assertSee('Viewable Category')
+            ->assertSee('Linked Product Alpha')
+            ->assertSee('Public Website')
+            ->assertSee('Breadcrumb path')
+            ->assertSee('Edit Category');
+    }
+
+    public function test_admin_can_create_category_from_modal(): void
+    {
+        $admin = $this->admin();
+        $parent = $this->category(['name' => 'Parent Cat', 'slug' => 'parent-cat']);
+
+        Livewire::actingAs($admin)
+            ->test(CategoriesPage::class)
+            ->call('openCreateModal')
+            ->assertSet('showFormModal', true)
+            ->set('form.name', 'Fabric Care')
+            ->set('form.slug', 'fabric-care')
+            ->set('form.description', 'Fabric care products')
+            ->set('form.parent_id', $parent->id)
+            ->set('form.sort_order', '2')
+            ->set('form.status', 'active')
+            ->call('saveCategory')
+            ->assertSet('showFormModal', false)
+            ->assertSet('showDetailDrawer', true);
+
+        $this->assertDatabaseHas('categories', [
+            'name' => 'Fabric Care',
+            'slug' => 'fabric-care',
+            'parent_id' => $parent->id,
+            'sort_order' => 2,
+            'status' => 'active',
+        ]);
+    }
+
+    public function test_admin_can_update_category_from_modal(): void
+    {
+        $admin = $this->admin();
+        $category = $this->category([
+            'name' => 'Before Edit',
+            'slug' => 'before-edit',
+            'status' => 'active',
+            'sort_order' => 1,
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(CategoriesPage::class)
+            ->call('openEditModal', $category->id)
+            ->assertSet('form.name', 'Before Edit')
+            ->set('form.name', 'After Edit')
+            ->set('form.slug', 'after-edit')
+            ->set('form.status', 'inactive')
+            ->set('form.sort_order', '5')
+            ->call('saveCategory')
+            ->assertSet('showFormModal', false);
+
+        $this->assertDatabaseHas('categories', [
+            'id' => $category->id,
+            'name' => 'After Edit',
+            'slug' => 'after-edit',
+            'status' => 'inactive',
+            'sort_order' => 5,
+        ]);
+    }
+
+    public function test_cannot_delete_category_with_products(): void
+    {
+        $admin = $this->admin();
+        $category = $this->category(['name' => 'Busy Category', 'slug' => 'busy-category']);
+        Product::factory()->create(['category_id' => $category->id]);
+
+        Livewire::actingAs($admin)
+            ->test(CategoriesPage::class)
+            ->call('openEditModal', $category->id)
+            ->call('deleteCategory')
+            ->assertHasErrors(['category']);
+
+        $this->assertDatabaseHas('categories', ['id' => $category->id]);
+    }
 }

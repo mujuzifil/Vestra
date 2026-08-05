@@ -1,11 +1,26 @@
 @props([
     'show' => false,
     'product' => null,
+    'canEdit' => false,
 ])
+
+@php
+$display = function ($value, string $fallback = 'Not provided') {
+    if ($value === null) {
+        return $fallback;
+    }
+
+    if (is_string($value) && trim($value) === '') {
+        return $fallback;
+    }
+
+    return $value;
+};
+@endphp
 
 <div
     class="vestra-products-detail @if ($show) vestra-products-detail--open @endif"
-    x-data="{ open: @js($show) }"
+    x-data="{ open: @entangle('showDetailDrawer') }"
     x-show="open"
     x-cloak
     @keydown.escape.window="if (open) $wire.closeDetailDrawer()"
@@ -29,17 +44,12 @@
                         <x-filament::icon icon="heroicon-o-shopping-bag" class="h-5 w-5" />
                     </span>
                     <div class="vestra-products-detail__header-text">
-                        <h2 class="vestra-products-detail__title">{{ $product['name'] ?? 'Product' }}</h2>
-                        <p class="vestra-products-detail__subtitle">{{ $product['sku'] ?? '' }}</p>
+                        <h2 class="vestra-products-detail__title">{{ $display($product['name'] ?? null, 'Product') }}</h2>
+                        <p class="vestra-products-detail__subtitle">{{ $display($product['sku'] ?? null) }}</p>
                     </div>
                 </div>
 
-                <button
-                    type="button"
-                    wire:click="closeDetailDrawer"
-                    class="vestra-products-detail__close"
-                    aria-label="Close details"
-                >
+                <button type="button" wire:click="closeDetailDrawer" class="vestra-products-detail__close" aria-label="Close details">
                     <x-filament::icon icon="heroicon-o-x-mark" class="h-5 w-5" />
                 </button>
             </div>
@@ -52,76 +62,74 @@
                     @endif
                 </div>
 
+                @if ($canEdit)
+                    <div class="vestra-products-detail__quick-actions">
+                        <button type="button" wire:click="openEditModal({{ $product['id'] }})" class="vestra-products-detail__quick-action vestra-products-detail__quick-action--success">
+                            <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
+                            <span>Edit Product</span>
+                        </button>
+                    </div>
+                @endif
+
                 <div class="vestra-products-detail__section">
-                    <h3 class="vestra-products-detail__section-title">Details</h3>
+                    <h3 class="vestra-products-detail__section-title">General</h3>
                     <dl class="vestra-products-detail__definition-list">
-                        <div class="vestra-products-detail__definition-row">
-                            <dt>Name</dt>
-                            <dd>{{ $product['name'] ?? '—' }}</dd>
-                        </div>
-                        <div class="vestra-products-detail__definition-row">
-                            <dt>SKU</dt>
-                            <dd>{{ $product['sku'] ?? '—' }}</dd>
-                        </div>
-                        <div class="vestra-products-detail__definition-row">
-                            <dt>Slug</dt>
-                            <dd>{{ $product['slug'] ?? '—' }}</dd>
-                        </div>
-                        <div class="vestra-products-detail__definition-row">
-                            <dt>Created</dt>
-                            <dd>{{ $product['created_at']?->format('M j, Y g:i A') ?? '—' }}</dd>
-                        </div>
-                        <div class="vestra-products-detail__definition-row">
-                            <dt>Updated</dt>
-                            <dd>{{ $product['updated_at']?->format('M j, Y g:i A') ?? '—' }}</dd>
-                        </div>
+                        <div class="vestra-products-detail__definition-row"><dt>Product Name</dt><dd>{{ $display($product['name'] ?? null) }}</dd></div>
+                        <div class="vestra-products-detail__definition-row"><dt>SKU</dt><dd>{{ $display($product['sku'] ?? null) }}</dd></div>
+                        <div class="vestra-products-detail__definition-row"><dt>Category</dt><dd>{{ $display($product['category']['name'] ?? null) }}</dd></div>
+                        <div class="vestra-products-detail__definition-row"><dt>Product Status</dt><dd>{{ $display($product['status_label'] ?? null) }}</dd></div>
+                        <div class="vestra-products-detail__definition-row"><dt>Featured</dt><dd>{{ ($product['featured'] ?? false) ? 'Yes' : 'No' }}</dd></div>
                     </dl>
-                    @if (! empty($product['short_description']))
-                        <p class="vestra-products-detail__text">{{ $product['short_description'] }}</p>
-                    @endif
                 </div>
 
                 <div class="vestra-products-detail__section">
                     <h3 class="vestra-products-detail__section-title">Pricing</h3>
                     <dl class="vestra-products-detail__definition-list">
                         <div class="vestra-products-detail__definition-row">
-                            <dt>Retail Price</dt>
-                            <dd>{{ number_format((float) ($product['price'] ?? 0), 2) }}</dd>
-                        </div>
-                        <div class="vestra-products-detail__definition-row">
-                            <dt>Distributor Price</dt>
+                            <dt>Selling Price</dt>
                             <dd>
-                                @if (($product['distributor_price'] ?? null) !== null)
-                                    {{ number_format((float) $product['distributor_price'], 2) }}
+                                @if (($product['price'] ?? null) !== null)
+                                    {{ number_format((float) $product['price'], 2) }}{{ filled($product['currency'] ?? null) ? ' '.$product['currency'] : '' }}
                                 @else
-                                    —
+                                    Not provided
                                 @endif
                             </dd>
                         </div>
+                        <div class="vestra-products-detail__definition-row">
+                            <dt>Cost Price</dt>
+                            <dd>
+                                @if (($product['cost_price'] ?? null) !== null)
+                                    {{ number_format((float) $product['cost_price'], 2) }}{{ filled($product['cost_currency'] ?? null) ? ' '.$product['cost_currency'] : '' }}
+                                @else
+                                    Not provided
+                                @endif
+                            </dd>
+                        </div>
+                        <div class="vestra-products-detail__definition-row">
+                            <dt>Tax Rate</dt>
+                            <dd>{{ ($product['tax_rate'] ?? null) !== null ? number_format((float) $product['tax_rate'], 2).'%' : 'Not provided' }}</dd>
+                        </div>
                     </dl>
                 </div>
 
                 <div class="vestra-products-detail__section">
-                    <h3 class="vestra-products-detail__section-title">Stock</h3>
+                    <h3 class="vestra-products-detail__section-title">Inventory</h3>
                     <dl class="vestra-products-detail__definition-list">
-                        <div class="vestra-products-detail__definition-row">
-                            <dt>Quantity</dt>
-                            <dd>{{ number_format((int) ($product['stock_quantity'] ?? 0)) }}</dd>
-                        </div>
-                        <div class="vestra-products-detail__definition-row">
-                            <dt>Status</dt>
-                            <dd>{{ $product['stock_status_label'] ?? '—' }}</dd>
-                        </div>
+                        <div class="vestra-products-detail__definition-row"><dt>Stock Quantity</dt><dd>{{ number_format((int) ($product['stock_quantity'] ?? 0)) }}</dd></div>
+                        <div class="vestra-products-detail__definition-row"><dt>Low Stock Threshold</dt><dd>{{ $display($product['low_stock_threshold'] ?? null) }}</dd></div>
+                        <div class="vestra-products-detail__definition-row"><dt>Current Stock Status</dt><dd>{{ $display($product['stock_status_label'] ?? null) }}</dd></div>
+                        <div class="vestra-products-detail__definition-row"><dt>Unit</dt><dd>{{ $display($product['unit'] ?? null) }}</dd></div>
+                        <div class="vestra-products-detail__definition-row"><dt>Weight</dt><dd>{{ ($product['weight'] ?? null) !== null ? $product['weight'].' kg' : 'Not provided' }}</dd></div>
+                        <div class="vestra-products-detail__definition-row"><dt>Barcode</dt><dd>{{ $display($product['barcode'] ?? null) }}</dd></div>
                     </dl>
                 </div>
 
                 <div class="vestra-products-detail__section">
-                    <h3 class="vestra-products-detail__section-title">Category</h3>
-                    @if ($product['category'] ?? null)
-                        <p class="vestra-products-detail__text">{{ $product['category']['name'] }}</p>
-                    @else
-                        <p class="vestra-products-detail__text">No category assigned.</p>
-                    @endif
+                    <h3 class="vestra-products-detail__section-title">Product Information</h3>
+                    <dl class="vestra-products-detail__definition-list">
+                        <div class="vestra-products-detail__definition-row"><dt>Short Description</dt><dd>{{ $display($product['short_description'] ?? null) }}</dd></div>
+                        <div class="vestra-products-detail__definition-row"><dt>Full Description</dt><dd>{{ $display($product['description'] ?? null) }}</dd></div>
+                    </dl>
                 </div>
 
                 <div class="vestra-products-detail__section">
@@ -130,53 +138,35 @@
                         <div class="vestra-products-detail__images">
                             @foreach ($product['images'] as $image)
                                 <figure class="vestra-products-detail__image">
-                                    <img
-                                        src="{{ $image['url'] }}"
-                                        alt="{{ $image['alt_text'] ?: ($product['name'] ?? 'Product image') }}"
-                                        loading="lazy"
-                                        onerror="this.style.display='none'"
-                                    />
+                                    <a href="{{ $image['url'] }}" target="_blank" rel="noopener noreferrer">
+                                        <img
+                                            src="{{ $image['url'] }}"
+                                            alt="{{ $image['alt_text'] ?: ($product['name'] ?? 'Product image') }}"
+                                            loading="lazy"
+                                            onerror="this.style.display='none'"
+                                        />
+                                    </a>
                                 </figure>
                             @endforeach
                         </div>
                     @else
-                        <p class="vestra-products-detail__text">No images uploaded.</p>
+                        <p class="vestra-products-detail__text">Not provided</p>
                     @endif
                 </div>
 
-                @if (! empty($product['warehouse_stocks']))
-                    <div class="vestra-products-detail__section">
-                        <h3 class="vestra-products-detail__section-title">Warehouse Stocks</h3>
-                        <ul class="vestra-products-detail__warehouse-list">
-                            @foreach ($product['warehouse_stocks'] as $stock)
-                                <li class="vestra-products-detail__warehouse-item">
-                                    <div>
-                                        <p class="vestra-products-detail__contact-name">{{ $stock['warehouse_name'] }}</p>
-                                        <p class="vestra-products-detail__contact-meta">
-                                            Qty {{ number_format((int) $stock['quantity']) }}
-                                            · Available {{ number_format((int) $stock['available']) }}
-                                            · Reserved {{ number_format((int) $stock['reserved_quantity']) }}
-                                        </p>
-                                    </div>
-                                    @if ($stock['is_low'])
-                                        <span class="vestra-products__stock vestra-products__stock--warning">
-                                            <span class="vestra-products__stock-label">Low</span>
-                                        </span>
-                                    @endif
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
-                @if (! empty($product['edit_url']))
-                    <div class="vestra-products-detail__section">
-                        <a href="{{ $product['edit_url'] }}" class="vestra-button vestra-button--primary">
-                            <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
-                            <span>Edit Product</span>
-                        </a>
-                    </div>
-                @endif
+                <div class="vestra-products-detail__section">
+                    <h3 class="vestra-products-detail__section-title">Audit</h3>
+                    <dl class="vestra-products-detail__definition-list">
+                        <div class="vestra-products-detail__definition-row"><dt>Created By</dt><dd>{{ $display($product['created_by'] ?? null) }}</dd></div>
+                        <div class="vestra-products-detail__definition-row"><dt>Created Date</dt><dd>{{ $product['created_at']?->format('M j, Y g:i A') ?? 'Not provided' }}</dd></div>
+                        <div class="vestra-products-detail__definition-row"><dt>Last Updated</dt><dd>{{ $product['updated_at']?->format('M j, Y g:i A') ?? 'Not provided' }}</dd></div>
+                        <div class="vestra-products-detail__definition-row"><dt>Last Updated By</dt><dd>{{ $display($product['updated_by'] ?? null) }}</dd></div>
+                    </dl>
+                </div>
+            </div>
+        @else
+            <div class="vestra-products-detail__empty">
+                <p>Select a product to view details.</p>
             </div>
         @endif
     </div>

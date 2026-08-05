@@ -32,10 +32,9 @@ class EnquiryExportController
             'status'       => array_filter((array) $request->input('status', [])),
             'source'       => array_filter((array) $request->input('source', [])),
             'enquiry_type' => array_filter((array) $request->input('enquiry_type', [])),
-            'priority'     => array_filter((array) $request->input('priority', [])),
-            'assigned_to'  => $request->input('assigned_to') ? (int) $request->input('assigned_to') : null,
-            'date_from'    => $request->input('date_from'),
-            'date_until'   => $request->input('date_until'),
+            'priority' => array_filter((array) $request->input('priority', [])),
+            'date_from' => $request->input('date_from'),
+            'date_until' => $request->input('date_until'),
         ];
 
         $rows     = $enquiryService->exportRows($filters);
@@ -63,10 +62,8 @@ class EnquiryExportController
             ['name' => 'enquiry_type', 'label' => 'Enquiry Type'],
             ['name' => 'status',       'label' => 'Status'],
             ['name' => 'priority',     'label' => 'Priority'],
-            ['name' => 'source',       'label' => 'Source'],
-            ['name' => 'assigned_to',  'label' => 'Assigned To'],
-            ['name' => 'replied_at',   'label' => 'Replied At'],
-            ['name' => 'created_at',   'label' => 'Received At'],
+            ['name' => 'source', 'label' => 'Source'],
+            ['name' => 'created_at', 'label' => 'Received At'],
         ];
     }
 }

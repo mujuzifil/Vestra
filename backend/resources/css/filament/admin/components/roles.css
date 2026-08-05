@@ -100,24 +100,35 @@
    ========================================================================== */
 
 .vestra-kpi-grid--7 {
-    grid-template-columns: repeat(1, 1fr);
+    display: grid;
+    justify-content: center;
+    gap: var(--space-4);
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    max-width: 1400px;
+    margin-inline: auto;
+    width: 100%;
+}
+
+.vestra-kpi-grid--7 > * {
+    min-width: 0;
+    height: 100%;
 }
 
 @media (min-width: 640px) {
     .vestra-kpi-grid--7 {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (min-width: 1024px) {
     .vestra-kpi-grid--7 {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 220px));
     }
 }
 
-@media (min-width: 1440px) {
+@media (min-width: 1280px) {
     .vestra-kpi-grid--7 {
-        grid-template-columns: repeat(7, 1fr);
+        grid-template-columns: repeat(6, minmax(0, 200px));
     }
 }
 
@@ -836,4 +847,441 @@
     font-weight: var(--font-semibold);
     color: var(--text-heading);
     font-variant-numeric: tabular-nums;
+}
+
+/* Create / Edit Role form */
+.vestra-role-form__hero {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.vestra-role-form__breadcrumb {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+    color: var(--text-muted);
+    font-size: var(--text-body-sm);
+}
+
+.vestra-role-form__breadcrumb a {
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.vestra-role-form__hero-actions,
+.vestra-role-form__sticky-footer {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.vestra-role-form__layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding-bottom: calc(var(--space-16) + var(--space-4));
+}
+
+.vestra-role-form__top-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+}
+
+@media (min-width: 1024px) {
+    .vestra-role-form__top-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.vestra-role-form__card {
+    padding: var(--space-5);
+}
+
+.vestra-role-form__card-title {
+    margin: 0 0 var(--space-4);
+    font-size: var(--text-body-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+}
+
+.vestra-role-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+    margin-bottom: var(--space-4);
+}
+
+.vestra-role-form__label {
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-heading);
+}
+
+.vestra-role-form__required {
+    color: var(--danger-600);
+}
+
+.vestra-role-form__input,
+.vestra-role-form__textarea {
+    width: 100%;
+    min-height: 42px;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    color: var(--text-body);
+    font-size: var(--text-body-sm);
+}
+
+.vestra-role-form__textarea {
+    min-height: 110px;
+}
+
+.vestra-role-form__input--error {
+    border-color: var(--danger-500);
+}
+
+.vestra-role-form__hint,
+.vestra-role-form__error {
+    font-size: var(--text-body-xs);
+}
+
+.vestra-role-form__hint {
+    color: var(--text-muted);
+}
+
+.vestra-role-form__error {
+    color: var(--danger-600);
+}
+
+.vestra-role-form__status-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.vestra-role-form__status-option {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    padding: var(--space-3);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+}
+
+.vestra-role-form__status-option--active {
+    border-color: var(--primary-500);
+    background: var(--primary-50, var(--surface-subtle));
+}
+
+.vestra-role-form__status-option strong {
+    display: block;
+}
+
+.vestra-role-form__status-option small {
+    color: var(--text-muted);
+}
+
+.vestra-role-form__permissions-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.vestra-role-form__permissions-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.vestra-role-form__search {
+    position: relative;
+    min-width: 220px;
+}
+
+.vestra-role-form__search-icon {
+    position: absolute;
+    top: 50%;
+    left: 0.875rem;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.vestra-role-form__search-input {
+    padding-left: 2.5rem;
+}
+
+.vestra-role-form__link-btn {
+    border: 0;
+    background: transparent;
+    color: var(--primary-700);
+    cursor: pointer;
+    font-size: var(--text-body-sm);
+}
+
+.vestra-role-form__permission-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+}
+
+@media (min-width: 1024px) {
+    .vestra-role-form__permission-layout {
+        grid-template-columns: 240px 1fr;
+    }
+}
+
+.vestra-role-form__module-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    max-height: 480px;
+    overflow: auto;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-2);
+    background: var(--surface-subtle);
+}
+
+.vestra-role-form__module-item {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    color: var(--text-body);
+    font-size: var(--text-body-sm);
+}
+
+.vestra-role-form__module-item--active,
+.vestra-role-form__module-item:hover {
+    background: var(--surface-card);
+}
+
+.vestra-role-form__module-count {
+    color: var(--text-muted);
+    font-size: var(--text-body-xs);
+}
+
+.vestra-role-form__perm-panel {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    background: var(--surface-subtle);
+}
+
+.vestra-role-form__perm-panel-head {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.vestra-role-form__perm-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+}
+
+@media (min-width: 768px) {
+    .vestra-role-form__perm-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.vestra-role-form__perm-card,
+.vestra-role-form__perm-check {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    cursor: pointer;
+}
+
+.vestra-role-form__perm-card {
+    padding: var(--space-3);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-card);
+}
+
+.vestra-role-form__perm-card strong,
+.vestra-role-form__perm-card small {
+    display: block;
+}
+
+.vestra-role-form__perm-card small {
+    color: var(--text-muted);
+    font-size: var(--text-body-xs);
+}
+
+.vestra-role-form__sticky-footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+    justify-content: flex-end;
+    margin-top: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    background: color-mix(in srgb, var(--surface-card) 92%, transparent);
+    backdrop-filter: blur(8px);
+    box-shadow: var(--shadow-md);
+}
+
+.vestra-roles-detail__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.vestra-roles-detail__action-btn {
+    display: inline-flex;
+    align-items: center;
+    height: 34px;
+    padding: 0 var(--space-3);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    color: var(--text-body);
+    font-size: var(--text-body-sm);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.vestra-roles-detail__action-btn--danger {
+    color: var(--danger-700);
+    border-color: var(--danger-200);
+}
+
+.vestra-roles-detail__perm-group {
+    margin-bottom: var(--space-3);
+}
+
+.vestra-roles-detail__perm-group ul {
+    list-style: none;
+    margin: var(--space-2) 0 0;
+    padding: 0;
+}
+
+.vestra-roles-detail__perm-group li {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--space-1) 0;
+    font-size: var(--text-body-sm);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.vestra-roles-detail__user-row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    align-items: center;
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.vestra-roles-detail__user-main {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    min-width: 0;
+}
+
+.vestra-roles-detail__user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+}
+
+.vestra-roles-detail__user-avatar--initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-100);
+    color: var(--primary-700);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.vestra-roles-detail__user-name {
+    color: var(--text-heading);
+    font-weight: var(--font-semibold);
+    text-decoration: none;
+}
+
+.vestra-roles-detail__user-meta {
+    color: var(--text-muted);
+    font-size: var(--text-body-xs);
+}
+
+.vestra-roles-detail__audit {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.vestra-roles-detail__audit-item {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-subtle);
+}
+
+.vestra-roles-detail__audit-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+    color: var(--text-muted);
+    font-size: var(--text-body-xs);
+}
+
+.vestra-unauthorized {
+    display: flex;
+    justify-content: center;
+    padding-top: var(--space-12);
+}
+
+.vestra-unauthorized__card {
+    max-width: 560px;
+    width: 100%;
+    padding: var(--space-8);
+    text-align: center;
+}
+
+.vestra-unauthorized__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: var(--space-4);
+    border-radius: 999px;
+    background: var(--surface-subtle);
+    color: var(--text-muted);
+}
+
+.vestra-unauthorized__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+    margin-top: var(--space-6);
 }

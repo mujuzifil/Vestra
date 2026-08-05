@@ -18,6 +18,9 @@ $isSystem = in_array($role->name, $systemNames, true);
     <td class="vestra-roles__td">{{ number_format((int) $role->permissions_count) }}</td>
     <td class="vestra-roles__td"><span class="vestra-roles__created">{{ $role->created_at?->format('M j, Y') ?? '—' }}</span></td>
     <td class="vestra-roles__td">
+        <span class="vestra-roles__category-pill">{{ ($role->status ?: 'active') === 'active' ? 'Active' : 'Disabled' }}</span>
+    </td>
+    <td class="vestra-roles__td">
         <button type="button" wire:click="openDetailDrawer({{ $role->id }})" class="vestra-roles__action-trigger" aria-label="View role">
             <x-filament::icon icon="heroicon-o-eye" class="h-5 w-5" />
         </button>

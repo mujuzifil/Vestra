@@ -14,7 +14,8 @@ class DatabaseSearchProvider implements SearchProviderInterface
     {
         $query = Product::query()
             ->with(['category', 'images'])
-            ->where('status', ProductStatus::ACTIVE);
+            ->where('status', ProductStatus::ACTIVE)
+            ->whereHas('category', fn (Builder $q) => $q->where('status', 'active'));
 
         $this->applyFilters($query, $filters);
         $this->applySorting($query, $filters['sort'] ?? null);

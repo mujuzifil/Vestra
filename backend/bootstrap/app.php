@@ -110,6 +110,9 @@ return Application::configure(basePath: dirname(__DIR__))
                     'message' => $e->getMessage() ?: 'Forbidden.',
                 ], 403);
             }
+
+            // Avoid redirect responses for Livewire/Filament component renders.
+            // Full-page GET navigations can use the dedicated Unauthorized page via canAccess guards.
             return null;
         });
 
@@ -133,6 +136,18 @@ return Application::configure(basePath: dirname(__DIR__))
                     'message' => $e->getMessage() ?: 'Forbidden.',
                 ], 403);
             }
+
+            if ($request->user()
+                && $request->isMethod('GET')
+                && ! $request->expectsJson()
+                && ! $request->ajax()
+                && ! $request->hasHeader('X-Livewire')
+                && ! $request->hasHeader('X-Livewire-Payload')) {
+                $message = $e->getMessage() ?: 'You do not have permission to access this page.';
+
+                return redirect('/unauthorized?message='.urlencode($message));
+            }
+
             return null;
         });
 

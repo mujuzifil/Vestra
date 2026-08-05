@@ -1,0 +1,456 @@
+/* ==========================================================================
+   My Profile
+   ========================================================================== */
+
+.vestra-profile__hero {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+}
+
+.vestra-profile__overview {
+    display: grid;
+    gap: var(--space-6);
+    padding: var(--space-5);
+    margin-bottom: var(--space-4);
+}
+
+@media (min-width: 1024px) {
+    .vestra-profile__overview {
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+        align-items: center;
+    }
+}
+
+.vestra-profile__overview-main {
+    display: flex;
+    gap: var(--space-4);
+    align-items: center;
+    min-width: 0;
+}
+
+.vestra-profile__avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.vestra-profile__avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 999px;
+    object-fit: cover;
+    border: 3px solid var(--surface-card);
+    box-shadow: var(--shadow-sm);
+}
+
+.vestra-profile__avatar--initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-600, #1d4ed8);
+    color: #fff;
+    font-size: 1.75rem;
+    font-weight: var(--font-semibold);
+}
+
+.vestra-profile__avatar-status {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    border: 2px solid var(--surface-card);
+    background: var(--text-muted);
+}
+
+.vestra-profile__avatar-status--active {
+    background: var(--success-500, #22c55e);
+}
+
+.vestra-profile__name {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-body-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+}
+
+.vestra-profile__role-badge {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 10px;
+    margin-bottom: var(--space-2);
+    border-radius: var(--radius-full);
+    background: var(--primary-100);
+    color: var(--primary-700);
+    font-size: 12px;
+    font-weight: var(--font-semibold);
+}
+
+.vestra-profile__contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    color: var(--text-muted);
+    font-size: var(--text-body-sm);
+}
+
+.vestra-profile__meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4);
+    margin: 0;
+}
+
+@media (min-width: 768px) {
+    .vestra-profile__meta-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.vestra-profile__meta-grid dt {
+    color: var(--text-muted);
+    font-size: var(--text-body-xs);
+    margin-bottom: 2px;
+}
+
+.vestra-profile__meta-grid dd {
+    margin: 0;
+    color: var(--text-heading);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+}
+
+.vestra-profile__status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 6px;
+    border-radius: 999px;
+    background: var(--success-500, #22c55e);
+}
+
+.vestra-profile__tabs {
+    display: flex;
+    gap: var(--space-1);
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.vestra-profile__tabs button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: var(--space-3) var(--space-4);
+    color: var(--text-muted);
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+}
+
+.vestra-profile__tabs button.is-active {
+    color: var(--primary-700);
+    border-bottom-color: var(--primary-600);
+}
+
+.vestra-profile__two-col {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+}
+
+@media (min-width: 1024px) {
+    .vestra-profile__two-col {
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+        align-items: start;
+    }
+}
+
+.vestra-profile__card {
+    padding: var(--space-5);
+}
+
+.vestra-profile__card-title {
+    margin: 0 0 var(--space-4);
+    font-size: var(--text-body-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+}
+
+.vestra-profile__card-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-3);
+    align-items: center;
+    margin-bottom: var(--space-4);
+}
+
+.vestra-profile__card-head .vestra-profile__card-title {
+    margin: 0;
+}
+
+.vestra-profile__detail-list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.vestra-profile__detail-list > div {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: var(--text-body-sm);
+}
+
+.vestra-profile__detail-list dt {
+    color: var(--text-muted);
+}
+
+.vestra-profile__detail-list dd {
+    margin: 0;
+    color: var(--text-heading);
+}
+
+.vestra-profile__info-alert {
+    display: flex;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    padding: var(--space-3);
+    border-radius: var(--radius-lg);
+    background: var(--info-50, #eff6ff);
+    color: var(--info-700, #1d4ed8);
+    font-size: var(--text-body-sm);
+}
+
+.vestra-profile__actions {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.vestra-profile__actions button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    border: 0;
+    border-radius: var(--radius-lg);
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    color: inherit;
+}
+
+.vestra-profile__actions button:hover {
+    background: var(--surface-hover);
+}
+
+.vestra-profile__action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    background: var(--surface-subtle);
+    color: var(--primary-700);
+    flex-shrink: 0;
+}
+
+.vestra-profile__actions strong,
+.vestra-profile__actions small {
+    display: block;
+}
+
+.vestra-profile__actions small {
+    color: var(--text-muted);
+    font-size: var(--text-body-xs);
+}
+
+.vestra-profile__actions form {
+    width: 100%;
+}
+
+.vestra-profile__table-wrap {
+    overflow-x: auto;
+}
+
+.vestra-profile__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-body-sm);
+}
+
+.vestra-profile__table th,
+.vestra-profile__table td {
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--border-subtle);
+    text-align: left;
+    vertical-align: top;
+}
+
+.vestra-profile__table th {
+    color: var(--text-muted);
+    font-size: var(--text-body-xs);
+    text-transform: uppercase;
+}
+
+.vestra-profile__current-badge {
+    display: inline-flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: var(--radius-full);
+    background: var(--success-100, #dcfce7);
+    color: var(--success-700, #15803d);
+    font-size: 11px;
+    font-weight: var(--font-semibold);
+}
+
+.vestra-profile__muted {
+    color: var(--text-muted);
+    font-size: var(--text-body-xs);
+}
+
+.vestra-profile__link-danger {
+    border: 0;
+    background: transparent;
+    color: var(--danger-600);
+    cursor: pointer;
+    font-size: var(--text-body-sm);
+}
+
+.vestra-profile__activity {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.vestra-profile__activity-item {
+    padding: var(--space-3);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-subtle);
+}
+
+.vestra-profile__activity-item .vestra-profile__muted {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+}
+
+.vestra-profile-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+}
+
+.vestra-profile-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+}
+
+.vestra-profile-modal__panel {
+    position: relative;
+    z-index: 1;
+    width: min(520px, 100%);
+    max-height: min(90vh, 800px);
+    overflow: auto;
+    border-radius: var(--radius-xl);
+    background: var(--surface-card);
+    box-shadow: var(--shadow-lg);
+}
+
+.vestra-profile-modal__header,
+.vestra-profile-modal__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+}
+
+.vestra-profile-modal__header {
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.vestra-profile-modal__header h2 {
+    margin: 0;
+    font-size: var(--text-body-lg);
+}
+
+.vestra-profile-modal__header button {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+
+.vestra-profile-modal__body {
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.vestra-profile-modal__footer {
+    justify-content: flex-end;
+    padding: 0;
+    margin-top: var(--space-2);
+}
+
+.vestra-profile-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+}
+
+.vestra-profile-form__field label {
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-heading);
+}
+
+.vestra-profile-form__field label span {
+    color: var(--danger-600);
+}
+
+.vestra-profile-form__field input[type="text"],
+.vestra-profile-form__field input[type="email"],
+.vestra-profile-form__field input[type="tel"],
+.vestra-profile-form__field input[type="password"] {
+    min-height: 42px;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    background: var(--surface-card);
+    color: var(--text-body);
+}
+
+.vestra-profile-form__field input.is-error {
+    border-color: var(--danger-500);
+}
+
+.vestra-profile-form__error {
+    color: var(--danger-600);
+    font-size: var(--text-body-xs);
+}

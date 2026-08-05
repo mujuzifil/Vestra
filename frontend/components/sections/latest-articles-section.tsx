@@ -6,7 +6,7 @@ import { Newspaper } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { SectionHeader } from "@/components/common/section-header";
 import { ArticleCard } from "@/app/blog/_components/article-card";
-import { getBlogPosts } from "@/lib/api/blog";
+import { getBlogPosts, getHomepagePosts } from "@/lib/api/blog";
 import type { BlogPost } from "@/types";
 import { Button } from "@/components/ui/button";
 
@@ -17,16 +17,24 @@ export function LatestArticlesSection() {
   useEffect(() => {
     let cancelled = false;
 
-    getBlogPosts({ per_page: 3, sort: "newest" })
-      .then((data) => {
+    (async () => {
+      try {
+        const homepage = await getHomepagePosts(3);
+        if (cancelled) return;
+
+        if (homepage.length > 0) {
+          setArticles(homepage);
+          return;
+        }
+
+        const data = await getBlogPosts({ per_page: 3, sort: "newest" });
         if (!cancelled) setArticles(data.data);
-      })
-      .catch(() => {
+      } catch {
         if (!cancelled) setArticles([]);
-      })
-      .finally(() => {
+      } finally {
         if (!cancelled) setLoading(false);
-      });
+      }
+    })();
 
     return () => {
       cancelled = true;

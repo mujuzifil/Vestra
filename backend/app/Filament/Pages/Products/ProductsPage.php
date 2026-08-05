@@ -2,11 +2,17 @@
 
 namespace App\Filament\Pages\Products;
 
-use App\Filament\Resources\ProductResource;
+use App\Enums\ProductStatus;
+use App\Enums\ProductStockStatus;
+use App\Models\MediaAsset;
 use App\Models\Product;
+use App\Services\Admin\MediaAdminService;
 use App\Services\Admin\ProductAdminService;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 
@@ -58,14 +64,37 @@ class ProductsPage extends Page
 
     public ?int $selectedProductId = null;
 
+    public bool $showFormModal = false;
+
+    public ?int $editingProductId = null;
+
+    /**
+     * @var array<string, mixed>
+     */
+    public array $form = [];
+
+    /** @var array<int, array{id: int, url: ?string}> */
+    public array $pendingMediaAssets = [];
+
     public function getTitle(): string
     {
         return 'Products';
     }
 
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
+    }
+
     public function mount(): void
     {
         Gate::authorize('viewAny', Product::class);
+        $this->resetForm();
+    }
+
+    public static function canAccess(): bool
+    {
+        return Gate::allows('viewAny', Product::class);
     }
 
     public function getProductServiceProperty(): ProductAdminService
@@ -115,14 +144,44 @@ class ProductsPage extends Page
         return $this->getProductServiceProperty()->getFilterOptions();
     }
 
+    /**
+     * @return array<string, mixed>
+     */
+    public function getFormOptionsProperty(): array
+    {
+        return $this->getProductServiceProperty()->getFormOptions();
+    }
+
     public function getCanCreateProperty(): bool
     {
         return Gate::allows('create', Product::class);
     }
 
-    public function getCreateUrlProperty(): string
+    public function getEditingProductImagesProperty(): array
     {
-        return ProductResource::getUrl('create');
+        if (empty($this->editingProductId)) {
+            return [];
+        }
+
+        $product = Product::query()->find($this->editingProductId);
+
+        if ($product === null) {
+            return [];
+        }
+
+        return $this->getProductServiceProperty()->getDetail($product)['images'] ?? [];
+    }
+
+    public function getCanUpdateSelectedProperty(): bool
+    {
+        if (empty($this->selectedProductId) && empty($this->editingProductId)) {
+            return false;
+        }
+
+        $id = $this->editingProductId ?? $this->selectedProductId;
+        $product = Product::query()->find($id);
+
+        return $product !== null && Gate::allows('update', $product);
     }
 
     /**
@@ -152,6 +211,204 @@ class ProductsPage extends Page
     {
         $this->showDetailDrawer = false;
         $this->selectedProductId = null;
+    }
+
+    public function openCreateModal(): void
+    {
+        Gate::authorize('create', Product::class);
+
+        $this->resetForm();
+        $this->editingProductId = null;
+        $this->showFormModal = true;
+    }
+
+    public function openEditModal(?int $id = null): void
+    {
+        $id ??= $this->selectedProductId;
+        $product = Product::query()->findOrFail($id);
+        Gate::authorize('update', $product);
+
+        $options = $this->getFormOptionsProperty();
+
+        $this->editingProductId = $product->id;
+        $this->form = [
+            'name' => $product->name ?? '',
+            'sku' => $product->sku ?? '',
+            'short_description' => $product->short_description ?? '',
+            'description' => $product->description ?? '',
+            'category_id' => $product->category_id,
+            'price' => $product->price !== null ? (string) $product->price : '',
+            'cost_price' => $product->cost_price !== null ? (string) $product->cost_price : '',
+            'currency' => $product->currency ?? ($options['default_currency'] ?? ''),
+            'cost_currency' => $product->cost_currency ?? ($options['default_currency'] ?? ''),
+            'stock_quantity' => (string) ($product->stock_quantity ?? 0),
+            'low_stock_threshold' => $product->low_stock_threshold !== null
+                ? (string) $product->low_stock_threshold
+                : (string) ($options['default_low_stock_threshold'] ?? 10),
+            'stock_status' => $product->resolvedStockStatus()->value,
+            'unit' => $product->unit ?? '',
+            'weight' => $product->weight !== null ? (string) $product->weight : '',
+            'barcode' => $product->barcode ?? '',
+            'featured' => (bool) $product->featured,
+            'status' => $product->status instanceof ProductStatus ? $product->status->value : (string) $product->status,
+            'tax_rate' => $product->tax_rate !== null ? (string) $product->tax_rate : '',
+        ];
+        $this->pendingMediaAssets = [];
+        $this->resetErrorBag();
+        $this->showFormModal = true;
+    }
+
+    public function closeFormModal(): void
+    {
+        $this->showFormModal = false;
+        $this->editingProductId = null;
+        $this->pendingMediaAssets = [];
+        $this->resetForm();
+        $this->resetErrorBag();
+    }
+
+    public function openMediaPicker(): void
+    {
+        $this->dispatch('open-media-picker', context: 'product');
+    }
+
+    #[On('media-asset-selected')]
+    public function handleMediaAssetSelected(int $id, string $context = 'default', ?string $url = null): void
+    {
+        if ($context !== 'product' && $context !== 'default') {
+            return;
+        }
+
+        if ($this->editingProductId) {
+            $product = Product::query()->findOrFail($this->editingProductId);
+            Gate::authorize('update', $product);
+            $asset = MediaAsset::query()->findOrFail($id);
+            app(MediaAdminService::class)->linkToProduct($product, $asset, asPrimary: $product->images()->count() === 0);
+            Notification::make()->title('Image linked')->success()->send();
+
+            return;
+        }
+
+        foreach ($this->pendingMediaAssets as $pending) {
+            if ((int) $pending['id'] === $id) {
+                return;
+            }
+        }
+
+        $this->pendingMediaAssets[] = ['id' => $id, 'url' => $url];
+    }
+
+    public function saveProduct(): void
+    {
+        $validated = $this->validate($this->formRules());
+
+        $service = $this->getProductServiceProperty();
+        $mediaIds = array_map(fn (array $item) => (int) $item['id'], $this->pendingMediaAssets);
+
+        $wasEditing = $this->editingProductId !== null;
+        $keepDetailsOpen = $this->showDetailDrawer;
+
+        if ($wasEditing) {
+            $product = Product::query()->findOrFail($this->editingProductId);
+            Gate::authorize('update', $product);
+            $product = $service->updateProduct($product, $validated['form'], $mediaIds, auth()->user());
+
+            Notification::make()->title('Product updated')->success()->send();
+        } else {
+            Gate::authorize('create', Product::class);
+            $product = $service->createProduct($validated['form'], $mediaIds, auth()->user());
+
+            Notification::make()->title('Product created')->success()->send();
+        }
+
+        $this->closeFormModal();
+        $this->selectedProductId = $product->id;
+
+        if ($keepDetailsOpen || ! $wasEditing) {
+            $this->showDetailDrawer = true;
+        }
+    }
+
+    public function removeProductImage(int $imageId): void
+    {
+        if (! $this->editingProductId) {
+            return;
+        }
+
+        $product = Product::query()->findOrFail($this->editingProductId);
+        Gate::authorize('update', $product);
+
+        $this->getProductServiceProperty()->removeImage($product, $imageId);
+
+        Notification::make()->title('Image removed')->success()->send();
+    }
+
+    public function removePendingMedia(int $index): void
+    {
+        unset($this->pendingMediaAssets[$index]);
+        $this->pendingMediaAssets = array_values($this->pendingMediaAssets);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function formRules(): array
+    {
+        $productId = $this->editingProductId;
+
+        return [
+            'form.name' => ['required', 'string', 'max:255'],
+            'form.sku' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('products', 'sku')->ignore($productId),
+            ],
+            'form.short_description' => ['nullable', 'string', 'max:1000'],
+            'form.description' => ['nullable', 'string'],
+            'form.category_id' => ['required', 'integer', 'exists:categories,id'],
+            'form.price' => ['required', 'numeric', 'min:0'],
+            'form.cost_price' => ['nullable', 'numeric', 'min:0'],
+            'form.currency' => ['nullable', 'string', 'max:3'],
+            'form.cost_currency' => ['nullable', 'string', 'max:3'],
+            'form.stock_quantity' => ['required', 'integer', 'min:0'],
+            'form.low_stock_threshold' => ['required', 'integer', 'min:0'],
+            'form.stock_status' => ['required', Rule::in(array_column(ProductStockStatus::cases(), 'value'))],
+            'form.unit' => ['nullable', 'string', 'max:100'],
+            'form.weight' => ['nullable', 'numeric', 'min:0'],
+            'form.barcode' => ['nullable', 'string', 'max:255'],
+            'form.featured' => ['sometimes', 'boolean'],
+            'form.status' => ['required', Rule::in(array_column(ProductStatus::cases(), 'value'))],
+            'form.tax_rate' => ['nullable', 'numeric', 'min:0', 'max:100'],
+        ];
+    }
+
+    public function resetForm(): void
+    {
+        $options = app(ProductAdminService::class)->getFormOptions();
+        $defaultTax = $options['default_tax_rate'] ?? null;
+
+        $this->form = [
+            'name' => '',
+            'sku' => '',
+            'short_description' => '',
+            'description' => '',
+            'category_id' => null,
+            'price' => '',
+            'cost_price' => '',
+            'currency' => $options['default_currency'] ?? '',
+            'cost_currency' => $options['default_currency'] ?? '',
+            'stock_quantity' => '0',
+            'low_stock_threshold' => (string) ($options['default_low_stock_threshold'] ?? 10),
+            'stock_status' => ProductStockStatus::IN_STOCK->value,
+            'unit' => '',
+            'weight' => '',
+            'barcode' => '',
+            'featured' => false,
+            'status' => ProductStatus::ACTIVE->value,
+            'tax_rate' => ($defaultTax !== null && $defaultTax !== '') ? (string) $defaultTax : '',
+        ];
+        $this->pendingMediaAssets = [];
     }
 
     public function toggleSelectAll(): void

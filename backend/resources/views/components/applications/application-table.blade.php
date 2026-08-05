@@ -13,7 +13,6 @@ $columns = [
     ['key' => 'location', 'label' => 'Location', 'sortable' => true, 'field' => 'country'],
     ['key' => 'priority', 'label' => 'Priority', 'sortable' => true, 'field' => 'priority'],
     ['key' => 'status', 'label' => 'Status', 'sortable' => true, 'field' => 'status'],
-    ['key' => 'assigned', 'label' => 'Assigned To', 'sortable' => true, 'field' => 'assigned_to'],
     ['key' => 'submitted', 'label' => 'Submitted', 'sortable' => true, 'field' => 'created_at'],
     ['key' => 'actions', 'label' => '', 'sortable' => false],
 ];

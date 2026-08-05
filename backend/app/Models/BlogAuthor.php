@@ -7,6 +7,7 @@ use App\Enums\BlogPostVisibility;
 use App\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BlogAuthor extends Model
@@ -17,6 +18,7 @@ class BlogAuthor extends Model
     protected string $slugSourceColumn = 'name';
 
     protected $fillable = [
+        'user_id',
         'name',
         'slug',
         'email',
@@ -32,7 +34,13 @@ class BlogAuthor extends Model
         return [
             'social_links' => 'array',
             'is_active' => 'boolean',
+            'user_id' => 'integer',
         ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function posts(): HasMany

@@ -1,16 +1,25 @@
 @props([
     'show' => false,
     'category' => null,
+    'canEdit' => false,
 ])
 
 @php
-use App\Filament\Resources\CategoryResource;
-use App\Filament\Resources\ProductResource;
+$display = function ($value, string $fallback = 'Not provided') {
+    if ($value === null) {
+        return $fallback;
+    }
+    if (is_string($value) && trim($value) === '') {
+        return $fallback;
+    }
+
+    return $value;
+};
 @endphp
 
 <div
     class="vestra-categories-detail @if ($show) vestra-categories-detail--open @endif"
-    x-data="{ open: @js($show) }"
+    x-data="{ open: @entangle('showDetailDrawer') }"
     x-show="open"
     x-cloak
     @keydown.escape.window="if (open) $wire.closeDetailDrawer()"
@@ -28,14 +37,7 @@ use App\Filament\Resources\ProductResource;
 
     <div class="vestra-categories-detail__panel">
         @if ($category)
-            @php
-                $products = $category['products'] ?? [];
-                $categoryModel = \App\Models\Category::query()->find($category['id']);
-                $canUpdate = $categoryModel && (auth()->user()?->can('update', $categoryModel) ?? false);
-                $editUrl = $canUpdate
-                    ? CategoryResource::getUrl('edit', ['record' => $category['id']])
-                    : null;
-            @endphp
+            @php $products = $category['products'] ?? []; @endphp
 
             <div class="vestra-categories-detail__header">
                 <div class="vestra-categories-detail__header-main">
@@ -43,21 +45,16 @@ use App\Filament\Resources\ProductResource;
                         <x-filament::icon icon="heroicon-o-tag" class="h-5 w-5" />
                     </span>
                     <div class="vestra-categories-detail__header-text">
-                        <h2 class="vestra-categories-detail__title">{{ $category['name'] ?? 'Category' }}</h2>
+                        <h2 class="vestra-categories-detail__title">{{ $display($category['name'] ?? null, 'Category') }}</h2>
                         <p class="vestra-categories-detail__subtitle">
-                            {{ $category['slug'] ?? '—' }}
+                            {{ $display($category['slug'] ?? null) }}
                             &middot;
                             {{ number_format($category['products_count'] ?? 0) }} products
                         </p>
                     </div>
                 </div>
 
-                <button
-                    type="button"
-                    wire:click="closeDetailDrawer"
-                    class="vestra-categories-detail__close"
-                    aria-label="Close details"
-                >
+                <button type="button" wire:click="closeDetailDrawer" class="vestra-categories-detail__close" aria-label="Close details">
                     <x-filament::icon icon="heroicon-o-x-mark" class="h-5 w-5" />
                 </button>
             </div>
@@ -67,52 +64,68 @@ use App\Filament\Resources\ProductResource;
                     <x-categories.status-badge :status="$category['status'] ?? null" />
                 </div>
 
-                @if ($editUrl)
+                @if ($canEdit)
                     <div class="vestra-categories-detail__quick-actions">
-                        <a href="{{ $editUrl }}" class="vestra-categories-detail__quick-action">
+                        <button type="button" wire:click="openEditModal({{ $category['id'] }})" class="vestra-categories-detail__quick-action">
                             <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
                             <span>Edit Category</span>
-                        </a>
+                        </button>
                     </div>
                 @endif
 
                 <div class="vestra-categories-detail__section">
-                    <h3 class="vestra-categories-detail__section-title">Description</h3>
-                    <p class="vestra-categories-detail__message">
-                        {{ filled($category['description'] ?? null) ? $category['description'] : 'No description provided.' }}
-                    </p>
+                    <h3 class="vestra-categories-detail__section-title">General</h3>
+                    <dl class="vestra-categories-detail__definition-list">
+                        <div class="vestra-categories-detail__definition-row"><dt>Category Name</dt><dd>{{ $display($category['name'] ?? null) }}</dd></div>
+                        <div class="vestra-categories-detail__definition-row"><dt>Slug</dt><dd><code>{{ $display($category['slug'] ?? null) }}</code></dd></div>
+                        <div class="vestra-categories-detail__definition-row"><dt>URL Slug</dt><dd><code>{{ $display($category['slug'] ?? null) }}</code></dd></div>
+                        <div class="vestra-categories-detail__definition-row"><dt>Parent Category</dt><dd>{{ $display($category['parent']['name'] ?? null) }}</dd></div>
+                        <div class="vestra-categories-detail__definition-row"><dt>Breadcrumb path</dt><dd>{{ $display($category['breadcrumb'] ?? null) }}</dd></div>
+                        <div class="vestra-categories-detail__definition-row"><dt>Sort Order</dt><dd>{{ $category['sort_order'] ?? 0 }}</dd></div>
+                        <div class="vestra-categories-detail__definition-row"><dt>Status</dt><dd>{{ $display($category['status_label'] ?? null) }}</dd></div>
+                        <div class="vestra-categories-detail__definition-row"><dt>Number of Products</dt><dd>{{ number_format($category['products_count'] ?? 0) }}</dd></div>
+                    </dl>
                 </div>
 
                 <div class="vestra-categories-detail__section">
-                    <h3 class="vestra-categories-detail__section-title">Details</h3>
+                    <h3 class="vestra-categories-detail__section-title">Description</h3>
+                    <p class="vestra-categories-detail__message">{{ $display($category['description'] ?? null) }}</p>
+                </div>
+
+                <div class="vestra-categories-detail__section">
+                    <h3 class="vestra-categories-detail__section-title">Public Website</h3>
                     <dl class="vestra-categories-detail__definition-list">
                         <div class="vestra-categories-detail__definition-row">
-                            <dt>Name</dt>
-                            <dd>{{ $category['name'] ?? '—' }}</dd>
+                            <dt>Visibility</dt>
+                            <dd>{{ $display($category['public_visibility_label'] ?? null) }}</dd>
                         </div>
                         <div class="vestra-categories-detail__definition-row">
-                            <dt>Slug</dt>
-                            <dd><code>{{ $category['slug'] ?? '—' }}</code></dd>
+                            <dt>Public URL</dt>
+                            <dd>
+                                @if (! empty($category['public_path']))
+                                    <a href="{{ $category['public_url'] ?? '#' }}" target="_blank" rel="noopener noreferrer">{{ $category['public_path'] }}</a>
+                                @else
+                                    Not provided
+                                @endif
+                            </dd>
                         </div>
                         <div class="vestra-categories-detail__definition-row">
-                            <dt>Sort Order</dt>
-                            <dd>{{ $category['sort_order'] ?? 0 }}</dd>
+                            <dt>SEO information</dt>
+                            <dd>Not provided</dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <div class="vestra-categories-detail__section">
+                    <h3 class="vestra-categories-detail__section-title">Audit</h3>
+                    <dl class="vestra-categories-detail__definition-list">
+                        <div class="vestra-categories-detail__definition-row">
+                            <dt>Created Date</dt>
+                            <dd>{{ isset($category['created_at']) ? $category['created_at']->format('M j, Y g:i A') : 'Not provided' }}</dd>
                         </div>
                         <div class="vestra-categories-detail__definition-row">
-                            <dt>Status</dt>
-                            <dd>{{ $category['status_label'] ?? '—' }}</dd>
-                        </div>
-                        <div class="vestra-categories-detail__definition-row">
-                            <dt>Products</dt>
-                            <dd>{{ number_format($category['products_count'] ?? 0) }}</dd>
-                        </div>
-                        <div class="vestra-categories-detail__definition-row">
-                            <dt>Created</dt>
-                            <dd>{{ isset($category['created_at']) ? $category['created_at']->format('M j, Y g:i A') : '—' }}</dd>
-                        </div>
-                        <div class="vestra-categories-detail__definition-row">
-                            <dt>Last Updated</dt>
-                            <dd>{{ isset($category['updated_at']) ? $category['updated_at']->format('M j, Y g:i A') : '—' }}</dd>
+                            <dt>Updated Date</dt>
+                            <dd>{{ isset($category['updated_at']) ? $category['updated_at']->format('M j, Y g:i A') : 'Not provided' }}</dd>
                         </div>
                     </dl>
                 </div>
@@ -124,12 +137,7 @@ use App\Filament\Resources\ProductResource;
                             @foreach ($products as $product)
                                 <li class="vestra-categories-detail__product-item">
                                     <div class="vestra-categories-detail__product-main">
-                                        <a
-                                            href="{{ ProductResource::getUrl('edit', ['record' => $product['id']]) }}"
-                                            class="vestra-categories-detail__product-name"
-                                        >
-                                            {{ $product['name'] }}
-                                        </a>
+                                        <span class="vestra-categories-detail__product-name">{{ $product['name'] }}</span>
                                         <span class="vestra-categories-detail__product-meta">
                                             {{ $product['sku'] ?? '—' }}
                                             &middot;

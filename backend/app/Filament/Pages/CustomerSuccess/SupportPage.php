@@ -75,6 +75,11 @@ class SupportPage extends Page
         return 'Support';
     }
 
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
+    }
+
     public function mount(): void
     {
         Gate::authorize('viewAny', SupportTicket::class);

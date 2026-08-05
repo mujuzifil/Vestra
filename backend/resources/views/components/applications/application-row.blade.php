@@ -6,7 +6,6 @@
 @php
 use App\Enums\DistributorStatus;
 
-$assignee = $application->assignedAdministrator;
 $isSelected = in_array($application->id, $selectedIds, true);
 $location = collect([$application->region, $application->country])->filter()->implode(', ') ?: '—';
 @endphp
@@ -55,28 +54,54 @@ $location = collect([$application->region, $application->country])->filter()->im
         <x-applications.status-badge :status="$application->status" />
     </td>
 
-    <td class="vestra-applications__td vestra-applications__td--assigned">
-        @if ($assignee)
-            <div class="vestra-applications__assignee">
-                <span class="vestra-applications__assignee-avatar">{{ $assignee->initials() }}</span>
-                <span class="vestra-applications__assignee-name">{{ $assignee->name }}</span>
-            </div>
-        @else
-            <span class="vestra-applications__empty-cell">Unassigned</span>
-        @endif
-    </td>
-
     <td class="vestra-applications__td vestra-applications__td--submitted">
         <span class="vestra-applications__created">{{ $application->created_at?->format('M j, Y') ?? '—' }}</span>
         <span class="vestra-applications__row-meta">{{ $application->created_at?->format('g:i A') }}</span>
     </td>
 
     <td class="vestra-applications__td vestra-applications__td--actions">
-        <div class="vestra-applications__actions" x-data="{ open: false }" @click.outside="open = false">
-            <button type="button" @click="open = !open" class="vestra-applications__action-trigger" aria-label="Application actions" aria-haspopup="true">
+        <div
+            class="vestra-applications__actions"
+            x-data="{
+                open: false,
+                menuStyle: {},
+                toggle() {
+                    this.open = !this.open;
+                    if (!this.open) {
+                        return;
+                    }
+                    const rect = this.$refs.trigger.getBoundingClientRect();
+                    this.menuStyle = {
+                        position: 'fixed',
+                        top: (rect.bottom + 4) + 'px',
+                        right: (window.innerWidth - rect.right) + 'px',
+                        left: 'auto',
+                        zIndex: 80,
+                    };
+                },
+            }"
+            @click.outside="open = false"
+            @keydown.escape.window="open = false"
+        >
+            <button
+                type="button"
+                x-ref="trigger"
+                @click="toggle()"
+                class="vestra-applications__action-trigger"
+                aria-label="Application actions"
+                aria-haspopup="true"
+                :aria-expanded="open.toString()"
+            >
                 <x-filament::icon icon="heroicon-m-ellipsis-vertical" class="h-5 w-5" />
             </button>
-            <div x-show="open" x-transition class="vestra-applications__action-menu" role="menu">
+            <div
+                x-show="open"
+                x-cloak
+                x-transition
+                :style="menuStyle"
+                class="vestra-applications__action-menu"
+                role="menu"
+            >
                 <button type="button" wire:click="openDetailDrawer({{ $application->id }})" class="vestra-applications__action-item" role="menuitem">
                     <x-filament::icon icon="heroicon-o-eye" class="h-4 w-4" />
                     <span>View Details</span>

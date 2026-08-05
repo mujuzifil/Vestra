@@ -15,6 +15,7 @@ Artisan::command('inspire', function () {
 
 Schedule::command('auth:cleanup-exchange-tokens')->hourly();
 Schedule::command('sanctum:cleanup-expired')->hourly();
+Schedule::command('blog:publish-scheduled')->everyMinute();
 Schedule::job(new ProcessScheduledAnnouncementsJob)->everyFiveMinutes();
 
 Schedule::job(new GenerateDailyReportSnapshotJob)->dailyAt('02:00');

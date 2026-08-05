@@ -3,15 +3,25 @@
 namespace App\Services\Admin;
 
 use App\Enums\ProductStatus;
+use App\Enums\ProductStockStatus;
 use App\Models\Category;
+use App\Models\PaymentTransaction;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductWarehouseStock;
+use App\Models\Setting;
+use App\Models\User;
+use App\Services\Catalog\CatalogSyncService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProductAdminService
 {
+    public function __construct(private readonly CatalogSyncService $catalogSync) {}
+
     /**
      * @param  array<string, mixed>  $filters
      */
@@ -26,7 +36,7 @@ class ProductAdminService
     public function queryProducts(array $filters = [], string $sort = 'created_at', string $direction = 'desc'): Builder
     {
         $query = Product::query()
-            ->with(['category', 'images'])
+            ->with(['category', 'images.mediaAsset'])
             ->when($filters['search'] ?? null, function (Builder $q, string $term): void {
                 $q->where(function (Builder $inner) use ($term): void {
                     $inner->where('name', 'like', "%{$term}%")
@@ -71,7 +81,9 @@ class ProductAdminService
      */
     public function getDetail(Product $product): array
     {
-        $product->load(['category', 'images', 'warehouseStocks.warehouse']);
+        $product->load(['category', 'images.mediaAsset', 'warehouseStocks.warehouse', 'creator', 'updater']);
+
+        $stockStatus = $product->resolvedStockStatus();
 
         return [
             'id' => $product->id,
@@ -84,23 +96,34 @@ class ProductAdminService
             'status_label' => $product->status instanceof ProductStatus ? $product->status->label() : ucfirst(str_replace('_', ' ', (string) $product->status)),
             'featured' => (bool) $product->featured,
             'price' => $product->price,
+            'cost_price' => $product->cost_price,
+            'currency' => $product->currency,
+            'cost_currency' => $product->cost_currency,
             'distributor_price' => $product->distributor_price,
+            'tax_rate' => $product->tax_rate,
             'stock_quantity' => $product->stock_quantity,
-            'stock_status_label' => $product->stockStatusLabel(),
+            'low_stock_threshold' => $product->low_stock_threshold,
+            'stock_status' => $stockStatus->value,
+            'stock_status_label' => $stockStatus->label(),
             'stock_status_color' => $product->stockStatusColor(),
+            'unit' => $product->unit,
+            'weight' => $product->weight,
+            'barcode' => $product->barcode,
             'category' => $product->category ? [
                 'id' => $product->category->id,
                 'name' => $product->category->name,
             ] : null,
             'images' => $product->images->map(fn (ProductImage $image) => [
                 'id' => $image->id,
-                'url' => $this->imageUrl($image->image),
-                'alt_text' => $image->alt_text,
+                'url' => $image->resolvedUrl() ?? $this->imageUrl($image->image),
+                'path' => $image->mediaAsset?->publicPath() ?? $image->image,
+                'media_asset_id' => $image->media_asset_id,
+                'alt_text' => $image->alt_text ?: $image->mediaAsset?->alt_text,
                 'sort_order' => $image->sort_order,
             ])->values()->toArray(),
             'warehouse_stocks' => $product->warehouseStocks->map(fn (ProductWarehouseStock $stock) => [
                 'id' => $stock->id,
-                'warehouse_name' => $stock->warehouse?->name ?? '—',
+                'warehouse_name' => $stock->warehouse?->name,
                 'quantity' => $stock->quantity,
                 'reserved_quantity' => $stock->reserved_quantity,
                 'available' => $stock->availableQuantity(),
@@ -109,7 +132,8 @@ class ProductAdminService
             ])->values()->toArray(),
             'created_at' => $product->created_at,
             'updated_at' => $product->updated_at,
-            'edit_url' => \App\Filament\Resources\ProductResource::getUrl('edit', ['record' => $product]),
+            'created_by' => $product->creator?->name,
+            'updated_by' => $product->updater?->name,
         ];
     }
 
@@ -142,6 +166,97 @@ class ProductAdminService
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    public function getFormOptions(): array
+    {
+        $defaultCurrency = Setting::query()->where('key', 'currency')->value('value')
+            ?? Setting::query()->where('key', 'currency_code')->value('value');
+
+        $currencies = PaymentTransaction::query()
+            ->whereNotNull('currency')
+            ->where('currency', '!=', '')
+            ->distinct()
+            ->orderBy('currency')
+            ->pluck('currency')
+            ->map(fn ($code) => strtoupper((string) $code))
+            ->unique()
+            ->values()
+            ->all();
+
+        if (filled($defaultCurrency)) {
+            array_unshift($currencies, strtoupper((string) $defaultCurrency));
+            $currencies = array_values(array_unique($currencies));
+        }
+
+        $units = Product::query()
+            ->whereNotNull('unit')
+            ->where('unit', '!=', '')
+            ->distinct()
+            ->orderBy('unit')
+            ->pluck('unit')
+            ->values()
+            ->all();
+
+        return [
+            'categories' => Category::query()
+                ->orderBy('name')
+                ->get(['id', 'name'])
+                ->map(fn (Category $category) => ['id' => $category->id, 'name' => $category->name])
+                ->values()
+                ->toArray(),
+            'statuses' => array_map(
+                fn (ProductStatus $status) => ['value' => $status->value, 'label' => $status->label()],
+                ProductStatus::cases()
+            ),
+            'stock_statuses' => ProductStockStatus::options(),
+            'currencies' => array_map(fn (string $code) => ['value' => $code, 'label' => $code], $currencies),
+            'units' => array_map(fn (string $unit) => ['value' => $unit, 'label' => $unit], $units),
+            'default_currency' => filled($defaultCurrency) ? strtoupper((string) $defaultCurrency) : ($currencies[0] ?? null),
+            'default_tax_rate' => Setting::query()->where('key', 'tax_rate')->value('value'),
+            'default_low_stock_threshold' => Setting::query()->where('key', 'low_stock_threshold')->value('value') ?? 10,
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @param  array<int, int>  $mediaAssetIds
+     */
+    public function createProduct(array $data, array $mediaAssetIds = [], ?User $actor = null): Product
+    {
+        return DB::transaction(function () use ($data, $mediaAssetIds, $actor) {
+            $product = Product::create($this->preparePayload($data, $actor, creating: true));
+            $this->attachMediaAssets($product, $mediaAssetIds);
+            $product = $product->fresh(['category', 'images.mediaAsset']);
+            $this->catalogSync->syncProducts($product->id, $product->category_id);
+
+            return $product;
+        });
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @param  array<int, int>  $mediaAssetIds
+     */
+    public function updateProduct(Product $product, array $data, array $mediaAssetIds = [], ?User $actor = null): Product
+    {
+        return DB::transaction(function () use ($product, $data, $mediaAssetIds, $actor) {
+            $product->update($this->preparePayload($data, $actor, creating: false));
+            $this->attachMediaAssets($product, $mediaAssetIds);
+            $product = $product->fresh(['category', 'images.mediaAsset']);
+            $this->catalogSync->syncProducts($product->id, $product->category_id);
+
+            return $product;
+        });
+    }
+
+    public function removeImage(Product $product, int $imageId): void
+    {
+        $image = $product->images()->whereKey($imageId)->firstOrFail();
+        app(MediaAdminService::class)->unlinkProductImage($product, $image);
+    }
+
+    /**
      * @param  array<string, mixed>  $filters
      * @return array<int, array<string, mixed>>
      */
@@ -156,6 +271,7 @@ class ProductAdminService
                 'status' => $product->status instanceof ProductStatus ? $product->status->label() : (string) $product->status,
                 'featured' => $product->featured ? 'Yes' : 'No',
                 'price' => $product->price,
+                'cost_price' => $product->cost_price,
                 'distributor_price' => $product->distributor_price,
                 'stock_quantity' => $product->stock_quantity,
                 'stock_status' => $product->stockStatusLabel(),
@@ -163,6 +279,112 @@ class ProductAdminService
                 'updated_at' => $product->updated_at?->format('Y-m-d H:i:s'),
             ])
             ->toArray();
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function preparePayload(array $data, ?User $actor, bool $creating): array
+    {
+        $name = trim((string) ($data['name'] ?? ''));
+        $stockQuantity = (int) ($data['stock_quantity'] ?? 0);
+        $threshold = $data['low_stock_threshold'] !== null && $data['low_stock_threshold'] !== ''
+            ? (int) $data['low_stock_threshold']
+            : null;
+
+        $stockStatus = filled($data['stock_status'] ?? null)
+            ? (string) $data['stock_status']
+            : ProductStockStatus::fromQuantity($stockQuantity, $threshold)->value;
+
+        $payload = [
+            'name' => $name,
+            'sku' => trim((string) ($data['sku'] ?? '')),
+            'short_description' => $data['short_description'] ?: null,
+            'description' => $data['description'] ?: null,
+            'category_id' => (int) $data['category_id'],
+            'price' => $data['price'],
+            'cost_price' => $data['cost_price'] !== null && $data['cost_price'] !== '' ? $data['cost_price'] : null,
+            'currency' => filled($data['currency'] ?? null) ? strtoupper((string) $data['currency']) : null,
+            'cost_currency' => filled($data['cost_currency'] ?? null) ? strtoupper((string) $data['cost_currency']) : null,
+            'stock_quantity' => $stockQuantity,
+            'low_stock_threshold' => $threshold,
+            'stock_status' => $stockStatus,
+            'unit' => $data['unit'] ?: null,
+            'weight' => $data['weight'] !== null && $data['weight'] !== '' ? $data['weight'] : null,
+            'barcode' => $data['barcode'] ?: null,
+            'featured' => (bool) ($data['featured'] ?? false),
+            'status' => $data['status'],
+            'tax_rate' => $data['tax_rate'] !== null && $data['tax_rate'] !== '' ? $data['tax_rate'] : null,
+            'updated_by' => $actor?->id,
+        ];
+
+        if ($creating) {
+            $payload['slug'] = $this->uniqueSlug($name);
+            $payload['created_by'] = $actor?->id;
+        }
+
+        return $payload;
+    }
+
+    private function uniqueSlug(string $name): string
+    {
+        $base = Str::slug($name) ?: 'product';
+        $slug = $base;
+        $i = 1;
+
+        while (Product::query()->where('slug', $slug)->exists()) {
+            $slug = $base.'-'.$i;
+            $i++;
+        }
+
+        return $slug;
+    }
+
+    /**
+     * @param  array<int, int>  $mediaAssetIds
+     */
+    private function attachMediaAssets(Product $product, array $mediaAssetIds): void
+    {
+        $media = app(MediaAdminService::class);
+
+        foreach (array_values(array_unique(array_map('intval', $mediaAssetIds))) as $assetId) {
+            $asset = \App\Models\MediaAsset::query()->find($assetId);
+            if (! $asset) {
+                continue;
+            }
+
+            if ($product->images()->where('media_asset_id', $asset->id)->exists()) {
+                continue;
+            }
+
+            $media->linkToProduct(
+                $product,
+                $asset,
+                asPrimary: $product->images()->count() === 0
+            );
+        }
+    }
+
+    /**
+     * @param  array<int, UploadedFile>  $images
+     */
+    private function storeImages(Product $product, array $images): void
+    {
+        if ($images === []) {
+            return;
+        }
+
+        $media = app(MediaAdminService::class);
+
+        foreach ($images as $upload) {
+            if (! $upload instanceof UploadedFile) {
+                continue;
+            }
+
+            $asset = $media->upload($upload);
+            $media->linkToProduct($product, $asset, asPrimary: $product->images()->count() === 0);
+        }
     }
 
     private function applySorting(Builder $query, string $sort, string $direction): Builder

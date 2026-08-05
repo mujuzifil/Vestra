@@ -96,10 +96,28 @@
                 width var(--duration-slow) var(--ease-base);
 }
 
+.vestra-sidebar__logo-mark {
+    display: none;
+    height: 2rem;
+    width: auto;
+    max-width: 2.75rem;
+    object-fit: contain;
+    object-position: center;
+}
+
+.vestra-sidebar--collapsed .vestra-sidebar__brand {
+    justify-content: center;
+    padding: 0 var(--space-2);
+}
+
 .vestra-sidebar--collapsed .vestra-sidebar__brand-lockup {
     opacity: 0;
     width: 0;
     pointer-events: none;
+}
+
+.vestra-sidebar--collapsed .vestra-sidebar__logo-mark {
+    display: block;
 }
 
 .vestra-sidebar__logo {
@@ -391,6 +409,22 @@
     padding: 0;
 }
 
+.vestra-sidebar__collapse-icon {
+    transition: transform var(--duration-base) var(--ease-base);
+    flex-shrink: 0;
+}
+
+.vestra-sidebar--collapsed .vestra-sidebar__collapse-icon {
+    transform: rotate(180deg);
+}
+
+.vestra-sidebar__collapse-btn {
+    cursor: pointer;
+    border: 0;
+    background: transparent;
+    font: inherit;
+}
+
 /* ==========================================================================
    Header
    ========================================================================== */
@@ -422,8 +456,7 @@
     flex-shrink: 0;
 }
 
-.vestra-header__menu-btn,
-.vestra-header__collapse-btn {
+.vestra-header__mobile-open {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -435,18 +468,9 @@
                 color var(--duration-fast) var(--ease-base);
 }
 
-.vestra-header__menu-btn:hover,
-.vestra-header__collapse-btn:hover {
+.vestra-header__mobile-open:hover {
     background-color: var(--neutral-100);
     color: var(--text-heading);
-}
-
-.vestra-header__collapse-btn .collapse-icon {
-    transition: transform var(--duration-base) var(--ease-base);
-}
-
-.vestra-crm--sidebar-collapsed .vestra-header__collapse-btn .collapse-icon {
-    transform: rotate(180deg);
 }
 
 .vestra-header__search {
@@ -626,6 +650,13 @@
     color: var(--primary-900);
     font-size: var(--text-body-sm);
     font-weight: var(--font-bold);
+    overflow: hidden;
+}
+
+.vestra-header__user-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .vestra-header__user-name {
@@ -666,6 +697,8 @@
    ========================================================================== */
 .vestra-content-shell {
     flex: 1;
+    min-width: 0;
+    overflow-x: hidden;
     padding: var(--space-6) var(--space-4) var(--space-12);
 }
 
@@ -684,6 +717,8 @@
 .vestra-content-shell__container {
     max-width: 1600px;
     margin: 0 auto;
+    width: 100%;
+    min-width: 0;
 }
 
 /* ==========================================================================
@@ -693,6 +728,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-8);
+    min-width: 0;
+    width: 100%;
 }
 
 .vestra-workspace__hero {
@@ -844,25 +881,27 @@
    ========================================================================== */
 .vestra-kpi-grid {
     display: grid;
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(1, minmax(0, 1fr));
     gap: var(--space-4);
+    width: 100%;
+    min-width: 0;
 }
 
 @media (min-width: 640px) {
     .vestra-kpi-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (min-width: 1024px) {
     .vestra-kpi-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
 @media (min-width: 1280px) {
     .vestra-kpi-grid {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(5, minmax(0, 1fr));
     }
 }
 
@@ -870,6 +909,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
+    min-width: 0;
     padding: var(--space-5);
     background-color: var(--surface-card);
     border: 1px solid var(--border-default);

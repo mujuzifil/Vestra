@@ -4,8 +4,6 @@ $kpiCards = $this->kpiCards;
 $filterOptions = $this->filterOptions;
 $selectedPost = $this->selectedPost;
 @endphp
-
-<x-filament-panels::page>
     <div class="vestra-workspace vestra-blog">
         <x-blog.page-header
             title="Blog"
@@ -50,6 +48,7 @@ $selectedPost = $this->selectedPost;
         <x-blog.detail-drawer
             :show="$showDetailDrawer"
             :post="$selectedPost"
+            :can-edit="$this->canUpdateSelected"
+            :can-delete="$this->canDeleteSelected"
         />
     </div>
-</x-filament-panels::page>

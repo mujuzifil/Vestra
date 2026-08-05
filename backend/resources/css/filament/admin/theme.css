@@ -25,7 +25,6 @@
 @import "./components/inputs.css";
 @import "./components/tables.css";
 @import "./components/cards.css";
-@import "./components/notifications.css";
 @import "./components/empty-state.css";
 @import "./components/charts.css";
 @import "./components/login.css";
@@ -56,6 +55,7 @@
 @import "./components/media-workspace.css";
 @import "./components/staff.css";
 @import "./components/roles.css";
+@import "./components/profile.css";
 
 /* Base page typography */
 .fi-body {

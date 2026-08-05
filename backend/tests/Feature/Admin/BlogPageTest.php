@@ -249,4 +249,140 @@ class BlogPageTest extends TestCase
             $this->assertSame('—', $card['trend']);
         }
     }
+
+    public function test_create_url_points_to_article_workspace(): void
+    {
+        $admin = $this->admin();
+
+        $component = Livewire::actingAs($admin)->test(BlogPage::class);
+        $url = $component->instance()->createUrl;
+
+        $this->assertStringContainsString('/marketing/blog/article', $url);
+    }
+
+    public function test_admin_can_create_article_via_article_page(): void
+    {
+        $admin = $this->admin();
+        $category = BlogCategory::factory()->create(['name' => 'Industry News', 'is_active' => true]);
+
+        Livewire::actingAs($admin)
+            ->test(\App\Filament\Pages\Marketing\BlogArticlePage::class)
+            ->set('form.title', 'Industry Trends 2026')
+            ->set('form.slug', 'industry-trends-2026')
+            ->set('form.excerpt', 'A short excerpt')
+            ->set('form.content', '<p>Full article body content.</p>')
+            ->set('form.status', BlogPostStatus::PUBLISHED->value)
+            ->set('form.visibility', 'public')
+            ->set('categoryIds', [$category->id])
+            ->call('publish')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('blog_posts', [
+            'title' => 'Industry Trends 2026',
+            'slug' => 'industry-trends-2026',
+            'status' => BlogPostStatus::PUBLISHED->value,
+        ]);
+
+        $post = BlogPost::query()->where('slug', 'industry-trends-2026')->first();
+        $this->assertNotNull($post);
+        $this->assertNotNull($post->published_at);
+        $this->assertTrue($post->categories->contains('id', $category->id));
+        $this->assertNotNull($post->author_id);
+    }
+
+    public function test_scheduled_article_stays_hidden_until_command_runs(): void
+    {
+        $admin = $this->admin();
+        $category = BlogCategory::factory()->create(['is_active' => true]);
+
+        Livewire::actingAs($admin)
+            ->test(\App\Filament\Pages\Marketing\BlogArticlePage::class)
+            ->set('form.title', 'Future Post')
+            ->set('form.slug', 'future-post')
+            ->set('form.content', '<p>Scheduled body</p>')
+            ->set('form.status', BlogPostStatus::SCHEDULED->value)
+            ->set('form.scheduled_at', now()->addDay()->format('Y-m-d\TH:i'))
+            ->set('form.visibility', 'public')
+            ->set('categoryIds', [$category->id])
+            ->call('publish')
+            ->assertHasNoErrors();
+
+        $post = BlogPost::query()->where('slug', 'future-post')->firstOrFail();
+        $this->assertSame(BlogPostStatus::SCHEDULED, $post->status);
+        $this->assertNull($post->published_at);
+
+        $this->assertNull(
+            app(\App\Services\BlogPostService::class)->getPublishedPosts([], 12)->first(fn ($p) => $p->id === $post->id)
+        );
+
+        $post->update(['scheduled_at' => now()->subMinute()]);
+        $this->artisan('blog:publish-scheduled')->assertSuccessful();
+
+        $post->refresh();
+        $this->assertSame(BlogPostStatus::PUBLISHED, $post->status);
+        $this->assertNotNull($post->published_at);
+    }
+
+    public function test_detail_drawer_shows_live_fields_and_edit_link(): void
+    {
+        $admin = $this->admin();
+        $post = $this->makePost([
+            'title' => 'Drawer Article',
+            'slug' => 'drawer-article',
+            'excerpt' => 'Live excerpt',
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(BlogPage::class)
+            ->call('openDetailDrawer', $post->id)
+            ->assertSet('showDetailDrawer', true)
+            ->assertSee('Drawer Article')
+            ->assertSee('Live excerpt')
+            ->assertSee('Edit Article');
+    }
+
+    public function test_archived_article_is_not_public(): void
+    {
+        $post = $this->makePost([
+            'title' => 'Archived Piece',
+            'slug' => 'archived-piece',
+            'status' => BlogPostStatus::ARCHIVED->value,
+            'published_at' => now()->subDay(),
+        ]);
+
+        $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
+        app(\App\Services\BlogPostService::class)->getPostBySlug($post->slug);
+    }
+
+    public function test_homepage_api_returns_flagged_posts_only(): void
+    {
+        $homepage = $this->makePost([
+            'title' => 'Homepage Article',
+            'slug' => 'homepage-article',
+            'status' => BlogPostStatus::PUBLISHED->value,
+            'published_at' => now()->subHour(),
+            'show_on_homepage' => true,
+        ]);
+
+        $this->makePost([
+            'title' => 'Regular Article',
+            'slug' => 'regular-article',
+            'status' => BlogPostStatus::PUBLISHED->value,
+            'published_at' => now()->subHour(),
+            'show_on_homepage' => false,
+            'is_featured' => false,
+        ]);
+
+        $response = $this->getJson('/api/v1/blog/posts/homepage?limit=6');
+
+        $response->assertOk()
+            ->assertJsonPath('success', true);
+
+        $ids = collect($response->json('data'))->pluck('id')->all();
+        $this->assertContains($homepage->id, $ids);
+        $this->assertNotContains(
+            BlogPost::query()->where('slug', 'regular-article')->value('id'),
+            $ids
+        );
+    }
 }

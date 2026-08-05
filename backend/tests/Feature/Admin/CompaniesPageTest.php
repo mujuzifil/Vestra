@@ -12,9 +12,7 @@ use App\Models\User;
 use App\Services\Admin\CompanyService;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -92,6 +90,8 @@ class CompaniesPageTest extends TestCase
             ->test(CompaniesPage::class)
             ->assertSuccessful()
             ->assertSee('Companies')
+            ->assertSee('Manage and grow your company relationships.')
+            ->assertDontSee('Import')
             ->assertSee('Total Companies')
             ->assertSee('Active Companies')
             ->assertSee('New This Month')
@@ -335,58 +335,23 @@ class CompaniesPageTest extends TestCase
             ->assertHasNoErrors();
     }
 
-    public function test_import_matches_existing_users_and_skips_unknown_emails(): void
+    public function test_filter_panel_is_closed_by_default(): void
     {
-        Storage::fake('local');
-
-        $known = User::factory()->create(['email' => 'known@example.com', 'name' => 'Known User']);
-        User::factory()->create(['email' => 'unknown@example.com']);
-
-        $csv = "primary_contact_email,company_name,industry\n";
-        $csv .= "known@example.com,Known Company,Technology\n";
-        $csv .= "missing@example.com,Missing Company,Finance\n";
-
-        $file = UploadedFile::fake()->createWithContent('companies.csv', $csv);
-
-        $summary = app(CompanyService::class)->importCompanies($file);
-
-        $this->assertEquals(2, $summary['total']);
-        $this->assertEquals(1, $summary['created']);
-        $this->assertEquals(0, $summary['updated']);
-        $this->assertEquals(1, $summary['skipped']);
-
-        $this->assertDatabaseHas('company_profiles', [
-            'user_id' => $known->id,
-            'company_name' => 'Known Company',
-            'industry' => 'Technology',
-        ]);
-
-        $this->assertDatabaseMissing('company_profiles', [
-            'company_name' => 'Missing Company',
-        ]);
-    }
-
-    public function test_import_action_processes_uploaded_csv(): void
-    {
-        Storage::fake('local');
-
-        $user = User::factory()->create(['email' => 'import@example.com']);
-
-        $csv = "primary_contact_email,company_name\n";
-        $csv .= "import@example.com,Imported Company\n";
-
-        $file = UploadedFile::fake()->createWithContent('companies.csv', $csv);
-
         Livewire::actingAs($this->admin())
             ->test(CompaniesPage::class)
-            ->set('importFile', $file)
-            ->call('import')
-            ->assertHasNoErrors();
+            ->assertSet('showFilterPanel', false)
+            ->assertDontSee('Import');
+    }
 
-        $this->assertDatabaseHas('company_profiles', [
-            'user_id' => $user->id,
-            'company_name' => 'Imported Company',
-        ]);
+    public function test_filter_panel_opens_only_after_toggle(): void
+    {
+        Livewire::actingAs($this->admin())
+            ->test(CompaniesPage::class)
+            ->assertSet('showFilterPanel', false)
+            ->call('toggleFilterPanel')
+            ->assertSet('showFilterPanel', true)
+            ->call('toggleFilterPanel')
+            ->assertSet('showFilterPanel', false);
     }
 
     public function test_pagination_resets_on_filter_change(): void
@@ -434,6 +399,8 @@ class CompaniesPageTest extends TestCase
             ->assertSee('Open Quotes')
             ->assertSee('Active Tickets')
             ->assertSee('Filters')
+            ->assertDontSee('Clear all')
+            ->call('toggleFilterPanel')
             ->assertSee('Clear all')
             ->assertSee('Apply Filters');
 

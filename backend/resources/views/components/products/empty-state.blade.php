@@ -1,7 +1,6 @@
 @props([
     'hasFilters' => false,
     'canCreate' => false,
-    'createUrl' => null,
 ])
 
 <div class="vestra-products__empty">
@@ -15,10 +14,10 @@
     @else
         <h3 class="vestra-products__empty-title">No products yet</h3>
         <p class="vestra-products__empty-description">Products added to the catalog will appear here.</p>
-        @if ($canCreate && $createUrl)
-            <a href="{{ $createUrl }}" class="vestra-button vestra-button--primary">
+        @if ($canCreate)
+            <button type="button" wire:click="openCreateModal" class="vestra-button vestra-button--primary">
                 Add Product
-            </a>
+            </button>
         @endif
     @endif
 </div>

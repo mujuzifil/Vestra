@@ -5,7 +5,6 @@
     'excelUrl' => null,
     'pdfUrl' => null,
     'canCreate' => false,
-    'createUrl' => null,
 ])
 
 <section class="vestra-workspace__hero vestra-products__hero">
@@ -54,12 +53,7 @@
                 <x-filament::icon icon="heroicon-m-chevron-down" class="h-4 w-4" x-bind:class="{ 'rotate-180': open }" />
             </button>
 
-            <div
-                x-show="open"
-                x-transition
-                class="vestra-products__export-menu"
-                role="menu"
-            >
+            <div x-show="open" x-transition class="vestra-products__export-menu" role="menu">
                 <a href="{{ $csvUrl }}" class="vestra-products__export-option" role="menuitem">
                     <x-filament::icon icon="heroicon-o-document-text" class="h-4 w-4" />
                     <span>Export CSV</span>
@@ -75,11 +69,11 @@
             </div>
         </div>
 
-        @if ($canCreate && $createUrl)
-            <a href="{{ $createUrl }}" class="vestra-button vestra-button--primary" aria-label="Add product">
+        @if ($canCreate)
+            <button type="button" wire:click="openCreateModal" class="vestra-button vestra-button--primary" aria-label="Add product">
                 <x-filament::icon icon="heroicon-o-plus" class="h-4 w-4" />
                 <span>Add Product</span>
-            </a>
+            </button>
         @endif
     </div>
 </section>

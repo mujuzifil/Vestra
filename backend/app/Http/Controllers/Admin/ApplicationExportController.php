@@ -34,7 +34,6 @@ class ApplicationExportController
             'priority' => array_filter((array) $request->input('priority', [])),
             'country' => array_filter((array) $request->input('country', [])),
             'region' => array_filter((array) $request->input('region', [])),
-            'assigned_to' => $request->input('assigned_to') ? (int) $request->input('assigned_to') : null,
             'date_from' => $request->input('date_from'),
             'date_until' => $request->input('date_until'),
         ];
@@ -65,7 +64,6 @@ class ApplicationExportController
             ['name' => 'region', 'label' => 'Region'],
             ['name' => 'status', 'label' => 'Status'],
             ['name' => 'priority', 'label' => 'Priority'],
-            ['name' => 'assigned_to', 'label' => 'Assigned To'],
             ['name' => 'estimated_volume', 'label' => 'Estimated Volume'],
             ['name' => 'existing_customer', 'label' => 'Existing Customer'],
             ['name' => 'created_at', 'label' => 'Submitted At'],

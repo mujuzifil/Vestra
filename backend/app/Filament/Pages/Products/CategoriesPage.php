@@ -2,11 +2,13 @@
 
 namespace App\Filament\Pages\Products;
 
-use App\Filament\Resources\CategoryResource;
 use App\Models\Category;
 use App\Services\Admin\CategoryAdminService;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 
@@ -52,14 +54,29 @@ class CategoriesPage extends Page
 
     public ?int $selectedCategoryId = null;
 
+    public bool $showFormModal = false;
+
+    public ?int $editingCategoryId = null;
+
+    /**
+     * @var array<string, mixed>
+     */
+    public array $form = [];
+
     public function getTitle(): string
     {
         return 'Categories';
     }
 
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
+    }
+
     public function mount(): void
     {
         Gate::authorize('viewAny', Category::class);
+        $this->resetForm();
     }
 
     public function getCategoryServiceProperty(): CategoryAdminService
@@ -101,14 +118,50 @@ class CategoriesPage extends Page
         return $this->getCategoryServiceProperty()->getDetail($category);
     }
 
-    public function canCreateCategory(): bool
+    /**
+     * @return array<string, mixed>
+     */
+    public function getFormOptionsProperty(): array
+    {
+        if (! $this->showFormModal) {
+            return [
+                'parents' => [],
+                'statuses' => [
+                    ['value' => 'active', 'label' => 'Active'],
+                    ['value' => 'inactive', 'label' => 'Inactive'],
+                ],
+            ];
+        }
+
+        return $this->getCategoryServiceProperty()->getFormOptions($this->editingCategoryId);
+    }
+
+    public function getCanCreateProperty(): bool
     {
         return Gate::allows('create', Category::class);
     }
 
-    public function getCreateUrl(): string
+    public function getCanUpdateSelectedProperty(): bool
     {
-        return CategoryResource::getUrl('create');
+        $id = $this->editingCategoryId ?? $this->selectedCategoryId;
+        if (empty($id)) {
+            return false;
+        }
+
+        $category = Category::query()->find($id);
+
+        return $category !== null && Gate::allows('update', $category);
+    }
+
+    public function getCanDeleteSelectedProperty(): bool
+    {
+        if (empty($this->editingCategoryId)) {
+            return false;
+        }
+
+        $category = Category::query()->find($this->editingCategoryId);
+
+        return $category !== null && Gate::allows('delete', $category);
     }
 
     /**
@@ -137,6 +190,137 @@ class CategoriesPage extends Page
     {
         $this->showDetailDrawer = false;
         $this->selectedCategoryId = null;
+    }
+
+    public function openCreateModal(): void
+    {
+        Gate::authorize('create', Category::class);
+
+        $this->resetForm();
+        $this->editingCategoryId = null;
+        $this->showFormModal = true;
+    }
+
+    public function openEditModal(?int $id = null): void
+    {
+        $id ??= $this->selectedCategoryId;
+        $category = Category::query()->findOrFail($id);
+        Gate::authorize('update', $category);
+
+        $this->editingCategoryId = $category->id;
+        $this->form = [
+            'name' => $category->name ?? '',
+            'slug' => $category->slug ?? '',
+            'description' => $category->description ?? '',
+            'parent_id' => $category->parent_id,
+            'sort_order' => (string) ($category->sort_order ?? 0),
+            'status' => $category->status ?? 'active',
+        ];
+        $this->resetErrorBag();
+        $this->showFormModal = true;
+    }
+
+    public function closeFormModal(): void
+    {
+        $this->showFormModal = false;
+        $this->editingCategoryId = null;
+        $this->resetForm();
+        $this->resetErrorBag();
+    }
+
+    public function updatedFormName($value): void
+    {
+        if ($this->editingCategoryId !== null) {
+            return;
+        }
+
+        $this->form['slug'] = Str::slug((string) $value);
+    }
+
+    public function saveCategory(): void
+    {
+        $validated = $this->validate($this->formRules());
+        $service = $this->getCategoryServiceProperty();
+        $wasEditing = $this->editingCategoryId !== null;
+        $keepDetailsOpen = $this->showDetailDrawer;
+
+        if ($wasEditing) {
+            $category = Category::query()->findOrFail($this->editingCategoryId);
+            Gate::authorize('update', $category);
+            $category = $service->updateCategory($category, $validated['form']);
+            Notification::make()->title('Category updated')->success()->send();
+        } else {
+            Gate::authorize('create', Category::class);
+            $category = $service->createCategory($validated['form']);
+            Notification::make()->title('Category created')->success()->send();
+        }
+
+        $this->closeFormModal();
+        $this->selectedCategoryId = $category->id;
+
+        if ($keepDetailsOpen || ! $wasEditing) {
+            $this->showDetailDrawer = true;
+        }
+    }
+
+    public function deleteCategory(): void
+    {
+        if (! $this->editingCategoryId) {
+            return;
+        }
+
+        $category = Category::query()->findOrFail($this->editingCategoryId);
+        Gate::authorize('delete', $category);
+
+        $this->getCategoryServiceProperty()->deleteCategory($category);
+
+        Notification::make()->title('Category deleted')->success()->send();
+
+        $this->closeFormModal();
+        $this->closeDetailDrawer();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function formRules(): array
+    {
+        $categoryId = $this->editingCategoryId;
+
+        return [
+            'form.name' => ['required', 'string', 'max:255'],
+            'form.slug' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/',
+                Rule::unique('categories', 'slug')->ignore($categoryId),
+            ],
+            'form.description' => ['nullable', 'string', 'max:65535'],
+            'form.parent_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('categories', 'id')->where(function ($query) use ($categoryId) {
+                    if ($categoryId) {
+                        $query->where('id', '!=', $categoryId);
+                    }
+                }),
+            ],
+            'form.sort_order' => ['required', 'integer', 'min:0'],
+            'form.status' => ['required', Rule::in(['active', 'inactive'])],
+        ];
+    }
+
+    public function resetForm(): void
+    {
+        $this->form = [
+            'name' => '',
+            'slug' => '',
+            'description' => '',
+            'parent_id' => null,
+            'sort_order' => '0',
+            'status' => 'active',
+        ];
     }
 
     public function sortBy(string $field): void
@@ -188,20 +372,6 @@ class CategoriesPage extends Page
     public function updatedDateUntil(): void
     {
         $this->resetPage();
-    }
-
-    public function export(string $format)
-    {
-        Gate::authorize('export', Category::class);
-
-        $allowed = ['csv', 'excel', 'pdf'];
-        $format = strtolower($format);
-
-        if (! in_array($format, $allowed, true)) {
-            abort(400, 'Unsupported export format.');
-        }
-
-        return redirect()->to($this->getExportUrl($format));
     }
 
     public function getExportUrl(string $format): string

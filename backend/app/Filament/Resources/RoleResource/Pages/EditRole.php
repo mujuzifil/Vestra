@@ -2,18 +2,16 @@
 
 namespace App\Filament\Resources\RoleResource\Pages;
 
+use App\Filament\Pages\Administration\RoleFormPage;
 use App\Filament\Resources\RoleResource;
-use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
 class EditRole extends EditRecord
 {
     protected static string $resource = RoleResource::class;
 
-    protected function getHeaderActions(): array
+    public function mount(int|string $record): void
     {
-        return [
-            Actions\DeleteAction::make(),
-        ];
+        $this->redirect(RoleFormPage::getUrl(['id' => $record]), navigate: true);
     }
 }

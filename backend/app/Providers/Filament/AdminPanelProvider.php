@@ -4,8 +4,9 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Dashboard;
 use App\Filament\Pages\ForcePasswordChange;
+use App\Filament\Pages\ProfilePage;
+use App\Filament\Pages\UnauthorizedAccess;
 use App\Filament\Pages\Workspace\ActivityPage;
-use App\Filament\Pages\Workspace\NotificationsPage;
 use App\Filament\Pages\Workspace\TasksPage;
 use App\Filament\Pages\Distributors\TerritoriesPage;
 use App\Filament\Pages\Distributors\ApplicationsPage;
@@ -21,10 +22,13 @@ use App\Filament\Pages\CustomerSuccess\FeedbackPage;
 use App\Filament\Pages\Products\ProductsPage;
 use App\Filament\Pages\Products\CategoriesPage;
 use App\Filament\Pages\Products\InventoryPage;
+use App\Filament\Pages\Marketing\BlogArticlePage;
 use App\Filament\Pages\Marketing\BlogPage;
 use App\Filament\Pages\Marketing\MediaPage;
-use App\Filament\Pages\Administration\StaffPage;
+use App\Filament\Pages\Administration\RoleFormPage;
 use App\Filament\Pages\Administration\RolesPage;
+use App\Filament\Pages\Administration\StaffFormPage;
+use App\Filament\Pages\Administration\StaffPage;
 use App\Http\Controllers\Admin\ActivityExportController;
 use App\Http\Controllers\Admin\ApplicationExportController;
 use App\Http\Controllers\Admin\CompanyExportController;
@@ -154,6 +158,7 @@ class AdminPanelProvider extends PanelProvider
                 ],
             ])
             ->sidebarCollapsibleOnDesktop()
+            ->globalSearch(false)
             ->maxContentWidth('full')
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->navigationGroups([
@@ -170,8 +175,8 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
                 ForcePasswordChange::class,
+                ProfilePage::class,
                 TasksPage::class,
-                NotificationsPage::class,
                 ActivityPage::class,
                 CompaniesPage::class,
                 QuotesPage::class,
@@ -188,9 +193,13 @@ class AdminPanelProvider extends PanelProvider
                 CategoriesPage::class,
                 InventoryPage::class,
                 BlogPage::class,
+                BlogArticlePage::class,
                 MediaPage::class,
                 StaffPage::class,
+                StaffFormPage::class,
                 RolesPage::class,
+                RoleFormPage::class,
+                UnauthorizedAccess::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([])

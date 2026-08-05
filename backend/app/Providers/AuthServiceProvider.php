@@ -64,6 +64,9 @@ use App\Policies\PaymentTransactionPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\ProductWarehouseStockPolicy;
 use App\Policies\ReviewPolicy;
+use App\Models\MediaAsset;
+use App\Models\Role;
+use App\Policies\MediaAssetPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\SettingPolicy;
 use App\Policies\TaskPolicy;
@@ -71,7 +74,6 @@ use App\Policies\UserPolicy;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use Spatie\Permission\Models\Role;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -106,6 +108,7 @@ class AuthServiceProvider extends ServiceProvider
         ProductWarehouseStock::class => ProductWarehouseStockPolicy::class,
         Review::class => ReviewPolicy::class,
         Role::class => RolePolicy::class,
+        MediaAsset::class => MediaAssetPolicy::class,
         Setting::class => SettingPolicy::class,
         Task::class => TaskPolicy::class,
         User::class => UserPolicy::class,
@@ -115,6 +118,14 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+
+        Gate::before(function (User $user, string $ability) {
+            if ($user->hasRole('Super Administrator') || $user->hasRole('super-admin')) {
+                return true;
+            }
+
+            return null;
+        });
 
         Gate::define('view reports', fn (User $user): bool => $user->isAdmin());
         Gate::define('admin', fn (User $user): bool => $user->isAdmin());

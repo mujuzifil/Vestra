@@ -127,9 +127,9 @@ if (filled($accountManagerFilter)) {
     <button
         type="button"
         wire:click="toggleFilterPanel"
-        class="vestra-companies__filters-toggle @if ($showFilterPanel) vestra-companies__filters-toggle--active @endif"
+        class="vestra-companies__filters-toggle @if ($showFilterPanel || $activeFilterCount > 0) vestra-companies__filters-toggle--active @endif"
         aria-label="Toggle advanced filters"
-        aria-pressed="{{ $showFilterPanel ? 'true' : 'false' }}"
+        aria-pressed="{{ ($showFilterPanel || $activeFilterCount > 0) ? 'true' : 'false' }}"
     >
         <x-filament::icon icon="heroicon-o-funnel" class="h-4 w-4" />
         <span>Filters</span>

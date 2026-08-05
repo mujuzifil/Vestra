@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class RolePermissionSeeder extends Seeder
 {
@@ -13,27 +14,15 @@ class RolePermissionSeeder extends Seeder
         $guard = 'web';
 
         $permissions = [
-            // Administration
+            // Legacy coarse permissions retained for backward compatibility.
             'manage administrators' => 'Administration',
             'view audit logs' => 'Administration',
-
-            // Customers
             'manage customers' => 'Customers',
-
-            // Product & inventory
             'manage products' => 'Products',
             'manage inventory' => 'Products',
-
-            // Orders
             'manage orders' => 'Orders',
-
-            // Reports
             'view reports' => 'Reports',
-
-            // Settings
             'manage settings' => 'Settings',
-
-            // Notifications
             'manage notifications' => 'Notifications',
         ];
 
@@ -49,39 +38,44 @@ class RolePermissionSeeder extends Seeder
             }
         }
 
-        $superAdmin = Role::firstOrCreate([
-            'name' => 'Super Administrator',
-            'guard_name' => $guard,
-        ], [
-            'description' => 'Full access to the VESTRA Administration Platform.',
-        ]);
+        $definitions = [
+            'Super Administrator' => 'Full access to the VESTRA Administration Platform.',
+            'Administrator' => 'Day-to-day administration of products, orders, customers, and reports.',
+            'Manager' => 'Manager role reserved for future operational permissions.',
+            'customer' => 'Storefront customer role.',
+        ];
+
+        foreach ($definitions as $name => $description) {
+            $role = Role::firstOrCreate(
+                ['name' => $name, 'guard_name' => $guard],
+                [
+                    'description' => $description,
+                    'slug' => Str::slug($name),
+                    'status' => 'active',
+                ]
+            );
+
+            if (! filled($role->slug)) {
+                $role->slug = Str::slug($name);
+            }
+            if (! filled($role->status)) {
+                $role->status = 'active';
+            }
+            if (! filled($role->description)) {
+                $role->description = $description;
+            }
+            $role->save();
+        }
+
+        $superAdmin = Role::query()->where('name', 'Super Administrator')->firstOrFail();
         $superAdmin->syncPermissions(Permission::all());
 
-        $administrator = Role::firstOrCreate([
-            'name' => 'Administrator',
-            'guard_name' => $guard,
-        ], [
-            'description' => 'Day-to-day administration of products, orders, customers, and reports.',
-        ]);
+        $administrator = Role::query()->where('name', 'Administrator')->firstOrFail();
         $administrator->syncPermissions([
             'manage products',
             'manage orders',
             'manage customers',
             'view reports',
-        ]);
-
-        Role::firstOrCreate([
-            'name' => 'Manager',
-            'guard_name' => $guard,
-        ], [
-            'description' => 'Manager role reserved for future operational permissions.',
-        ]);
-
-        Role::firstOrCreate([
-            'name' => 'customer',
-            'guard_name' => $guard,
-        ], [
-            'description' => 'Default customer role for storefront users.',
         ]);
     }
 }

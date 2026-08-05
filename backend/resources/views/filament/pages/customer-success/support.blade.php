@@ -4,8 +4,6 @@ $kpiCards = $this->kpiCards;
 $filterOptions = $this->filterOptions;
 $selectedTicket = $this->selectedTicket;
 @endphp
-
-<x-filament-panels::page>
     <div class="vestra-workspace vestra-support">
         <x-support.page-header
             title="Support"
@@ -48,4 +46,3 @@ $selectedTicket = $this->selectedTicket;
             :ticket="$selectedTicket"
         />
     </div>
-</x-filament-panels::page>

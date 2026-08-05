@@ -34,6 +34,23 @@ class BlogPostService
             ->first();
     }
 
+    /**
+     * @return Collection<int, BlogPost>
+     */
+    public function getHomepagePosts(int $limit = 6): Collection
+    {
+        return BlogPost::with(['author', 'categories', 'tags'])
+            ->published()
+            ->public()
+            ->where(function (Builder $q): void {
+                $q->where('show_on_homepage', true)->orWhere('is_featured', true);
+            })
+            ->orderByDesc('is_pinned')
+            ->orderByDesc('published_at')
+            ->limit($limit)
+            ->get();
+    }
+
     public function getPostBySlug(string $slug): BlogPost
     {
         $post = BlogPost::with(['author', 'categories', 'tags'])
@@ -100,7 +117,7 @@ class BlogPostService
             'oldest' => $query->orderBy('published_at', 'asc'),
             'popular' => $query->orderByDesc('view_count')->orderByDesc('published_at'),
             'reading_time' => $query->orderBy('reading_time_minutes', 'asc')->orderByDesc('published_at'),
-            default => $query->orderByDesc('published_at'),
+            default => $query->orderByDesc('is_pinned')->orderByDesc('published_at'),
         };
     }
 }

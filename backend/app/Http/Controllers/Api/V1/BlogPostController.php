@@ -45,6 +45,16 @@ class BlogPostController extends Controller
         return $this->successResponse(new BlogPostResource($post));
     }
 
+    public function homepage(Request $request): JsonResponse
+    {
+        $limit = max(1, min($request->integer('limit', 6), 24));
+        $posts = $this->service->getHomepagePosts($limit);
+
+        return $this->successResponse(
+            BlogPostResource::collection($posts)->resolve()
+        );
+    }
+
     public function show(string $slug): JsonResponse
     {
         try {

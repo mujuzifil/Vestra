@@ -75,6 +75,7 @@ class ActivityPageTest extends TestCase
             ->test(\App\Filament\Pages\Workspace\ActivityPage::class)
             ->assertSuccessful()
             ->assertSee('Activity')
+            ->assertSee('Track and review all activities across the system in real time.')
             ->assertSee('Total Activities')
             ->assertSee('User Activities')
             ->assertSee('Security Events')
@@ -233,26 +234,20 @@ class ActivityPageTest extends TestCase
         $this->assertStringContainsString('Recent', $activities->first()['title']);
     }
 
-    public function test_detail_drawer_returns_correct_payload(): void
+    public function test_activity_feed_omits_view_action(): void
     {
         $admin = $this->admin();
 
-        $log = AuditLog::factory()->create([
+        AuditLog::factory()->create([
             'action' => 'product_updated',
             'user_id' => $admin->id,
         ]);
 
         Livewire::actingAs($admin)
             ->test(\App\Filament\Pages\Workspace\ActivityPage::class)
-            ->call('openDetailPanel', "audit-{$log->id}")
-            ->assertSet('showDetailPanel', true)
-            ->assertSet('selectedActivityId', "audit-{$log->id}");
-
-        $detail = app(ActivityService::class)->findActivity("audit-{$log->id}");
-
-        $this->assertNotNull($detail);
-        $this->assertEquals("audit-{$log->id}", $detail['id']);
-        $this->assertEquals(ActivityCategory::PRODUCTS, $detail['category']);
+            ->assertSuccessful()
+            ->assertDontSeeHtml('wire:click="openDetailPanel')
+            ->assertDontSeeHtml('aria-label="View activity details"');
     }
 
     public function test_export_returns_filtered_rows(): void

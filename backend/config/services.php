@@ -51,4 +51,10 @@ return [
         ],
     ],
 
+    'frontend' => [
+        'revalidate_url' => env('FRONTEND_REVALIDATE_URL'),
+        'revalidate_secret' => env('FRONTEND_REVALIDATE_SECRET'),
+        'public_url' => env('FRONTEND_PUBLIC_URL', env('NEXT_PUBLIC_SITE_URL', 'http://localhost:3000')),
+    ],
+
 ];

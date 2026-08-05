@@ -45,9 +45,6 @@ class ApplicationsPage extends Page
     #[Url(as: 'priority')]
     public array $priorityFilter = [];
 
-    #[Url(as: 'assigned_to')]
-    public ?int $assignedToFilter = null;
-
     #[Url(as: 'date_from')]
     public ?string $dateFrom = null;
 
@@ -72,6 +69,11 @@ class ApplicationsPage extends Page
     public function getTitle(): string
     {
         return 'Applications';
+    }
+
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
     }
 
     public function mount(): void
@@ -137,7 +139,6 @@ class ApplicationsPage extends Page
             'priority' => $this->priorityFilter,
             'country' => $this->countryFilter,
             'region' => $this->regionFilter,
-            'assigned_to' => $this->assignedToFilter,
             'date_from' => $this->dateFrom,
             'date_until' => $this->dateUntil,
         ];
@@ -284,7 +285,6 @@ class ApplicationsPage extends Page
         $this->priorityFilter = [];
         $this->countryFilter = [];
         $this->regionFilter = [];
-        $this->assignedToFilter = null;
         $this->dateFrom = null;
         $this->dateUntil = null;
         $this->sortField = 'created_at';
@@ -318,11 +318,6 @@ class ApplicationsPage extends Page
         $this->resetPage();
     }
 
-    public function updatedAssignedToFilter(): void
-    {
-        $this->resetPage();
-    }
-
     public function updatedDateFrom(): void
     {
         $this->resetPage();
@@ -340,7 +335,6 @@ class ApplicationsPage extends Page
             || filled($this->priorityFilter)
             || filled($this->countryFilter)
             || filled($this->regionFilter)
-            || filled($this->assignedToFilter)
             || filled($this->dateFrom)
             || filled($this->dateUntil);
     }
@@ -354,7 +348,6 @@ class ApplicationsPage extends Page
             'priority' => $this->priorityFilter ?: null,
             'country' => $this->countryFilter ?: null,
             'region' => $this->regionFilter ?: null,
-            'assigned_to' => $this->assignedToFilter,
             'date_from' => $this->dateFrom,
             'date_until' => $this->dateUntil,
         ]);

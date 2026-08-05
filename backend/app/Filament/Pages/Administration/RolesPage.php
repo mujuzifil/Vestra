@@ -2,13 +2,14 @@
 
 namespace App\Filament\Pages\Administration;
 
-use App\Filament\Resources\RoleResource;
+use App\Models\Role;
+use App\Models\User;
 use App\Services\Admin\RoleAdminService;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
-use Spatie\Permission\Models\Role;
 
 class RolesPage extends Page
 {
@@ -34,6 +35,9 @@ class RolesPage extends Page
     #[Url(as: 'type')]
     public ?string $typeFilter = null;
 
+    #[Url(as: 'status')]
+    public ?string $statusFilter = null;
+
     #[Url(as: 'sort')]
     public string $sortField = 'name';
 
@@ -49,6 +53,11 @@ class RolesPage extends Page
     public function getTitle(): string
     {
         return 'Roles';
+    }
+
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
     }
 
     public function mount(): void
@@ -110,7 +119,7 @@ class RolesPage extends Page
 
     public function getCreateUrlProperty(): string
     {
-        return RoleResource::getUrl('create');
+        return RoleFormPage::getUrl();
     }
 
     /**
@@ -121,6 +130,7 @@ class RolesPage extends Page
         return [
             'search' => $this->search,
             'type' => $this->typeFilter,
+            'status' => $this->statusFilter,
         ];
     }
 
@@ -139,6 +149,58 @@ class RolesPage extends Page
         $this->selectedRoleId = null;
     }
 
+    public function enableRole(int $id): void
+    {
+        $this->mutateRole($id, fn (Role $role, $actor) => $this->getRoleServiceProperty()->setStatus($role, 'active', $actor), 'Role enabled');
+    }
+
+    public function disableRole(int $id): void
+    {
+        $this->mutateRole($id, fn (Role $role, $actor) => $this->getRoleServiceProperty()->setStatus($role, 'disabled', $actor), 'Role disabled');
+    }
+
+    public function duplicateRole(int $id): void
+    {
+        $role = Role::query()->findOrFail($id);
+        Gate::authorize('create', Role::class);
+        $copy = $this->getRoleServiceProperty()->duplicateRole($role, auth()->user());
+        Notification::make()->title('Role duplicated')->success()->send();
+        $this->redirect(RoleFormPage::getUrl(['id' => $copy->id]));
+    }
+
+    public function deleteRole(int $id): void
+    {
+        $role = Role::query()->findOrFail($id);
+        Gate::authorize('delete', $role);
+        $this->getRoleServiceProperty()->deleteRole($role, auth()->user());
+        $this->closeDetailDrawer();
+        Notification::make()->title('Role deleted')->success()->send();
+    }
+
+    public function removeUserFromRole(int $roleId, int $userId): void
+    {
+        $role = Role::query()->findOrFail($roleId);
+        Gate::authorize('update', $role);
+        $user = User::query()->findOrFail($userId);
+        $this->getRoleServiceProperty()->removeUser($role, $user, auth()->user());
+        Notification::make()->title('User removed from role')->success()->send();
+        $this->selectedRoleId = $roleId;
+        $this->showDetailDrawer = true;
+    }
+
+    /**
+     * @param  callable(Role, mixed): mixed  $callback
+     */
+    private function mutateRole(int $id, callable $callback, string $message): void
+    {
+        $role = Role::query()->findOrFail($id);
+        Gate::authorize('update', $role);
+        $callback($role, auth()->user());
+        Notification::make()->title($message)->success()->send();
+        $this->selectedRoleId = $id;
+        $this->showDetailDrawer = true;
+    }
+
     public function sortBy(string $field): void
     {
         if ($this->sortField === $field) {
@@ -155,6 +217,7 @@ class RolesPage extends Page
     {
         $this->search = '';
         $this->typeFilter = null;
+        $this->statusFilter = null;
         $this->sortField = 'name';
         $this->sortDirection = 'asc';
         $this->resetPage();
@@ -170,9 +233,14 @@ class RolesPage extends Page
         $this->resetPage();
     }
 
+    public function updatedStatusFilter(): void
+    {
+        $this->resetPage();
+    }
+
     public function hasActiveFilters(): bool
     {
-        return filled($this->search) || filled($this->typeFilter);
+        return filled($this->search) || filled($this->typeFilter) || filled($this->statusFilter);
     }
 
     public function getExportUrl(string $format): string
@@ -181,6 +249,7 @@ class RolesPage extends Page
             'format' => $format,
             'search' => $this->search ?: null,
             'type' => $this->typeFilter,
+            'status' => $this->statusFilter,
         ]);
     }
 }

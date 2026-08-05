@@ -30,6 +30,14 @@ $user = filament()->auth()->user();
             />
             <span class="vestra-sidebar__portal">Admin Portal</span>
         </div>
+        <img
+            src="{{ asset('images/vestra-logo.png') }}"
+            alt="VESTRA"
+            class="vestra-sidebar__logo-mark"
+            width="857"
+            height="474"
+            decoding="async"
+        />
     </div>
 
     <nav class="vestra-sidebar__nav" aria-label="Main">
@@ -107,22 +115,27 @@ $user = filament()->auth()->user();
     </nav>
 
     <div class="vestra-sidebar__footer">
-        <a
-            href="{{ url('/settings') }}"
-            class="vestra-sidebar__footer-btn"
-            aria-label="Settings"
+        <button
+            type="button"
+            class="vestra-sidebar__footer-btn vestra-sidebar__collapse-btn"
+            @click="$dispatch('toggle-sidebar-collapse')"
+            :aria-label="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
             x-data="{ tooltip: false }"
             @mouseenter="if (collapsed) tooltip = true"
             @mouseleave="tooltip = false"
         >
-            <x-filament::icon icon="heroicon-o-cog-6-tooth" class="h-5 w-5" />
-            <span class="vestra-sidebar__footer-label">Settings</span>
+            <x-filament::icon
+                icon="heroicon-o-chevron-double-left"
+                class="h-5 w-5 vestra-sidebar__collapse-icon"
+            />
+            <span class="vestra-sidebar__footer-label" x-text="collapsed ? 'Expand' : 'Collapse'"></span>
             <span
                 x-show="tooltip"
                 x-transition.opacity
                 class="vestra-sidebar__item-tooltip"
                 role="tooltip"
-            >Settings</span>
-        </a>
+                x-text="collapsed ? 'Expand' : 'Collapse'"
+            ></span>
+        </button>
     </div>
 </aside>

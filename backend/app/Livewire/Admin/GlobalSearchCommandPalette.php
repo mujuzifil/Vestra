@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use App\Services\Admin\WorkspaceSearchService;
 use Livewire\Component;
 
 class GlobalSearchCommandPalette extends Component
@@ -12,6 +13,7 @@ class GlobalSearchCommandPalette extends Component
 
     public bool $isLoading = false;
 
+    /** @var array<string, array<int, array{title: string, subtitle: string, url: string, icon: string}>> */
     public array $results = [];
 
     protected $listeners = ['open-command-palette' => 'open'];
@@ -21,7 +23,7 @@ class GlobalSearchCommandPalette extends Component
         $this->isOpen = true;
         $this->query = '';
         $this->results = [];
-        $this->dispatch('command-palette-opened');
+        $this->isLoading = false;
     }
 
     public function close(): void
@@ -29,53 +31,21 @@ class GlobalSearchCommandPalette extends Component
         $this->isOpen = false;
         $this->query = '';
         $this->results = [];
-    }
-
-    public function updatedQuery(): void
-    {
-        $this->isLoading = true;
-
-        // Placeholder: simulate search delay. Backend search logic will be wired in a future stage.
-        $this->results = $this->performPlaceholderSearch($this->query);
-
         $this->isLoading = false;
     }
 
-    private function performPlaceholderSearch(string $query): array
+    public function updatedQuery(string $value): void
     {
-        $demoResults = [
-            'Orders' => [
-                ['title' => 'Order #10042', 'subtitle' => 'Clarissa Mraz — $106.00', 'url' => route('filament.admin.resources.orders.edit', ['record' => 1]), 'icon' => 'heroicon-o-shopping-cart'],
-                ['title' => 'Order #10041', 'subtitle' => 'Terence O\'Kon — $62.00', 'url' => route('filament.admin.resources.orders.edit', ['record' => 2]), 'icon' => 'heroicon-o-shopping-cart'],
-            ],
-            'Products' => [
-                ['title' => 'EcoSuit Cleaner', 'subtitle' => 'SKU: ESC-001', 'url' => route('filament.admin.resources.products.edit', ['record' => 1]), 'icon' => 'heroicon-o-shopping-bag'],
-                ['title' => 'Heavy Duty Detergent', 'subtitle' => 'SKU: HDD-002', 'url' => route('filament.admin.resources.products.edit', ['record' => 2]), 'icon' => 'heroicon-o-shopping-bag'],
-            ],
-            'Customers' => [
-                ['title' => 'Clarissa Mraz', 'subtitle' => 'clarissa@example.com', 'url' => route('filament.admin.resources.customers.edit', ['record' => 1]), 'icon' => 'heroicon-o-users'],
-            ],
-        ];
+        $this->isLoading = true;
 
-        if (blank($query)) {
-            return $demoResults;
+        try {
+            $this->results = app(WorkspaceSearchService::class)->search($value);
+        } catch (\Throwable $e) {
+            report($e);
+            $this->results = [];
+        } finally {
+            $this->isLoading = false;
         }
-
-        $filtered = [];
-        $lowerQuery = strtolower($query);
-
-        foreach ($demoResults as $group => $items) {
-            $groupItems = array_filter($items, function (array $item) use ($lowerQuery): bool {
-                return str_contains(strtolower($item['title']), $lowerQuery)
-                    || str_contains(strtolower($item['subtitle']), $lowerQuery);
-            });
-
-            if (! empty($groupItems)) {
-                $filtered[$group] = array_slice(array_values($groupItems), 0, 5);
-            }
-        }
-
-        return $filtered;
     }
 
     public function render()

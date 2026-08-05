@@ -2,11 +2,17 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Filament\Pages\Administration\StaffFormPage;
 use App\Filament\Pages\Administration\StaffPage;
-use App\Filament\Resources\UserResource;
+use App\Filament\Pages\ForcePasswordChange;
 use App\Models\User;
+use App\Notifications\StaffWelcomeNotification;
+use App\Services\Admin\PermissionDiscoveryService;
+use App\Services\Admin\StaffAdminService;
 use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
@@ -54,8 +60,10 @@ class StaffPageTest extends TestCase
     public function test_staff_route_is_registered(): void
     {
         $this->assertTrue(Route::has('filament.admin.pages.administration.staff'));
+        $this->assertTrue(Route::has('filament.admin.pages.administration.staff.form'));
         $this->assertTrue(Route::has('filament.admin.administration.staff.export'));
         $this->assertStringContainsString('/administration/staff', StaffPage::getUrl());
+        $this->assertStringContainsString('/administration/staff/form', StaffFormPage::getUrl());
     }
 
     public function test_guest_is_redirected_from_staff_route(): void
@@ -80,11 +88,6 @@ class StaffPageTest extends TestCase
             ->test(StaffPage::class)
             ->assertSuccessful()
             ->assertSee('Staff');
-    }
-
-    public function test_user_resource_navigation_is_hidden(): void
-    {
-        $this->assertFalse(UserResource::shouldRegisterNavigation());
     }
 
     public function test_kpi_cards_shown_to_admin(): void
@@ -138,6 +141,24 @@ class StaffPageTest extends TestCase
             ->assertDontSee('Beta Distribution Lead');
     }
 
+    public function test_search_covers_username_employee_id_and_department(): void
+    {
+        $admin = $this->admin();
+        $this->makeStaff([
+            'name' => 'Hidden Name One',
+            'username' => 'alpha.ops',
+            'employee_id' => 'EMP-9001',
+            'department' => 'Warehouse',
+        ]);
+        $this->makeStaff(['name' => 'Other Person', 'username' => 'beta.sales']);
+
+        Livewire::actingAs($admin)
+            ->test(StaffPage::class)
+            ->set('search', 'EMP-9001')
+            ->assertSee('Hidden Name One')
+            ->assertDontSee('Other Person');
+    }
+
     public function test_status_filter_works(): void
     {
         $admin = $this->admin();
@@ -149,6 +170,21 @@ class StaffPageTest extends TestCase
             ->set('statusFilter', ['active'])
             ->assertSee('Active Staff One')
             ->assertDontSee('Inactive Staff One');
+    }
+
+    public function test_role_filter_is_dynamic_from_roles(): void
+    {
+        $admin = $this->admin();
+        $role = Role::query()->where('name', '!=', 'customer')->orderBy('name')->first();
+        $this->assertNotNull($role);
+
+        $component = Livewire::actingAs($admin)->test(StaffPage::class);
+        $roles = $component->instance()->filterOptions['roles'];
+        $names = collect($roles)->pluck('name')->all();
+
+        $this->assertContains($role->name, $names);
+        $this->assertSame($names, collect($names)->sort()->values()->all());
+        $this->assertSame(count($names), count(array_unique($names)));
     }
 
     public function test_role_filter_works(): void
@@ -183,7 +219,22 @@ class StaffPageTest extends TestCase
             ->test(StaffPage::class)
             ->call('openDetailDrawer', $staff->id)
             ->assertSet('showDetailDrawer', true)
-            ->assertSet('selectedStaffId', $staff->id);
+            ->assertSet('selectedStaffId', $staff->id)
+            ->assertSee('Personal Information')
+            ->assertSee('Audit Timeline');
+    }
+
+    public function test_admin_can_disable_staff_from_detail(): void
+    {
+        $admin = $this->admin();
+        $staff = $this->makeStaff(['status' => 'active']);
+
+        Livewire::actingAs($admin)
+            ->test(StaffPage::class)
+            ->call('openDetailDrawer', $staff->id)
+            ->call('disableStaff', $staff->id);
+
+        $this->assertSame('inactive', $staff->fresh()->status);
     }
 
     public function test_admin_can_close_detail_drawer(): void
@@ -247,6 +298,14 @@ class StaffPageTest extends TestCase
             ->assertSee('New Staff');
     }
 
+    public function test_create_url_points_to_staff_form(): void
+    {
+        $admin = $this->admin();
+        $component = Livewire::actingAs($admin)->test(StaffPage::class);
+
+        $this->assertStringContainsString('/administration/staff/form', $component->instance()->createUrl);
+    }
+
     public function test_kpi_cards_have_no_fake_trends(): void
     {
         $admin = $this->admin();
@@ -259,5 +318,134 @@ class StaffPageTest extends TestCase
             $this->assertFalse($card['trend_available']);
             $this->assertSame('—', $card['trend']);
         }
+    }
+
+    public function test_permission_discovery_builds_dynamic_tree(): void
+    {
+        $tree = app(PermissionDiscoveryService::class)->getPermissionTree();
+
+        $this->assertNotEmpty($tree);
+        $labels = collect($tree)->pluck('label')->all();
+        $this->assertContains('Staff', $labels);
+        $this->assertSame($labels, collect($labels)->sort()->values()->all());
+
+        foreach ($tree as $group) {
+            $this->assertNotEmpty($group['permissions']);
+            foreach ($group['permissions'] as $permission) {
+                $this->assertStringContainsString('.', $permission['name']);
+            }
+        }
+    }
+
+    public function test_permission_search_filters_tree(): void
+    {
+        $service = app(PermissionDiscoveryService::class);
+        $filtered = $service->getPermissionTree('staff');
+
+        $this->assertNotEmpty($filtered);
+        foreach ($filtered as $group) {
+            $haystack = mb_strtolower($group['label'].' '.collect($group['permissions'])->pluck('name')->implode(' '));
+            $this->assertStringContainsString('staff', $haystack);
+        }
+    }
+
+    public function test_create_staff_persists_profile_role_and_force_password_change(): void
+    {
+        Notification::fake();
+
+        $admin = $this->admin();
+        $role = Role::query()->where('name', '!=', 'customer')->firstOrFail();
+        app(PermissionDiscoveryService::class)->syncToDatabase();
+
+        $result = app(StaffAdminService::class)->createStaff([
+            'name' => 'New Hire',
+            'email' => 'new.hire@vestra.test',
+            'username' => 'new.hire',
+            'status' => 'active',
+            'role_id' => $role->id,
+            'department' => 'Sales',
+            'job_title' => 'Account Manager',
+            'employee_id' => 'EMP-100',
+            'notes' => 'Onboarding',
+        ], [], null, $admin);
+
+        $user = $result['user'];
+
+        $this->assertTrue($user->is_admin);
+        $this->assertTrue($user->mustChangePassword());
+        $this->assertSame('Sales', $user->department);
+        $this->assertTrue($user->hasRole($role->name));
+        $this->assertNotEmpty($result['temporary_password']);
+        Notification::assertSentTo($user, StaffWelcomeNotification::class);
+    }
+
+    public function test_staff_form_page_renders_create_sections(): void
+    {
+        $admin = $this->admin();
+
+        Livewire::actingAs($admin)
+            ->test(StaffFormPage::class)
+            ->assertSuccessful()
+            ->assertSee('Create New Staff')
+            ->assertSee('Personal Information')
+            ->assertSee('Account Information')
+            ->assertSee('Role & Permissions')
+            ->assertSee('Additional Information');
+    }
+
+    public function test_first_login_password_change_blocks_reuse_of_temporary_password(): void
+    {
+        $admin = $this->admin([
+            'password' => 'TempPass!23456',
+            'force_password_change_at' => now(),
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(ForcePasswordChange::class)
+            ->set('data.current_password', 'TempPass!23456')
+            ->set('data.password', 'TempPass!23456')
+            ->set('data.password_confirmation', 'TempPass!23456')
+            ->call('changePassword')
+            ->assertHasErrors(['data.password']);
+
+        $this->assertTrue($admin->fresh()->mustChangePassword());
+    }
+
+    public function test_first_login_password_change_clears_flag(): void
+    {
+        $admin = $this->admin([
+            'password' => 'TempPass!23456',
+            'force_password_change_at' => now(),
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(ForcePasswordChange::class)
+            ->set('data.current_password', 'TempPass!23456')
+            ->set('data.password', 'BrandNew!Pass99')
+            ->set('data.password_confirmation', 'BrandNew!Pass99')
+            ->call('changePassword')
+            ->assertHasNoErrors()
+            ->assertRedirect('/administration/staff');
+
+        $fresh = $admin->fresh();
+        $this->assertFalse($fresh->mustChangePassword());
+        $this->assertNotNull($fresh->password_changed_at);
+        $this->assertTrue(Hash::check('BrandNew!Pass99', $fresh->password));
+    }
+
+    public function test_admin_staff_api_roles_and_permission_tree(): void
+    {
+        $admin = $this->admin();
+        $token = $admin->createToken('test')->plainTextToken;
+
+        $this->withToken($token)
+            ->getJson('/api/v1/admin/staff-role-options')
+            ->assertOk()
+            ->assertJsonStructure(['data']);
+
+        $this->withToken($token)
+            ->getJson('/api/v1/admin/permission-tree')
+            ->assertOk()
+            ->assertJsonStructure(['data']);
     }
 }

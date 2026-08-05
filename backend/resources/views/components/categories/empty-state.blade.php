@@ -1,7 +1,6 @@
 @props([
     'hasFilters' => false,
     'canCreate' => false,
-    'createUrl' => null,
 ])
 
 <div class="vestra-categories__empty">
@@ -25,10 +24,10 @@
         @endif
     </p>
 
-    @if (! $hasFilters && $canCreate && $createUrl)
-        <a href="{{ $createUrl }}" class="vestra-button vestra-button--primary" aria-label="Add category">
+    @if (! $hasFilters && $canCreate)
+        <button type="button" wire:click="openCreateModal" class="vestra-button vestra-button--primary" aria-label="Add category">
             <x-filament::icon icon="heroicon-o-plus" class="h-4 w-4" />
             <span>Add Category</span>
-        </a>
+        </button>
     @endif
 </div>

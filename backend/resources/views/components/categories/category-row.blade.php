@@ -1,9 +1,7 @@
 @props(['category'])
 
 @php
-use App\Filament\Resources\CategoryResource;
 $canUpdate = auth()->user()?->can('update', $category) ?? false;
-$editUrl = $canUpdate ? CategoryResource::getUrl('edit', ['record' => $category]) : null;
 @endphp
 
 <tr class="vestra-categories__row" wire:key="category-{{ $category->id }}">
@@ -16,7 +14,10 @@ $editUrl = $canUpdate ? CategoryResource::getUrl('edit', ['record' => $category]
             {{ $category->name }}
         </button>
         @if ($category->description)
-            <span class="vestra-categories__row-meta">{{ Str::limit($category->description, 60) }}</span>
+            <span class="vestra-categories__row-meta">{{ \Illuminate\Support\Str::limit($category->description, 60) }}</span>
+        @endif
+        @if ($category->parent)
+            <span class="vestra-categories__row-meta">Parent: {{ $category->parent->name }}</span>
         @endif
     </td>
 
@@ -42,20 +43,48 @@ $editUrl = $canUpdate ? CategoryResource::getUrl('edit', ['record' => $category]
     </td>
 
     <td class="vestra-categories__td vestra-categories__td--actions">
-        <div class="vestra-categories__actions" x-data="{ open: false }" @click.outside="open = false">
-            <button type="button" @click="open = !open" class="vestra-categories__action-trigger" aria-label="Category actions" aria-haspopup="true">
+        <div
+            class="vestra-categories__actions"
+            x-data="{
+                open: false,
+                menuStyle: {},
+                toggle() {
+                    this.open = !this.open;
+                    if (!this.open) { return; }
+                    const rect = this.$refs.trigger.getBoundingClientRect();
+                    this.menuStyle = {
+                        position: 'fixed',
+                        top: (rect.bottom + 4) + 'px',
+                        right: (window.innerWidth - rect.right) + 'px',
+                        left: 'auto',
+                        zIndex: 80,
+                    };
+                },
+            }"
+            @click.outside="open = false"
+            @keydown.escape.window="open = false"
+        >
+            <button
+                type="button"
+                x-ref="trigger"
+                @click="toggle()"
+                class="vestra-categories__action-trigger"
+                aria-label="Category actions"
+                aria-haspopup="true"
+                :aria-expanded="open.toString()"
+            >
                 <x-filament::icon icon="heroicon-m-ellipsis-vertical" class="h-5 w-5" />
             </button>
-            <div x-show="open" x-transition class="vestra-categories__action-menu" role="menu">
+            <div x-show="open" x-cloak x-transition :style="menuStyle" class="vestra-categories__action-menu" role="menu">
                 <button type="button" wire:click="openDetailDrawer({{ $category->id }})" class="vestra-categories__action-item" role="menuitem">
                     <x-filament::icon icon="heroicon-o-eye" class="h-4 w-4" />
                     <span>View</span>
                 </button>
-                @if ($editUrl)
-                    <a href="{{ $editUrl }}" class="vestra-categories__action-item" role="menuitem">
+                @if ($canUpdate)
+                    <button type="button" wire:click="openEditModal({{ $category->id }})" class="vestra-categories__action-item" role="menuitem">
                         <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
                         <span>Edit</span>
-                    </a>
+                    </button>
                 @endif
             </div>
         </div>

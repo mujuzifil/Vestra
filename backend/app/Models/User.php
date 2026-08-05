@@ -8,6 +8,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -27,14 +28,24 @@ class User extends Authenticatable implements FilamentUser
         'first_name',
         'last_name',
         'email',
+        'username',
         'phone',
         'password',
         'status',
         'force_password_change_at',
+        'password_changed_at',
+        'locked_at',
+        'department',
+        'job_title',
+        'employee_id',
+        'notes',
         'date_of_birth',
         'gender',
         'avatar_path',
         'preferences_json',
+        'is_admin',
+        'created_by',
+        'updated_by',
     ];
 
     protected $hidden = [
@@ -49,6 +60,8 @@ class User extends Authenticatable implements FilamentUser
             'password' => 'hashed',
             'is_admin' => 'boolean',
             'force_password_change_at' => 'datetime',
+            'password_changed_at' => 'datetime',
+            'locked_at' => 'datetime',
             'last_login_at' => 'datetime',
             'date_of_birth' => 'date',
             'preferences_json' => 'array',
@@ -64,7 +77,9 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->isAdmin();
+        return $this->isAdmin()
+            && $this->isActive()
+            && ! $this->isLocked();
     }
 
     public function isDistributor(): bool
@@ -91,7 +106,23 @@ class User extends Authenticatable implements FilamentUser
     public function clearPasswordChangeRequired(): void
     {
         $this->force_password_change_at = null;
+        $this->password_changed_at = now();
         $this->saveQuietly();
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'created_by');
+    }
+
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'updated_by');
+    }
+
+    public function isLocked(): bool
+    {
+        return $this->locked_at !== null;
     }
 
     public function scopeActive($query)
@@ -187,6 +218,14 @@ class User extends Authenticatable implements FilamentUser
     {
         if (empty($this->avatar_path)) {
             return null;
+        }
+
+        if (str_starts_with($this->avatar_path, 'http://') || str_starts_with($this->avatar_path, 'https://')) {
+            return $this->avatar_path;
+        }
+
+        if (str_starts_with($this->avatar_path, 'avatars/') || str_starts_with($this->avatar_path, 'storage/')) {
+            return asset('storage/'.ltrim(str_replace('storage/', '', $this->avatar_path), '/'));
         }
 
         return asset($this->avatar_path);

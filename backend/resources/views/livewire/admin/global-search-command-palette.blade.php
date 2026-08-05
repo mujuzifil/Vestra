@@ -1,7 +1,7 @@
 <div
     x-data="{ open: @entangle('isOpen') }"
-    x-on:open-command-palette.window="open = true"
-    x-on:keydown.escape.window="open = false"
+    x-on:open-command-palette.window="$wire.open()"
+    x-on:keydown.escape.window="if (open) { $wire.close() }"
 >
     <div
         x-show="open"
@@ -13,7 +13,7 @@
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
         class="fixed inset-0 z-50 bg-neutral-900/50 backdrop-blur-sm"
-        x-on:click="open = false"
+        x-on:click="$wire.close()"
         aria-hidden="true"
     ></div>
 
@@ -42,12 +42,13 @@
                 />
 
                 <input
-                    type="text"
-                    wire:model.live.debounce.200ms="query"
+                    type="search"
+                    wire:model.live.debounce.250ms="query"
                     class="w-full border-0 bg-transparent py-4 pl-12 pr-24 text-neutral-800 placeholder-neutral-400 focus:ring-0"
-                    placeholder="{{ __('Search orders, products, customers...') }}"
-                    aria-label="{{ __('Global search') }}"
-                    x-on:keydown.down.prevent="document.querySelector('.fi-command-result')?.focus()"
+                    placeholder="Search companies, quotes, products, tasks..."
+                    aria-label="Global search"
+                    id="command-palette-title"
+                    x-init="$watch('open', value => { if (value) { $nextTick(() => $el.focus()) } })"
                 />
 
                 <div class="absolute right-4 top-1/2 hidden -translate-y-1/2 items-center gap-2 sm:flex">
@@ -60,18 +61,27 @@
                 @if ($isLoading)
                     <div class="px-4 py-8 text-center">
                         <div class="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-neutral-200 border-t-primary-500"></div>
-                        <p class="mt-3 text-sm text-neutral-500">
-                            {{ __('Searching...') }}
-                        </p>
+                        <p class="mt-3 text-sm text-neutral-500">Searching...</p>
                     </div>
-                @elseif (empty($results))
+                @elseif (blank($query) || mb_strlen(trim($query)) < 2)
                     <div class="px-4 py-10 text-center">
                         <x-filament::icon
                             icon="heroicon-o-magnifying-glass"
                             class="mx-auto h-10 w-10 text-neutral-300"
                         />
                         <p class="mt-2 text-sm text-neutral-500">
-                            {{ blank($query) ? __('Start typing to search...') : __('No results found for "') . $query . '"' }}
+                            Type at least 2 characters to search the CRM workspace.
+                        </p>
+                    </div>
+                @elseif (empty($results))
+                    <div class="px-4 py-10 text-center">
+                        <x-filament::icon
+                            icon="heroicon-o-inbox"
+                            class="mx-auto h-10 w-10 text-neutral-300"
+                        />
+                        <p class="mt-2 text-sm font-medium text-neutral-700">No results found</p>
+                        <p class="mt-1 text-sm text-neutral-500">
+                            Nothing matched “{{ $query }}” in the current workspace modules.
                         </p>
                     </div>
                 @else
@@ -82,26 +92,27 @@
                             </div>
 
                             <ul role="listbox">
-                                @foreach ($items as $index => $item)
+                                @foreach ($items as $item)
                                     <li>
                                         <a
                                             href="{{ $item['url'] }}"
                                             class="fi-command-result group flex items-start gap-3 px-4 py-3 outline-none transition-colors hover:bg-neutral-50 focus:bg-neutral-50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400"
                                             tabindex="0"
-                                            x-on:keydown.enter.prevent.stop="window.location.href = $el.href"
                                         >
                                             <x-filament::icon
                                                 :icon="$item['icon']"
                                                 class="mt-0.5 h-5 w-5 shrink-0 text-neutral-400 group-hover:text-neutral-600"
                                             />
 
-                                            <div class="min-w-0 flex-1">
+                                            <div class="min-width-0 min-w-0 flex-1">
                                                 <p class="text-sm font-medium text-neutral-800">
                                                     {{ $item['title'] }}
                                                 </p>
-                                                <p class="text-xs text-neutral-500">
-                                                    {{ $item['subtitle'] }}
-                                                </p>
+                                                @if (! empty($item['subtitle']))
+                                                    <p class="text-xs text-neutral-500">
+                                                        {{ $item['subtitle'] }}
+                                                    </p>
+                                                @endif
                                             </div>
                                         </a>
                                     </li>
@@ -110,12 +121,6 @@
                         </div>
                     @endforeach
                 @endif
-            </div>
-
-            <div class="border-t border-neutral-200 bg-neutral-50 px-4 py-2">
-                <p class="text-xs text-neutral-400">
-                    {{ __('Global search foundation — backend integration pending') }}
-                </p>
             </div>
         </div>
     </div>

@@ -5,8 +5,6 @@ $filterOptions = $this->filterOptions;
 $selectedPartner = $this->selectedPartner;
 $statusOptions = $this->statusOptions;
 @endphp
-
-<x-filament-panels::page>
     <div class="vestra-workspace vestra-partners">
         <x-partners.page-header
             title="Active Partners"
@@ -50,4 +48,3 @@ $statusOptions = $this->statusOptions;
             :partner="$selectedPartner"
         />
     </div>
-</x-filament-panels::page>
