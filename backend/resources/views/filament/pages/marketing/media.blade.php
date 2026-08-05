@@ -4,8 +4,6 @@ $kpiCards = $this->kpiCards;
 $filterOptions = $this->filterOptions;
 $selectedMedia = $this->selectedMedia;
 @endphp
-
-<x-filament-panels::page>
     <div class="vestra-workspace vestra-media">
         <x-media.page-header
             title="Media"
@@ -61,4 +59,3 @@ $selectedMedia = $this->selectedMedia;
             :item="$selectedMedia"
         />
     </div>
-</x-filament-panels::page>

@@ -4,8 +4,6 @@ $kpiCards = $this->kpiCards;
 $filterOptions = $this->filterOptions;
 $selectedAccount = $this->selectedAccount;
 @endphp
-
-<x-filament-panels::page>
     <div class="vestra-workspace vestra-credit">
         <x-credit.page-header
             title="Credit"
@@ -51,4 +49,3 @@ $selectedAccount = $this->selectedAccount;
             :show="$showAdjustDrawer"
         />
     </div>
-</x-filament-panels::page>

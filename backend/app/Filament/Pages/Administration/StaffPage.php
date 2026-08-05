@@ -54,6 +54,11 @@ class StaffPage extends Page
         return 'Staff';
     }
 
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
+    }
+
     public function mount(): void
     {
         Gate::authorize('viewAny', User::class);

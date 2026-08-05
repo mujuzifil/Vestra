@@ -4,8 +4,6 @@ $kpiCards        = $this->kpiCards;
 $filterOptions   = $this->filterOptions;
 $selectedEnquiry = $this->selectedEnquiry;
 @endphp
-
-<x-filament-panels::page>
     <div class="vestra-workspace vestra-enquiries">
         <x-enquiries.page-header
             title="Enquiries"
@@ -50,4 +48,3 @@ $selectedEnquiry = $this->selectedEnquiry;
             :enquiry="$selectedEnquiry"
         />
     </div>
-</x-filament-panels::page>

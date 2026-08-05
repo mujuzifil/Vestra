@@ -8,8 +8,6 @@ $selectedBranch = $this->selectedBranch;
 $activeFilterCount = $this->activeFilterCount();
 $canCreate = $this->canCreateBranch();
 @endphp
-
-<x-filament-panels::page>
     <div class="vestra-workspace vestra-territories">
         <x-territories.page-header
             title="Territories"
@@ -86,4 +84,3 @@ $canCreate = $this->canCreateBranch();
             :branch="$selectedBranch"
         />
     </div>
-</x-filament-panels::page>

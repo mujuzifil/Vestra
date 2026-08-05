@@ -60,6 +60,11 @@ class ActivePartnersPage extends Page
         return 'Active Partners';
     }
 
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
+    }
+
     public function mount(): void
     {
         Gate::authorize('viewAny', Distributor::class);

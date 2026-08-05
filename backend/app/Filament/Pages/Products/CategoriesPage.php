@@ -57,6 +57,11 @@ class CategoriesPage extends Page
         return 'Categories';
     }
 
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
+    }
+
     public function mount(): void
     {
         Gate::authorize('viewAny', Category::class);

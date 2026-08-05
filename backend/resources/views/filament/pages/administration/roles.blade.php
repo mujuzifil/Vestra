@@ -4,8 +4,6 @@ $kpiCards = $this->kpiCards;
 $filterOptions = $this->filterOptions;
 $selectedRole = $this->selectedRole;
 @endphp
-
-<x-filament-panels::page>
     <div class="vestra-workspace vestra-roles">
         <x-roles.page-header
             title="Roles"
@@ -40,4 +38,3 @@ $selectedRole = $this->selectedRole;
 
         <x-roles.detail-drawer :show="$showDetailDrawer" :role="$selectedRole" />
     </div>
-</x-filament-panels::page>

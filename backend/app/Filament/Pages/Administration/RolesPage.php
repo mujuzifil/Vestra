@@ -51,6 +51,11 @@ class RolesPage extends Page
         return 'Roles';
     }
 
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
+    }
+
     public function mount(): void
     {
         Gate::authorize('viewAny', Role::class);

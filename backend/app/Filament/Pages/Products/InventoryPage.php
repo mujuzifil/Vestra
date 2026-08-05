@@ -69,6 +69,11 @@ class InventoryPage extends Page
         return 'Inventory';
     }
 
+    public function getHeading(): string|\Illuminate\Contracts\Support\Htmlable
+    {
+        return '';
+    }
+
     public function mount(): void
     {
         Gate::authorize('viewAny', ProductWarehouseStock::class);
