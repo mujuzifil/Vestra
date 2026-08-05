@@ -2,7 +2,6 @@
     'title' => 'Categories',
     'description' => '',
     'canCreate' => false,
-    'createUrl' => null,
     'csvUrl' => null,
     'excelUrl' => null,
     'pdfUrl' => null,
@@ -75,11 +74,11 @@
             </div>
         </div>
 
-        @if ($canCreate && $createUrl)
-            <a href="{{ $createUrl }}" class="vestra-button vestra-button--primary" aria-label="Add category">
+        @if ($canCreate)
+            <button type="button" wire:click="openCreateModal" class="vestra-button vestra-button--primary" aria-label="Add category">
                 <x-filament::icon icon="heroicon-o-plus" class="h-4 w-4" />
                 <span>Add Category</span>
-            </a>
+            </button>
         @endif
     </div>
 </section>

@@ -10,6 +10,8 @@ export function useProducts() {
   return useQuery<Product[], Error>({
     queryKey: [PRODUCTS_KEY],
     queryFn: getAllProducts,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 }
 
@@ -18,6 +20,8 @@ export function useProductSearch(filters: ProductFilters = {}, enabled = true) {
     queryKey: [SEARCH_KEY, filters],
     queryFn: () => getProducts(filters),
     enabled,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 }
 
@@ -26,6 +30,8 @@ export function useProduct(slug: string) {
     queryKey: [PRODUCTS_KEY, slug],
     queryFn: () => getProductBySlug(slug),
     enabled: !!slug,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 }
 

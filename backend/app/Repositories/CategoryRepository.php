@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryRepository
 {
@@ -11,10 +12,14 @@ class CategoryRepository
 
     public function allActive(): Collection
     {
-        return $this->model->newQuery()
-            ->where('status', 'active')
-            ->orderBy('sort_order')
-            ->get();
+        return Cache::remember('catalog.categories.active', 60, function () {
+            return $this->model->newQuery()
+                ->with('parent:id,name,slug')
+                ->where('status', 'active')
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get();
+        });
     }
 
     public function findBySlug(string $slug): ?Category
@@ -26,16 +31,30 @@ class CategoryRepository
 
     public function create(array $data): Category
     {
-        return $this->model->create($data);
+        $category = $this->model->create($data);
+        $this->forgetCatalogCache();
+
+        return $category;
     }
 
     public function update(Category $category, array $data): bool
     {
-        return $category->update($data);
+        $updated = $category->update($data);
+        $this->forgetCatalogCache();
+
+        return $updated;
     }
 
     public function delete(Category $category): ?bool
     {
-        return $category->delete();
+        $deleted = $category->delete();
+        $this->forgetCatalogCache();
+
+        return $deleted;
+    }
+
+    public function forgetCatalogCache(): void
+    {
+        Cache::forget('catalog.categories.active');
     }
 }

@@ -15,7 +15,8 @@ class ProductRepository
     {
         $query = $this->model->newQuery()
             ->with(['category', 'images'])
-            ->where('status', ProductStatus::ACTIVE);
+            ->where('status', ProductStatus::ACTIVE)
+            ->whereHas('category', fn ($q) => $q->where('status', 'active'));
 
         if (!empty($filters['category'])) {
             $query->whereHas('category', function ($q) use ($filters) {
@@ -67,17 +68,21 @@ class ProductRepository
             ->with(['category', 'images'])
             ->where('slug', $slug)
             ->where('status', ProductStatus::ACTIVE)
+            ->whereHas('category', fn ($q) => $q->where('status', 'active'))
             ->first();
     }
 
     public function getFeatured(int $limit = 6): Collection
     {
-        return $this->model->newQuery()
-            ->with(['category', 'images'])
-            ->where('status', ProductStatus::ACTIVE)
-            ->where('featured', true)
-            ->limit($limit)
-            ->get();
+        return \Illuminate\Support\Facades\Cache::remember("catalog.products.featured.{$limit}", 60, function () use ($limit) {
+            return $this->model->newQuery()
+                ->with(['category', 'images'])
+                ->where('status', ProductStatus::ACTIVE)
+                ->where('featured', true)
+                ->whereHas('category', fn ($q) => $q->where('status', 'active'))
+                ->limit($limit)
+                ->get();
+        });
     }
 
     public function create(array $data): Product
