@@ -26,11 +26,22 @@ class Product extends Model
         'sku',
         'price',
         'distributor_price',
+        'cost_price',
+        'currency',
+        'cost_currency',
         'featured',
         'status',
         'stock_quantity',
+        'low_stock_threshold',
+        'stock_status',
+        'unit',
+        'weight',
+        'barcode',
+        'tax_rate',
         'meta_title',
         'meta_description',
+        'created_by',
+        'updated_by',
     ];
 
     protected function casts(): array
@@ -38,9 +49,14 @@ class Product extends Model
         return [
             'price' => 'decimal:2',
             'distributor_price' => 'decimal:2',
+            'cost_price' => 'decimal:2',
+            'weight' => 'decimal:3',
+            'tax_rate' => 'decimal:2',
             'featured' => 'boolean',
             'stock_quantity' => 'integer',
+            'low_stock_threshold' => 'integer',
             'status' => ProductStatus::class,
+            'stock_status' => \App\Enums\ProductStockStatus::class,
             'features' => 'array',
             'benefits' => 'array',
             'specifications' => 'array',
@@ -50,6 +66,16 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updater(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     public function images(): HasMany
@@ -123,7 +149,17 @@ class Product extends Model
 
     public function scopeLowStock(Builder $query): Builder
     {
-        return $query->where('stock_quantity', '<=', 10)->where('stock_quantity', '>', 0);
+        return $query->where(function (Builder $q): void {
+            $q->where(function (Builder $inner): void {
+                $inner->whereNotNull('low_stock_threshold')
+                    ->whereColumn('stock_quantity', '<=', 'low_stock_threshold')
+                    ->where('stock_quantity', '>', 0);
+            })->orWhere(function (Builder $inner): void {
+                $inner->whereNull('low_stock_threshold')
+                    ->where('stock_quantity', '<=', 10)
+                    ->where('stock_quantity', '>', 0);
+            });
+        });
     }
 
     public function scopeFeatured(Builder $query): Builder
@@ -143,22 +179,28 @@ class Product extends Model
             ->when($max !== null, fn (Builder $q) => $q->where('price', '<=', $max));
     }
 
+    public function resolvedStockStatus(): \App\Enums\ProductStockStatus
+    {
+        if ($this->stock_status instanceof \App\Enums\ProductStockStatus) {
+            return $this->stock_status;
+        }
+
+        return \App\Enums\ProductStockStatus::fromQuantity(
+            (int) $this->stock_quantity,
+            $this->low_stock_threshold
+        );
+    }
+
     public function stockStatusLabel(): string
     {
-        return match (true) {
-            $this->stock_quantity === 0 => 'Out of Stock',
-            $this->stock_quantity <= 5 => 'Low Stock',
-            $this->stock_quantity <= 10 => 'Running Low',
-            default => 'In Stock',
-        };
+        return $this->resolvedStockStatus()->label();
     }
 
     public function stockStatusColor(): string
     {
-        return match (true) {
-            $this->stock_quantity === 0 => 'danger',
-            $this->stock_quantity <= 5 => 'danger',
-            $this->stock_quantity <= 10 => 'warning',
+        return match ($this->resolvedStockStatus()) {
+            \App\Enums\ProductStockStatus::OUT_OF_STOCK => 'danger',
+            \App\Enums\ProductStockStatus::LOW_STOCK => 'warning',
             default => 'success',
         };
     }
