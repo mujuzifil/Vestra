@@ -98,28 +98,22 @@
     color: var(--text-heading);
 }
 
-/* KPI grid 5 columns */
-.vestra-kpi-grid--5 {
+/* KPI grid 3 columns */
+.vestra-kpi-grid--3 {
     display: grid;
     gap: var(--space-4);
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
 }
 
-@media (min-width: 768px) {
-    .vestra-kpi-grid--5 {
+@media (min-width: 640px) {
+    .vestra-kpi-grid--3 {
         grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (min-width: 1280px) {
-    .vestra-kpi-grid--5 {
-        grid-template-columns: repeat(5, 1fr);
     }
 }
 
 /* Table card */
 .vestra-enquiries__table-card {
-    overflow: hidden;
+    overflow: visible;
 }
 
 .vestra-enquiries__content {
@@ -266,6 +260,7 @@
 /* Table */
 .vestra-enquiries__table-wrap {
     overflow-x: auto;
+    overflow-y: visible;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -273,6 +268,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: var(--text-body-sm);
+    table-layout: auto;
 }
 
 .vestra-enquiries__th {
@@ -473,11 +469,25 @@
     color: var(--text-heading);
 }
 
+.vestra-enquiries__td--actions {
+    overflow: visible;
+    position: relative;
+    z-index: 2;
+    width: 3rem;
+}
+
+.vestra-enquiries__td--subject {
+    max-width: 18rem;
+}
+
+.vestra-enquiries__td--sender {
+    min-width: 10rem;
+    max-width: 16rem;
+}
+
 .vestra-enquiries__action-menu {
-    position: absolute;
-    top: calc(100% + var(--space-1));
-    right: 0;
-    z-index: 20;
+    position: fixed;
+    z-index: 80;
     min-width: 160px;
     padding: var(--space-1);
     border: 1px solid var(--border-default);

@@ -1,18 +1,27 @@
 @props([
-    'show'    => false,
+    'show' => false,
     'enquiry' => null,
 ])
 
 @php
 use App\Enums\ContactStatus;
-use App\Models\User;
 
-$adminUsers = User::query()->where('is_admin', true)->orderBy('name')->get(['id', 'name']);
+$display = function ($value, string $fallback = 'Not provided') {
+    if ($value === null) {
+        return $fallback;
+    }
+
+    if (is_string($value) && trim($value) === '') {
+        return $fallback;
+    }
+
+    return $value;
+};
 @endphp
 
 <div
     class="vestra-enquiries-detail @if ($show) vestra-enquiries-detail--open @endif"
-    x-data="{ open: @js($show), replyTab: 'message' }"
+    x-data="{ open: @entangle('showDetailDrawer') }"
     x-show="open"
     x-cloak
     @keydown.escape.window="if (open) $wire.closeDetailDrawer()"
@@ -34,10 +43,10 @@ $adminUsers = User::query()->where('is_admin', true)->orderBy('name')->get(['id'
                 <div class="vestra-enquiries-detail__header-main">
                     <span class="vestra-enquiries-detail__avatar">{{ strtoupper(substr($enquiry['name'] ?? '?', 0, 2)) }}</span>
                     <div class="vestra-enquiries-detail__header-text">
-                        <h2 class="vestra-enquiries-detail__title">{{ $enquiry['name'] ?? 'Enquiry' }}</h2>
+                        <h2 class="vestra-enquiries-detail__title">{{ $display($enquiry['name'] ?? null, 'Enquiry') }}</h2>
                         <p class="vestra-enquiries-detail__subtitle">
-                            {{ $enquiry['email'] ?? '' }}
-                            @if ($enquiry['company'] ?? null)
+                            {{ $display($enquiry['email'] ?? null, 'No email') }}
+                            @if (filled($enquiry['company'] ?? null))
                                 · {{ $enquiry['company'] }}
                             @endif
                         </p>
@@ -63,7 +72,6 @@ $adminUsers = User::query()->where('is_admin', true)->orderBy('name')->get(['id'
                     @endif
                 </div>
 
-                {{-- Quick actions --}}
                 <div class="vestra-enquiries-detail__quick-actions">
                     @if ($enquiry['status'] !== ContactStatus::RESOLVED)
                         <button
@@ -82,49 +90,66 @@ $adminUsers = User::query()->where('is_admin', true)->orderBy('name')->get(['id'
                     </button>
                 </div>
 
-                {{-- Contact info --}}
                 <div class="vestra-enquiries-detail__section">
-                    <h3 class="vestra-enquiries-detail__section-title">Contact Information</h3>
+                    <h3 class="vestra-enquiries-detail__section-title">Customer</h3>
                     <dl class="vestra-enquiries-detail__definition-list">
-                        @if ($enquiry['phone'] ?? null)
-                            <div class="vestra-enquiries-detail__definition-row">
-                                <dt>Phone</dt>
-                                <dd>{{ $enquiry['phone'] }}</dd>
-                            </div>
-                        @endif
-                        @if ($enquiry['source'] ?? null)
-                            <div class="vestra-enquiries-detail__definition-row">
-                                <dt>Source</dt>
-                                <dd>{{ ucfirst($enquiry['source']) }}</dd>
-                            </div>
-                        @endif
                         <div class="vestra-enquiries-detail__definition-row">
-                            <dt>Received</dt>
-                            <dd>{{ $enquiry['created_at']?->format('M j, Y g:i A') ?? '—' }}</dd>
+                            <dt>Customer Name</dt>
+                            <dd>{{ $display($enquiry['name'] ?? null) }}</dd>
                         </div>
                         <div class="vestra-enquiries-detail__definition-row">
-                            <dt>Read</dt>
-                            <dd>{{ $enquiry['read_at'] ? $enquiry['read_at']->format('M j, Y g:i A') : 'Not yet' }}</dd>
+                            <dt>Company</dt>
+                            <dd>{{ $display($enquiry['company'] ?? null) }}</dd>
                         </div>
-                        @if ($enquiry['replied_at'] ?? null)
-                            <div class="vestra-enquiries-detail__definition-row">
-                                <dt>Replied</dt>
-                                <dd>{{ $enquiry['replied_at']->format('M j, Y g:i A') }}</dd>
-                            </div>
-                        @endif
+                        <div class="vestra-enquiries-detail__definition-row">
+                            <dt>Email</dt>
+                            <dd>{{ $display($enquiry['email'] ?? null) }}</dd>
+                        </div>
+                        <div class="vestra-enquiries-detail__definition-row">
+                            <dt>Telephone</dt>
+                            <dd>{{ $display($enquiry['phone'] ?? null) }}</dd>
+                        </div>
                     </dl>
                 </div>
 
-                {{-- Subject & Message --}}
                 <div class="vestra-enquiries-detail__section">
-                    <h3 class="vestra-enquiries-detail__section-title">{{ $enquiry['subject'] ?: 'Message' }}</h3>
-                    <p class="vestra-enquiries-detail__text">{{ $enquiry['message'] ?: 'No message content.' }}</p>
+                    <h3 class="vestra-enquiries-detail__section-title">Enquiry</h3>
+                    <dl class="vestra-enquiries-detail__definition-list">
+                        <div class="vestra-enquiries-detail__definition-row">
+                            <dt>Subject</dt>
+                            <dd>{{ $display($enquiry['subject'] ?? null) }}</dd>
+                        </div>
+                        <div class="vestra-enquiries-detail__definition-row">
+                            <dt>Category</dt>
+                            <dd>{{ $display($enquiry['enquiry_type_label'] ?? null) }}</dd>
+                        </div>
+                        <div class="vestra-enquiries-detail__definition-row">
+                            <dt>Priority</dt>
+                            <dd>{{ $display($enquiry['priority_label'] ?? null) }}</dd>
+                        </div>
+                        <div class="vestra-enquiries-detail__definition-row">
+                            <dt>Current Status</dt>
+                            <dd>{{ $display($enquiry['status_label'] ?? null) }}</dd>
+                        </div>
+                        <div class="vestra-enquiries-detail__definition-row">
+                            <dt>Submitted Date</dt>
+                            <dd>{{ $enquiry['created_at']?->format('M j, Y g:i A') ?? 'Not provided' }}</dd>
+                        </div>
+                        <div class="vestra-enquiries-detail__definition-row">
+                            <dt>Source</dt>
+                            <dd>{{ $display(isset($enquiry['source']) && $enquiry['source'] ? ucfirst($enquiry['source']) : null) }}</dd>
+                        </div>
+                    </dl>
                 </div>
 
-                {{-- Attachments --}}
-                @if (! empty($enquiry['attachments']))
-                    <div class="vestra-enquiries-detail__section">
-                        <h3 class="vestra-enquiries-detail__section-title">Attachments</h3>
+                <div class="vestra-enquiries-detail__section">
+                    <h3 class="vestra-enquiries-detail__section-title">Message</h3>
+                    <p class="vestra-enquiries-detail__text">{{ $display($enquiry['message'] ?? null) }}</p>
+                </div>
+
+                <div class="vestra-enquiries-detail__section">
+                    <h3 class="vestra-enquiries-detail__section-title">Attachments</h3>
+                    @if (! empty($enquiry['attachments']))
                         <ul class="vestra-enquiries-detail__attachment-list">
                             @foreach ($enquiry['attachments'] as $attachment)
                                 <li>
@@ -133,23 +158,24 @@ $adminUsers = User::query()->where('is_admin', true)->orderBy('name')->get(['id'
                                             <x-filament::icon icon="heroicon-o-paper-clip" class="h-3.5 w-3.5" />
                                             {{ $attachment['name'] ?? 'Attachment' }}
                                         </a>
-                                    @elseif (is_string($attachment))
-                                        <span>{{ $attachment }}</span>
+                                    @else
+                                        <span>{{ is_array($attachment) ? ($attachment['name'] ?? 'Attachment') : (is_string($attachment) ? $attachment : 'Attachment') }}</span>
                                     @endif
                                 </li>
                             @endforeach
                         </ul>
-                    </div>
-                @endif
+                    @else
+                        <p class="vestra-enquiries-detail__text">Not provided</p>
+                    @endif
+                </div>
 
-                {{-- Reply --}}
                 <div class="vestra-enquiries-detail__section">
                     <h3 class="vestra-enquiries-detail__section-title">Reply</h3>
                     @if ($enquiry['replied_at'] ?? null)
-                        <p class="vestra-enquiries-detail__text vestra-enquiries-detail__text--muted">Reply already sent on {{ $enquiry['replied_at']->format('M j, Y') }}.</p>
-                        @if ($enquiry['reply'] ?? null)
-                            <blockquote class="vestra-enquiries-detail__reply-quote">{{ $enquiry['reply'] }}</blockquote>
-                        @endif
+                        <p class="vestra-enquiries-detail__text vestra-enquiries-detail__text--muted">
+                            Reply sent on {{ $enquiry['replied_at']->format('M j, Y g:i A') }}.
+                        </p>
+                        <blockquote class="vestra-enquiries-detail__reply-quote">{{ $display($enquiry['reply'] ?? null) }}</blockquote>
                     @else
                         <textarea
                             wire:model.live="replyDraft"
@@ -159,11 +185,7 @@ $adminUsers = User::query()->where('is_admin', true)->orderBy('name')->get(['id'
                             aria-label="Reply draft"
                         ></textarea>
                         <div class="vestra-enquiries-detail__reply-actions">
-                            <button
-                                type="button"
-                                wire:click="saveReply"
-                                class="vestra-button vestra-button--secondary"
-                            >
+                            <button type="button" wire:click="saveReply" class="vestra-button vestra-button--secondary">
                                 Save Draft
                             </button>
                             <button
@@ -179,70 +201,21 @@ $adminUsers = User::query()->where('is_admin', true)->orderBy('name')->get(['id'
                     @endif
                 </div>
 
-                {{-- Assign --}}
-                <div class="vestra-enquiries-detail__section">
-                    <h3 class="vestra-enquiries-detail__section-title">Assigned Administrator</h3>
-                    @if ($enquiry['assignee'] ?? null)
-                        <div class="vestra-enquiries-detail__assignee-info">
-                            <span class="vestra-enquiries-detail__assignee-avatar">{{ $enquiry['assignee']['initials'] }}</span>
-                            <div>
-                                <p class="vestra-enquiries-detail__assignee-name">{{ $enquiry['assignee']['name'] }}</p>
-                                <p class="vestra-enquiries-detail__assignee-email">{{ $enquiry['assignee']['email'] }}</p>
-                            </div>
-                        </div>
-                    @else
-                        <p class="vestra-enquiries-detail__text">No administrator assigned.</p>
-                    @endif
-
-                    <div class="vestra-enquiries-detail__assign-form" x-data="{ open: false }">
-                        <button type="button" @click="open = !open" class="vestra-button vestra-button--secondary vestra-enquiries-detail__assign-btn">
-                            <x-filament::icon icon="heroicon-o-user-plus" class="h-4 w-4" />
-                            <span>Reassign</span>
-                        </button>
-                        <div x-show="open" x-transition class="vestra-enquiries-detail__assign-dropdown">
-                            @foreach ($adminUsers as $admin)
-                                <button
-                                    type="button"
-                                    wire:click="assign({{ $enquiry['id'] }}, {{ $admin->id }})"
-                                    @click="open = false"
-                                    class="vestra-enquiries-detail__assign-option"
-                                >
-                                    {{ $admin->name }}
-                                </button>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Status update --}}
                 <div class="vestra-enquiries-detail__section">
                     <h3 class="vestra-enquiries-detail__section-title">Update Status</h3>
                     <div class="vestra-enquiries-detail__status-buttons">
-                        <button
-                            type="button"
-                            wire:click="updateStatus({{ $enquiry['id'] }}, 'new')"
-                            class="vestra-button vestra-button--secondary"
-                        >
+                        <button type="button" wire:click="updateStatus({{ $enquiry['id'] }}, 'new')" class="vestra-button vestra-button--secondary">
                             New
                         </button>
-                        <button
-                            type="button"
-                            wire:click="updateStatus({{ $enquiry['id'] }}, 'in_progress')"
-                            class="vestra-button vestra-button--secondary"
-                        >
+                        <button type="button" wire:click="updateStatus({{ $enquiry['id'] }}, 'in_progress')" class="vestra-button vestra-button--secondary">
                             In Progress
                         </button>
-                        <button
-                            type="button"
-                            wire:click="updateStatus({{ $enquiry['id'] }}, 'resolved')"
-                            class="vestra-button vestra-button--secondary"
-                        >
+                        <button type="button" wire:click="updateStatus({{ $enquiry['id'] }}, 'resolved')" class="vestra-button vestra-button--secondary">
                             Resolved
                         </button>
                     </div>
                 </div>
 
-                {{-- Internal Notes --}}
                 <div class="vestra-enquiries-detail__section">
                     <h3 class="vestra-enquiries-detail__section-title">Internal Notes</h3>
                     <div x-data="{ notes: @js($enquiry['internal_notes'] ?? '') }">
@@ -261,6 +234,22 @@ $adminUsers = User::query()->where('is_admin', true)->orderBy('name')->get(['id'
                             Save Notes
                         </button>
                     </div>
+                </div>
+
+                <div class="vestra-enquiries-detail__section">
+                    <h3 class="vestra-enquiries-detail__section-title">Activity</h3>
+                    @if (! empty($enquiry['activity']))
+                        <ul class="vestra-enquiries-detail__attachment-list">
+                            @foreach ($enquiry['activity'] as $event)
+                                <li>
+                                    <strong>{{ $event['label'] }}</strong>
+                                    <span class="vestra-enquiries-detail__text--muted"> — {{ $event['at_label'] ?? 'Not provided' }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="vestra-enquiries-detail__text">Not provided</p>
+                    @endif
                 </div>
             </div>
         @else

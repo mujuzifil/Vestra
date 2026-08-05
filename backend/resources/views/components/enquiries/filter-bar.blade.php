@@ -1,23 +1,19 @@
 @props([
-    'statusOptions'     => [],
+    'statusOptions' => [],
     'enquiryTypeOptions' => [],
-    'priorityOptions'   => [],
-    'sourceOptions'     => [],
-    'assigneeOptions'   => [],
+    'priorityOptions' => [],
+    'sourceOptions' => [],
 ])
 
 @php
-$statusOptions      = is_array($statusOptions) ? $statusOptions : [];
+$statusOptions = is_array($statusOptions) ? $statusOptions : [];
 $enquiryTypeOptions = is_array($enquiryTypeOptions) ? $enquiryTypeOptions : [];
-$priorityOptions    = is_array($priorityOptions) ? $priorityOptions : [];
-$sourceOptions      = is_array($sourceOptions) ? $sourceOptions : [];
-$assigneeOptions    = is_array($assigneeOptions) ? $assigneeOptions : [];
+$priorityOptions = is_array($priorityOptions) ? $priorityOptions : [];
+$sourceOptions = is_array($sourceOptions) ? $sourceOptions : [];
 @endphp
 
 <div class="vestra-enquiries__filter-bar">
     <div class="vestra-enquiries__filters">
-
-        {{-- Status --}}
         <div class="vestra-enquiries__filter" x-data="{ open: false }" @click.outside="open = false">
             <button type="button" @click="open = !open" class="vestra-enquiries__filter-trigger" aria-haspopup="listbox">
                 <span>Status</span>
@@ -38,7 +34,6 @@ $assigneeOptions    = is_array($assigneeOptions) ? $assigneeOptions : [];
             </div>
         </div>
 
-        {{-- Enquiry Type --}}
         <div class="vestra-enquiries__filter" x-data="{ open: false }" @click.outside="open = false">
             <button type="button" @click="open = !open" class="vestra-enquiries__filter-trigger" aria-haspopup="listbox">
                 <span>Type</span>
@@ -59,7 +54,6 @@ $assigneeOptions    = is_array($assigneeOptions) ? $assigneeOptions : [];
             </div>
         </div>
 
-        {{-- Priority --}}
         <div class="vestra-enquiries__filter" x-data="{ open: false }" @click.outside="open = false">
             <button type="button" @click="open = !open" class="vestra-enquiries__filter-trigger" aria-haspopup="listbox">
                 <span>Priority</span>
@@ -80,7 +74,6 @@ $assigneeOptions    = is_array($assigneeOptions) ? $assigneeOptions : [];
             </div>
         </div>
 
-        {{-- Source --}}
         @if (! empty($sourceOptions))
             <div class="vestra-enquiries__filter" x-data="{ open: false }" @click.outside="open = false">
                 <button type="button" @click="open = !open" class="vestra-enquiries__filter-trigger" aria-haspopup="listbox">
@@ -103,39 +96,6 @@ $assigneeOptions    = is_array($assigneeOptions) ? $assigneeOptions : [];
             </div>
         @endif
 
-        {{-- Assigned To --}}
-        @if (! empty($assigneeOptions))
-            <div class="vestra-enquiries__filter" x-data="{ open: false }" @click.outside="open = false">
-                <button type="button" @click="open = !open" class="vestra-enquiries__filter-trigger" aria-haspopup="listbox">
-                    <span>Assigned To</span>
-                    <x-filament::icon icon="heroicon-m-chevron-down" class="h-4 w-4" x-bind:class="{ 'rotate-180': open }" />
-                </button>
-                <div x-show="open" x-transition class="vestra-enquiries__filter-dropdown vestra-enquiries__filter-dropdown--wide" role="listbox">
-                    <label class="vestra-enquiries__filter-option">
-                        <input
-                            type="radio"
-                            wire:model.live="assignedToFilter"
-                            value=""
-                            class="vestra-enquiries__filter-radio"
-                        />
-                        <span class="vestra-enquiries__filter-option-label">All administrators</span>
-                    </label>
-                    @foreach ($assigneeOptions as $assignee)
-                        <label class="vestra-enquiries__filter-option">
-                            <input
-                                type="radio"
-                                wire:model.live="assignedToFilter"
-                                value="{{ $assignee['id'] }}"
-                                class="vestra-enquiries__filter-radio"
-                            />
-                            <span class="vestra-enquiries__filter-option-label">{{ $assignee['name'] }}</span>
-                        </label>
-                    @endforeach
-                </div>
-            </div>
-        @endif
-
-        {{-- Date range --}}
         <div class="vestra-enquiries__filter vestra-enquiries__filter--date" x-data="{ open: false }" @click.outside="open = false">
             <button type="button" @click="open = !open" class="vestra-enquiries__filter-trigger">
                 <x-filament::icon icon="heroicon-o-calendar" class="h-4 w-4" />
