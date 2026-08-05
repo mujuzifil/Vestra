@@ -25,11 +25,7 @@ $isSelected = in_array($product->id, $selectedIds, true);
     </td>
 
     <td class="vestra-products__td vestra-products__td--product">
-        <button
-            type="button"
-            wire:click="openDetailDrawer({{ $product->id }})"
-            class="vestra-products__product-link"
-        >
+        <button type="button" wire:click="openDetailDrawer({{ $product->id }})" class="vestra-products__product-link">
             <img
                 src="{{ $imageUrl }}"
                 alt=""
@@ -56,9 +52,6 @@ $isSelected = in_array($product->id, $selectedIds, true);
 
     <td class="vestra-products__td vestra-products__td--price">
         <span class="vestra-products__price">{{ number_format((float) $product->price, 2) }}</span>
-        @if ($product->distributor_price !== null)
-            <span class="vestra-products__row-meta">Dist. {{ number_format((float) $product->distributor_price, 2) }}</span>
-        @endif
     </td>
 
     <td class="vestra-products__td vestra-products__td--stock">
@@ -87,19 +80,46 @@ $isSelected = in_array($product->id, $selectedIds, true);
     </td>
 
     <td class="vestra-products__td vestra-products__td--actions">
-        <div class="vestra-products__actions" x-data="{ open: false }" @click.outside="open = false">
-            <button type="button" @click="open = !open" class="vestra-products__action-trigger" aria-label="Product actions" aria-haspopup="true">
+        <div
+            class="vestra-products__actions"
+            x-data="{
+                open: false,
+                menuStyle: {},
+                toggle() {
+                    this.open = !this.open;
+                    if (!this.open) { return; }
+                    const rect = this.$refs.trigger.getBoundingClientRect();
+                    this.menuStyle = {
+                        position: 'fixed',
+                        top: (rect.bottom + 4) + 'px',
+                        right: (window.innerWidth - rect.right) + 'px',
+                        left: 'auto',
+                        zIndex: 80,
+                    };
+                },
+            }"
+            @click.outside="open = false"
+            @keydown.escape.window="open = false"
+        >
+            <button
+                type="button"
+                x-ref="trigger"
+                @click="toggle()"
+                class="vestra-products__action-trigger"
+                aria-label="Product actions"
+                aria-haspopup="true"
+                :aria-expanded="open.toString()"
+            >
                 <x-filament::icon icon="heroicon-m-ellipsis-vertical" class="h-5 w-5" />
             </button>
-            <div x-show="open" x-transition class="vestra-products__action-menu" role="menu">
-                <button
-                    type="button"
-                    wire:click="openDetailDrawer({{ $product->id }})"
-                    class="vestra-products__action-item"
-                    role="menuitem"
-                >
+            <div x-show="open" x-cloak x-transition :style="menuStyle" class="vestra-products__action-menu" role="menu">
+                <button type="button" wire:click="openDetailDrawer({{ $product->id }})" class="vestra-products__action-item" role="menuitem">
                     <x-filament::icon icon="heroicon-o-eye" class="h-4 w-4" />
                     <span>View Details</span>
+                </button>
+                <button type="button" wire:click="openEditModal({{ $product->id }})" class="vestra-products__action-item" role="menuitem">
+                    <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
+                    <span>Edit Product</span>
                 </button>
             </div>
         </div>
