@@ -10,6 +10,9 @@ export const siteConfig = {
   twitterHandle: "@vestracare",
 };
 
+/** Cache-bust query so browsers pick up Stage 24.12A favicon assets after deploy. */
+export const FAVICON_VERSION = "2412a";
+
 export function createMetadata({
   title,
   description,
@@ -24,6 +27,7 @@ export function createMetadata({
   image?: string;
 }): Metadata {
   const fullTitle = title === siteConfig.name ? title : `${title} | ${siteConfig.name}`;
+  const v = FAVICON_VERSION;
 
   return {
     title: fullTitle,
@@ -33,6 +37,17 @@ export function createMetadata({
     alternates: {
       canonical: pathname,
     },
+    icons: {
+      icon: [
+        { url: `/favicon.ico?v=${v}`, sizes: "any" },
+        { url: `/favicon-16x16.png?v=${v}`, sizes: "16x16", type: "image/png" },
+        { url: `/favicon-32x32.png?v=${v}`, sizes: "32x32", type: "image/png" },
+        { url: `/icon-192x192.png?v=${v}`, sizes: "192x192", type: "image/png" },
+        { url: `/icon-512x512.png?v=${v}`, sizes: "512x512", type: "image/png" },
+      ],
+      apple: [{ url: `/apple-touch-icon.png?v=${v}`, sizes: "180x180", type: "image/png" }],
+    },
+    manifest: `/manifest.json?v=${v}`,
     openGraph: {
       title: fullTitle,
       description,

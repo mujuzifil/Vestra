@@ -259,19 +259,19 @@ export function ContactPageClient() {
                     </div>
                   </div>
                 </div>
-                <div className="flex-1 relative bg-neutral-100">
+                <div className="flex-1 relative bg-neutral-100 min-h-[280px] sm:min-h-[360px]">
                   <iframe
                     title="VESTRA® location on Google Maps"
-                    src="https://maps.google.com/maps?q=0.3473662,32.575882&z=16&output=embed"
+                    src="https://www.google.com/maps?q=0.3473662,32.575882&hl=en&z=16&output=embed"
                     loading="lazy"
-                    className="absolute inset-0 w-full h-full border-0"
-                    allowFullScreen
                     referrerPolicy="no-referrer-when-downgrade"
+                    allowFullScreen
+                    className="absolute inset-0 w-full h-full border-0"
                   />
                 </div>
                 <div className="p-4 border-t border-default bg-white">
                   <a
-                    href="https://maps.app.goo.gl/MvaU1MNxJCGreTcB9?g_st=aw"
+                    href="https://www.google.com/maps/dir/?api=1&destination=0.3473662,32.575882"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm font-semibold text-secondary-600 hover:text-secondary-700 transition-colors-base"

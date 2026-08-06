@@ -11,17 +11,48 @@ import { useChangePassword } from "@/hooks/use-auth-mutations";
 import { useProfile } from "@/hooks/use-profile";
 import { toastError, toastSuccess } from "@/lib/toast-utils";
 
-function formatDateTime(value: string | null | undefined): string {
-  if (!value) return "Not available";
+function formatLastLogin(value: string | null | undefined): string {
+  if (!value) return "No successful login recorded yet";
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Not available";
-  return date.toLocaleString("en-UG", {
-    year: "numeric",
+  if (Number.isNaN(date.getTime())) return "No successful login recorded yet";
+
+  const datePart = new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
     month: "short",
-    day: "numeric",
+    year: "numeric",
+    timeZone: "Africa/Kampala",
+  }).format(date);
+
+  const timePart = new Intl.DateTimeFormat("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
-  });
+    hour12: false,
+    timeZone: "Africa/Kampala",
+  }).format(date);
+
+  return `${datePart} • ${timePart} EAT`;
+}
+
+function formatPasswordChanged(value: string | null | undefined): string {
+  if (!value) return "Using original account password";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Using original account password";
+
+  const datePart = new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "Africa/Kampala",
+  }).format(date);
+
+  const timePart = new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "Africa/Kampala",
+  }).format(date);
+
+  return `${datePart} • ${timePart} EAT`;
 }
 
 function passwordStrength(password: string): { score: number; label: string; hints: string[] } {
@@ -129,7 +160,7 @@ export function SecurityPageClient() {
                   <Clock className="w-5 h-5 text-secondary-600 mt-0.5" />
                   <div>
                     <p className="font-semibold text-text-heading">Last Login</p>
-                    <p className="text-sm text-muted">{formatDateTime(source.last_login_at)}</p>
+                    <p className="text-sm text-muted">{formatLastLogin(source.last_login_at)}</p>
                   </div>
                 </div>
 
@@ -137,7 +168,7 @@ export function SecurityPageClient() {
                   <Lock className="w-5 h-5 text-secondary-600 mt-0.5" />
                   <div>
                     <p className="font-semibold text-text-heading">Last Password Change</p>
-                    <p className="text-sm text-muted">{formatDateTime(source.password_changed_at)}</p>
+                    <p className="text-sm text-muted">{formatPasswordChanged(source.password_changed_at)}</p>
                   </div>
                 </div>
               </div>
