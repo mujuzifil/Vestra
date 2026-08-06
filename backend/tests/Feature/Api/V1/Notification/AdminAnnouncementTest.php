@@ -24,7 +24,7 @@ class AdminAnnouncementTest extends TestCase
 
     private function admin(): User
     {
-        return User::where('email', 'admin@vestra.com')->first();
+        return $this->bootstrapAdmin();
     }
 
     public function test_admin_can_create_announcement(): void

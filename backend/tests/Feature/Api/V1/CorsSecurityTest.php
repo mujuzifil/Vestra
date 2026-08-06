@@ -18,7 +18,9 @@ class CorsSecurityTest extends TestCase
 
     public function test_api_responses_include_cors_headers(): void
     {
-        $response = $this->getJson('/api/v1/products');
+        $response = $this->getJson('/api/v1/products', [
+            'Origin' => 'http://localhost',
+        ]);
 
         $response->assertOk();
         $response->assertHeader('Access-Control-Allow-Origin');
@@ -27,7 +29,7 @@ class CorsSecurityTest extends TestCase
     public function test_preflight_request_returns_cors_headers(): void
     {
         $response = $this->call('OPTIONS', '/api/v1/products', [], [], [], [
-            'HTTP_ORIGIN' => 'https://vestra.com',
+            'HTTP_ORIGIN' => 'http://localhost',
             'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'GET',
         ]);
 

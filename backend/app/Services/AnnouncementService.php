@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\AnnouncementAudience;
+use App\Enums\AnnouncementPriority;
 use App\Enums\NotificationChannel;
 use App\Models\Announcement;
 use App\Models\User;
@@ -25,7 +26,7 @@ class AnnouncementService
             'title' => $data['title'],
             'body' => $data['body'],
             'target_audience' => $data['target_audience'] ?? $data['audience'] ?? AnnouncementAudience::EVERYONE->value,
-            'priority' => $data['priority'] ?? 'medium',
+            'priority' => $data['priority'] ?? AnnouncementPriority::NORMAL->value,
             'start_at' => $data['start_at'] ?? $data['starts_at'] ?? now(),
             'end_at' => $data['end_at'] ?? $data['ends_at'] ?? null,
             'sent_at' => $data['sent_at'] ?? ($data['is_published'] ?? false ? now() : null),

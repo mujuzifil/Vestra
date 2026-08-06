@@ -175,11 +175,11 @@ class ForecastingService
             $monthly = User::query()
                 ->where('is_admin', false)
                 ->whereBetween('created_at', [$start, $end])
-                ->select(DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"), DB::raw('COUNT(*) as count'))
-                ->groupBy('month')
-                ->orderBy('month')
-                ->pluck('count', 'month')
-                ->toArray();
+                ->get(['created_at'])
+                ->groupBy(fn (User $user) => $user->created_at->format('Y-m'))
+                ->map->count()
+                ->sortKeys()
+                ->all();
 
             $values = array_values($monthly);
             $labels = array_keys($monthly);
@@ -212,11 +212,11 @@ class ForecastingService
 
             $monthly = DistributorRequest::query()
                 ->whereBetween('created_at', [$start, $end])
-                ->select(DB::raw("DATE_FORMAT(created_at, '%Y-%m') as month"), DB::raw('COUNT(*) as count'))
-                ->groupBy('month')
-                ->orderBy('month')
-                ->pluck('count', 'month')
-                ->toArray();
+                ->get(['created_at'])
+                ->groupBy(fn (DistributorRequest $request) => $request->created_at->format('Y-m'))
+                ->map->count()
+                ->sortKeys()
+                ->all();
 
             $values = array_values($monthly);
             $labels = array_keys($monthly);

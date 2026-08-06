@@ -22,7 +22,7 @@ class SupplierController extends Controller
         }
 
         return $this->successResponse(
-            SupplierResource::collection($query->paginate($request->input('per_page', 15)))
+            SupplierResource::collection($query->paginate($request->input('per_page', 15)))->response()->getData(true)
         );
     }
 

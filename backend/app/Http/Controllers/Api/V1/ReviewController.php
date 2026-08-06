@@ -145,7 +145,7 @@ class ReviewController extends Controller
 
     public function helpful(Request $request, Review $review): JsonResponse
     {
-        $this->authorize('vote', ReviewHelpfulVote::class);
+        $this->authorize('vote', $review);
 
         $data = $request->validate([
             'is_helpful' => 'required|boolean',

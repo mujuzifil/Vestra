@@ -30,6 +30,18 @@ Status: Open / Fixed / Accepted / Won't Fix
 | D-019 | Medium | Notifications | `EmailNotificationService` stored `$template->key` (undefined) in mailable metadata instead of `event_key` | Template email dispatch | Fixed |
 | D-020 | Medium | Notifications | `DispatchNotificationListener` referenced 12+ template keys absent from `NotificationTemplateSeeder` (fallback generic copy in prod) | `NotificationTemplateParityTest` | Fixed |
 | D-021 | Low | Notifications | `security.password_reset_requested` template missing `reset_url` variable wiring | Listener + seeder parity scan | Fixed |
+| D-022 | Medium | Auth / Tests | `UserFactory` omitted `status`, leaving empty status so Filament `canAccessPanel()` denied admin export HTTP routes (403) | Admin CSV export Feature tests | Fixed |
+| D-023 | Medium | Frontend / Build | `sitemap.ts` product fetch hung indefinitely when API unreachable, failing Next.js production build | `npm run build` without local API | Fixed |
+| D-024 | High | Distributor / Checkout | `DistributorOrderService` omitted `user_id` on order create — `user_id` was not in `Order::$fillable` | Distributor credit checkout POST `/api/v1/checkout` | Fixed |
+| D-025 | High | Pricing | `DistributorPriceService` volume-tier closure referenced `$quantity` without `use ($quantity)` → 500 on quotation/checkout | POST `/api/v1/distributor/quotes` | Fixed |
+| D-026 | Medium | Announcements | `AnnouncementService` defaulted priority to invalid enum value `medium`; missing `Announcement::isActive()` | POST `/api/v1/admin/announcements` | Fixed |
+| D-027 | Medium | Distributor Portal | `DistributorBranchPolicy::delete` always returned false — distributors could not remove own branches | DELETE `/api/v1/distributor/branches/{id}` | Fixed |
+| D-028 | Medium | Reviews API | `ReviewController::helpful` authorized against `ReviewHelpfulVote::class` (no policy) instead of `Review` | POST `/api/v1/reviews/{id}/helpful` | Fixed |
+| D-029 | Medium | API Routes | `PUT /notifications/preferences` shadowed by `PUT /notifications/{id}`; `GET /admin/credit-accounts/summary` shadowed by resource `{credit_account}` | Notification preferences 404; credit summary 404 | Fixed |
+| D-030 | Medium | Reports | `ForecastingService` used MySQL `DATE_FORMAT` — 500 on SQLite/tests for customer/distributor growth forecasts | GET `/api/v1/reports/forecast` | Fixed |
+| D-031 | Low | Admin API | Paginated admin index endpoints returned flat `data` arrays instead of `{ data, meta, links }` shape | Admin warehouses/suppliers/PO/templates list tests | Fixed |
+| D-032 | Low | Tests / Factories | Missing `WishlistFactory` and `RecentlyViewedProductFactory` | Wishlist/recently-viewed Feature tests | Fixed |
+| D-033 | Low | Preferences API | Empty `notification_preferences` encoded as `[]` instead of `{}`; `email` shorthand not mapped to `email_notifications` | GET/PUT `/api/v1/auth/preferences` | Fixed |
 
 ## Severity policy (ship gate)
 

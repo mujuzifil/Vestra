@@ -399,6 +399,7 @@ class CompaniesPageTest extends TestCase
 
         QuoteRequest::factory()->create([
             'user_id' => $profile->user_id,
+            'company_profile_id' => $profile->id,
             'status' => 'pending',
         ]);
 

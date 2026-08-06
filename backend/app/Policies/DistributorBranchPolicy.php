@@ -52,7 +52,12 @@ class DistributorBranchPolicy
 
     public function delete(User $user, DistributorBranch $branch): bool
     {
-        return false;
+        if ($user->isAdmin() || $this->owns($user, $branch)) {
+            return true;
+        }
+
+        return $this->allowsPermission($user, 'territories.delete')
+            || $this->allowsPermission($user, 'coverage.delete');
     }
 
     public function export(User $user): bool

@@ -5,6 +5,7 @@ namespace Tests;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\RateLimiter;
+use App\Models\User;
 use Spatie\Permission\PermissionRegistrar;
 
 abstract class TestCase extends BaseTestCase
@@ -25,6 +26,7 @@ abstract class TestCase extends BaseTestCase
         ]);
         $app['config']->set('session.driver', 'array');
         $app['config']->set('cache.default', 'array');
+        $app['config']->set('cors.allowed_origins', ['*']);
 
         // Ensure the test environment is explicitly recognised as 'testing' so
         // seeders, service providers, and middleware use test-safe behaviour
@@ -69,6 +71,20 @@ abstract class TestCase extends BaseTestCase
         // changed it (e.g. ProductionBootstrapPasswordTest sets it to production).
         $this->app['env'] = 'testing';
         $this->app['config']->set('app.env', 'testing');
+    }
+
+    protected function bootstrapAdmin(): User
+    {
+        $admin = User::query()->where('email', 'admin@vestra.com')->firstOrFail();
+        $admin->forceFill([
+            'is_admin' => true,
+            'status' => 'active',
+            'force_password_change_at' => null,
+        ])->saveQuietly();
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        return $admin->fresh();
     }
 
     /**

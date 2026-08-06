@@ -12,7 +12,7 @@ class CreditAccountResource extends JsonResource
         return [
             'id' => $this->id,
             'distributor' => new DistributorResource($this->whenLoaded('distributor')),
-            'credit_limit' => $this->limit,
+            'credit_limit' => number_format((float) $this->limit, 2, '.', ''),
             'outstanding_balance' => $this->balance,
             'available_credit' => $this->availableCredit(),
             'status' => $this->status,

@@ -22,7 +22,7 @@ class CreditAccountController extends Controller
         }
 
         return $this->successResponse(
-            CreditAccountResource::collection($query->paginate($request->input('per_page', 15)))
+            CreditAccountResource::collection($query->paginate($request->input('per_page', 15)))->response()->getData(true)
         );
     }
 
@@ -36,9 +36,9 @@ class CreditAccountController extends Controller
     public function summary(): JsonResponse
     {
         return $this->successResponse([
-            'total_credit_limit' => CreditAccount::sum('limit') ?? 0,
-            'total_outstanding' => CreditAccount::sum('balance') ?? 0,
-            'total_available' => max(0, (CreditAccount::sum('limit') ?? 0) - (CreditAccount::sum('balance') ?? 0) - (CreditAccount::sum('authorized_amount') ?? 0)),
+            'total_credit_limit' => (float) (CreditAccount::sum('limit') ?? 0),
+            'total_outstanding' => (float) (CreditAccount::sum('balance') ?? 0),
+            'total_available' => (float) max(0, (CreditAccount::sum('limit') ?? 0) - (CreditAccount::sum('balance') ?? 0) - (CreditAccount::sum('authorized_amount') ?? 0)),
             'account_count' => CreditAccount::count(),
         ]);
     }

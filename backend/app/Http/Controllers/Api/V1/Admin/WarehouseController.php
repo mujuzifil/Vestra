@@ -22,7 +22,7 @@ class WarehouseController extends Controller
         }
 
         return $this->successResponse(
-            WarehouseResource::collection($query->paginate($request->input('per_page', 15)))
+            WarehouseResource::collection($query->paginate($request->input('per_page', 15)))->response()->getData(true)
         );
     }
 

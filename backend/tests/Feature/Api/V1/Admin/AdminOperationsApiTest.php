@@ -27,7 +27,7 @@ class AdminOperationsApiTest extends TestCase
 
     private function admin(): User
     {
-        return User::where('email', 'admin@vestra.com')->first();
+        return $this->bootstrapAdmin();
     }
 
     public function test_admin_can_list_warehouses(): void
@@ -94,9 +94,9 @@ class AdminOperationsApiTest extends TestCase
 
         $this->getJson('/api/v1/admin/credit-accounts/summary')
             ->assertOk()
-            ->assertJsonPath('data.total_credit_limit', 1000000.0)
-            ->assertJsonPath('data.total_outstanding', 250000.0)
-            ->assertJsonPath('data.total_available', 650000.0);
+            ->assertJsonPath('data.total_credit_limit', 1000000)
+            ->assertJsonPath('data.total_outstanding', 250000)
+            ->assertJsonPath('data.total_available', 650000);
     }
 
     public function test_customer_cannot_access_admin_operations_endpoints(): void

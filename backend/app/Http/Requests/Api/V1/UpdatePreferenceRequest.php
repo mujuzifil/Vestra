@@ -15,6 +15,7 @@ class UpdatePreferenceRequest extends FormRequest
     {
         return [
             'notification_preferences' => ['sometimes', 'array'],
+            'notification_preferences.email' => ['sometimes', 'boolean'],
             'notification_preferences.email_notifications' => ['sometimes', 'boolean'],
             'notification_preferences.sms_notifications' => ['sometimes', 'boolean'],
             'notification_preferences.push_notifications' => ['sometimes', 'boolean'],

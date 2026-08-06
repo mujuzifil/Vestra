@@ -23,7 +23,7 @@ class AdminNotificationTemplateTest extends TestCase
 
     private function admin(): User
     {
-        return User::where('email', 'admin@vestra.com')->first();
+        return $this->bootstrapAdmin();
     }
 
     public function test_admin_can_list_templates(): void

@@ -68,6 +68,23 @@ class Announcement extends Model
         });
     }
 
+    public function isActive(): bool
+    {
+        if ($this->sent_at === null) {
+            return false;
+        }
+
+        if ($this->start_at !== null && $this->start_at->isFuture()) {
+            return false;
+        }
+
+        if ($this->end_at !== null && $this->end_at->isPast()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function isVisibleTo(User $user): bool
     {
         if ($this->target_audience === AnnouncementAudience::EVERYONE) {

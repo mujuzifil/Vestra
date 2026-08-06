@@ -19,8 +19,8 @@ class PreferenceController extends Controller
     {
         $preference = $this->getOrCreatePreference($request->user());
 
-        return $this->successResponse(
-            new PreferenceResource($preference)
+        return $this->preferencesResponse(
+            $this->formatPreferencePayload($preference)
         );
     }
 
@@ -30,6 +30,11 @@ class PreferenceController extends Controller
         $preference = $this->getOrCreatePreference($user);
 
         $validated = $request->validated();
+
+        if (isset($validated['notification_preferences']['email'])) {
+            $validated['notification_preferences']['email_notifications'] = $validated['notification_preferences']['email'];
+            unset($validated['notification_preferences']['email']);
+        }
 
         if (isset($validated['notification_preferences'])) {
             $preference->notification_preferences = array_merge(
@@ -61,10 +66,40 @@ class PreferenceController extends Controller
             $request->userAgent()
         );
 
-        return $this->successResponse(
-            new PreferenceResource($preference->fresh()),
+        return $this->preferencesResponse(
+            $this->formatPreferencePayload($preference->fresh()),
             'Preferences updated successfully.'
         );
+    }
+
+    private function preferencesResponse(array $payload, string $message = 'Request completed successfully.'): JsonResponse
+    {
+        foreach (['notification_preferences', 'account_preferences'] as $key) {
+            if ($payload[$key] === null || $payload[$key] === []) {
+                $payload[$key] = new \stdClass();
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $payload,
+            'message' => $message,
+        ], $message === 'Request completed successfully.' ? 200 : 200);
+    }
+
+    private function formatPreferencePayload(CustomerPreference $preference): array
+    {
+        return [
+            'notification_preferences' => empty($preference->notification_preferences)
+                ? json_decode('{}')
+                : $preference->notification_preferences,
+            'account_preferences' => empty($preference->account_preferences)
+                ? json_decode('{}')
+                : $preference->account_preferences,
+            'system_alerts' => $preference->system_alerts,
+            'emergency_alerts' => $preference->emergency_alerts,
+            'updated_at' => $preference->updated_at,
+        ];
     }
 
     private function getOrCreatePreference($user): CustomerPreference

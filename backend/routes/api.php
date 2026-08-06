@@ -200,11 +200,11 @@ Route::prefix('v1')->group(function () {
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index']);
         Route::get('/notifications/unread', [NotificationController::class, 'unread']);
+        Route::get('/notifications/preferences', [NotificationPreferenceController::class, 'show']);
+        Route::put('/notifications/preferences', [NotificationPreferenceController::class, 'update']);
         Route::put('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
         Route::put('/notifications/{id}', [NotificationController::class, 'markAsRead']);
         Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
-        Route::get('/notifications/preferences', [NotificationPreferenceController::class, 'show']);
-        Route::put('/notifications/preferences', [NotificationPreferenceController::class, 'update']);
 
         // Announcements
         Route::get('/announcements', [AnnouncementController::class, 'index']);
@@ -316,8 +316,8 @@ Route::prefix('v1')->group(function () {
             Route::get('/admin/purchase-orders/status-counts', [AdminPurchaseOrderController::class, 'statusCounts']);
 
             // Finance
-            Route::apiResource('/admin/credit-accounts', AdminCreditAccountController::class)->only(['index', 'show']);
             Route::get('/admin/credit-accounts/summary', [AdminCreditAccountController::class, 'summary']);
+            Route::apiResource('/admin/credit-accounts', AdminCreditAccountController::class)->only(['index', 'show']);
 
             // Workflow automation
             Route::apiResource('/admin/automated-workflows', AdminAutomatedWorkflowController::class)->only(['index', 'show']);

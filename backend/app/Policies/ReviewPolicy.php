@@ -37,7 +37,7 @@ class ReviewPolicy
         return $user->isAdmin();
     }
 
-    public function vote(User $user): bool
+    public function vote(User $user, Review $review): bool
     {
         return auth()->check();
     }

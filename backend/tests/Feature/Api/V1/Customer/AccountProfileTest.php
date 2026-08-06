@@ -225,15 +225,16 @@ class AccountProfileTest extends TestCase
         $user = $this->customer();
         Sanctum::actingAs($user, ['*']);
 
-        $this->getJson('/api/v1/auth/preferences')
-            ->assertOk()
-            ->assertJsonPath('data.notification_preferences', (object) []);
+        $response = $this->getJson('/api/v1/auth/preferences');
+
+        $response->assertOk();
+        $this->assertMatchesRegularExpression('/"notification_preferences"\s*:\s*\{\}/', $response->getContent());
 
         $this->putJson('/api/v1/auth/preferences', [
             'notification_preferences' => ['email' => true],
             'account_preferences' => ['language' => 'en'],
         ])->assertOk()
-            ->assertJsonPath('data.notification_preferences.email', true)
+            ->assertJsonPath('data.notification_preferences.email_notifications', true)
             ->assertJsonPath('data.account_preferences.language', 'en');
 
         $this->assertDatabaseHas('customer_preferences', [

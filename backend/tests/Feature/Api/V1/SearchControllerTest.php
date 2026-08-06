@@ -42,6 +42,6 @@ class SearchControllerTest extends TestCase
         $response = $this->getJson('/api/v1/products?min_price=10000');
 
         $response->assertOk()
-            ->assertJsonPath('meta.total', 1);
+            ->assertJsonPath('data.meta.total', 1);
     }
 }

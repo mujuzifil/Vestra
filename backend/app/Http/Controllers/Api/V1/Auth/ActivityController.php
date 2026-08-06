@@ -20,7 +20,7 @@ class ActivityController extends Controller
             ->paginate($request->input('per_page', 15));
 
         return $this->successResponse(
-            ActivityResource::collection($activities)
+            ActivityResource::collection($activities)->response()->getData(true)
         );
     }
 }

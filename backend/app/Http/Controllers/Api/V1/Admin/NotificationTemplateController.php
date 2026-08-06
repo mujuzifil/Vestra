@@ -29,7 +29,7 @@ class NotificationTemplateController extends Controller
             ->paginate($request->integer('per_page', 15));
 
         return $this->successResponse(
-            NotificationTemplateResource::collection($templates)
+            NotificationTemplateResource::collection($templates)->response()->getData(true)
         );
     }
 

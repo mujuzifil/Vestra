@@ -32,8 +32,11 @@ class ReviewControllerTest extends TestCase
 
     private function admin(): User
     {
-        $user = User::factory()->create(['status' => 'active']);
-        $user->assignRole('admin');
+        $user = User::factory()->create([
+            'status' => 'active',
+            'is_admin' => true,
+        ]);
+        $user->assignRole('Super Administrator');
 
         return $user;
     }

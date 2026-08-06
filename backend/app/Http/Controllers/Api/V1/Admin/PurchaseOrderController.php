@@ -29,7 +29,7 @@ class PurchaseOrderController extends Controller
         }
 
         return $this->successResponse(
-            PurchaseOrderResource::collection($query->paginate($request->input('per_page', 15)))
+            PurchaseOrderResource::collection($query->paginate($request->input('per_page', 15)))->response()->getData(true)
         );
     }
 

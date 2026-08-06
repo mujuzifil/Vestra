@@ -57,13 +57,15 @@ class ApiEndpointsTest extends TestCase
             ->assertJsonStructure([
                 'success',
                 'data' => [
-                    '*' => [
-                        'id',
-                        'name',
-                        'slug',
-                        'price',
-                        'category',
-                        'images',
+                    'data' => [
+                        '*' => [
+                            'id',
+                            'name',
+                            'slug',
+                            'price',
+                            'category',
+                            'images',
+                        ],
                     ],
                 ],
                 'message',
@@ -151,6 +153,7 @@ class ApiEndpointsTest extends TestCase
             'email' => 'jane@example.com',
             'phone' => '1234567890',
             'subject' => 'Inquiry',
+            'enquiry_type' => 'general',
             'message' => 'I have a question about your products.',
         ]);
 
@@ -179,7 +182,10 @@ class ApiEndpointsTest extends TestCase
             'contact_person' => 'John Smith',
             'email' => 'john@testdist.com',
             'phone' => '1234567890',
-            'address' => '123 Test St',
+            'district' => 'Kampala',
+            'physical_address' => '123 Test St, Kampala',
+            'business_type' => 'Retail distribution',
+            'regions_covered' => 'Central and Eastern Uganda',
             'business_description' => 'We distribute cleaning products.',
         ]);
 

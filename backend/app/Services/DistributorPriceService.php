@@ -30,7 +30,7 @@ class DistributorPriceService
         // 2. Volume tier price.
         $tier = $product->distributorPriceTiers()
             ->where('min_quantity', '<=', $quantity)
-            ->where(function ($query) {
+            ->where(function ($query) use ($quantity) {
                 $query->whereNull('max_quantity')->orWhere('max_quantity', '>=', $quantity);
             })
             ->orderByDesc('min_quantity')

@@ -438,6 +438,7 @@ class PortalTest extends TestCase
             'distributor_id' => $distributor->id,
             'total_amount' => 100000,
             'payment_status' => PaymentStatus::PENDING->value,
+            'created_at' => now(),
         ]);
 
         PaymentUpload::factory()->create([
