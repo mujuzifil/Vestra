@@ -23,6 +23,8 @@ class CustomerResource extends JsonResource
             'is_admin' => $this->isAdmin(),
             'roles' => $this->whenLoaded('roles', fn () => $this->roles->pluck('name')),
             'must_change_password' => $this->mustChangePassword(),
+            'last_login_at' => $this->last_login_at?->toIso8601String(),
+            'password_changed_at' => $this->password_changed_at?->toIso8601String(),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

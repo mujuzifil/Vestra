@@ -177,6 +177,8 @@ export interface Customer {
   is_admin: boolean;
   roles?: string[];
   must_change_password?: boolean;
+  last_login_at?: string | null;
+  password_changed_at?: string | null;
   created_at: string;
   updated_at: string;
 }

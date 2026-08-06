@@ -262,7 +262,7 @@ export function ContactPageClient() {
                 <div className="flex-1 relative bg-neutral-100">
                   <iframe
                     title="VESTRA® location on Google Maps"
-                    src="https://maps.google.com/maps?q=VESTRA+Detergents,Kampala,Uganda&output=embed"
+                    src="https://maps.google.com/maps?q=0.3473662,32.575882&z=16&output=embed"
                     loading="lazy"
                     className="absolute inset-0 w-full h-full border-0"
                     allowFullScreen

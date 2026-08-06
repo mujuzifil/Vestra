@@ -49,7 +49,7 @@ const NOTIFICATION_ITEMS: PreferenceItem[] = [
   {
     key: "push_notifications",
     label: "Push Notifications",
-    description: "Receive push notifications in your browser (future feature).",
+    description: "Receive push notifications when available in your browser.",
     icon: Bell,
   },
   {
@@ -164,7 +164,7 @@ export function PreferencesPageClient() {
             Back to Account
           </Link>
 
-          <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="bg-surface-card rounded-[20px] border border-default shadow-sm p-6 lg:p-8">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 rounded-xl bg-secondary-50 text-secondary-600">
@@ -176,7 +176,7 @@ export function PreferencesPageClient() {
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="grid lg:grid-cols-2 gap-4">
                 {NOTIFICATION_ITEMS.map(({ key, label, description, icon: Icon }) => (
                   <label
                     key={key}

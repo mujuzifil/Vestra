@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -23,6 +24,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { useDistributorApplicationStatus } from "@/hooks/use-distributor-application-status";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -31,7 +33,7 @@ interface NavItem {
   icon: React.ElementType;
 }
 
-const navItems: NavItem[] = [
+const baseNavItems: NavItem[] = [
   { label: "Dashboard", href: "/account", icon: LayoutDashboard },
   { label: "My Quotes", href: "/account/quotes", icon: FileText },
   { label: "Distributor Application", href: "/account/distributor", icon: Handshake },
@@ -50,19 +52,36 @@ const navItems: NavItem[] = [
 function CustomerSidebar() {
   const pathname = usePathname();
   const { logout } = useAuth();
+  const { data: application } = useDistributorApplicationStatus();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navItems = baseNavItems.map((item) =>
+    item.href === "/account/distributor" && application?.status === "approved"
+      ? { ...item, label: "Distributor" }
+      : item
+  );
 
   const NavContent = ({ onNavigate }: { onNavigate?: () => void }) => (
     <nav className="flex flex-col h-full">
-      <div className="flex items-center justify-between p-4 lg:p-6 border-b border-border-default">
-        <Link href="/account" className="flex items-center gap-2" onClick={onNavigate}>
-          <span className="text-xl font-extrabold text-primary-900">VESTRA</span>
-          <span className="px-2 py-0.5 text-xs font-semibold text-white bg-primary-500 rounded-full">Business Portal</span>
+      <div className="flex items-center justify-between p-4 lg:p-6 border-b border-border-default gap-2">
+        <Link href="/account" className="flex items-center gap-2 min-w-0" onClick={onNavigate}>
+          <Image
+            src="/assets/images/branding/vestra-logo.png"
+            alt="VESTRA"
+            width={120}
+            height={48}
+            sizes="120px"
+            className="h-10 w-auto object-contain"
+            priority
+          />
+          <span className="px-2 py-0.5 text-xs font-semibold text-white bg-primary-500 rounded-full whitespace-nowrap">
+            Business Portal
+          </span>
         </Link>
         <button
           type="button"
           onClick={() => setMobileOpen(false)}
-          className="lg:hidden p-2 text-text-muted hover:text-primary-900"
+          className="lg:hidden p-2 text-text-muted hover:text-primary-900 flex-shrink-0"
           aria-label="Close menu"
         >
           <X className="w-5 h-5" />

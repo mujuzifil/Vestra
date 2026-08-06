@@ -38,7 +38,14 @@ class AccountProfileTest extends TestCase
 
         $this->getJson('/api/v1/auth/profile')
             ->assertOk()
-            ->assertJsonPath('data.email', $user->email);
+            ->assertJsonPath('data.email', $user->email)
+            ->assertJsonStructure([
+                'data' => [
+                    'email',
+                    'last_login_at',
+                    'password_changed_at',
+                ],
+            ]);
     }
 
     public function test_customer_can_update_profile(): void

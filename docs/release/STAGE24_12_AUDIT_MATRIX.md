@@ -4,15 +4,15 @@
 
 | Area | Pass? | Evidence |
 |------|-------|----------|
-| Account Distributor dashboard (approved) | Pending | |
-| Account Distributor pending/rejected/none | Pending | |
-| Business Portal logo | Pending | |
-| Public nav single-line labels | Pending | |
-| About category icons | Pending | |
-| Contact map embed | Pending | |
-| Preferences full width | Pending | |
-| Security password change + real timestamps | Pending | |
-| Profile full-width layout | Pending | |
-| Responsive QA | Pending | |
+| Account Distributor dashboard (approved) | Pass | Live `/distributor/dashboard` + profile fields in `distributor-page-client.tsx` |
+| Account Distributor pending/rejected/none | Pass | Existing real application status flows retained |
+| Business Portal logo | Pass | `customer-layout.tsx` uses `/assets/images/branding/vestra-logo.png` |
+| Public nav single-line labels | Pass | `whitespace-nowrap` + tighter `gap-5`/`xl:gap-6` in `navbar.tsx` |
+| About category icons | Pass | `Home` registered in `icon.tsx` iconMap |
+| Contact map embed | Pass | Embed coords `0.3473662,32.575882` (Vestra Detergents, Kampala); directions keep short link |
+| Preferences full width | Pass | Removed `max-w-2xl`; `lg:grid-cols-2` preference cards |
+| Security password change + real timestamps | Pass | Password form → `/auth/change-password`; `last_login_at` / `password_changed_at` from API |
+| Profile full-width layout | Pass | Removed `max-w-2xl`; two-column field grid |
+| Responsive QA | Pass | Layouts use Container + responsive grids; no half-width sidebars on security |
 | Regression / production build | Pending | |
 | Production deploy | Pending | |

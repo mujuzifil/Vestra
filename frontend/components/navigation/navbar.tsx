@@ -90,7 +90,7 @@ export function Navbar() {
           />
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+        <nav className="hidden lg:flex items-center gap-5 xl:gap-6 absolute left-1/2 -translate-x-1/2">
           {navLinks.map((link) => {
             const active = isActive(link.href);
             return (
@@ -100,7 +100,7 @@ export function Navbar() {
                   aria-current={active ? "page" : undefined}
                   aria-haspopup={link.children ? "true" : undefined}
                   className={cn(
-                    "flex items-center gap-1 font-medium text-sm py-2 transition-colors-base relative rounded-sm",
+                    "flex items-center gap-1 font-medium text-sm py-2 whitespace-nowrap transition-colors-base relative rounded-sm",
                     active ? "text-secondary-400" : "text-white hover:text-secondary-400"
                   )}
                 >

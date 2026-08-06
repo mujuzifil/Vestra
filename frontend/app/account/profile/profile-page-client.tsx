@@ -116,7 +116,7 @@ export function ProfilePageClient() {
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="max-w-2xl space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-text-heading mb-1">First Name</label>
@@ -147,7 +147,7 @@ export function ProfilePageClient() {
                     value={form.email}
                     className="w-full px-4 py-2.5 rounded-xl border border-default bg-surface-page text-placeholder cursor-not-allowed"
                   />
-                  <p className="text-xs text-placeholder mt-1">Email cannot be changed here.</p>
+                  <p className="text-xs text-placeholder mt-1">Email cannot be changed here. Contact support if you need to update it.</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-text-heading mb-1">Phone</label>
