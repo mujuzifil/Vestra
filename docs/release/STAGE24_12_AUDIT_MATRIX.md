@@ -15,4 +15,4 @@
 | Profile full-width layout | Pass | Removed `max-w-2xl`; two-column field grid |
 | Responsive QA | Pass | Layouts use Container + responsive grids; no half-width sidebars on security |
 | Regression / production build | Pass | Profile test + eslint + `npm run build` |
-| Production deploy | Pending | Code on `master` `466ad01`; SSH deploy blocked — see STAGE24_12_DEPLOYMENT_REPORT.md |
+| Production deploy | Pass | Tip `9c47cb1`, image `local-20260806194739`; site/API/admin/account/contact 200 |

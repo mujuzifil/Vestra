@@ -1,43 +1,41 @@
 # Stage 24.12 — Deployment Report
 
-## Code status
+## Summary
 
-- **Branch tip:** `master` @ `466ad01` (includes UX summary docs)
-- **Feature merge commit:** `147efc4` — Stage 24.12 UX account hardening
-- **Remotes:** `origin/master` and `origin/develop` updated
+Stage 24.12 Public Website UX & Account Experience Hardening deployed to production. `deploy.sh` frontend health check timed out (known race); containers self-resolved to healthy; public smoke returned HTTP 200.
 
-## Validation before deploy
+## Commit Deployed
 
-- Profile API fields test: Pass
-- Frontend eslint (changed files): Pass
-- `npm run build`: Pass
+- **Branch:** `master`
+- **Commit:** `9c47cb1`
+- **Image tag:** `local-20260806194739`
+- **Rollback target recorded by deploy script:** `local-20260806140735`
+- **Backup:** `/opt/vestra/backups/20260806_194736`
 
-## Production deploy
+## Migrations
 
-**Attempted 2026-08-06:** SSH to `deploy@187.77.84.119` failed with `Permission denied (publickey)` (key offered and accepted by server, signature step failed — likely passphrase/agent unavailable in this session).
+- None pending (Stage 24.12 was frontend/API resource fields only)
 
-### Operator deploy steps
+## Post-deploy ops
 
-```bash
-ssh deploy@187.77.84.119
-cd /opt/vestra
-git fetch origin master && git checkout master && git pull origin master
-./scripts/deploy.sh --build
-# After deploy (if frontend health race):
-docker compose -f docker-compose.prod.yml ps
-curl -s -o /dev/null -w "%{http_code}\n" https://vestradetergents.com/
-curl -s -o /dev/null -w "%{http_code}\n" https://api.vestradetergents.com/api/v1/health
-```
+- `optimize:clear` + config/route/view cache + queue restart
 
-### Pages to verify live
+## Validation
 
-- `/account/distributor` (approved distributor dashboard)
-- Business Portal sidebar logo
+- Containers healthy (backend, frontend, queue, scheduler, nginx, db, redis)
+- Site / API / admin / account / contact: HTTP 200
+
+## Scope live
+
+- Account distributor dashboard (approved)
+- Business Portal logo
 - Public nav single-line labels
-- `/about` Household category icon
-- `/contact` map embed
-- `/account/preferences`, `/account/security`, `/account/profile`
+- About Household icon
+- Contact map embed
+- Preferences / Security / Profile layout & password change
 
 ## Rollback
 
-`cd /opt/vestra && ./scripts/rollback.sh` — see [ROLLBACK_CHECKLIST.md](ROLLBACK_CHECKLIST.md)
+```bash
+cd /opt/vestra && ./scripts/rollback.sh
+```
