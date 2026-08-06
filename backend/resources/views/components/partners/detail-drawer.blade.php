@@ -3,9 +3,13 @@
     'partner' => null,
 ])
 
+@php
+    $actions = $partner['actions'] ?? [];
+@endphp
+
 <div
     class="vestra-partners-detail @if ($show) vestra-partners-detail--open @endif"
-    x-data="{ open: @js($show) }"
+    x-data="{ open: @entangle('showDetailDrawer') }"
     x-show="open"
     x-cloak
     @keydown.escape.window="if (open) $wire.closeDetailDrawer()"
@@ -57,6 +61,34 @@
                     @endif
                 </div>
 
+                <div class="vestra-partners-detail__actions">
+                    @if ($actions['suspend'] ?? false)
+                        <button
+                            type="button"
+                            wire:click="suspendPartner({{ $partner['id'] }})"
+                            wire:confirm="Suspend this partner and remove them from the public website?"
+                            class="vestra-partners-detail__action-btn vestra-partners-detail__action-btn--danger"
+                        >
+                            Suspend
+                        </button>
+                    @endif
+                    @if ($actions['activate'] ?? false)
+                        <button
+                            type="button"
+                            wire:click="activatePartner({{ $partner['id'] }})"
+                            class="vestra-partners-detail__action-btn"
+                        >
+                            Activate
+                        </button>
+                    @endif
+                    @if (($actions['credit'] ?? false) && ($partner['credit_url'] ?? null))
+                        <a href="{{ $partner['credit_url'] }}" class="vestra-partners-detail__action-btn">Credit</a>
+                    @endif
+                    @if (($actions['coverage'] ?? false) && ($partner['territories_url'] ?? null))
+                        <a href="{{ $partner['territories_url'] }}" class="vestra-partners-detail__action-btn">Territories</a>
+                    @endif
+                </div>
+
                 <div class="vestra-partners-detail__section">
                     <h3 class="vestra-partners-detail__section-title">Company</h3>
                     <dl class="vestra-partners-detail__definition-list">
@@ -100,6 +132,40 @@
                             <p class="vestra-partners-detail__contact-meta">{{ $partner['primary_contact']['phone'] }}</p>
                         @endif
                     </div>
+                </div>
+
+                @if ($partner['application'] ?? null)
+                    <div class="vestra-partners-detail__section">
+                        <h3 class="vestra-partners-detail__section-title">Application History</h3>
+                        <dl class="vestra-partners-detail__definition-list">
+                            <div class="vestra-partners-detail__definition-row">
+                                <dt>Application ID</dt>
+                                <dd>#{{ $partner['application']['id'] }}</dd>
+                            </div>
+                            <div class="vestra-partners-detail__definition-row">
+                                <dt>Submitted</dt>
+                                <dd>{{ $partner['application']['submitted_at']?->format('M j, Y') ?? '—' }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                @endif
+
+                <div class="vestra-partners-detail__section">
+                    <h3 class="vestra-partners-detail__section-title">Coverage</h3>
+                    @if (! empty($partner['service_areas']))
+                        <ul class="vestra-partners-detail__record-list">
+                            @foreach ($partner['service_areas'] as $area)
+                                <li class="vestra-partners-detail__record-item">
+                                    <div>
+                                        <p class="vestra-partners-detail__record-title">{{ $area['district'] }}</p>
+                                        <p class="vestra-partners-detail__record-meta">{{ $area['region'] }} · {{ str_replace('_', ' ', $area['status'] ?? 'covered') }}</p>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @else
+                        <p class="vestra-partners-detail__text">No coverage configured yet. Assign coverage areas from the distributor profile.</p>
+                    @endif
                 </div>
 
                 @if ($partner['sales_rep'])
