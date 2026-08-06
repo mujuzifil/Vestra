@@ -4,12 +4,127 @@ namespace App\Services\Admin;
 
 use App\Models\Distributor;
 use App\Models\DistributorBranch;
+use App\Models\DistributorServiceArea;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class TerritoryAdminService
 {
+    /**
+     * @param  array<string, mixed>  $filters
+     */
+    public function paginateCoverageAreas(array $filters = [], string $sort = 'region', string $direction = 'asc', int $perPage = 15): LengthAwarePaginator
+    {
+        return $this->queryCoverageAreas($filters, $sort, $direction)->paginate($perPage)->withQueryString();
+    }
+
+    /**
+     * @param  array<string, mixed>  $filters
+     */
+    public function queryCoverageAreas(array $filters = [], string $sort = 'region', string $direction = 'asc'): Builder
+    {
+        $query = DistributorServiceArea::query()
+            ->with(['distributor', 'branch'])
+            ->when($filters['search'] ?? null, function (Builder $q, string $term): void {
+                $q->where(function (Builder $sub) use ($term): void {
+                    $sub->where('region', 'like', "%{$term}%")
+                        ->orWhere('district', 'like', "%{$term}%")
+                        ->orWhereHas('distributor', function (Builder $d) use ($term): void {
+                            $d->where('company_name', 'like', "%{$term}%");
+                        });
+                });
+            })
+            ->when($filters['region'] ?? null, fn (Builder $q, array $regions) => $q->whereIn('region', $regions))
+            ->when($filters['district'] ?? null, fn (Builder $q, array $districts) => $q->whereIn('district', $districts))
+            ->when($filters['status'] ?? null, fn (Builder $q, array $statuses) => $q->whereIn('status', $statuses))
+            ->when($filters['distributor_id'] ?? null, fn (Builder $q, int $id) => $q->where('distributor_id', $id));
+
+        return $this->applyCoverageSorting($query, $sort, $direction);
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public function getCoverageKpiCards(): array
+    {
+        $totalAreas = DistributorServiceArea::query()->count();
+        $coveredAreas = DistributorServiceArea::query()->where('status', 'covered')->count();
+        $comingSoon = DistributorServiceArea::query()->where('status', 'coming_soon')->count();
+        $distinctRegions = DistributorServiceArea::query()->distinct('region')->count('region');
+        $activePartners = DistributorServiceArea::query()->distinct('distributor_id')->count('distributor_id');
+
+        return [
+            $this->buildCard('Coverage Areas', $totalAreas, 0, 'total mapped', 'heroicon-o-map', 'primary', false),
+            $this->buildCard('Covered', $coveredAreas, 0, 'districts served', 'heroicon-o-check-circle', 'success', false),
+            $this->buildCard('Coming Soon', $comingSoon, 0, 'planned expansion', 'heroicon-o-clock', 'warning', false),
+            $this->buildCard('Regions', $distinctRegions, 0, 'distinct regions', 'heroicon-o-globe-alt', 'info', false),
+            $this->buildCard('Active Partners', $activePartners, 0, 'with coverage', 'heroicon-o-building-storefront', 'primary', false),
+        ];
+    }
+
+    /**
+     * @return Collection<int, array<string, mixed>>
+     */
+    public function getCoverageByRegion(array $filters = []): Collection
+    {
+        return $this->queryCoverageAreas($filters)
+            ->selectRaw('region, district, status, COUNT(*) as partner_count')
+            ->groupBy('region', 'district', 'status')
+            ->orderBy('region')
+            ->orderBy('district')
+            ->get()
+            ->map(fn ($row) => [
+                'region' => $row->region,
+                'district' => $row->district,
+                'status' => $row->status,
+                'partner_count' => (int) $row->partner_count,
+            ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getCoverageFilterOptions(): array
+    {
+        $areas = DistributorServiceArea::query();
+
+        return [
+            'regions' => (clone $areas)->whereNotNull('region')->distinct()->orderBy('region')->pluck('region')->toArray(),
+            'districts' => (clone $areas)->whereNotNull('district')->distinct()->orderBy('district')->pluck('district')->toArray(),
+            'statuses' => [
+                'covered' => 'Covered',
+                'coming_soon' => 'Coming Soon',
+                'planned' => 'Planned',
+            ],
+            'distributors' => Distributor::query()
+                ->whereHas('serviceAreas')
+                ->orderBy('company_name')
+                ->get(['id', 'company_name'])
+                ->map(fn (Distributor $distributor) => ['id' => $distributor->id, 'name' => $distributor->company_name])
+                ->toArray(),
+        ];
+    }
+
+    private function applyCoverageSorting(Builder $query, string $sort, string $direction): Builder
+    {
+        $direction = strtolower($direction) === 'desc' ? 'desc' : 'asc';
+
+        return match ($sort) {
+            'region' => $query->orderBy('region', $direction)->orderBy('district', $direction),
+            'district' => $query->orderBy('district', $direction),
+            'status' => $query->orderBy('status', $direction),
+            'distributor' => $query->orderBy(
+                Distributor::select('company_name')
+                    ->whereColumn('distributors.id', 'distributor_service_areas.distributor_id')
+                    ->limit(1),
+                $direction
+            ),
+            'created_at' => $query->orderBy('created_at', $direction),
+            default => $query->orderBy('region', 'asc')->orderBy('district', 'asc'),
+        };
+    }
+
     /**
      * @param  array<string, mixed>  $filters
      */

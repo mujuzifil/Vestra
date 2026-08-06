@@ -55,6 +55,20 @@ class CatalogSyncService
         ]);
     }
 
+    public function syncDistributors(?int $distributorId = null): void
+    {
+        Cache::forget('catalog.distributors.active');
+        Cache::forget('catalog.distributors.stats');
+        Cache::forget('catalog.distributors.coverage');
+
+        $this->notifyFrontend([
+            'type' => 'distributors',
+            'distributor_id' => $distributorId,
+            'paths' => ['/where-to-buy', '/'],
+            'tags' => ['distributors', 'where-to-buy'],
+        ]);
+    }
+
     public function syncMedia(?\App\Models\MediaAsset $asset = null): void
     {
         Cache::forget('media.assets.index');

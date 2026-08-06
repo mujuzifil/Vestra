@@ -120,21 +120,50 @@ class Distributor extends Model
         return $this->hasMany(DistributorServiceArea::class);
     }
 
-    public function defaultBranch(): ?DistributorBranch
+    public function defaultBranch(): HasOne
     {
-        return $this->branches()->where('is_default', true)->first()
-            ?? $this->branches()->first();
+        return $this->hasOne(DistributorBranch::class)->where('is_default', true);
     }
 
-    public function primaryContact(): ?DistributorContact
+    public function primaryContact(): HasOne
     {
-        return $this->contacts()->where('is_primary', true)->first()
-            ?? $this->contacts()->first();
+        return $this->hasOne(DistributorContact::class)->where('is_primary', true);
+    }
+
+    public function resolvedDefaultBranch(): ?DistributorBranch
+    {
+        return $this->defaultBranch ?? $this->branches()->first();
+    }
+
+    public function resolvedPrimaryContact(): ?DistributorContact
+    {
+        return $this->primaryContact ?? $this->contacts()->first();
     }
 
     public function isActive(): bool
     {
         return $this->status === DistributorAccountStatus::ACTIVE;
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->status === DistributorAccountStatus::SUSPENDED;
+    }
+
+    public function suspend(?\DateTimeInterface $at = null): bool
+    {
+        return $this->update([
+            'status' => DistributorAccountStatus::SUSPENDED,
+            'suspended_at' => $at ?? now(),
+        ]);
+    }
+
+    public function activate(): bool
+    {
+        return $this->update([
+            'status' => DistributorAccountStatus::ACTIVE,
+            'suspended_at' => null,
+        ]);
     }
 
     public function logoUrl(): ?string

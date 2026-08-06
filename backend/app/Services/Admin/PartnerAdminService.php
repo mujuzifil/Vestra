@@ -10,12 +10,20 @@ use App\Models\Distributor;
 use App\Models\DistributorServiceArea;
 use App\Models\Order;
 use App\Models\SalesRepresentative;
+use App\Models\User;
+use App\Services\AuditService;
+use App\Services\Catalog\CatalogSyncService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\ValidationException;
 
 class PartnerAdminService
 {
+    public function __construct(
+        private readonly CatalogSyncService $catalogSync,
+    ) {}
     /**
      * @param  array<string, mixed>  $filters
      */
@@ -275,6 +283,165 @@ class PartnerAdminService
                 ->map(fn (SalesRepresentative $rep) => ['id' => $rep->id, 'name' => $rep->name])
                 ->toArray(),
         ];
+    }
+
+    public function suspend(Distributor $distributor, ?User $admin = null, ?string $reason = null): Distributor
+    {
+        return DB::transaction(function () use ($distributor, $admin, $reason) {
+            $distributor->refresh();
+
+            if ($distributor->isSuspended()) {
+                return $distributor;
+            }
+
+            $distributor->suspend();
+
+            AuditService::log(
+                $admin,
+                'distributor_suspended',
+                $distributor,
+                ['reason' => $reason],
+                request()?->ip(),
+                request()?->userAgent()
+            );
+
+            $distributorId = $distributor->id;
+
+            DB::afterCommit(fn () => $this->catalogSync->syncDistributors($distributorId));
+
+            return $distributor->fresh(['user', 'creditAccount', 'branches', 'serviceAreas']);
+        });
+    }
+
+    public function activate(Distributor $distributor, ?User $admin = null): Distributor
+    {
+        return DB::transaction(function () use ($distributor, $admin) {
+            $distributor->refresh();
+
+            if ($distributor->isActive()) {
+                return $distributor;
+            }
+
+            $distributor->activate();
+
+            AuditService::log(
+                $admin,
+                'distributor_activated',
+                $distributor,
+                null,
+                request()?->ip(),
+                request()?->userAgent()
+            );
+
+            $distributorId = $distributor->id;
+
+            DB::afterCommit(fn () => $this->catalogSync->syncDistributors($distributorId));
+
+            return $distributor->fresh(['user', 'creditAccount', 'branches', 'serviceAreas']);
+        });
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function updateProfile(Distributor $distributor, array $data, ?User $admin = null): Distributor
+    {
+        return DB::transaction(function () use ($distributor, $data, $admin) {
+            $allowed = array_intersect_key($data, array_flip([
+                'company_name',
+                'trading_name',
+                'registration_number',
+                'tax_identification',
+                'vat_number',
+                'business_type',
+                'industry',
+                'years_in_business',
+                'company_size',
+                'website',
+                'primary_contact_name',
+                'email',
+                'phone',
+                'country',
+                'district',
+                'city',
+                'address',
+                'postal_address',
+                'expected_monthly_volume',
+                'products_of_interest',
+                'sales_representative_id',
+            ]));
+
+            if ($allowed === []) {
+                throw ValidationException::withMessages([
+                    'profile' => 'No valid profile fields were provided.',
+                ]);
+            }
+
+            $distributor->update($allowed);
+
+            AuditService::log(
+                $admin,
+                'distributor_profile_updated',
+                $distributor,
+                ['fields' => array_keys($allowed)],
+                request()?->ip(),
+                request()?->userAgent()
+            );
+
+            $distributorId = $distributor->id;
+
+            DB::afterCommit(fn () => $this->catalogSync->syncDistributors($distributorId));
+
+            return $distributor->fresh(['user', 'creditAccount', 'branches', 'serviceAreas']);
+        });
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $areas
+     */
+    public function updateCoverage(Distributor $distributor, array $areas, ?User $admin = null): Distributor
+    {
+        return DB::transaction(function () use ($distributor, $areas, $admin) {
+            $defaultBranch = $distributor->branches()->where('is_default', true)->first()
+                ?? $distributor->branches()->first();
+
+            $normalized = collect($areas)
+                ->map(fn (array $area) => [
+                    'region' => trim((string) ($area['region'] ?? '')),
+                    'district' => trim((string) ($area['district'] ?? '')),
+                    'status' => $area['status'] ?? 'covered',
+                ])
+                ->filter(fn (array $area) => $area['region'] !== '' && $area['district'] !== '')
+                ->unique(fn (array $area) => mb_strtolower($area['region'].'|'.$area['district']))
+                ->values();
+
+            $distributor->serviceAreas()->delete();
+
+            foreach ($normalized as $area) {
+                DistributorServiceArea::create([
+                    'distributor_id' => $distributor->id,
+                    'branch_id' => $defaultBranch?->id,
+                    'region' => $area['region'],
+                    'district' => $area['district'],
+                    'status' => $area['status'],
+                ]);
+            }
+
+            AuditService::log(
+                $admin,
+                'distributor_coverage_updated',
+                $distributor,
+                ['area_count' => $normalized->count()],
+                request()?->ip(),
+                request()?->userAgent()
+            );
+
+            $distributorId = $distributor->id;
+
+            DB::afterCommit(fn () => $this->catalogSync->syncDistributors($distributorId));
+
+            return $distributor->fresh(['user', 'creditAccount', 'branches', 'serviceAreas']);
+        });
     }
 
     private function applySorting(Builder $query, string $sort, string $direction): Builder

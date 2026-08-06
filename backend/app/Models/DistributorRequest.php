@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class DistributorRequest extends Model
 {
@@ -33,6 +34,8 @@ class DistributorRequest extends Model
         'priority',
         'assigned_to',
         'internal_notes',
+        'rejection_reason',
+        'information_request_notes',
         'documents',
     ];
 
@@ -50,6 +53,11 @@ class DistributorRequest extends Model
     public function assignedAdministrator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function distributor(): HasOne
+    {
+        return $this->hasOne(Distributor::class);
     }
 
     public function scopeSearch(Builder $query, string $term): Builder

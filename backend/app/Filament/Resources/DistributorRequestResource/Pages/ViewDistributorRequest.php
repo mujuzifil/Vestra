@@ -4,6 +4,7 @@ namespace App\Filament\Resources\DistributorRequestResource\Pages;
 
 use App\Enums\DistributorStatus;
 use App\Filament\Resources\DistributorRequestResource;
+use App\Services\DistributorOnboardingService;
 use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
@@ -17,6 +18,7 @@ class ViewDistributorRequest extends ViewRecord
     protected function getHeaderActions(): array
     {
         $record = $this->getRecord();
+        $service = app(DistributorOnboardingService::class);
 
         $actions = [
             Actions\Action::make('edit')
@@ -25,15 +27,16 @@ class ViewDistributorRequest extends ViewRecord
                 ->color('primary'),
         ];
 
-        if ($record->status !== DistributorStatus::APPROVED) {
+        if ($record->status !== DistributorStatus::APPROVED || ! $record->distributor()->exists()) {
             $actions[] = Actions\Action::make('approve')
                 ->label('Approve')
                 ->icon('heroicon-o-check')
                 ->color('success')
                 ->requiresConfirmation()
-                ->action(function () use ($record): void {
-                    $record->update(['status' => DistributorStatus::APPROVED]);
-                    Notification::make()->title('Application approved')->success()->send();
+                ->visible(fn (): bool => $record->status !== DistributorStatus::REJECTED)
+                ->action(function () use ($record, $service): void {
+                    $service->approve($record, auth()->user());
+                    Notification::make()->title('Application approved and distributor account created.')->success()->send();
                     $this->redirect(static::getResource()::getUrl('view', ['record' => $record]));
                 });
         }
@@ -44,8 +47,8 @@ class ViewDistributorRequest extends ViewRecord
                 ->icon('heroicon-o-x-mark')
                 ->color('danger')
                 ->requiresConfirmation()
-                ->action(function () use ($record): void {
-                    $record->update(['status' => DistributorStatus::REJECTED]);
+                ->action(function () use ($record, $service): void {
+                    $service->reject($record, null, auth()->user());
                     Notification::make()->title('Application rejected')->success()->send();
                     $this->redirect(static::getResource()::getUrl('view', ['record' => $record]));
                 });
@@ -57,8 +60,8 @@ class ViewDistributorRequest extends ViewRecord
                 ->icon('heroicon-o-question-mark-circle')
                 ->color('info')
                 ->requiresConfirmation()
-                ->action(function () use ($record): void {
-                    $record->update(['status' => DistributorStatus::INFORMATION_REQUESTED]);
+                ->action(function () use ($record, $service): void {
+                    $service->requestInformation($record, null, auth()->user());
                     Notification::make()->title('Information requested')->info()->send();
                     $this->redirect(static::getResource()::getUrl('view', ['record' => $record]));
                 });
@@ -70,8 +73,8 @@ class ViewDistributorRequest extends ViewRecord
                 ->icon('heroicon-o-arrow-path')
                 ->color('warning')
                 ->requiresConfirmation()
-                ->action(function () use ($record): void {
-                    $record->update(['status' => DistributorStatus::UNDER_REVIEW]);
+                ->action(function () use ($record, $service): void {
+                    $service->markUnderReview($record, auth()->user());
                     Notification::make()->title('Application returned to review')->warning()->send();
                     $this->redirect(static::getResource()::getUrl('view', ['record' => $record]));
                 });

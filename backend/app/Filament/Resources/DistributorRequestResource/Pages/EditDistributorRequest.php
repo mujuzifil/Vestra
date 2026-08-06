@@ -13,7 +13,19 @@ class EditDistributorRequest extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\ViewAction::make(),
             Actions\DeleteAction::make(),
         ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        unset($data['status'], $data['rejection_reason'], $data['information_request_notes']);
+
+        return $data;
     }
 }

@@ -102,6 +102,8 @@ class DistributorRequestResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('status')
                             ->required()
+                            ->disabled()
+                            ->dehydrated(false)
                             ->options([
                                 DistributorStatus::PENDING->value => DistributorStatus::PENDING->label(),
                                 DistributorStatus::UNDER_REVIEW->value => DistributorStatus::UNDER_REVIEW->label(),
@@ -127,6 +129,16 @@ class DistributorRequestResource extends Resource
                             ->native(false),
                         Forms\Components\Textarea::make('internal_notes')
                             ->rows(4)
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('rejection_reason')
+                            ->rows(3)
+                            ->disabled()
+                            ->visible(fn (?DistributorRequest $record): bool => $record?->status === DistributorStatus::REJECTED)
+                            ->columnSpanFull(),
+                        Forms\Components\Textarea::make('information_request_notes')
+                            ->rows(3)
+                            ->disabled()
+                            ->visible(fn (?DistributorRequest $record): bool => $record?->status === DistributorStatus::INFORMATION_REQUESTED)
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
@@ -271,7 +283,8 @@ class DistributorRequestResource extends Resource
                     ->icon('heroicon-o-check')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->visible(fn (DistributorRequest $record): bool => $record->status !== DistributorStatus::APPROVED)
+                    ->visible(fn (DistributorRequest $record): bool => $record->status !== DistributorStatus::APPROVED
+                        || ! $record->distributor()->exists())
                     ->action(function (DistributorRequest $record) {
                         app(DistributorOnboardingService::class)->approve($record, auth()->user());
                         Notification::make()->title('Application approved and distributor account created.')->success()->send();
@@ -282,21 +295,30 @@ class DistributorRequestResource extends Resource
                     ->color('danger')
                     ->requiresConfirmation()
                     ->visible(fn (DistributorRequest $record): bool => $record->status !== DistributorStatus::REJECTED)
-                    ->action(fn (DistributorRequest $record) => $record->update(['status' => DistributorStatus::REJECTED])),
+                    ->action(function (DistributorRequest $record) {
+                        app(DistributorOnboardingService::class)->reject($record, null, auth()->user());
+                        Notification::make()->title('Application rejected')->success()->send();
+                    }),
                 Tables\Actions\Action::make('requestInformation')
                     ->label('Request Info')
                     ->icon('heroicon-o-question-mark-circle')
                     ->color('info')
                     ->requiresConfirmation()
                     ->visible(fn (DistributorRequest $record): bool => ! in_array($record->status->value, [DistributorStatus::APPROVED->value, DistributorStatus::REJECTED->value, DistributorStatus::INFORMATION_REQUESTED->value], true))
-                    ->action(fn (DistributorRequest $record) => $record->update(['status' => DistributorStatus::INFORMATION_REQUESTED])),
+                    ->action(function (DistributorRequest $record) {
+                        app(DistributorOnboardingService::class)->requestInformation($record, null, auth()->user());
+                        Notification::make()->title('Information requested')->info()->send();
+                    }),
                 Tables\Actions\Action::make('returnToReview')
                     ->label('Return to Review')
                     ->icon('heroicon-o-arrow-path')
                     ->color('warning')
                     ->requiresConfirmation()
                     ->visible(fn (DistributorRequest $record): bool => in_array($record->status->value, [DistributorStatus::PENDING->value, DistributorStatus::INFORMATION_REQUESTED->value], true))
-                    ->action(fn (DistributorRequest $record) => $record->update(['status' => DistributorStatus::UNDER_REVIEW])),
+                    ->action(function (DistributorRequest $record) {
+                        app(DistributorOnboardingService::class)->markUnderReview($record, auth()->user());
+                        Notification::make()->title('Application returned to review')->warning()->send();
+                    }),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -317,7 +339,8 @@ class DistributorRequestResource extends Resource
                         ->color('danger')
                         ->requiresConfirmation()
                         ->action(function (Collection $records): void {
-                            $records->each->update(['status' => DistributorStatus::REJECTED->value]);
+                            $service = app(DistributorOnboardingService::class);
+                            $records->each(fn (DistributorRequest $record) => $service->reject($record, null, auth()->user()));
                             Notification::make()->title('Applications rejected')->success()->send();
                         }),
                     Tables\Actions\BulkAction::make('requestInformation')
@@ -326,7 +349,8 @@ class DistributorRequestResource extends Resource
                         ->color('info')
                         ->requiresConfirmation()
                         ->action(function (Collection $records): void {
-                            $records->each->update(['status' => DistributorStatus::INFORMATION_REQUESTED->value]);
+                            $service = app(DistributorOnboardingService::class);
+                            $records->each(fn (DistributorRequest $record) => $service->requestInformation($record, null, auth()->user()));
                             Notification::make()->title('Information requested')->info()->send();
                         }),
                     Tables\Actions\BulkAction::make('returnToReview')
@@ -335,7 +359,8 @@ class DistributorRequestResource extends Resource
                         ->color('warning')
                         ->requiresConfirmation()
                         ->action(function (Collection $records): void {
-                            $records->each->update(['status' => DistributorStatus::UNDER_REVIEW->value]);
+                            $service = app(DistributorOnboardingService::class);
+                            $records->each(fn (DistributorRequest $record) => $service->markUnderReview($record, auth()->user()));
                             Notification::make()->title('Applications returned to review')->warning()->send();
                         }),
                     Tables\Actions\BulkAction::make('assignReviewer')

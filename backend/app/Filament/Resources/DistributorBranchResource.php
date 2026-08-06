@@ -224,9 +224,13 @@ class DistributorBranchResource extends Resource
     {
         return [
             'index' => Pages\ListDistributorBranches::route('/'),
-            'create' => Pages\CreateDistributorBranch::route('/create'),
             'edit' => Pages\EditDistributorBranch::route('/{record}/edit'),
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
     }
 
     public static function canAccess(): bool

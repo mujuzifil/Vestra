@@ -164,7 +164,8 @@ class ApplicationsPage extends Page
         $application = DistributorRequest::query()->findOrFail($id);
         Gate::authorize('update', $application);
 
-        if ($application->status === DistributorStatus::APPROVED) {
+        if ($application->status === DistributorStatus::APPROVED
+            && $application->distributor()->exists()) {
             return;
         }
 
@@ -214,7 +215,8 @@ class ApplicationsPage extends Page
         foreach ($applications as $application) {
             Gate::authorize('update', $application);
 
-            if ($application->status !== DistributorStatus::APPROVED) {
+            if ($application->status !== DistributorStatus::APPROVED
+                || ! $application->distributor()->exists()) {
                 $service->approve($application, auth()->user());
                 $count++;
             }
