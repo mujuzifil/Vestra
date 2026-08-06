@@ -41,6 +41,7 @@ class StaffPageTest extends TestCase
     {
         return User::factory()->create([
             'is_admin' => false,
+            'status' => 'active',
             'email_verified_at' => now(),
         ]);
     }
@@ -75,8 +76,8 @@ class StaffPageTest extends TestCase
     {
         $customer = $this->customer();
 
-        Livewire::actingAs($customer)
-            ->test(StaffPage::class)
+        $this->actingAs($customer)
+            ->get('/administration/staff')
             ->assertForbidden();
     }
 

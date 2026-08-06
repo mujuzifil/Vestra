@@ -31,6 +31,7 @@ class ActivePartnersPageTest extends TestCase
     {
         return User::factory()->create([
             'is_admin' => true,
+            'status' => 'active',
             'email_verified_at' => now(),
         ]);
     }
@@ -39,6 +40,7 @@ class ActivePartnersPageTest extends TestCase
     {
         return User::factory()->create([
             'is_admin' => false,
+            'status' => 'active',
             'email_verified_at' => now(),
         ]);
     }

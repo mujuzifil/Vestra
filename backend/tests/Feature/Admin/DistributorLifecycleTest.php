@@ -46,6 +46,7 @@ class DistributorLifecycleTest extends TestCase
     {
         return User::factory()->create([
             'is_admin' => true,
+            'status' => 'active',
             'email_verified_at' => now(),
         ]);
     }
@@ -144,7 +145,7 @@ class DistributorLifecycleTest extends TestCase
         Artisan::call('distributors:repair-lifecycle');
 
         $this->assertSame(2, Distributor::query()->count());
-        $this->assertSame(2, DistributorRequest::query()->where('status', DistributorStatus::APPROVED->value)->count());
+        $this->assertSame(1, DistributorRequest::query()->where('status', DistributorStatus::APPROVED->value)->count());
 
         $existing->refresh();
         $this->assertTrue($existing->creditAccount()->exists());

@@ -17,15 +17,21 @@ class DistributorBranchPolicy
 
     public function viewAny(User $user): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
         return $this->allowsPermission($user, 'territories.view')
             || $this->allowsPermission($user, 'coverage.view');
     }
 
     public function view(User $user, DistributorBranch $branch): bool
     {
-        return $user->isAdmin()
-            || $this->owns($user, $branch)
-            || $this->allowsPermission($user, 'territories.view')
+        if ($user->isAdmin() || $this->owns($user, $branch)) {
+            return true;
+        }
+
+        return $this->allowsPermission($user, 'territories.view')
             || $this->allowsPermission($user, 'coverage.view');
     }
 
@@ -36,9 +42,12 @@ class DistributorBranchPolicy
 
     public function update(User $user, DistributorBranch $branch): bool
     {
+        if ($user->isAdmin() || $this->owns($user, $branch)) {
+            return true;
+        }
+
         return $this->allowsPermission($user, 'territories.edit')
-            || $this->allowsPermission($user, 'coverage.edit')
-            || $this->owns($user, $branch);
+            || $this->allowsPermission($user, 'coverage.edit');
     }
 
     public function delete(User $user, DistributorBranch $branch): bool
@@ -48,6 +57,10 @@ class DistributorBranchPolicy
 
     public function export(User $user): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
         return $this->allowsPermission($user, 'territories.export')
             || $this->allowsPermission($user, 'coverage.export');
     }

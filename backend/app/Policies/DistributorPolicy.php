@@ -12,13 +12,17 @@ class DistributorPolicy
 
     public function viewAny(User $user): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
         return $this->allowsPermission($user, 'active-partners.view')
             || $this->allowsPermission($user, 'distributors.view');
     }
 
     public function view(User $user, Distributor $distributor): bool
     {
-        if ($user->id === $distributor->user_id) {
+        if ($user->id === $distributor->user_id || $user->isAdmin()) {
             return true;
         }
 
@@ -28,7 +32,7 @@ class DistributorPolicy
 
     public function update(User $user, Distributor $distributor): bool
     {
-        if ($user->id === $distributor->user_id) {
+        if ($user->id === $distributor->user_id || $user->isAdmin()) {
             return true;
         }
 
@@ -38,6 +42,10 @@ class DistributorPolicy
 
     public function suspend(User $user, Distributor $distributor): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
         return $this->allowsPermission($user, 'active-partners.edit')
             || $this->allowsPermission($user, 'distributors.suspend');
     }
@@ -49,6 +57,10 @@ class DistributorPolicy
 
     public function export(User $user): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
         return $this->allowsPermission($user, 'active-partners.export')
             || $this->allowsPermission($user, 'distributors.export');
     }

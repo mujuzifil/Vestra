@@ -12,11 +12,19 @@ class DistributorRequestPolicy
 
     public function viewAny(User $user): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
         return $this->allowsPermission($user, 'applications.view');
     }
 
     public function view(User $user, DistributorRequest $distributorRequest): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
         return $this->allowsPermission($user, 'applications.view');
     }
 
@@ -27,6 +35,10 @@ class DistributorRequestPolicy
 
     public function update(User $user, DistributorRequest $distributorRequest): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
         return $this->allowsPermission($user, 'applications.edit')
             || $this->allowsPermission($user, 'applications.approve')
             || $this->allowsPermission($user, 'applications.reject');
@@ -34,23 +46,39 @@ class DistributorRequestPolicy
 
     public function approve(User $user, DistributorRequest $distributorRequest): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
         return $this->allowsPermission($user, 'applications.approve')
             || $this->allowsPermission($user, 'applications.edit');
     }
 
     public function reject(User $user, DistributorRequest $distributorRequest): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
         return $this->allowsPermission($user, 'applications.reject')
             || $this->allowsPermission($user, 'applications.edit');
     }
 
     public function delete(User $user, DistributorRequest $distributorRequest): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
         return $this->allowsPermission($user, 'applications.delete');
     }
 
     public function export(User $user): bool
     {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
         return $this->allowsPermission($user, 'applications.export');
     }
 }
