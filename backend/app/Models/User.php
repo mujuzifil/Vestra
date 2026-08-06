@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -73,6 +74,14 @@ class User extends Authenticatable implements FilamentUser
         return $this->is_admin
             || $this->hasRole('Super Administrator')
             || $this->hasRole('super-admin');
+    }
+
+    public function scopeAssignableStaff(Builder $query): Builder
+    {
+        return $query->where(function (Builder $q): void {
+            $q->where('is_admin', true)
+                ->orWhereHas('roles', fn (Builder $r) => $r->whereNotIn('name', ['customer']));
+        });
     }
 
     public function canAccessPanel(Panel $panel): bool

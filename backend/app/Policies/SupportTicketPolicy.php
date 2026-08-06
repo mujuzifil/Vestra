@@ -12,6 +12,11 @@ class SupportTicketPolicy
         return $user->isAdmin();
     }
 
+    public function create(User $user): bool
+    {
+        return $user->isAdmin();
+    }
+
     public function view(User $user, SupportTicket $ticket): bool
     {
         return $user->isAdmin() || $ticket->user_id === $user->id;

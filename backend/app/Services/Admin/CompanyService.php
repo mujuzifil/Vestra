@@ -373,8 +373,7 @@ class CompanyService
             'regions' => (clone $profiles)->whereNotNull('region')->distinct()->orderBy('region')->pluck('region')->toArray(),
             'districts' => (clone $profiles)->whereNotNull('district')->distinct()->orderBy('district')->pluck('district')->toArray(),
             'account_managers' => User::query()
-                ->where('is_admin', true)
-                ->orWhereHas('roles')
+                ->assignableStaff()
                 ->orderBy('name')
                 ->get(['id', 'name'])
                 ->map(fn (User $user) => ['id' => $user->id, 'name' => $user->name])

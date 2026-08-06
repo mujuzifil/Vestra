@@ -30,7 +30,7 @@ class QuoteAdminService
     public function queryQuotes(array $filters = [], string $sort = 'created_at', string $direction = 'desc'): Builder
     {
         $query = QuoteRequest::query()
-            ->with(['items.product', 'assignedUser', 'user.companyProfile', 'companyProfile'])
+            ->with(['items', 'assignedUser', 'companyProfile'])
             ->withCount('items')
             ->when($filters['search'] ?? null, fn (Builder $q, string $term) => $q->search($term))
             ->when($filters['status'] ?? null, fn (Builder $q, array $statuses) => $q->statusIn($statuses))
@@ -297,8 +297,7 @@ class QuoteAdminService
             'priorities' => QuoteRequestPriority::cases(),
             'sales_reps' => User::query()
                 ->where(function (Builder $q): void {
-                    $q->where('is_admin', true)
-                        ->orWhereHas('roles')
+                    $q->assignableStaff()
                         ->orWhereIn('id', QuoteRequest::query()->whereNotNull('assigned_to')->distinct()->pluck('assigned_to'));
                 })
                 ->orderBy('name')

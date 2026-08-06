@@ -16,7 +16,17 @@
 | 8 | Backend + frontend production builds succeed | Pending | |
 | 9 | Rollback procedure reviewed ([ROLLBACK_CHECKLIST.md](ROLLBACK_CHECKLIST.md) + `scripts/rollback.sh`) — dry-run notes recorded | Pending | |
 | 10 | Release documentation complete (reports + RELEASE_NOTES v2.1.0) | Pending | |
-| 11 | KI-001 / secrets: rotation verified **or** written residual-risk acceptance for this release | Pending | |
+| 11 | KI-001 / secrets: rotation verified **or** written residual-risk acceptance for this release | Accepted (residual risk) | Working-tree purge complete; git history rotation **not verifiable from repo**. Operator must execute [SECRET_ROTATION_CHECKLIST.md](SECRET_ROTATION_CHECKLIST.md) before production cutover. Residual risk accepted for v2.1.0 staging gate only — **not** a substitute for rotation at go-live. Sign-off: ____________ |
+
+### KI-001 residual-risk acceptance (v2.1.0 gate item 11)
+
+`VPS.txt` and `New Text Document.txt` were removed from the working tree and git-ignored per [KNOWN_ISSUES.md](KNOWN_ISSUES.md) KI-001. **This repository cannot prove** that exposed credentials were rotated or that history was purged on remotes/clones.
+
+**Accepted for v2.1.0 release-gate review** on the understanding that:
+
+1. Staging/hardening deploys may proceed for regression and audit completion.
+2. **Production go-live remains blocked** until rotation and history purge are operator-verified (see KI-001 and [GO_LIVE_CHECKLIST.md](GO_LIVE_CHECKLIST.md)).
+3. No claim is made here that secrets were rotated — only that unverified residual exposure is acknowledged and scheduled for operator action.
 
 **Gate result:** ☐ PASS · ☐ FAIL  
 

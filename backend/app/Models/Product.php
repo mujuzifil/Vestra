@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ProductStatus;
+use App\Models\MediaAssetUsage;
 use App\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -106,6 +107,16 @@ class Product extends Model
     public function warehouseStocks(): HasMany
     {
         return $this->hasMany(ProductWarehouseStock::class);
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Product $product): void {
+            MediaAssetUsage::query()
+                ->where('usable_type', self::class)
+                ->where('usable_id', $product->id)
+                ->delete();
+        });
     }
 
     public function stockMovements(): HasMany

@@ -3,7 +3,6 @@
 namespace App\Services\Admin;
 
 use App\Enums\Priority;
-use App\Models\Distributor;
 use App\Models\DistributorRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -76,9 +75,8 @@ class ApplicationAdminService
      */
     public function getDetail(DistributorRequest $application): array
     {
-        $distributor = Distributor::query()
-            ->where('distributor_request_id', $application->id)
-            ->first();
+        $application->loadMissing('distributor');
+        $distributor = $application->distributor;
 
         $documents = collect($application->documents ?? [])
             ->map(function ($document) {

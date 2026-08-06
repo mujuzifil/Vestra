@@ -7,6 +7,7 @@ use App\Models\SupportTicketReply;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class SupportAdminService
 {
@@ -152,7 +153,7 @@ class SupportAdminService
                 ->toArray(),
             'assignees' => User::query()
                 ->where(function (Builder $q): void {
-                    $q->where('is_admin', true)
+                    $q->assignableStaff()
                         ->orWhereIn('id', SupportTicket::query()->whereNotNull('assigned_to')->distinct()->pluck('assigned_to'));
                 })
                 ->orderBy('name')
@@ -190,17 +191,25 @@ class SupportAdminService
 
     private function getAvgResolutionHours(): ?float
     {
-        $resolved = SupportTicket::query()
-            ->whereNotNull('resolved_at')
-            ->get(['created_at', 'resolved_at']);
+        $query = SupportTicket::query()->whereNotNull('resolved_at');
 
-        if ($resolved->isEmpty()) {
+        if ($query->clone()->doesntExist()) {
             return null;
         }
 
-        $avgSeconds = $resolved->avg(
-            fn (SupportTicket $ticket): float => (float) $ticket->created_at->diffInSeconds($ticket->resolved_at)
-        );
+        $driver = DB::connection()->getDriverName();
+
+        $avgSeconds = match ($driver) {
+            'sqlite' => $query->selectRaw(
+                'AVG(CAST((julianday(resolved_at) - julianday(created_at)) * 86400 AS REAL)) as avg_seconds'
+            )->value('avg_seconds'),
+            'pgsql' => $query->selectRaw(
+                'AVG(EXTRACT(EPOCH FROM (resolved_at - created_at))) as avg_seconds'
+            )->value('avg_seconds'),
+            default => $query->selectRaw(
+                'AVG(TIMESTAMPDIFF(SECOND, created_at, resolved_at)) as avg_seconds'
+            )->value('avg_seconds'),
+        };
 
         if ($avgSeconds === null) {
             return null;

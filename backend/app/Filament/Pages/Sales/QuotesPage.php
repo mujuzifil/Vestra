@@ -170,9 +170,7 @@ class QuotesPage extends Page
     public function getAssigneesProperty(): array
     {
         return User::query()
-            ->where(function ($q): void {
-                $q->where('is_admin', true)->orWhereHas('roles');
-            })
+            ->assignableStaff()
             ->orderBy('name')
             ->get()
             ->map(fn (User $user) => ['id' => $user->id, 'name' => $user->name, 'initials' => $user->initials()])

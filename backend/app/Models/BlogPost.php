@@ -91,6 +91,16 @@ class BlogPost extends Model
         return $this->hasMany(BlogPostView::class);
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(function (BlogPost $post): void {
+            MediaAssetUsage::query()
+                ->where('usable_type', self::class)
+                ->where('usable_id', $post->id)
+                ->delete();
+        });
+    }
+
     public function scopePublished(Builder $query): Builder
     {
         return $query

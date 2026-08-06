@@ -16,6 +16,12 @@ Status: Open / Fixed / Accepted / Won't Fix
 | D-005 | — | Admin / Inventory | `InventoryPage` access control verified: route unregistered, `mount()` Gate denies non-admin (no `canAccess()` needed — Filament redirect differs from 403) | Livewire test + route check | Accepted |
 | D-006 | Low | Public API | `PublicDistributorController::show` eager-loaded `negotiatedPrices.product` not exposed in public resource (wasted query / leak risk) | GET `/api/v1/public/distributors/{id}` | Fixed |
 | D-007 | Low | Applications | `ApplicationsPage` used `distributor()->exists()` causing redundant queries despite list `with('distributor')` | Approve/bulk-approve from applications table | Fixed |
+| D-008 | Medium | Quotes / Performance | `QuoteAdminService` list eager-loaded `items.product` and `user.companyProfile` though table only needs `items` + `companyProfile` | Admin Quotes list with line items | Fixed |
+| D-009 | Medium | Support / Performance | `SupportAdminService::getAvgResolutionHours()` loaded all resolved tickets into memory | Support KPI card on large ticket volume | Fixed |
+| D-010 | Medium | Admin / RBAC | Staff assignee/account-manager queries used `orWhereHas('roles')`, listing storefront `customer` role users in admin dropdowns | Companies/Quotes/Support filter assignee lists | Fixed |
+| D-011 | Medium | Companies / RBAC | `CompaniesPage::createSupportTicket()` authorized `view` on company only; missing `create` on `SupportTicket` | Admin creates ticket from company drawer | Fixed |
+| D-012 | Medium | Media / Integrity | `media_asset_usages` rows orphaned when owning `Product` or `BlogPost` deleted (usage count drift, stale references) | Delete product/blog still linked in media library | Fixed |
+| D-013 | — | Release gate | KI-001 rotation not verifiable from repo; residual-risk acceptance recorded for v2.1.0 gate item 11 | Review STAGE24_11_RELEASE_GATE.md § KI-001 | Accepted |
 
 ## Severity policy (ship gate)
 

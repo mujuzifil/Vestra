@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Services\Admin\CompanyService;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
@@ -181,8 +180,7 @@ class CompaniesPage extends Page
     public function getAssigneesProperty(): array
     {
         return User::query()
-            ->where('is_admin', true)
-            ->orWhereHas('roles')
+            ->assignableStaff()
             ->orderBy('name')
             ->get()
             ->map(fn (User $user) => ['id' => $user->id, 'name' => $user->name, 'initials' => $user->initials()])
@@ -376,6 +374,8 @@ class CompaniesPage extends Page
         if (empty($this->selectedCompanyId)) {
             return;
         }
+
+        Gate::authorize('create', SupportTicket::class);
 
         $profile = CompanyProfile::query()->findOrFail($this->selectedCompanyId);
         Gate::authorize('view', $profile);
