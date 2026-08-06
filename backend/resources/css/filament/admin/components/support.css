@@ -925,3 +925,26 @@
     padding: 0 var(--space-3);
     font-size: var(--text-body-sm);
 }
+
+/* Six-column KPI grid (Support workspace) */
+.vestra-kpi-grid--6 {
+    grid-template-columns: repeat(1, 1fr);
+}
+
+@media (min-width: 640px) {
+    .vestra-kpi-grid--6 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .vestra-kpi-grid--6 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1440px) {
+    .vestra-kpi-grid--6 {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}

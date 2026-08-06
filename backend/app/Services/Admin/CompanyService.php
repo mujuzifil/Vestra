@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use App\Enums\CompanyStatus;
 use App\Models\AuditLog;
 use App\Models\CompanyProfile;
+use App\Models\CustomerFeedback;
 use App\Models\SupportTicket;
 use App\Models\User;
 use App\Services\AuditService;
@@ -161,6 +162,14 @@ class CompanyService
                     'priority' => $ticket->priority,
                     'created_at' => $ticket->created_at,
                 ])->toArray(),
+            'recent_feedback' => $profile->feedback()->latest()->limit(5)->get()->map(fn ($item) => [
+                'id' => $item->id,
+                'subject' => $item->subject,
+                'message' => $item->message,
+                'status' => $item->status,
+                'category' => $item->category,
+                'created_at' => $item->created_at,
+            ])->toArray(),
             'distributor' => $profile->user?->distributor ? [
                 'id' => $profile->user->distributor->id,
                 'name' => $profile->user->distributor->name ?? $profile->user->distributor->company_name,
@@ -288,6 +297,23 @@ class CompanyService
             );
 
             return $profile;
+        });
+    }
+
+    public function deactivateCompany(CompanyProfile $profile): CompanyProfile
+    {
+        return DB::transaction(function () use ($profile) {
+            $profile->status = CompanyStatus::INACTIVE;
+            $profile->save();
+
+            AuditService::log(
+                auth()->user(),
+                'company.deactivated',
+                $profile,
+                ['company_name' => $profile->company_name]
+            );
+
+            return $profile->fresh(['user', 'accountManager']);
         });
     }
 

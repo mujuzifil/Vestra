@@ -18,7 +18,7 @@ $filterOptions = $this->filterOptions;
     </section>
 
     <section class="vestra-workspace__section vestra-activity__content" aria-label="Activity feed">
-        <div class="vestra-card vestra-activity__feed-card">
+        <div class="vestra-card vestra-activity__table-card">
             <x-activity.filter-bar
                 :category-options="\App\Enums\ActivityCategory::cases()"
                 :status-options="\App\Enums\ActivityStatus::cases()"

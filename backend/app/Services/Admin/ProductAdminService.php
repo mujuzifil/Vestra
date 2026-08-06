@@ -5,7 +5,6 @@ namespace App\Services\Admin;
 use App\Enums\ProductStatus;
 use App\Enums\ProductStockStatus;
 use App\Models\Category;
-use App\Models\PaymentTransaction;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductWarehouseStock;
@@ -173,19 +172,14 @@ class ProductAdminService
         $defaultCurrency = Setting::query()->where('key', 'currency')->value('value')
             ?? Setting::query()->where('key', 'currency_code')->value('value');
 
-        $currencies = PaymentTransaction::query()
-            ->whereNotNull('currency')
-            ->where('currency', '!=', '')
-            ->distinct()
-            ->orderBy('currency')
-            ->pluck('currency')
-            ->map(fn ($code) => strtoupper((string) $code))
-            ->unique()
-            ->values()
-            ->all();
+        $currencies = [
+            'UGX', 'KES', 'TZS', 'RWF', 'BIF', 'SSP', 'ETB',
+            'USD', 'EUR', 'GBP', 'AED', 'ZAR', 'CNY', 'INR', 'JPY', 'CAD', 'AUD',
+        ];
 
         if (filled($defaultCurrency)) {
-            array_unshift($currencies, strtoupper((string) $defaultCurrency));
+            $default = strtoupper((string) $defaultCurrency);
+            array_unshift($currencies, $default);
             $currencies = array_values(array_unique($currencies));
         }
 

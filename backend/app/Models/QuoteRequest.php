@@ -39,6 +39,7 @@ class QuoteRequest extends Model
         'attachments',
         'crm_metadata',
         'user_id',
+        'company_profile_id',
     ];
 
     protected function casts(): array
@@ -66,6 +67,11 @@ class QuoteRequest extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function companyProfile(): BelongsTo
+    {
+        return $this->belongsTo(CompanyProfile::class);
     }
 
     public function statusLabel(): string

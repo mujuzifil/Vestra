@@ -128,7 +128,7 @@ $countryFlag = $countryFlags[$country] ?? null;
                     <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
                     <span>Edit</span>
                 </button>
-                <a href="{{ \App\Filament\Pages\Sales\QuotesPage::getUrl() }}" class="vestra-companies__action-item" role="menuitem">
+                <a href="{{ \App\Filament\Pages\Sales\QuotesPage::getUrl(['company' => $company->id]) }}" class="vestra-companies__action-item" role="menuitem">
                     <x-filament::icon icon="heroicon-o-document-plus" class="h-4 w-4" />
                     <span>Create Quote</span>
                 </a>
@@ -136,6 +136,12 @@ $countryFlag = $countryFlags[$country] ?? null;
                     <x-filament::icon icon="heroicon-o-clock" class="h-4 w-4" />
                     <span>View Activity</span>
                 </a>
+                @if ($company->status?->value !== 'inactive')
+                    <button type="button" wire:click="deactivateCompany({{ $company->id }})" wire:confirm="Deactivate this company?" class="vestra-companies__action-item" role="menuitem">
+                        <x-filament::icon icon="heroicon-o-minus-circle" class="h-4 w-4" />
+                        <span>Deactivate</span>
+                    </button>
+                @endif
                 <button type="button" wire:click="deleteCompany({{ $company->id }})" wire:confirm="Are you sure you want to delete this company?" class="vestra-companies__action-item vestra-companies__action-item--danger" role="menuitem">
                     <x-filament::icon icon="heroicon-o-trash" class="h-4 w-4" />
                     <span>Delete</span>

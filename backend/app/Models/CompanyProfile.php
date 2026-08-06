@@ -53,7 +53,12 @@ class CompanyProfile extends Model
 
     public function quoteRequests(): HasMany
     {
-        return $this->hasMany(QuoteRequest::class, 'user_id', 'user_id');
+        return $this->hasMany(QuoteRequest::class, 'company_profile_id');
+    }
+
+    public function feedback(): HasMany
+    {
+        return $this->hasMany(CustomerFeedback::class, 'user_id', 'user_id');
     }
 
     public function supportTickets(): HasMany
@@ -106,7 +111,11 @@ class CompanyProfile extends Model
                 ->orWhereRaw('LOWER(primary_contact_email) LIKE ?', [$term])
                 ->orWhereRaw('LOWER(primary_contact_phone) LIKE ?', [$term])
                 ->orWhereRaw('LOWER(tax_identification) LIKE ?', [$term])
-                ->orWhereRaw('LOWER(registration_number) LIKE ?', [$term]);
+                ->orWhereRaw('LOWER(registration_number) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(country) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(region) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(city) LIKE ?', [$term])
+                ->orWhereRaw('LOWER(district) LIKE ?', [$term]);
         });
     }
 

@@ -1046,14 +1046,16 @@
     color: var(--text-body);
 }
 
-.vestra-blog-article__toolbar button:hover,
-.vestra-blog-article__toolbar button.is-active {
+.vestra-blog-article__toolbar button:hover {
     background: #e2e8f0;
 }
 
-.vestra-blog-article__toolbar button.is-active {
-    color: var(--primary-700);
-    box-shadow: inset 0 0 0 1px rgba(13, 59, 102, 0.15);
+.vestra-blog-article__toolbar button.is-active,
+.vestra-blog-article__toolbar button[aria-pressed='true'] {
+    background: #dbeafe;
+    color: var(--primary-800, #0d3b66);
+    box-shadow: inset 0 0 0 1.5px rgba(13, 59, 102, 0.35);
+    font-weight: 700;
 }
 
 .vestra-blog-article__toolbar-sep {

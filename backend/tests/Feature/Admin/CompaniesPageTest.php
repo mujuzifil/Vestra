@@ -301,6 +301,24 @@ class CompaniesPageTest extends TestCase
         $this->assertDatabaseMissing('company_profiles', ['id' => $profile->id]);
     }
 
+    public function test_admin_can_deactivate_company(): void
+    {
+        $admin = $this->admin();
+        $profile = CompanyProfile::factory()->create([
+            'status' => CompanyStatus::ACTIVE->value,
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(CompaniesPage::class)
+            ->call('deactivateCompany', $profile->id)
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('company_profiles', [
+            'id' => $profile->id,
+            'status' => CompanyStatus::INACTIVE->value,
+        ]);
+    }
+
     public function test_export_returns_filtered_rows(): void
     {
         $admin = $this->admin();

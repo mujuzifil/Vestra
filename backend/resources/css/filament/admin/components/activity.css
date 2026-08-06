@@ -12,9 +12,9 @@
     margin-top: var(--space-2);
 }
 
-.vestra-activity__feed-card {
+.vestra-activity__table-card {
     padding: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .vestra-kpi-grid--5 {
@@ -297,212 +297,133 @@
 }
 
 /* ==========================================================================
-   Activity Feed
+   Activity Table
    ========================================================================== */
-.vestra-activity__feed {
-    display: flex;
-    flex-direction: column;
+.vestra-activity__table-wrap {
+    overflow-x: auto;
+    overflow-y: visible;
 }
 
-.vestra-activity__feed-header {
-    display: none;
-    align-items: center;
-    gap: var(--space-4);
-    padding: var(--space-3) var(--space-4);
-    border-bottom: 1px solid var(--border-default);
+.vestra-activity__table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+.vestra-activity__table thead {
     background-color: var(--neutral-50);
+    border-bottom: 1px solid var(--border-default);
+}
+
+.vestra-activity__th {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
     font-size: var(--text-caption);
     font-weight: var(--font-semibold);
-    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    color: var(--text-muted);
+    white-space: nowrap;
 }
 
-.vestra-activity__feed-col {
-    display: flex;
-    align-items: center;
-}
-
-.vestra-activity__feed-col--select {
-    width: 40px;
-    flex-shrink: 0;
-}
-
-.vestra-activity__feed-col--activity {
-    flex: 1;
-    min-width: 0;
-}
-
-.vestra-activity__feed-col--module {
-    width: 120px;
-    flex-shrink: 0;
-}
-
-.vestra-activity__feed-col--user {
-    width: 160px;
-    flex-shrink: 0;
-}
-
-.vestra-activity__feed-col--time {
-    width: 140px;
-    flex-shrink: 0;
-}
-
-.vestra-activity__feed-col--details {
-    width: 100px;
-    flex-shrink: 0;
-    justify-content: flex-end;
-}
-
-.vestra-activity__feed-body {
-    padding: var(--space-4) 0;
-}
-
-.vestra-activity__timeline {
-    position: relative;
-    padding-left: var(--space-4);
-}
-
-.vestra-activity__timeline::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: calc(var(--space-4) + 20px);
-    width: 2px;
-    background-color: var(--border-default);
-}
-
-/* ==========================================================================
-   Activity Card
-   ========================================================================== */
-.vestra-activity-card {
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    gap: var(--space-3);
-    padding: var(--space-2) var(--space-4);
+.vestra-activity__row {
     border-bottom: 1px solid var(--border-default);
-    background-color: var(--surface-card);
     transition: background-color var(--duration-fast) var(--ease-base);
 }
 
-.vestra-activity-card:last-child {
-    border-bottom: 0;
-}
-
-.vestra-activity-card:last-child .vestra-activity-card__timeline-line {
-    display: none;
-}
-
-.vestra-activity-card:hover {
+.vestra-activity__row:hover {
     background-color: var(--neutral-50);
 }
 
-.vestra-activity-card--selected {
+.vestra-activity__row--selected {
     background-color: var(--primary-50);
 }
 
-.vestra-activity-card__select {
+.vestra-activity__td {
+    padding: var(--space-3) var(--space-4);
+    vertical-align: middle;
+}
+
+.vestra-activity__cell-text {
+    font-size: var(--text-body-sm);
+    color: var(--text-body);
+}
+
+.vestra-activity__row-meta {
+    display: block;
+    margin-top: 2px;
+    color: var(--text-muted);
+    font-size: var(--text-caption);
+}
+
+.vestra-activity__activity-cell {
     display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.vestra-activity__activity-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+}
+
+.vestra-activity__title {
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text-heading);
+}
+
+.vestra-activity__badges {
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    padding-top: var(--space-1);
-    flex-shrink: 0;
-    width: 28px;
+    gap: var(--space-1);
 }
 
-.vestra-activity-card__checkbox {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--primary-500);
-    cursor: pointer;
-}
-
-.vestra-activity-card__timeline-marker {
-    display: none;
-}
-
-.vestra-activity-card__icon-wrapper {
-    flex-shrink: 0;
-}
-
-.vestra-activity-card__icon {
+.vestra-activity__icon {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 32px;
     height: 32px;
     border-radius: var(--radius-md);
+    flex-shrink: 0;
 }
 
-.vestra-activity-card__icon--primary {
+.vestra-activity__icon--primary {
     background-color: var(--primary-100);
     color: var(--primary-600);
 }
 
-.vestra-activity-card__icon--success {
+.vestra-activity__icon--success {
     background-color: var(--success-100);
     color: var(--success-600);
 }
 
-.vestra-activity-card__icon--danger {
+.vestra-activity__icon--danger {
     background-color: var(--danger-100);
     color: var(--danger-600);
 }
 
-.vestra-activity-card__icon--warning {
+.vestra-activity__icon--warning {
     background-color: var(--warning-100);
     color: var(--warning-600);
 }
 
-.vestra-activity-card__icon--info {
+.vestra-activity__icon--info {
     background-color: var(--info-100);
     color: var(--info-600);
 }
 
-.vestra-activity-card__icon--gray {
+.vestra-activity__icon--gray {
     background-color: var(--neutral-100);
     color: var(--neutral-600);
 }
 
-.vestra-activity-card__content {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-}
-
-.vestra-activity-card__row {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-}
-
-.vestra-activity-card__row--primary {
-    flex-wrap: wrap;
-}
-
-.vestra-activity-card__title {
-    font-size: var(--text-body-sm);
-    font-weight: var(--font-semibold);
-    color: var(--text-heading);
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.vestra-activity-card__description {
-    font-size: var(--text-caption);
-    color: var(--text-muted);
-    margin: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.vestra-activity-card__badge {
+.vestra-activity__badge {
     display: inline-flex;
     align-items: center;
     padding: 2px 10px;
@@ -512,83 +433,37 @@
     white-space: nowrap;
 }
 
-.vestra-activity-card__badge--primary {
+.vestra-activity__badge--primary {
     background-color: var(--primary-100);
     color: var(--primary-600);
 }
 
-.vestra-activity-card__badge--success {
+.vestra-activity__badge--success {
     background-color: var(--success-100);
     color: var(--success-600);
 }
 
-.vestra-activity-card__badge--danger {
+.vestra-activity__badge--danger {
     background-color: var(--danger-100);
     color: var(--danger-600);
 }
 
-.vestra-activity-card__badge--warning {
+.vestra-activity__badge--warning {
     background-color: var(--warning-100);
     color: var(--warning-600);
 }
 
-.vestra-activity-card__badge--info {
+.vestra-activity__badge--info {
     background-color: var(--info-100);
     color: var(--info-600);
 }
 
-.vestra-activity-card__badge--gray {
+.vestra-activity__badge--gray {
     background-color: var(--neutral-100);
     color: var(--neutral-600);
 }
 
-.vestra-activity-card__meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2);
-    margin-top: 0;
-}
-
-.vestra-activity-card__meta-item {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1);
-    font-size: var(--text-caption);
-    color: var(--text-muted);
-}
-
-.vestra-activity-card__meta-item--module {
-    font-weight: var(--font-medium);
-    color: var(--text-body);
-}
-
-.vestra-activity-card__meta-item--user {
-    color: var(--text-body);
-}
-
-.vestra-activity-card__avatar {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.vestra-activity-card__avatar--initials {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--primary-100);
-    color: var(--primary-700);
-    font-size: 10px;
-    font-weight: var(--font-semibold);
-}
-
-.vestra-activity-card__actions {
-    display: none;
-}
-
-.vestra-activity-card__status {
+.vestra-activity__status {
     display: inline-flex;
     align-items: center;
     gap: var(--space-1);
@@ -599,48 +474,69 @@
     white-space: nowrap;
 }
 
-.vestra-activity-card__status--success {
+.vestra-activity__status--success {
     background-color: var(--success-100);
     color: var(--success-600);
 }
 
-.vestra-activity-card__status--danger {
+.vestra-activity__status--danger {
     background-color: var(--danger-100);
     color: var(--danger-600);
 }
 
-.vestra-activity-card__status--warning {
+.vestra-activity__status--warning {
     background-color: var(--warning-100);
     color: var(--warning-600);
 }
 
-.vestra-activity-card__status--info {
+.vestra-activity__status--info {
     background-color: var(--info-100);
     color: var(--info-600);
 }
 
-.vestra-activity-card__action {
-    display: inline-flex;
+.vestra-activity__user {
+    display: flex;
     align-items: center;
-    gap: var(--space-1);
-    height: 32px;
-    padding: 0 var(--space-2);
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-md);
-    background-color: transparent;
-    color: var(--text-muted);
-    font-size: var(--text-caption);
-    font-weight: var(--font-medium);
-    cursor: pointer;
-    transition: background-color var(--duration-fast) var(--ease-base),
-                color var(--duration-fast) var(--ease-base),
-                border-color var(--duration-fast) var(--ease-base);
+    gap: var(--space-2);
+    min-width: 0;
 }
 
-.vestra-activity-card__action:hover {
-    background-color: var(--neutral-100);
-    color: var(--text-heading);
-    border-color: var(--border-hover);
+.vestra-activity__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--primary-100);
+    color: var(--primary-700);
+    font-size: 10px;
+    font-weight: var(--font-semibold);
+    flex-shrink: 0;
+}
+
+.vestra-activity__user-name {
+    font-size: var(--text-body-sm);
+    color: var(--text-body);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.vestra-activity__time {
+    font-size: var(--text-body-sm);
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.vestra-activity__details {
+    display: block;
+    max-width: 220px;
+    font-size: var(--text-caption);
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* ==========================================================================
@@ -700,6 +596,11 @@
     color: var(--text-muted);
 }
 
+.vestra-activity__pagination-info strong {
+    color: var(--text-heading);
+    font-weight: var(--font-semibold);
+}
+
 .vestra-activity__pagination-controls {
     display: flex;
     align-items: center;
@@ -710,24 +611,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 36px;
-    height: 36px;
+    min-width: 32px;
+    height: 32px;
     padding: 0 var(--space-2);
     border: 1px solid var(--border-default);
     border-radius: var(--radius-md);
     background-color: var(--surface-card);
-    color: var(--text-body);
+    color: var(--text-heading);
     font-size: var(--text-body-sm);
     font-weight: var(--font-medium);
     cursor: pointer;
-    transition: border-color var(--duration-fast) var(--ease-base),
-                background-color var(--duration-fast) var(--ease-base),
-                color var(--duration-fast) var(--ease-base);
+    transition: background-color var(--duration-fast) var(--ease-base),
+                border-color var(--duration-fast) var(--ease-base);
 }
 
 .vestra-activity__pagination-btn:hover:not(:disabled) {
+    background-color: var(--neutral-100);
     border-color: var(--border-hover);
-    background-color: var(--neutral-50);
 }
 
 .vestra-activity__pagination-btn:disabled {
@@ -745,8 +645,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 36px;
-    height: 36px;
+    min-width: 32px;
+    height: 32px;
     color: var(--text-muted);
     font-size: var(--text-body-sm);
 }
@@ -1056,27 +956,3 @@
 /* ==========================================================================
    Responsive
    ========================================================================== */
-@media (min-width: 768px) {
-    .vestra-activity__feed-header {
-        display: flex;
-    }
-
-    .vestra-activity__timeline {
-        padding-left: var(--space-2);
-    }
-
-    .vestra-activity__timeline::before {
-        left: calc(40px + 20px + var(--space-2));
-    }
-}
-
-@media (min-width: 1024px) {
-    .vestra-activity-card__actions {
-        opacity: 0.7;
-        transition: opacity var(--duration-fast) var(--ease-base);
-    }
-
-    .vestra-activity-card:hover .vestra-activity-card__actions {
-        opacity: 1;
-    }
-}

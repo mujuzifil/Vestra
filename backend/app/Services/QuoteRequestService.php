@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Mail;
 
 class QuoteRequestService
 {
+    public function __construct(
+        private readonly CompanyProfileService $companyProfiles,
+    ) {}
+
     public function submit(array $data): QuoteRequest
     {
         return DB::transaction(function () use ($data) {
@@ -20,9 +24,14 @@ class QuoteRequestService
             $attachments = $data['attachments'] ?? null;
             unset($data['attachments']);
 
+            $companyProfile = $user !== null
+                ? $this->companyProfiles->requireForAuthenticatedUser($user, $data)
+                : $this->companyProfiles->resolveForQuote(null, $data);
+
             $quote = QuoteRequest::create([
                 'reference_number' => $this->generateReference(),
-                'user_id' => $user?->id,
+                'user_id' => $user?->id ?? $companyProfile?->user_id,
+                'company_profile_id' => $companyProfile?->id,
                 'full_name' => $data['full_name'],
                 'company_name' => $data['company_name'],
                 'email' => $data['email'],
@@ -54,7 +63,7 @@ class QuoteRequestService
                 $quote->save();
             }
 
-            $quote->load('items');
+            $quote->load(['items', 'companyProfile']);
 
             event(new QuoteRequestSubmitted($quote));
 

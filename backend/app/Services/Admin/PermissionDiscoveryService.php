@@ -259,6 +259,7 @@ class PermissionDiscoveryService
             'BlogArticlePage' => \App\Models\BlogPost::class,
             'MediaPage' => \App\Models\MediaAsset::class,
             'CompaniesPage' => \App\Models\CompanyProfile::class,
+            'QuotesPage' => \App\Models\QuoteRequest::class,
             'SupportPage' => \App\Models\SupportTicket::class,
             'EnquiriesPage' => \App\Models\ContactMessage::class,
             'FeedbackPage' => \App\Models\CustomerFeedback::class,

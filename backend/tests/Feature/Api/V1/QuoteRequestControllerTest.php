@@ -66,6 +66,16 @@ class QuoteRequestControllerTest extends TestCase
             'source' => 'website',
         ]);
 
+        $quote = QuoteRequest::query()->where('email', 'john@acme.com')->first();
+        $this->assertNotNull($quote);
+        $this->assertNotNull($quote->company_profile_id);
+        $this->assertNotNull($quote->user_id);
+        $this->assertDatabaseHas('company_profiles', [
+            'id' => $quote->company_profile_id,
+            'company_name' => 'Acme Ltd',
+            'primary_contact_email' => 'john@acme.com',
+        ]);
+
         $this->assertDatabaseHas('quote_request_items', [
             'product_name' => 'Heavy Duty Detergent',
             'package_size' => '20L',
@@ -127,6 +137,13 @@ class QuoteRequestControllerTest extends TestCase
         $this->assertDatabaseHas('quote_requests', [
             'email' => $user->email,
             'user_id' => $user->id,
+        ]);
+
+        $quote = QuoteRequest::query()->where('user_id', $user->id)->first();
+        $this->assertNotNull($quote?->company_profile_id);
+        $this->assertDatabaseHas('company_profiles', [
+            'user_id' => $user->id,
+            'company_name' => 'Authenticated Co',
         ]);
     }
 

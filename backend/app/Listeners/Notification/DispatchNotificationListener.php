@@ -26,6 +26,7 @@ use App\Events\Notification\ProfileUpdated;
 use App\Events\Notification\QuotationApproved;
 use App\Events\Notification\QuotationRejected;
 use App\Events\Notification\QuotationSubmitted;
+use App\Events\Notification\QuoteRequestStatusChanged;
 use App\Events\Notification\QuoteRequestSubmitted;
 use App\Events\Notification\ReviewApproved;
 use App\Events\Notification\ReviewReplied;
@@ -288,6 +289,23 @@ class DispatchNotificationListener
                             'reference_number' => $event->quoteRequest->reference_number,
                         ],
                     ],
+                ],
+            ],
+            $event instanceof QuoteRequestStatusChanged => [
+                'users' => $this->usersFromQuoteRequest($event->quoteRequest),
+                'template' => match ($event->newStatus) {
+                    'approved' => 'quote_request.approved',
+                    'declined' => 'quote_request.declined',
+                    default => 'quote_request.status_changed',
+                },
+                'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                'topic' => 'order_updates',
+                'variables' => [
+                    'customer_name' => $event->quoteRequest->full_name,
+                    'company_name' => $event->quoteRequest->company_name,
+                    'reference_number' => $event->quoteRequest->reference_number,
+                    'previous_status' => $event->previousStatus,
+                    'new_status' => $event->newStatus,
                 ],
             ],
             $event instanceof QuotationApproved => [

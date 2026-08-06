@@ -9,6 +9,7 @@ use App\Services\DistributorOnboardingService;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Url;
 use Livewire\WithPagination;
 
@@ -169,10 +170,20 @@ class ApplicationsPage extends Page
             return;
         }
 
-        app(DistributorOnboardingService::class)->approve($application, auth()->user());
+        try {
+            app(DistributorOnboardingService::class)->approve($application, auth()->user());
+        } catch (ValidationException $exception) {
+            Notification::make()
+                ->title('Unable to approve application')
+                ->body(collect($exception->errors())->flatten()->first() ?? 'Validation failed.')
+                ->danger()
+                ->send();
+
+            return;
+        }
 
         if ($this->selectedApplicationId === $id) {
-            $this->closeDetailDrawer();
+            $this->showDetailDrawer = true;
         }
 
         Notification::make()
@@ -190,10 +201,20 @@ class ApplicationsPage extends Page
             return;
         }
 
-        app(DistributorOnboardingService::class)->reject($application, null, auth()->user());
+        try {
+            app(DistributorOnboardingService::class)->reject($application, null, auth()->user());
+        } catch (ValidationException $exception) {
+            Notification::make()
+                ->title('Unable to reject application')
+                ->body(collect($exception->errors())->flatten()->first() ?? 'Validation failed.')
+                ->danger()
+                ->send();
+
+            return;
+        }
 
         if ($this->selectedApplicationId === $id) {
-            $this->closeDetailDrawer();
+            $this->showDetailDrawer = true;
         }
 
         Notification::make()
@@ -217,8 +238,16 @@ class ApplicationsPage extends Page
 
             if ($application->status !== DistributorStatus::APPROVED
                 || ! $application->distributor()->exists()) {
-                $service->approve($application, auth()->user());
-                $count++;
+                try {
+                    $service->approve($application, auth()->user());
+                    $count++;
+                } catch (ValidationException $exception) {
+                    Notification::make()
+                        ->title('Unable to approve application')
+                        ->body(collect($exception->errors())->flatten()->first() ?? 'Validation failed.')
+                        ->danger()
+                        ->send();
+                }
             }
         }
 
@@ -244,8 +273,16 @@ class ApplicationsPage extends Page
             Gate::authorize('update', $application);
 
             if ($application->status !== DistributorStatus::REJECTED) {
-                $service->reject($application, null, auth()->user());
-                $count++;
+                try {
+                    $service->reject($application, null, auth()->user());
+                    $count++;
+                } catch (ValidationException $exception) {
+                    Notification::make()
+                        ->title('Unable to reject application')
+                        ->body(collect($exception->errors())->flatten()->first() ?? 'Validation failed.')
+                        ->danger()
+                        ->send();
+                }
             }
         }
 

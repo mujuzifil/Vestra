@@ -50,7 +50,7 @@ $location = collect([$application->region, $application->country])->filter()->im
         <x-applications.priority-badge :priority="$application->priority" />
     </td>
 
-    <td class="vestra-applications__td vestra-applications__td--status">
+    <td class="vestra-applications__td vestra-applications__td--status" wire:key="application-status-{{ $application->id }}-{{ $application->status?->value ?? 'unknown' }}">
         <x-applications.status-badge :status="$application->status" />
     </td>
 

@@ -234,6 +234,11 @@ class QuotesPageTest extends TestCase
             'id' => $quote->id,
             'status' => QuoteRequestStatus::APPROVED->value,
         ]);
+
+        $this->assertDatabaseHas('audit_logs', [
+            'action' => 'quote.status_changed',
+            'subject_id' => $quote->id,
+        ]);
     }
 
     public function test_admin_can_edit_quote_via_form(): void

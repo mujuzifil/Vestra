@@ -30,6 +30,7 @@ abstract class TestCase extends BaseTestCase
         // seeders, service providers, and middleware use test-safe behaviour
         // (e.g. AdminUserSeeder resets the bootstrap admin password).
         $app['config']->set('app.env', 'testing');
+        $app['config']->set('app.key', 'base64:2fl+KtvkdphvQyVfDOjODBFD+/+bPzKWF4z/3jH2Q8A=');
         $app->detectEnvironment(fn () => 'testing');
 
         return $app;

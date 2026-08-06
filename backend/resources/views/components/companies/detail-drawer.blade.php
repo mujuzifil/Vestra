@@ -66,7 +66,7 @@
                 </div>
 
                 <div class="vestra-companies-detail__quick-actions">
-                    <a href="{{ \App\Filament\Pages\Sales\QuotesPage::getUrl() }}" class="vestra-companies-detail__quick-action">
+                    <a href="{{ \App\Filament\Pages\Sales\QuotesPage::getUrl(['company' => $company['id']]) }}" class="vestra-companies-detail__quick-action">
                         <x-filament::icon icon="heroicon-o-document-plus" class="h-4 w-4" />
                         <span>Create Quote</span>
                     </a>
@@ -78,6 +78,12 @@
                         <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
                         <span>Edit</span>
                     </button>
+                    @if (($company['status']?->value ?? $company['status']) !== 'inactive')
+                        <button type="button" wire:click="deactivateCompany({{ $company['id'] }})" wire:confirm="Deactivate this company?" class="vestra-companies-detail__quick-action">
+                            <x-filament::icon icon="heroicon-o-minus-circle" class="h-4 w-4" />
+                            <span>Deactivate</span>
+                        </button>
+                    @endif
                     <button type="button" wire:click="deleteCompany({{ $company['id'] }})" wire:confirm="Are you sure you want to delete this company?" class="vestra-companies-detail__quick-action vestra-companies-detail__quick-action--danger">
                         <x-filament::icon icon="heroicon-o-trash" class="h-4 w-4" />
                         <span>Delete</span>
@@ -170,7 +176,7 @@
                 <div class="vestra-companies-detail__section">
                     <div class="vestra-companies-detail__section-header">
                         <h3 class="vestra-companies-detail__section-title">Recent Quotes</h3>
-                        <a href="{{ \App\Filament\Pages\Sales\QuotesPage::getUrl() }}" class="vestra-companies-detail__section-action">
+                        <a href="{{ \App\Filament\Pages\Sales\QuotesPage::getUrl(['company' => $company['id']]) }}" class="vestra-companies-detail__section-action">
                             <x-filament::icon icon="heroicon-o-plus" class="h-3.5 w-3.5" />
                             <span>New</span>
                         </a>
@@ -191,6 +197,27 @@
                         <p class="vestra-companies-detail__empty-text">No recent quotes.</p>
                     @endif
                 </div>
+
+                @if (! empty($company['recent_feedback']))
+                    <div class="vestra-companies-detail__section">
+                        <div class="vestra-companies-detail__section-header">
+                            <h3 class="vestra-companies-detail__section-title">Recent Feedback</h3>
+                        </div>
+                        <ul class="vestra-companies-detail__record-list">
+                            @foreach ($company['recent_feedback'] as $feedback)
+                                <li class="vestra-companies-detail__record-item">
+                                    <div>
+                                        <p class="vestra-companies-detail__record-title">{{ $feedback['subject'] ?? 'Feedback' }}</p>
+                                        <p class="vestra-companies-detail__record-meta">{{ \Illuminate\Support\Str::limit($feedback['message'] ?? '', 80) }}</p>
+                                    </div>
+                                    @if ($feedback['status'])
+                                        <span class="vestra-companies-detail__badge vestra-companies-detail__badge--gray">{{ $feedback['status'] }}</span>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 <div class="vestra-companies-detail__section">
                     <div class="vestra-companies-detail__section-header">

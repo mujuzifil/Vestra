@@ -229,6 +229,13 @@ class ApplicationsPageTest extends TestCase
             'company_name' => $application->company_name,
         ]);
 
+        $user = User::query()->where('email', $application->email)->first();
+        $this->assertNotNull($user);
+        $this->assertDatabaseHas('company_profiles', [
+            'user_id' => $user->id,
+            'company_name' => $application->company_name,
+        ]);
+
         $this->assertDatabaseHas('audit_logs', [
             'action' => 'distributor_approved',
             'user_id' => $admin->id,

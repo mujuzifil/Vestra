@@ -266,6 +266,31 @@ $backUrl = \App\Filament\Pages\Marketing\BlogPage::getUrl();
                 }
             });
         },
+        scheduleToolbarUpdate() {
+            requestAnimationFrame(() => {
+                this.updateToolbarState();
+                setTimeout(() => this.updateToolbarState(), 0);
+            });
+        },
+        restoreEditorSelection() {
+            const editor = this.$refs.editor;
+            if (! editor) {
+                return;
+            }
+
+            editor.focus();
+
+            const selection = window.getSelection();
+            if (selection && selection.rangeCount > 0 && editor.contains(selection.anchorNode)) {
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(editor);
+            range.collapse(false);
+            selection?.removeAllRanges();
+            selection?.addRange(range);
+        },
         updateToolbarState() {
             const editor = this.$refs.editor;
             if (! editor) {
@@ -279,10 +304,6 @@ $backUrl = \App\Filament\Pages\Marketing\BlogPage::getUrl();
 
             const anchor = selection.anchorNode;
             if (! anchor || ! editor.contains(anchor)) {
-                Object.keys(this.active).forEach((key) => {
-                    this.active[key] = false;
-                });
-
                 return;
             }
 
@@ -299,34 +320,38 @@ $backUrl = \App\Filament\Pages\Marketing\BlogPage::getUrl();
             this.active.pre = block.includes('pre');
         },
         format(cmd) {
+            this.restoreEditorSelection();
             document.execCommand(cmd, false, null);
             this.sync();
-            this.updateToolbarState();
+            this.scheduleToolbarUpdate();
         },
         formatBlock(tag) {
+            this.restoreEditorSelection();
             document.execCommand('formatBlock', false, tag);
             this.sync();
-            this.updateToolbarState();
+            this.scheduleToolbarUpdate();
         },
         insertLink() {
             const url = window.prompt('Enter URL');
             if (url) {
+                this.restoreEditorSelection();
                 document.execCommand('createLink', false, url);
                 this.sync();
-                this.updateToolbarState();
+                this.scheduleToolbarUpdate();
             }
         },
         insertImage() {
             this.$wire.openInlineMediaPicker();
         },
         insertTable() {
+            this.restoreEditorSelection();
             document.execCommand(
                 'insertHTML',
                 false,
                 '<table><thead><tr><th>Header</th><th>Header</th></tr></thead><tbody><tr><td>Cell</td><td>Cell</td></tr></tbody></table><p></p>'
             );
             this.sync();
-            this.updateToolbarState();
+            this.scheduleToolbarUpdate();
         },
         sync() {
             this.html = this.$refs.editor.innerHTML;

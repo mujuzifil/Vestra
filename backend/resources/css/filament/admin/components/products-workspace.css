@@ -1180,7 +1180,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 4.25rem;
+    min-width: 4.75rem;
     padding: 0 0.75rem;
     border: 1px solid var(--border-default, #cbd5e1);
     border-radius: 0 var(--radius-md, 6px) var(--radius-md, 6px) 0;
@@ -1191,7 +1191,19 @@
 }
 
 .vestra-products-form__affix-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     cursor: pointer;
+    padding-right: 1.75rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.4rem center;
+    background-size: 0.875rem 0.875rem;
+}
+
+.vestra-products-form__affix-select::-ms-expand {
+    display: none;
 }
 
 .vestra-products-form__toggle {

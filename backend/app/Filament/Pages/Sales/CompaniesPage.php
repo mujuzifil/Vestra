@@ -358,6 +358,19 @@ class CompaniesPage extends Page
         $this->resetPage();
     }
 
+    public function deactivateCompany(int $id): void
+    {
+        $profile = CompanyProfile::query()->findOrFail($id);
+        Gate::authorize('update', $profile);
+
+        $this->getCompanyServiceProperty()->deactivateCompany($profile);
+
+        Notification::make()
+            ->title('Company deactivated')
+            ->success()
+            ->send();
+    }
+
     public function createSupportTicket(): void
     {
         if (empty($this->selectedCompanyId)) {

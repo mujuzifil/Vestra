@@ -49,6 +49,9 @@ class QuotesPage extends Page
     #[Url(as: 'assigned_to')]
     public ?int $assignedToFilter = null;
 
+    #[Url(as: 'company')]
+    public ?int $companyFilter = null;
+
     #[Url(as: 'date_from')]
     public ?string $dateFrom = null;
 
@@ -188,6 +191,7 @@ class QuotesPage extends Page
             'district' => $this->districtFilter,
             'city' => $this->cityFilter,
             'assigned_to' => $this->assignedToFilter,
+            'company_profile_id' => $this->companyFilter,
             'date_from' => $this->dateFrom,
             'date_until' => $this->dateUntil,
             'close_from' => $this->closeFrom,
@@ -371,6 +375,7 @@ class QuotesPage extends Page
         $this->districtFilter = [];
         $this->cityFilter = [];
         $this->assignedToFilter = null;
+        $this->companyFilter = null;
         $this->dateFrom = null;
         $this->dateUntil = null;
         $this->closeFrom = null;

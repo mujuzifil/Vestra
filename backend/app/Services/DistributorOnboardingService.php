@@ -15,6 +15,7 @@ use App\Models\DistributorServiceArea;
 use App\Models\User;
 use App\Notifications\DistributorApprovedNotification;
 use App\Services\Catalog\CatalogSyncService;
+use App\Services\CompanyProfileService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;
@@ -23,6 +24,7 @@ class DistributorOnboardingService
 {
     public function __construct(
         private readonly CatalogSyncService $catalogSync,
+        private readonly CompanyProfileService $companyProfiles,
     ) {}
 
     public function approve(DistributorRequest $request, ?User $admin = null): Distributor
@@ -47,6 +49,7 @@ class DistributorOnboardingService
 
                 $this->ensureDistributorBaselines($existingForRequest, $request);
                 $this->assignDistributorRole($existingForRequest->user);
+                $this->companyProfiles->syncFromDistributorApproval($existingForRequest->user, $request);
 
                 $this->logApproval($admin ?? $existingForRequest->user, $existingForRequest, $request, recovered: false);
                 $this->schedulePostApprovalSideEffects($existingForRequest, notify: false);
@@ -96,6 +99,7 @@ class DistributorOnboardingService
 
             $this->ensureDistributorBaselines($distributor, $request);
             $this->assignDistributorRole($user);
+            $this->linkCompanyProfile($request, $user);
 
             $this->logApproval($admin ?? $user, $distributor, $request, recovered: $orphanRecovery);
             $this->schedulePostApprovalSideEffects($distributor, notify: true);
@@ -360,6 +364,11 @@ class DistributorOnboardingService
         if (! $user->hasRole($role)) {
             $user->assignRole($role);
         }
+    }
+
+    private function linkCompanyProfile(DistributorRequest $request, User $user): void
+    {
+        $this->companyProfiles->syncFromDistributorApproval($user, $request);
     }
 
     private function logApproval(User $actor, Distributor $distributor, DistributorRequest $request, bool $recovered): void

@@ -4,6 +4,7 @@ namespace App\Services\Admin;
 
 use App\Enums\QuoteRequestPriority;
 use App\Enums\QuoteRequestStatus;
+use App\Events\Notification\QuoteRequestStatusChanged;
 use App\Models\AuditLog;
 use App\Models\QuoteRequest;
 use App\Models\SupportTicket;
@@ -29,12 +30,13 @@ class QuoteAdminService
     public function queryQuotes(array $filters = [], string $sort = 'created_at', string $direction = 'desc'): Builder
     {
         $query = QuoteRequest::query()
-            ->with(['items.product', 'assignedUser', 'user.companyProfile'])
+            ->with(['items.product', 'assignedUser', 'user.companyProfile', 'companyProfile'])
             ->withCount('items')
             ->when($filters['search'] ?? null, fn (Builder $q, string $term) => $q->search($term))
             ->when($filters['status'] ?? null, fn (Builder $q, array $statuses) => $q->statusIn($statuses))
             ->when($filters['priority'] ?? null, fn (Builder $q, array $priorities) => $q->priorityIn($priorities))
             ->when($filters['assigned_to'] ?? null, fn (Builder $q, int $id) => $q->where('assigned_to', $id))
+            ->when($filters['company_profile_id'] ?? null, fn (Builder $q, int $id) => $q->where('company_profile_id', $id))
             ->when($filters['district'] ?? null, fn (Builder $q, array $districts) => $q->whereIn('district', $districts))
             ->when($filters['city'] ?? null, fn (Builder $q, array $cities) => $q->whereIn('city', $cities))
             ->when($filters['date_from'] ?? null, fn (Builder $q, string $from) => $q->whereDate('created_at', '>=', $from))
@@ -109,9 +111,9 @@ class QuoteAdminService
      */
     public function getQuoteDetail(QuoteRequest $quote): array
     {
-        $quote->load(['items.product', 'assignedUser', 'user.companyProfile']);
+        $quote->load(['items.product', 'assignedUser', 'user.companyProfile', 'companyProfile']);
 
-        $companyProfile = $quote->user?->companyProfile;
+        $companyProfile = $quote->companyProfile ?? $quote->user?->companyProfile;
 
         return [
             'id' => $quote->id,
@@ -220,7 +222,8 @@ class QuoteAdminService
 
             $quote->save();
 
-            $action = ($previousStatus !== $quote->status?->value) ? 'quote.status_changed' : 'quote.updated';
+            $statusChanged = $previousStatus !== $quote->status?->value;
+            $action = $statusChanged ? 'quote.status_changed' : 'quote.updated';
 
             AuditService::log(
                 auth()->user(),
@@ -234,7 +237,17 @@ class QuoteAdminService
                 ]
             );
 
-            return $quote->fresh(['items.product', 'assignedUser', 'user.companyProfile']);
+            $fresh = $quote->fresh(['items.product', 'assignedUser', 'user.companyProfile', 'companyProfile']);
+
+            if ($statusChanged && $previousStatus !== null && $fresh->status?->value !== null) {
+                event(new QuoteRequestStatusChanged(
+                    $fresh,
+                    $previousStatus,
+                    $fresh->status->value,
+                ));
+            }
+
+            return $fresh;
         });
     }
 
