@@ -24,6 +24,11 @@ class OpportunitiesPage extends Page
 
     protected static ?string $slug = 'sales/opportunities';
 
+    public static function canAccess(): bool
+    {
+        return false;
+    }
+
     public function getTitle(): string
     {
         return 'Opportunities';

@@ -9,7 +9,13 @@ Status: Open / Fixed / Accepted / Won't Fix
 
 | ID | Severity | Module | Summary | Repro | Status |
 |----|----------|--------|---------|-------|--------|
-| — | — | — | *(seeded empty; fill during audit waves)* | — | — |
+| D-001 | High | Quotes / E2E | Public quote submit could persist `QuoteRequest` without `company_profile_id` when profile resolution returned null | POST `/api/v1/quote-requests` with edge-case missing email resolution | Fixed |
+| D-002 | Medium | Account / Quotes | Account portal scoped quotes by `user_id` only; quotes linked solely via `company_profile_id` were invisible to the owning customer | Submit guest quote → register → GET `/api/v1/account/quotes` | Fixed |
+| D-003 | Medium | CompanyProfile / API | Customer company update used unrestricted mass assignment; privileged fields (`status`, `account_manager_id`) could be injected if validation expanded | PUT `/api/v1/account/company` with `status=active` | Fixed |
+| D-004 | Medium | Admin / Hidden pages | Stub Pipeline & Opportunities pages had no `canAccess()` guard if re-registered | Direct Filament route to `/sales/pipeline` or `/sales/opportunities` | Fixed |
+| D-005 | — | Admin / Inventory | `InventoryPage` access control verified: route unregistered, `mount()` Gate denies non-admin (no `canAccess()` needed — Filament redirect differs from 403) | Livewire test + route check | Accepted |
+| D-006 | Low | Public API | `PublicDistributorController::show` eager-loaded `negotiatedPrices.product` not exposed in public resource (wasted query / leak risk) | GET `/api/v1/public/distributors/{id}` | Fixed |
+| D-007 | Low | Applications | `ApplicationsPage` used `distributor()->exists()` causing redundant queries despite list `with('distributor')` | Approve/bulk-approve from applications table | Fixed |
 
 ## Severity policy (ship gate)
 
@@ -20,3 +26,8 @@ Status: Open / Fixed / Accepted / Won't Fix
 ## Related known issues (pre-existing)
 
 See [KNOWN_ISSUES.md](KNOWN_ISSUES.md). Reassess for gate, especially KI-001.
+
+## Audit notes (no defect filed)
+
+- Notification template keys `quote_request.approved|declined|status_changed` match `DispatchNotificationListener` and `NotificationTemplateSeeder` (verified, no change required).
+- `CompaniesPage` / `QuotesPage` / `ApplicationsPage` list queries already use appropriate `with()` / `withCount()` in admin services (verified).

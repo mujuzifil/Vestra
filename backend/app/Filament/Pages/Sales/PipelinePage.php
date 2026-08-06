@@ -24,6 +24,11 @@ class PipelinePage extends Page
 
     protected static ?string $slug = 'sales/pipeline';
 
+    public static function canAccess(): bool
+    {
+        return false;
+    }
+
     public function getTitle(): string
     {
         return 'Pipeline';

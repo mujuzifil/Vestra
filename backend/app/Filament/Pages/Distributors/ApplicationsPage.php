@@ -166,7 +166,7 @@ class ApplicationsPage extends Page
         Gate::authorize('update', $application);
 
         if ($application->status === DistributorStatus::APPROVED
-            && $application->distributor()->exists()) {
+            && $application->distributor !== null) {
             return;
         }
 
@@ -237,7 +237,7 @@ class ApplicationsPage extends Page
             Gate::authorize('update', $application);
 
             if ($application->status !== DistributorStatus::APPROVED
-                || ! $application->distributor()->exists()) {
+                || $application->distributor === null) {
                 try {
                     $service->approve($application, auth()->user());
                     $count++;

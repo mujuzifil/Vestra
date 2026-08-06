@@ -62,7 +62,7 @@ class PublicDistributorController extends Controller
 
     public function show(int $id): JsonResponse
     {
-        $distributor = Distributor::with(['defaultBranch', 'serviceAreas', 'negotiatedPrices.product'])
+        $distributor = Distributor::with(['defaultBranch', 'serviceAreas'])
             ->where('status', DistributorAccountStatus::ACTIVE->value)
             ->findOrFail($id);
 

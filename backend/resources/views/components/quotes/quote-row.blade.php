@@ -42,8 +42,8 @@ $valueLabel = $quote->estimated_value !== null
     <td class="vestra-quotes__td vestra-quotes__td--company">
         <div class="vestra-quotes__company-info">
             <span class="vestra-quotes__company-name">{{ $quote->company_name ?: '—' }}</span>
-            @if ($quote->user?->companyProfile?->industry)
-                <span class="vestra-quotes__company-industry">{{ $quote->user->companyProfile->industry }}</span>
+            @if ($quote->companyProfile?->industry)
+                <span class="vestra-quotes__company-industry">{{ $quote->companyProfile->industry }}</span>
             @endif
         </div>
     </td>
