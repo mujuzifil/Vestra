@@ -326,7 +326,7 @@ class BlogArticlePage extends Page
             'form.canonical_url' => ['nullable', 'string', 'max:500'],
             'form.og_title' => ['nullable', 'string', 'max:255'],
             'form.og_description' => ['nullable', 'string', 'max:2000'],
-            'categoryIds' => ['required', 'array', 'min:1'],
+            'categoryIds' => ['nullable', 'array'],
             'categoryIds.*' => ['integer', 'exists:blog_categories,id'],
             'featuredMediaAssetId' => ['nullable', 'integer', 'exists:media_assets,id'],
         ];

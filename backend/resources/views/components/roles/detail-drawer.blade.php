@@ -6,7 +6,7 @@
 
 <div
     class="vestra-roles-detail @if ($show) vestra-roles-detail--open @endif"
-    x-data="{ open: @js($show) }"
+    x-data="{ open: @entangle('showDetailDrawer') }"
     x-show="open"
     x-cloak
     @keydown.escape.window="if (open) $wire.closeDetailDrawer()"

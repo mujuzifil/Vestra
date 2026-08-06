@@ -60,7 +60,10 @@ class ProfilePageTest extends TestCase
 
     public function test_admin_can_view_profile_with_real_data(): void
     {
-        $admin = $this->admin();
+        $admin = $this->admin([
+            'created_at' => now()->subMonths(6),
+            'last_login_at' => now()->subDay(),
+        ]);
 
         Livewire::actingAs($admin)
             ->test(ProfilePage::class)
@@ -68,6 +71,9 @@ class ProfilePageTest extends TestCase
             ->assertSee('My Profile')
             ->assertSee($admin->name)
             ->assertSee($admin->email)
+            ->assertSee('Member Since')
+            ->assertSee('Last Login')
+            ->assertSee('Active')
             ->assertSee('Change Password')
             ->assertSee('Edit Profile')
             ->assertDontSee('Two-factor')
@@ -75,6 +81,21 @@ class ProfilePageTest extends TestCase
             ->assertDontSee('Trusted Devices')
             ->assertDontSee('Download My Data')
             ->assertDontSee('Delete Account');
+    }
+
+    public function test_profile_service_exposes_member_since_and_status(): void
+    {
+        $admin = $this->admin([
+            'last_login_at' => now()->subHours(2),
+        ]);
+
+        $payload = app(ProfileAdminService::class)->getProfile($admin);
+
+        $this->assertArrayHasKey('member_since', $payload);
+        $this->assertSame($admin->created_at?->toDateTimeString(), $payload['member_since']?->toDateTimeString());
+        $this->assertSame('active', $payload['status']);
+        $this->assertSame('Active', $payload['status_label']);
+        $this->assertSame($admin->last_login_at?->toDateTimeString(), $payload['last_login_at']?->toDateTimeString());
     }
 
     public function test_edit_profile_persists_changes(): void

@@ -260,6 +260,20 @@ class BlogPageTest extends TestCase
         $this->assertStringContainsString('/marketing/blog/article', $url);
     }
 
+    public function test_article_editor_hides_removed_sidebar_cards(): void
+    {
+        $admin = $this->admin();
+
+        Livewire::actingAs($admin)
+            ->test(\App\Filament\Pages\Marketing\BlogArticlePage::class)
+            ->assertSuccessful()
+            ->assertDontSee('SEO & Visibility')
+            ->assertDontSee('Meta Title')
+            ->assertDontSee('Choose one or more categories')
+            ->assertSee('Publishing')
+            ->assertSee('Organization');
+    }
+
     public function test_admin_can_create_article_via_article_page(): void
     {
         $admin = $this->admin();

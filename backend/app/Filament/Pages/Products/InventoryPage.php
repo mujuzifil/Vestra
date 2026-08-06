@@ -18,6 +18,10 @@ class InventoryPage extends Page
 
     protected static string $layout = 'filament.layouts.crm';
 
+    protected static bool $isDiscovered = false;
+
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationGroup = 'Products';
 
     protected static ?string $navigationLabel = 'Inventory';

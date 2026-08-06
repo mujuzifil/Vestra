@@ -62,7 +62,7 @@ $logoutUrl = filament()->getLogoutUrl();
             @endif
             <div>
                 <dt>Member Since</dt>
-                <dd>{{ $profile['created_at']?->format('M j, Y') ?? '—' }}</dd>
+                <dd>{{ ($profile['member_since'] ?? $profile['created_at'])?->format('M j, Y') ?? '—' }}</dd>
             </div>
             <div>
                 <dt>Last Login</dt>

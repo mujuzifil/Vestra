@@ -10,7 +10,22 @@
         }"
         @toggle-mobile-sidebar.window="mobileSidebarOpen = !mobileSidebarOpen"
         @toggle-sidebar-collapse.window="if (window.innerWidth >= 1024) { sidebarCollapsed = !sidebarCollapsed }"
-        x-init="$watch('sidebarCollapsed', value => localStorage.setItem('vestra-sidebar-collapsed', JSON.stringify(value)))"
+        x-init="
+            $watch('sidebarCollapsed', value => localStorage.setItem('vestra-sidebar-collapsed', JSON.stringify(value)));
+            try {
+                const savedScroll = sessionStorage.getItem('vestra-sidebar-scroll');
+                if (savedScroll !== null) {
+                    $nextTick(() => {
+                        const nav = document.querySelector('.vestra-sidebar__nav');
+                        if (nav) {
+                            nav.scrollTop = parseInt(savedScroll, 10) || 0;
+                        }
+                    });
+                }
+            } catch (error) {
+                // Ignore storage failures.
+            }
+        "
         class="vestra-crm"
         :class="{
             'vestra-crm--sidebar-open': mobileSidebarOpen,

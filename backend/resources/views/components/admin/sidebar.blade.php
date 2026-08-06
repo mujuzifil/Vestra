@@ -8,6 +8,52 @@ $user = filament()->auth()->user();
         open: true,
         mobileOpen: false,
         collapsed: JSON.parse(localStorage.getItem('vestra-sidebar-collapsed') || 'false'),
+        scrollKey: 'vestra-sidebar-scroll',
+        groupsKey: 'vestra-sidebar-groups',
+        readGroupExpanded(groupKey, defaultExpanded) {
+            try {
+                const saved = sessionStorage.getItem(this.groupsKey);
+                if (! saved) {
+                    return defaultExpanded;
+                }
+
+                const groups = JSON.parse(saved);
+                if (Object.prototype.hasOwnProperty.call(groups, groupKey)) {
+                    return !! groups[groupKey];
+                }
+            } catch (error) {
+                return defaultExpanded;
+            }
+
+            return defaultExpanded;
+        },
+        persistGroupExpanded(groupKey, expanded) {
+            try {
+                const saved = sessionStorage.getItem(this.groupsKey);
+                const groups = saved ? JSON.parse(saved) : {};
+                groups[groupKey] = expanded;
+                sessionStorage.setItem(this.groupsKey, JSON.stringify(groups));
+            } catch (error) {
+                // Ignore storage failures.
+            }
+        },
+        saveSidebarScroll(event) {
+            try {
+                sessionStorage.setItem(this.scrollKey, String(event.target.scrollTop));
+            } catch (error) {
+                // Ignore storage failures.
+            }
+        },
+        restoreSidebarScroll(event) {
+            try {
+                const saved = sessionStorage.getItem(this.scrollKey);
+                if (saved !== null) {
+                    event.target.scrollTop = parseInt(saved, 10) || 0;
+                }
+            } catch (error) {
+                // Ignore storage failures.
+            }
+        },
     }"
     @toggle-mobile-sidebar.window="mobileOpen = !mobileOpen"
     @toggle-sidebar-collapse.window="if (window.innerWidth >= 1024) collapsed = !collapsed"
@@ -40,23 +86,37 @@ $user = filament()->auth()->user();
         />
     </div>
 
-    <nav class="vestra-sidebar__nav" aria-label="Main">
+    <nav
+        class="vestra-sidebar__nav"
+        aria-label="Main"
+        x-init="restoreSidebarScroll($event)"
+        @scroll.debounce.150ms="saveSidebarScroll($event)"
+    >
         @foreach ($navigation as $group)
             @php
                 $groupLabel = $group->getLabel();
                 $groupItems = $group->getItems();
                 $groupActive = $group->isActive();
                 $groupCollapsed = $group->isCollapsed();
+                $groupKey = md5(($groupLabel ?? 'group').'-'.$loop->index);
+                $defaultExpanded = ! $groupCollapsed;
             @endphp
 
             <div
-                x-data="{ expanded: {{ $groupCollapsed ? 'false' : 'true' }} }"
+                x-data="{
+                    groupKey: @js($groupKey),
+                    expanded: readGroupExpanded(@js($groupKey), @js($defaultExpanded)),
+                    toggleGroup() {
+                        this.expanded = ! this.expanded;
+                        persistGroupExpanded(this.groupKey, this.expanded);
+                    },
+                }"
                 class="vestra-sidebar__group"
             >
                 @if ($groupLabel)
                     <button
                         type="button"
-                        @click="expanded = !expanded"
+                        @click="toggleGroup()"
                         class="vestra-sidebar__group-button"
                         :aria-expanded="expanded"
                     >

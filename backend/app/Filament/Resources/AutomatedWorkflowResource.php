@@ -30,6 +30,13 @@ class AutomatedWorkflowResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
+    protected static bool $shouldRegisterNavigation = false;
+
+    public static function getNavigationItems(): array
+    {
+        return [];
+    }
+
     public static function getCommonEvents(): array
     {
         return [
@@ -257,7 +264,6 @@ class AutomatedWorkflowResource extends Resource
     {
         return [
             'index' => Pages\ListAutomatedWorkflows::route('/'),
-            'create' => Pages\CreateAutomatedWorkflow::route('/create'),
             'edit' => Pages\EditAutomatedWorkflow::route('/{record}/edit'),
         ];
     }

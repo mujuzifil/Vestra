@@ -12,8 +12,6 @@ use App\Filament\Pages\Distributors\TerritoriesPage;
 use App\Filament\Pages\Distributors\ApplicationsPage;
 use App\Filament\Pages\Sales\CompaniesPage;
 use App\Filament\Pages\Sales\QuotesPage;
-use App\Filament\Pages\Sales\PipelinePage;
-use App\Filament\Pages\Sales\OpportunitiesPage;
 use App\Filament\Pages\Distributors\ActivePartnersPage;
 use App\Filament\Pages\Distributors\CreditPage;
 use App\Filament\Pages\CustomerSuccess\SupportPage;
@@ -21,7 +19,6 @@ use App\Filament\Pages\CustomerSuccess\EnquiriesPage;
 use App\Filament\Pages\CustomerSuccess\FeedbackPage;
 use App\Filament\Pages\Products\ProductsPage;
 use App\Filament\Pages\Products\CategoriesPage;
-use App\Filament\Pages\Products\InventoryPage;
 use App\Filament\Pages\Marketing\BlogArticlePage;
 use App\Filament\Pages\Marketing\BlogPage;
 use App\Filament\Pages\Marketing\MediaPage;
@@ -183,15 +180,12 @@ class AdminPanelProvider extends PanelProvider
                 ApplicationsPage::class,
                 TerritoriesPage::class,
                 CreditPage::class,
-                PipelinePage::class,
-                OpportunitiesPage::class,
                 ActivePartnersPage::class,
                 SupportPage::class,
                 EnquiriesPage::class,
                 FeedbackPage::class,
                 ProductsPage::class,
                 CategoriesPage::class,
-                InventoryPage::class,
                 BlogPage::class,
                 BlogArticlePage::class,
                 MediaPage::class,

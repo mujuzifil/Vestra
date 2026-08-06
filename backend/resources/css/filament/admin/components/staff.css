@@ -946,6 +946,31 @@
     font-size: var(--text-body-sm);
 }
 
+.vestra-staff-form__select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem 1rem;
+}
+
+.vestra-staff-form__select::-ms-expand {
+    display: none;
+}
+
+.vestra-staff-form__input[type='number']::-webkit-inner-spin-button,
+.vestra-staff-form__input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.vestra-staff-form__input[type='number'] {
+    -moz-appearance: textfield;
+}
+
 .vestra-staff-form__textarea {
     min-height: 120px;
     resize: vertical;

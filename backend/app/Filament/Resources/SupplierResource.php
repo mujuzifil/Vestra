@@ -28,6 +28,13 @@ class SupplierResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+    protected static bool $shouldRegisterNavigation = false;
+
+    public static function getNavigationItems(): array
+    {
+        return [];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

@@ -163,11 +163,4 @@ $statuses = $options['statuses'] ?? [];
             </div>
         </section>
     </form>
-
-    <div class="vestra-role-form__sticky-footer">
-        <a href="{{ $backUrl }}" class="vestra-button vestra-button--secondary">Cancel</a>
-        <button type="submit" form="role-form" class="vestra-button vestra-button--primary" wire:loading.attr="disabled">
-            {{ $isEditing ? 'Save Role' : 'Create Role' }}
-        </button>
-    </div>
 </div>

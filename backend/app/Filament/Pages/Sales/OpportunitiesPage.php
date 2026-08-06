@@ -8,6 +8,10 @@ class OpportunitiesPage extends Page
 {
     protected static string $layout = 'filament.layouts.crm';
 
+    protected static bool $isDiscovered = false;
+
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationGroup = 'Sales';
 
     protected static ?string $navigationLabel = 'Opportunities';

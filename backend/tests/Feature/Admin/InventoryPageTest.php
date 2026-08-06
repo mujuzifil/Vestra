@@ -65,16 +65,20 @@ class InventoryPageTest extends TestCase
         ]);
     }
 
-    public function test_inventory_route_is_registered(): void
+    public function test_inventory_route_is_not_registered(): void
     {
-        $this->assertTrue(Route::has('filament.admin.pages.products.inventory'));
+        $this->assertFalse(Route::has('filament.admin.pages.products.inventory'));
         $this->assertTrue(Route::has('filament.admin.products.inventory.export'));
-        $this->assertStringContainsString('/products/inventory', InventoryPage::getUrl());
     }
 
-    public function test_guest_is_redirected_from_inventory_route(): void
+    public function test_inventory_page_is_hidden_from_navigation(): void
     {
-        $this->get('/products/inventory')->assertRedirect();
+        $this->assertFalse(InventoryPage::shouldRegisterNavigation());
+    }
+
+    public function test_guest_cannot_access_inventory_route(): void
+    {
+        $this->get('/products/inventory')->assertNotFound();
     }
 
     public function test_non_admin_is_denied_access_to_inventory_page(): void
@@ -302,9 +306,9 @@ class InventoryPageTest extends TestCase
         $this->assertStringContainsString('format=csv', $url);
     }
 
-    public function test_navigation_sort_is_three(): void
+    public function test_navigation_is_hidden(): void
     {
-        $this->assertSame(3, InventoryPage::getNavigationSort());
+        $this->assertFalse(InventoryPage::shouldRegisterNavigation());
     }
 
     public function test_warehouse_resource_is_hidden_from_navigation(): void

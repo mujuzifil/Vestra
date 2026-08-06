@@ -177,7 +177,8 @@ class RolesPageTest extends TestCase
             ->assertSet('showDetailDrawer', true)
             ->assertSee('Permission Comparison')
             ->assertSee('Assigned Users')
-            ->assertSee('Audit History');
+            ->assertSee('Audit History')
+            ->assertSee('Edit Role');
     }
 
     public function test_rbac_blocks_products_without_permission(): void

@@ -221,7 +221,8 @@ class StaffPageTest extends TestCase
             ->assertSet('showDetailDrawer', true)
             ->assertSet('selectedStaffId', $staff->id)
             ->assertSee('Personal Information')
-            ->assertSee('Audit Timeline');
+            ->assertSee('Audit Timeline')
+            ->assertSee('Edit Staff');
     }
 
     public function test_admin_can_disable_staff_from_detail(): void

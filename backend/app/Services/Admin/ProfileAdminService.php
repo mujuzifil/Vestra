@@ -36,6 +36,7 @@ class ProfileAdminService
             'status' => $user->status ?: 'active',
             'status_label' => ($user->status ?: 'active') === 'active' ? 'Active' : 'Inactive',
             'role' => $role?->name,
+            'member_since' => $user->created_at,
             'created_at' => $user->created_at,
             'last_login_at' => $user->last_login_at,
             'password_changed_at' => $user->password_changed_at,

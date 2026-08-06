@@ -473,6 +473,12 @@
     color: var(--text-heading);
 }
 
+@media (min-width: 1024px) {
+    .vestra-header__mobile-open {
+        display: none;
+    }
+}
+
 .vestra-header__search {
     position: relative;
     display: none;

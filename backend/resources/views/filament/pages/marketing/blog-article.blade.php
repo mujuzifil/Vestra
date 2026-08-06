@@ -4,9 +4,7 @@ $isEditing = $this->isEditing;
 $wordCount = $this->wordCount;
 $existingImage = $this->existingFeaturedImageUrl;
 $authors = $options['authors'] ?? [];
-$categories = $options['categories'] ?? [];
 $statuses = $options['statuses'] ?? [];
-$visibilities = $options['visibilities'] ?? [];
 $hasAuthors = $options['has_authors'] ?? false;
 $backUrl = \App\Filament\Pages\Marketing\BlogPage::getUrl();
 @endphp
@@ -87,21 +85,21 @@ $backUrl = \App\Filament\Pages\Marketing\BlogPage::getUrl();
                         x-init="init()"
                     >
                         <div class="vestra-blog-article__toolbar" role="toolbar" aria-label="Formatting">
-                            <button type="button" @click="format('bold')" title="Bold"><strong>B</strong></button>
-                            <button type="button" @click="format('italic')" title="Italic"><em>I</em></button>
-                            <button type="button" @click="format('underline')" title="Underline"><u>U</u></button>
+                            <button type="button" @click="format('bold')" @mouseup="updateToolbarState()" @keyup="updateToolbarState()" title="Bold" aria-pressed="false" :aria-pressed="active.bold" :class="{ 'is-active': active.bold }"><strong>B</strong></button>
+                            <button type="button" @click="format('italic')" @mouseup="updateToolbarState()" @keyup="updateToolbarState()" title="Italic" aria-pressed="false" :aria-pressed="active.italic" :class="{ 'is-active': active.italic }"><em>I</em></button>
+                            <button type="button" @click="format('underline')" @mouseup="updateToolbarState()" @keyup="updateToolbarState()" title="Underline" aria-pressed="false" :aria-pressed="active.underline" :class="{ 'is-active': active.underline }"><u>U</u></button>
                             <span class="vestra-blog-article__toolbar-sep"></span>
-                            <button type="button" @click="formatBlock('h2')" title="Heading">H2</button>
-                            <button type="button" @click="formatBlock('p')" title="Paragraph">P</button>
+                            <button type="button" @click="formatBlock('h2')" @mouseup="updateToolbarState()" @keyup="updateToolbarState()" title="Heading" aria-pressed="false" :aria-pressed="active.h2" :class="{ 'is-active': active.h2 }">H2</button>
+                            <button type="button" @click="formatBlock('p')" @mouseup="updateToolbarState()" @keyup="updateToolbarState()" title="Paragraph" aria-pressed="false" :aria-pressed="active.p" :class="{ 'is-active': active.p }">P</button>
                             <span class="vestra-blog-article__toolbar-sep"></span>
-                            <button type="button" @click="format('insertUnorderedList')" title="Bullets">• List</button>
-                            <button type="button" @click="format('insertOrderedList')" title="Numbered">1. List</button>
-                            <button type="button" @click="formatBlock('blockquote')" title="Quote">Quote</button>
+                            <button type="button" @click="format('insertUnorderedList')" @mouseup="updateToolbarState()" @keyup="updateToolbarState()" title="Bullets" aria-pressed="false" :aria-pressed="active.ul" :class="{ 'is-active': active.ul }">• List</button>
+                            <button type="button" @click="format('insertOrderedList')" @mouseup="updateToolbarState()" @keyup="updateToolbarState()" title="Numbered" aria-pressed="false" :aria-pressed="active.ol" :class="{ 'is-active': active.ol }">1. List</button>
+                            <button type="button" @click="formatBlock('blockquote')" @mouseup="updateToolbarState()" @keyup="updateToolbarState()" title="Quote" aria-pressed="false" :aria-pressed="active.blockquote" :class="{ 'is-active': active.blockquote }">Quote</button>
                             <span class="vestra-blog-article__toolbar-sep"></span>
-                            <button type="button" @click="insertLink()" title="Link">Link</button>
-                            <button type="button" @click="insertImage()" title="Image">Image</button>
-                            <button type="button" @click="insertTable()" title="Table">Table</button>
-                            <button type="button" @click="formatBlock('pre')" title="Code">Code</button>
+                            <button type="button" @click="insertLink()" @mouseup="updateToolbarState()" @keyup="updateToolbarState()" title="Link">Link</button>
+                            <button type="button" @click="insertImage()" @mouseup="updateToolbarState()" @keyup="updateToolbarState()" title="Image">Image</button>
+                            <button type="button" @click="insertTable()" @mouseup="updateToolbarState()" @keyup="updateToolbarState()" title="Table">Table</button>
+                            <button type="button" @click="formatBlock('pre')" @mouseup="updateToolbarState()" @keyup="updateToolbarState()" title="Code" aria-pressed="false" :aria-pressed="active.pre" :class="{ 'is-active': active.pre }">Code</button>
                         </div>
                         <div
                             x-ref="editor"
@@ -113,6 +111,8 @@ $backUrl = \App\Filament\Pages\Marketing\BlogPage::getUrl();
                             data-placeholder="Write your article content here..."
                             @input="sync()"
                             @blur="sync()"
+                            @keyup="updateToolbarState()"
+                            @mouseup="updateToolbarState()"
                         ></div>
                         <div class="vestra-blog-article__editor-footer">
                             <span>{{ number_format($wordCount) }} WORDS</span>
@@ -206,18 +206,6 @@ $backUrl = \App\Filament\Pages\Marketing\BlogPage::getUrl();
             <section class="vestra-card vestra-blog-article__card">
                 <h2 class="vestra-blog-article__card-title">Organization</h2>
                 <div class="vestra-blog-article__field">
-                    <label for="article-categories" class="vestra-blog-article__label">Categories <span class="vestra-blog-article__required">*</span></label>
-                    <select id="article-categories" wire:model="categoryIds" multiple class="vestra-blog-article__select vestra-blog-article__select--multi @error('categoryIds') vestra-blog-article__input--error @enderror">
-                        @forelse ($categories as $category)
-                            <option value="{{ $category['id'] }}">{{ $category['name'] }}</option>
-                        @empty
-                            <option value="" disabled>No categories available</option>
-                        @endforelse
-                    </select>
-                    <span class="vestra-blog-article__hint">Choose one or more categories.</span>
-                    @error('categoryIds')<span class="vestra-blog-article__error">{{ $message }}</span>@enderror
-                </div>
-                <div class="vestra-blog-article__field">
                     <label for="article-author" class="vestra-blog-article__label">Author <span class="vestra-blog-article__required">*</span></label>
                     <select id="article-author" wire:model="form.author_id" class="vestra-blog-article__select @error('form.author_id') vestra-blog-article__input--error @enderror">
                         <option value="">{{ $hasAuthors ? 'Select author' : 'No authors available' }}</option>
@@ -245,45 +233,6 @@ $backUrl = \App\Filament\Pages\Marketing\BlogPage::getUrl();
                     <span class="vestra-blog-article__hint">Add relevant tags to help readers find your article.</span>
                 </div>
             </section>
-
-            <section class="vestra-card vestra-blog-article__card">
-                <h2 class="vestra-blog-article__card-title">SEO & Visibility</h2>
-                <div class="vestra-blog-article__field">
-                    <label for="article-meta-title" class="vestra-blog-article__label">Meta Title</label>
-                    <input id="article-meta-title" type="text" wire:model="form.meta_title" class="vestra-blog-article__input" placeholder="Enter meta title (optional)" />
-                    <span class="vestra-blog-article__hint">Recommended: 50-60 characters.</span>
-                </div>
-                <div class="vestra-blog-article__field">
-                    <label for="article-meta-description" class="vestra-blog-article__label">Meta Description</label>
-                    <textarea id="article-meta-description" rows="3" wire:model="form.meta_description" class="vestra-blog-article__textarea" placeholder="Enter meta description (optional)"></textarea>
-                    <span class="vestra-blog-article__hint">Recommended: 150-160 characters.</span>
-                </div>
-                <div class="vestra-blog-article__field">
-                    <label for="article-og-title" class="vestra-blog-article__label">Open Graph Title</label>
-                    <input id="article-og-title" type="text" wire:model="form.og_title" class="vestra-blog-article__input" placeholder="Optional social sharing title" />
-                </div>
-                <div class="vestra-blog-article__field">
-                    <label for="article-og-description" class="vestra-blog-article__label">Open Graph Description</label>
-                    <textarea id="article-og-description" rows="2" wire:model="form.og_description" class="vestra-blog-article__textarea" placeholder="Optional social sharing description"></textarea>
-                </div>
-                <div class="vestra-blog-article__field">
-                    <label for="article-canonical" class="vestra-blog-article__label">Canonical URL</label>
-                    <input id="article-canonical" type="url" wire:model="form.canonical_url" class="vestra-blog-article__input" placeholder="https://…" />
-                </div>
-                <div class="vestra-blog-article__field">
-                    <label class="vestra-blog-article__label">Slug Preview</label>
-                    <code class="vestra-blog-article__slug-preview">/blog/{{ $form['slug'] ?: 'your-slug' }}</code>
-                </div>
-                <div class="vestra-blog-article__field">
-                    <label for="article-visibility" class="vestra-blog-article__label">Visibility</label>
-                    <select id="article-visibility" wire:model="form.visibility" class="vestra-blog-article__select">
-                        @foreach ($visibilities as $visibility)
-                            <option value="{{ $visibility['value'] }}">{{ $visibility['label'] }}</option>
-                        @endforeach
-                    </select>
-                    <span class="vestra-blog-article__hint">Public articles are visible to everyone on the website.</span>
-                </div>
-            </section>
         </aside>
     </form>
 </div>
@@ -294,9 +243,21 @@ $backUrl = \App\Filament\Pages\Marketing\BlogPage::getUrl();
 <script>
     Alpine.data('blogRichEditor', (initial) => ({
         html: initial || '',
+        active: {
+            bold: false,
+            italic: false,
+            underline: false,
+            h2: false,
+            p: false,
+            ul: false,
+            ol: false,
+            blockquote: false,
+            pre: false,
+        },
         init() {
             this.$refs.editor.innerHTML = this.html || '';
             this.sync();
+            document.addEventListener('selectionchange', () => this.updateToolbarState());
             Livewire.on('blog-insert-image-url', (payload) => {
                 const url = payload?.url ?? payload?.[0]?.url ?? null;
                 if (url) {
@@ -305,19 +266,54 @@ $backUrl = \App\Filament\Pages\Marketing\BlogPage::getUrl();
                 }
             });
         },
+        updateToolbarState() {
+            const editor = this.$refs.editor;
+            if (! editor) {
+                return;
+            }
+
+            const selection = window.getSelection();
+            if (! selection || selection.rangeCount === 0) {
+                return;
+            }
+
+            const anchor = selection.anchorNode;
+            if (! anchor || ! editor.contains(anchor)) {
+                Object.keys(this.active).forEach((key) => {
+                    this.active[key] = false;
+                });
+
+                return;
+            }
+
+            this.active.bold = document.queryCommandState('bold');
+            this.active.italic = document.queryCommandState('italic');
+            this.active.underline = document.queryCommandState('underline');
+            this.active.ul = document.queryCommandState('insertUnorderedList');
+            this.active.ol = document.queryCommandState('insertOrderedList');
+
+            const block = (document.queryCommandValue('formatBlock') || '').toLowerCase();
+            this.active.h2 = block.includes('h2');
+            this.active.p = block.includes('p') || block === 'div';
+            this.active.blockquote = block.includes('blockquote');
+            this.active.pre = block.includes('pre');
+        },
         format(cmd) {
             document.execCommand(cmd, false, null);
             this.sync();
+            this.updateToolbarState();
         },
         formatBlock(tag) {
             document.execCommand('formatBlock', false, tag);
             this.sync();
+            this.updateToolbarState();
         },
         insertLink() {
             const url = window.prompt('Enter URL');
             if (url) {
                 document.execCommand('createLink', false, url);
                 this.sync();
+                this.updateToolbarState();
             }
         },
         insertImage() {
@@ -330,6 +326,7 @@ $backUrl = \App\Filament\Pages\Marketing\BlogPage::getUrl();
                 '<table><thead><tr><th>Header</th><th>Header</th></tr></thead><tbody><tr><td>Cell</td><td>Cell</td></tr></tbody></table><p></p>'
             );
             this.sync();
+            this.updateToolbarState();
         },
         sync() {
             this.html = this.$refs.editor.innerHTML;
