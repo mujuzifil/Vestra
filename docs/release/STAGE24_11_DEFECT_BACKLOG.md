@@ -22,6 +22,14 @@ Status: Open / Fixed / Accepted / Won't Fix
 | D-011 | Medium | Companies / RBAC | `CompaniesPage::createSupportTicket()` authorized `view` on company only; missing `create` on `SupportTicket` | Admin creates ticket from company drawer | Fixed |
 | D-012 | Medium | Media / Integrity | `media_asset_usages` rows orphaned when owning `Product` or `BlogPost` deleted (usage count drift, stale references) | Delete product/blog still linked in media library | Fixed |
 | D-013 | — | Release gate | KI-001 rotation not verifiable from repo; residual-risk acceptance recorded for v2.1.0 gate item 11 | Review STAGE24_11_RELEASE_GATE.md § KI-001 | Accepted |
+| D-014 | High | Admin / Auth | `Gate::authorize` in Filament `mount()` returned a redirect that Livewire treated as response content (`TypeError`); non-admin page access crashed instead of 403 | Non-admin GET Companies/Support/Products/etc. | Fixed |
+| D-015 | Medium | API / Analytics | `ApiRequestLog` wrote `updated_at` but `api_request_logs` only has `created_at` → 500 on every logged API request in SQLite/tests (and risk in prod) | GET `/api/v1/reports/dashboard` | Fixed |
+| D-016 | Medium | Admin / Territories | Legacy `/distributor-branches` Filament Livewire redirect used `navigate: true` and empty-state copy mismatch broke redirect/empty tests | Branches index + empty Territories | Fixed |
+| D-017 | Low | Tests / Seeders | `ProductSeeder` threw when product PNGs missing under `testing`, cascading report dashboard seed failures | ReportControllerTest with ProductSeeder | Fixed |
+| D-018 | Medium | Quotes / Notifications | Registered users received duplicate quote confirmation emails (`QuoteRequestReceivedMail` + `quote_request.customer_confirmation` template email) | Authenticated POST quote with matching email | Fixed |
+| D-019 | Medium | Notifications | `EmailNotificationService` stored `$template->key` (undefined) in mailable metadata instead of `event_key` | Template email dispatch | Fixed |
+| D-020 | Medium | Notifications | `DispatchNotificationListener` referenced 12+ template keys absent from `NotificationTemplateSeeder` (fallback generic copy in prod) | `NotificationTemplateParityTest` | Fixed |
+| D-021 | Low | Notifications | `security.password_reset_requested` template missing `reset_url` variable wiring | Listener + seeder parity scan | Fixed |
 
 ## Severity policy (ship gate)
 
@@ -35,5 +43,9 @@ See [KNOWN_ISSUES.md](KNOWN_ISSUES.md). Reassess for gate, especially KI-001.
 
 ## Audit notes (no defect filed)
 
-- Notification template keys `quote_request.approved|declined|status_changed` match `DispatchNotificationListener` and `NotificationTemplateSeeder` (verified, no change required).
+- Notification template keys now fully seeded for `DispatchNotificationListener` (`NotificationTemplateParityTest`).
+- Quote customer email: `QuoteRequestReceivedMail` handles email; in-app uses `quote_request.customer_confirmation` only (no duplicate mail).
 - `CompaniesPage` / `QuotesPage` / `ApplicationsPage` list queries already use appropriate `with()` / `withCount()` in admin services (verified).
+- Public “coming soon” copy is data-driven empty state only — see `frontend/docs/phase24_11/README.md` (Accepted Low).
+- Admin API Tokens tile disabled with “Coming soon” — Accepted Low (administration dashboard only).
+- `PasswordResetRequested` event wired but no public forgot-password API yet — template seeded for future use; staff reset uses `StaffWelcomeNotification`.

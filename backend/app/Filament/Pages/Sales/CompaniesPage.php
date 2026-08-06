@@ -124,7 +124,7 @@ class CompaniesPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', CompanyProfile::class);
+        abort_unless(Gate::allows('viewAny', CompanyProfile::class), 403);
     }
 
     public function getCompanyServiceProperty(): CompanyService

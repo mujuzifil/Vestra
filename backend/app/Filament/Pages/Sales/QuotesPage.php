@@ -114,7 +114,7 @@ class QuotesPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', QuoteRequest::class);
+        abort_unless(Gate::allows('viewAny', QuoteRequest::class), 403);
     }
 
     public function getQuoteServiceProperty(): QuoteAdminService

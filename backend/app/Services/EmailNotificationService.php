@@ -25,7 +25,7 @@ class EmailNotificationService
                 subjectLine: $rendered['subject'],
                 htmlBody: $rendered['email_body'],
                 plainBody: strip_tags($rendered['email_body']),
-                metadata: array_merge($metadata, ['template_key' => $template->key])
+                metadata: array_merge($metadata, ['template_key' => $template->event_key])
             ));
 
             return true;

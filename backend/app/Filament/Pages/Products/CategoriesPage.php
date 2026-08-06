@@ -75,7 +75,7 @@ class CategoriesPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', Category::class);
+        abort_unless(Gate::allows('viewAny', Category::class), 403);
         $this->resetForm();
     }
 

@@ -70,7 +70,7 @@ class BlogPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', BlogPost::class);
+        abort_unless(Gate::allows('viewAny', BlogPost::class), 403);
     }
 
     public static function canAccess(): bool

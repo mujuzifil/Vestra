@@ -74,7 +74,7 @@ class CreditPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', CreditAccount::class);
+        abort_unless(Gate::allows('viewAny', CreditAccount::class), 403);
     }
 
     public function getCreditServiceProperty(): CreditAdminService

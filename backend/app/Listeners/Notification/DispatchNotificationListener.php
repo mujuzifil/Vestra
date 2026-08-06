@@ -164,6 +164,9 @@ class DispatchNotificationListener
                     'customer_name' => $event->user->name,
                     'email' => $event->user->email,
                     'token' => $event->token,
+                    'reset_url' => rtrim((string) config('app.frontend_url'), '/')
+                        .'/auth/reset-password?token='.$event->token
+                        .'&email='.urlencode($event->user->email),
                 ],
             ],
             $event instanceof ProfileUpdated => [
@@ -281,7 +284,8 @@ class DispatchNotificationListener
                     [
                         'users' => $this->usersFromQuoteRequest($event->quoteRequest),
                         'template' => 'quote_request.customer_confirmation',
-                        'channels' => [NotificationChannel::IN_APP, NotificationChannel::EMAIL],
+                        // Email is sent via QuoteRequestReceivedMail; in-app only here avoids duplicate mail.
+                        'channels' => [NotificationChannel::IN_APP],
                         'topic' => 'order_updates',
                         'variables' => [
                             'customer_name' => $event->quoteRequest->full_name,

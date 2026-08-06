@@ -83,7 +83,7 @@ class TasksPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', Task::class);
+        abort_unless(Gate::allows('viewAny', Task::class), 403);
     }
 
     public function getTaskServiceProperty(): TaskService

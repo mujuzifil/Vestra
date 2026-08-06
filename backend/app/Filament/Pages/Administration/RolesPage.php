@@ -62,7 +62,7 @@ class RolesPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', Role::class);
+        abort_unless(Gate::allows('viewAny', Role::class), 403);
     }
 
     public function getRoleServiceProperty(): RoleAdminService

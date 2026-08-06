@@ -61,7 +61,7 @@ class StaffPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', User::class);
+        abort_unless(Gate::allows('viewAny', User::class), 403);
     }
 
     public static function canAccess(): bool

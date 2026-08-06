@@ -193,7 +193,8 @@ class TaskServiceTest extends TestCase
         $this->assertCount(4, $kpis);
         $this->assertEquals('6', str_replace(',', '', $kpis[0]['value']));
         $this->assertEquals('3', str_replace(',', '', $kpis[1]['value']));
-        $this->assertEquals('2', str_replace(',', '', $kpis[2]['value']));
+        // In Progress includes overdue open tasks that are still IN_PROGRESS (3 = 2 + 1 overdue).
+        $this->assertEquals('3', str_replace(',', '', $kpis[2]['value']));
         $this->assertEquals('1', str_replace(',', '', $kpis[3]['value']));
     }
 

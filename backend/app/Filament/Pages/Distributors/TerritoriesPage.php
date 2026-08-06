@@ -71,7 +71,7 @@ class TerritoriesPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', DistributorBranch::class);
+        abort_unless(Gate::allows('viewAny', DistributorBranch::class), 403);
 
         if (! in_array($this->viewMode, ['table', 'map'], true)) {
             $this->viewMode = 'table';

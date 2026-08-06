@@ -15,7 +15,7 @@ class ListDistributorBranches extends ListRecords
 
     public function mount(): void
     {
-        $this->redirect(TerritoriesPage::getUrl(), navigate: true);
+        $this->redirect(TerritoriesPage::getUrl());
     }
 
     protected function getHeaderActions(): array

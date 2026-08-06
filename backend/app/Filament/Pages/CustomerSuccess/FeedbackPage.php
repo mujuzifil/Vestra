@@ -71,7 +71,7 @@ class FeedbackPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', CustomerFeedback::class);
+        abort_unless(Gate::allows('viewAny', CustomerFeedback::class), 403);
     }
 
     public function getFeedbackServiceProperty(): FeedbackAdminService

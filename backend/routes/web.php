@@ -18,3 +18,5 @@ Route::middleware(['web'])
 
 Route::permanentRedirect('/quote-requests', '/sales/quotes');
 Route::permanentRedirect('/quote-requests/{any}', '/sales/quotes')->where('any', '.*');
+Route::permanentRedirect('/distributor-branches', '/distributors/territories');
+Route::permanentRedirect('/distributor-branches/{any}', '/distributors/territories')->where('any', '.*');

@@ -77,7 +77,7 @@ class ActivityPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', AuditLog::class);
+        abort_unless(Gate::allows('viewAny', AuditLog::class), 403);
     }
 
     public function getActivityServiceProperty(): ActivityService

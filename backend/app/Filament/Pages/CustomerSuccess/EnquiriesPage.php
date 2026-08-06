@@ -75,7 +75,7 @@ class EnquiriesPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', ContactMessage::class);
+        abort_unless(Gate::allows('viewAny', ContactMessage::class), 403);
     }
 
     public function getEnquiryServiceProperty(): EnquiryAdminService

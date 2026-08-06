@@ -10,6 +10,9 @@ class ApiRequestLog extends Model
 {
     use HasFactory;
 
+    /** Append-only request log; schema has `created_at` only. */
+    public const UPDATED_AT = null;
+
     protected $fillable = [
         'user_id',
         'method',

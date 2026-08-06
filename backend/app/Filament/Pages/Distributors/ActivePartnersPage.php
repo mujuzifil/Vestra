@@ -68,7 +68,7 @@ class ActivePartnersPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', Distributor::class);
+        abort_unless(Gate::allows('viewAny', Distributor::class), 403);
     }
 
     public function getPartnerServiceProperty(): PartnerAdminService

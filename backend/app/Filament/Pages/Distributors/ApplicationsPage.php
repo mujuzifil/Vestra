@@ -79,7 +79,7 @@ class ApplicationsPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', DistributorRequest::class);
+        abort_unless(Gate::allows('viewAny', DistributorRequest::class), 403);
     }
 
     public function getApplicationServiceProperty(): ApplicationAdminService

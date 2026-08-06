@@ -100,7 +100,7 @@ class MediaPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', MediaAsset::class);
+        abort_unless(Gate::allows('viewAny', MediaAsset::class), 403);
 
         if (! in_array($this->viewMode, ['grid', 'list'], true)) {
             $this->viewMode = 'grid';

@@ -88,7 +88,7 @@ class ProductsPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', Product::class);
+        abort_unless(Gate::allows('viewAny', Product::class), 403);
         $this->resetForm();
     }
 

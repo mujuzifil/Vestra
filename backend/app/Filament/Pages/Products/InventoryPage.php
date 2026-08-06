@@ -80,7 +80,7 @@ class InventoryPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', ProductWarehouseStock::class);
+        abort_unless(Gate::allows('viewAny', ProductWarehouseStock::class), 403);
     }
 
     public function getInventoryServiceProperty(): InventoryAdminService

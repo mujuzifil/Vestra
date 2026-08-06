@@ -82,7 +82,7 @@ class SupportPage extends Page
 
     public function mount(): void
     {
-        Gate::authorize('viewAny', SupportTicket::class);
+        abort_unless(Gate::allows('viewAny', SupportTicket::class), 403);
     }
 
     public function getSupportServiceProperty(): SupportAdminService

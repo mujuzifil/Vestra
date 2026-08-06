@@ -115,7 +115,7 @@ class TerritoriesPageTest extends TestCase
         Livewire::actingAs($admin)
             ->test(TerritoriesPage::class)
             ->assertSuccessful()
-            ->assertSee('No branches yet');
+            ->assertSee('No distributor coverage configured');
     }
 
     public function test_search_filters_by_branch_name(): void
