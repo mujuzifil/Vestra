@@ -10,6 +10,21 @@ use Illuminate\Validation\ValidationException;
 
 class CompanyProfileService
 {
+    private const CUSTOMER_UPDATABLE = [
+        'company_name',
+        'industry',
+        'business_type',
+        'tax_identification',
+        'registration_number',
+        'website',
+        'district',
+        'city',
+        'country',
+        'address',
+        'primary_contact_name',
+        'primary_contact_phone',
+        'primary_contact_email',
+    ];
     public function getOrCreateForUser(User $user): CompanyProfile
     {
         return CompanyProfile::firstOrCreate(
@@ -25,7 +40,7 @@ class CompanyProfileService
     public function updateForUser(User $user, array $data): CompanyProfile
     {
         $profile = $this->getOrCreateForUser($user);
-        $profile->update($data);
+        $profile->update(collect($data)->only(self::CUSTOMER_UPDATABLE)->all());
 
         return $profile;
     }

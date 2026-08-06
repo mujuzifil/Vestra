@@ -38,4 +38,22 @@ class CompanyProfileControllerTest extends TestCase
             'action' => 'company_profile_updated',
         ]);
     }
+
+    public function test_customer_cannot_escalate_company_status_via_api(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+
+        $this->putJson('/api/v1/account/company', [
+            'company_name' => 'Acme Ltd',
+            'status' => 'active',
+            'account_manager_id' => 9999,
+        ])->assertOk();
+
+        $this->assertDatabaseHas('company_profiles', [
+            'user_id' => $user->id,
+            'company_name' => 'Acme Ltd',
+            'status' => 'prospect',
+        ]);
+    }
 }
