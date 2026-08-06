@@ -9,10 +9,14 @@ use App\Models\PurchaseOrderItem;
 use App\Models\StockMovement;
 use App\Models\User;
 use App\Models\Warehouse;
+use App\Services\Catalog\CatalogSyncService;
 use Illuminate\Support\Facades\DB;
 
 class InventoryService
 {
+    public function __construct(
+        private readonly CatalogSyncService $catalogSync,
+    ) {}
     /**
      * Adjust stock for a product at a warehouse. Positive quantities add stock,
      * negative quantities remove stock. A stock movement record is created.
@@ -147,5 +151,7 @@ class InventoryService
         $total = ProductWarehouseStock::where('product_id', $product->id)->sum('quantity') ?? 0;
         $product->stock_quantity = (int) $total;
         $product->saveQuietly();
+
+        $this->catalogSync->syncProducts($product->id, $product->category_id);
     }
 }

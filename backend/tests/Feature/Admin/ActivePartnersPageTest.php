@@ -72,6 +72,41 @@ class ActivePartnersPageTest extends TestCase
         $response->assertRedirect();
     }
 
+    public function test_suspend_and_activate_partner_actions_update_status_and_public_visibility(): void
+    {
+        $admin = $this->admin();
+
+        $distributor = Distributor::factory()->create([
+            'company_name' => 'Actionable Partner Ltd',
+            'status' => DistributorAccountStatus::ACTIVE,
+            'email' => 'actionable-partner@example.com',
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(ActivePartnersPage::class)
+            ->call('openDetailDrawer', $distributor->id)
+            ->assertSet('showDetailDrawer', true)
+            ->call('suspendPartner', $distributor->id)
+            ->assertHasNoErrors();
+
+        $distributor->refresh();
+        $this->assertSame(DistributorAccountStatus::SUSPENDED, $distributor->status);
+
+        $payload = $this->getJson('/api/v1/public/distributors')->assertSuccessful()->json('data');
+        $this->assertFalse(collect($payload)->contains(fn ($row) => ($row['company_name'] ?? null) === 'Actionable Partner Ltd'));
+
+        Livewire::actingAs($admin)
+            ->test(ActivePartnersPage::class)
+            ->call('activatePartner', $distributor->id)
+            ->assertHasNoErrors();
+
+        $distributor->refresh();
+        $this->assertSame(DistributorAccountStatus::ACTIVE, $distributor->status);
+        $this->getJson('/api/v1/public/distributors')
+            ->assertSuccessful()
+            ->assertJsonFragment(['company_name' => 'Actionable Partner Ltd']);
+    }
+
     public function test_non_admin_is_denied_access_to_active_partners_page(): void
     {
         $customer = $this->customer();

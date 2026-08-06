@@ -163,13 +163,14 @@ class PermissionDiscoveryService
 
         $methodMap = [
             'create' => ['openCreateModal', 'create', 'saveDraft', 'createStaff', 'createProduct', 'createPost', 'uploadAsset'],
-            'edit' => ['openEditModal', 'update', 'save', 'saveProduct', 'saveMetadata', 'updatePost'],
+            'edit' => ['openEditModal', 'update', 'save', 'saveProduct', 'saveMetadata', 'updatePost', 'activatePartner', 'updateCoverage', 'updateProfile'],
             'delete' => ['delete', 'deleteSelected', 'deleteArticle', 'deleteStaff', 'removeImage'],
             'export' => ['getExportUrl'],
             'approve' => ['approve', 'approveSelected'],
             'reject' => ['reject', 'rejectSelected'],
             'publish' => ['publish', 'saveDraft'],
             'archive' => ['archive', 'archiveSelected'],
+            'suspend' => ['suspendPartner', 'suspend'],
         ];
 
         foreach ($methodMap as $action => $candidates) {
@@ -261,6 +262,10 @@ class PermissionDiscoveryService
             'SupportPage' => \App\Models\SupportTicket::class,
             'EnquiriesPage' => \App\Models\ContactMessage::class,
             'FeedbackPage' => \App\Models\CustomerFeedback::class,
+            'ApplicationsPage' => \App\Models\DistributorRequest::class,
+            'ActivePartnersPage' => \App\Models\Distributor::class,
+            'TerritoriesPage' => \App\Models\DistributorBranch::class,
+            'CreditPage' => \App\Models\CreditAccount::class,
         ];
 
         $base = class_basename($pageClass);

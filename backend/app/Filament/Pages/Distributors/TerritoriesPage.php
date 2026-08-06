@@ -140,7 +140,8 @@ class TerritoriesPage extends Page
 
     public function canCreateBranch(): bool
     {
-        return Gate::allows('create', DistributorBranch::class);
+        // Territories are coverage views only — branches are seeded on approval.
+        return false;
     }
 
     /**

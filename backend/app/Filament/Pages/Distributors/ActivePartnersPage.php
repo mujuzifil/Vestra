@@ -5,6 +5,7 @@ namespace App\Filament\Pages\Distributors;
 use App\Enums\DistributorAccountStatus;
 use App\Models\Distributor;
 use App\Services\Admin\PartnerAdminService;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Url;
@@ -144,6 +145,34 @@ class ActivePartnersPage extends Page
     {
         $this->showDetailDrawer = false;
         $this->selectedPartnerId = null;
+    }
+
+    public function suspendPartner(int $id): void
+    {
+        $distributor = Distributor::query()->findOrFail($id);
+        Gate::authorize('update', $distributor);
+
+        $this->getPartnerServiceProperty()->suspend($distributor, auth()->user());
+
+        Notification::make()
+            ->title('Partner suspended')
+            ->body('The distributor was removed from public discovery.')
+            ->success()
+            ->send();
+    }
+
+    public function activatePartner(int $id): void
+    {
+        $distributor = Distributor::query()->findOrFail($id);
+        Gate::authorize('update', $distributor);
+
+        $this->getPartnerServiceProperty()->activate($distributor, auth()->user());
+
+        Notification::make()
+            ->title('Partner activated')
+            ->body('The distributor is visible on the public website again.')
+            ->success()
+            ->send();
     }
 
     public function sortBy(string $field): void

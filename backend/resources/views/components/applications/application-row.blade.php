@@ -106,7 +106,7 @@ $location = collect([$application->region, $application->country])->filter()->im
                     <x-filament::icon icon="heroicon-o-eye" class="h-4 w-4" />
                     <span>View Details</span>
                 </button>
-                @if ($application->status !== DistributorStatus::APPROVED)
+                @if ($application->status !== DistributorStatus::APPROVED || $application->distributor === null)
                     <button
                         type="button"
                         wire:click="approve({{ $application->id }})"
@@ -115,10 +115,10 @@ $location = collect([$application->region, $application->country])->filter()->im
                         role="menuitem"
                     >
                         <x-filament::icon icon="heroicon-o-check-circle" class="h-4 w-4" />
-                        <span>Approve</span>
+                        <span>{{ $application->status === DistributorStatus::APPROVED && $application->distributor === null ? 'Repair Account' : 'Approve' }}</span>
                     </button>
                 @endif
-                @if ($application->status !== DistributorStatus::REJECTED)
+                @if ($application->status !== DistributorStatus::REJECTED && $application->status !== DistributorStatus::APPROVED)
                     <button
                         type="button"
                         wire:click="reject({{ $application->id }})"

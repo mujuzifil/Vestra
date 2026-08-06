@@ -33,7 +33,9 @@ class DistributorController extends Controller
 
     public function applicationStatus(Request $request): JsonResponse
     {
-        $application = DistributorRequest::where('email', $request->user()->email)
+        $application = DistributorRequest::query()
+            ->with('distributor')
+            ->where('email', $request->user()->email)
             ->latest()
             ->first();
 
@@ -45,6 +47,10 @@ class DistributorController extends Controller
                 'email' => $application->email,
                 'phone' => $application->phone,
                 'status' => $application->status->value,
+                'status_label' => $application->statusLabel(),
+                'rejection_reason' => $application->rejection_reason,
+                'information_request_notes' => $application->information_request_notes,
+                'distributor_id' => $application->distributor?->id,
                 'created_at' => $application->created_at,
                 'updated_at' => $application->updated_at,
             ] : null

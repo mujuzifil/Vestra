@@ -6,6 +6,7 @@ use App\Enums\DistributorAccountStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\PublicDistributorResource;
 use App\Models\Distributor;
+use App\Models\DistributorBranch;
 use App\Models\DistributorServiceArea;
 use App\Services\SettingService;
 use App\Traits\RespondsWithJson;
@@ -26,24 +27,30 @@ class PublicDistributorController extends Controller
             ->where('status', DistributorAccountStatus::ACTIVE->value);
 
         if ($request->filled('search')) {
-            $search = $request->string('search');
+            $search = (string) $request->string('search');
             $query->where(function ($q) use ($search) {
                 $q->where('company_name', 'like', "%{$search}%")
-                    ->orWhere('trading_name', 'like', "%{$search}%");
+                    ->orWhere('trading_name', 'like', "%{$search}%")
+                    ->orWhere('primary_contact_name', 'like', "%{$search}%");
             });
         }
 
         if ($request->filled('district')) {
-            $district = $request->string('district');
-            $query->whereHas('serviceAreas', fn ($q) => $q->where('district', 'like', "%{$district}%"))
-                ->orWhereHas('defaultBranch', fn ($q) => $q->where('district', 'like', "%{$district}%"))
-                ->orWhere('district', 'like', "%{$district}%");
+            $district = (string) $request->string('district');
+            $query->where(function ($q) use ($district) {
+                $q->where('district', 'like', "%{$district}%")
+                    ->orWhereHas('serviceAreas', fn ($area) => $area->where('district', 'like', "%{$district}%"))
+                    ->orWhereHas('defaultBranch', fn ($branch) => $branch->where('district', 'like', "%{$district}%"));
+            });
         }
 
         if ($request->filled('region')) {
-            $region = $request->string('region');
-            $query->whereHas('serviceAreas', fn ($q) => $q->where('region', 'like', "%{$region}%"))
-                ->orWhereHas('defaultBranch', fn ($q) => $q->where('district', 'like', "%{$region}%"));
+            $region = (string) $request->string('region');
+            $query->where(function ($q) use ($region) {
+                $q->whereHas('serviceAreas', fn ($area) => $area->where('region', 'like', "%{$region}%"))
+                    ->orWhere('district', 'like', "%{$region}%")
+                    ->orWhereHas('defaultBranch', fn ($branch) => $branch->where('district', 'like', "%{$region}%"));
+            });
         }
 
         $distributors = $query->orderBy('company_name')->get();
@@ -53,11 +60,26 @@ class PublicDistributorController extends Controller
         );
     }
 
+    public function show(int $id): JsonResponse
+    {
+        $distributor = Distributor::with(['defaultBranch', 'serviceAreas', 'negotiatedPrices.product'])
+            ->where('status', DistributorAccountStatus::ACTIVE->value)
+            ->findOrFail($id);
+
+        return $this->successResponse(
+            new PublicDistributorResource($distributor)
+        );
+    }
+
     public function stats(): JsonResponse
     {
         $activeDistributors = Distributor::where('status', DistributorAccountStatus::ACTIVE->value)->count();
-        $branches = DistributorServiceArea::distinct('branch_id')->count('branch_id');
-        $districtsServed = DistributorServiceArea::where('status', 'covered')
+        $branches = DistributorBranch::query()
+            ->whereHas('distributor', fn ($q) => $q->where('status', DistributorAccountStatus::ACTIVE->value))
+            ->count();
+        $districtsServed = DistributorServiceArea::query()
+            ->where('status', 'covered')
+            ->whereHas('distributor', fn ($q) => $q->where('status', DistributorAccountStatus::ACTIVE->value))
             ->distinct('district')
             ->count('district');
 
@@ -73,7 +95,9 @@ class PublicDistributorController extends Controller
 
     public function coverageRegions(): JsonResponse
     {
-        $areas = DistributorServiceArea::selectRaw('region, district, status, COUNT(*) as count')
+        $areas = DistributorServiceArea::query()
+            ->selectRaw('region, district, status, COUNT(*) as count')
+            ->whereHas('distributor', fn ($q) => $q->where('status', DistributorAccountStatus::ACTIVE->value))
             ->groupBy('region', 'district', 'status')
             ->orderBy('region')
             ->orderBy('district')

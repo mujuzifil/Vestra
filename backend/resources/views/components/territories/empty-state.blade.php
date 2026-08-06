@@ -1,6 +1,5 @@
 @props([
     'hasFilters' => false,
-    'canCreate' => false,
 ])
 
 <div class="vestra-territories__empty">
@@ -10,9 +9,9 @@
 
     <h4 class="vestra-territories__empty-title">
         @if ($hasFilters)
-            No branches found
+            No distributor coverage found
         @else
-            No branches yet
+            No distributor coverage configured
         @endif
     </h4>
 
@@ -20,14 +19,7 @@
         @if ($hasFilters)
             Try adjusting your filters to find what you're looking for.
         @else
-            Distributor branches will appear here once they are registered.
+            Approved distributors appear here automatically. Administrators can assign coverage areas from the distributor profile.
         @endif
     </p>
-
-    @if (! $hasFilters && $canCreate)
-        <a href="{{ \App\Filament\Resources\DistributorBranchResource::getUrl('create') }}" class="vestra-button vestra-button--primary vestra-territories__empty-action">
-            <x-filament::icon icon="heroicon-o-plus" class="h-4 w-4" />
-            <span>Add Branch</span>
-        </a>
-    @endif
 </div>

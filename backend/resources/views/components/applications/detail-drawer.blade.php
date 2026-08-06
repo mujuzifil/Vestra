@@ -79,7 +79,7 @@ $display = function ($value, string $fallback = 'Not provided') {
                 </div>
 
                 <div class="vestra-applications-detail__quick-actions">
-                    @if ($status !== DistributorStatus::APPROVED)
+                    @if ($status !== DistributorStatus::APPROVED || empty($application['distributor']))
                         <button
                             type="button"
                             wire:click="approve({{ $application['id'] }})"
@@ -87,10 +87,10 @@ $display = function ($value, string $fallback = 'Not provided') {
                             class="vestra-applications-detail__quick-action"
                         >
                             <x-filament::icon icon="heroicon-o-check-circle" class="h-4 w-4" />
-                            <span>Approve</span>
+                            <span>{{ empty($application['distributor']) && $status === DistributorStatus::APPROVED ? 'Repair Account' : 'Approve' }}</span>
                         </button>
                     @endif
-                    @if ($status !== DistributorStatus::REJECTED)
+                    @if ($status !== DistributorStatus::REJECTED && $status !== DistributorStatus::APPROVED)
                         <button
                             type="button"
                             wire:click="reject({{ $application['id'] }})"

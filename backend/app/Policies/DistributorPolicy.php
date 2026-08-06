@@ -4,31 +4,52 @@ namespace App\Policies;
 
 use App\Models\Distributor;
 use App\Models\User;
+use App\Support\ChecksDiscoveredPermission;
 
 class DistributorPolicy
 {
+    use ChecksDiscoveredPermission;
+
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin();
+        return $this->allowsPermission($user, 'active-partners.view')
+            || $this->allowsPermission($user, 'distributors.view');
     }
 
     public function view(User $user, Distributor $distributor): bool
     {
-        return $user->isAdmin() || $user->id === $distributor->user_id;
+        if ($user->id === $distributor->user_id) {
+            return true;
+        }
+
+        return $this->allowsPermission($user, 'active-partners.view')
+            || $this->allowsPermission($user, 'distributors.view');
     }
 
     public function update(User $user, Distributor $distributor): bool
     {
-        return $user->id === $distributor->user_id || $user->isAdmin();
+        if ($user->id === $distributor->user_id) {
+            return true;
+        }
+
+        return $this->allowsPermission($user, 'active-partners.edit')
+            || $this->allowsPermission($user, 'distributors.edit');
+    }
+
+    public function suspend(User $user, Distributor $distributor): bool
+    {
+        return $this->allowsPermission($user, 'active-partners.edit')
+            || $this->allowsPermission($user, 'distributors.suspend');
     }
 
     public function manage(User $user, Distributor $distributor): bool
     {
-        return $user->id === $distributor->user_id || $user->isAdmin();
+        return $this->update($user, $distributor);
     }
 
     public function export(User $user): bool
     {
-        return $user->isAdmin();
+        return $this->allowsPermission($user, 'active-partners.export')
+            || $this->allowsPermission($user, 'distributors.export');
     }
 }

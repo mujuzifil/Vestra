@@ -88,6 +88,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/public/distributors', [PublicDistributorController::class, 'index']);
     Route::get('/public/distributors/stats', [PublicDistributorController::class, 'stats']);
     Route::get('/public/distributors/coverage', [PublicDistributorController::class, 'coverageRegions']);
+    Route::get('/public/distributors/{id}', [PublicDistributorController::class, 'show'])->whereNumber('id');
 
     // Public blog / knowledge centre
     Route::get('/blog/posts', [BlogPostController::class, 'index']);

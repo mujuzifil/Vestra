@@ -115,7 +115,16 @@ class PartnerAdminService
      */
     public function getDetail(Distributor $distributor): array
     {
-        $distributor->load(['user', 'salesRepresentative', 'creditAccount', 'branches', 'documents', 'contacts', 'serviceAreas']);
+        $distributor->load([
+            'user',
+            'salesRepresentative',
+            'creditAccount',
+            'branches',
+            'documents',
+            'contacts',
+            'serviceAreas',
+            'request',
+        ]);
 
         $creditAccount = $distributor->creditAccount;
 
@@ -226,6 +235,23 @@ class PartnerAdminService
                     'user' => $log->user?->name ?? 'System',
                     'created_at' => $log->created_at,
                 ])->toArray(),
+            'application' => $distributor->request ? [
+                'id' => $distributor->request->id,
+                'status' => $distributor->request->status?->value,
+                'submitted_at' => $distributor->request->created_at,
+            ] : null,
+            'actions' => [
+                'suspend' => $distributor->isActive(),
+                'activate' => $distributor->isSuspended(),
+                'credit' => $creditAccount !== null,
+                'coverage' => true,
+            ],
+            'credit_url' => $creditAccount
+                ? \App\Filament\Pages\Distributors\CreditPage::getUrl(['search' => $distributor->company_name])
+                : null,
+            'territories_url' => \App\Filament\Pages\Distributors\TerritoriesPage::getUrl([
+                'distributor' => $distributor->id,
+            ]),
         ];
     }
 

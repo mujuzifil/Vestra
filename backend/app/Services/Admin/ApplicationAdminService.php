@@ -24,6 +24,7 @@ class ApplicationAdminService
     public function queryApplications(array $filters = [], string $sort = 'created_at', string $direction = 'desc'): Builder
     {
         $query = DistributorRequest::query()
+            ->with('distributor')
             ->when($filters['search'] ?? null, fn (Builder $q, string $term) => $q->search($term))
             ->when($filters['status'] ?? null, fn (Builder $q, array $statuses) => $q->statusIn($statuses))
             ->when($filters['priority'] ?? null, fn (Builder $q, array $priorities) => $q->priorityIn($priorities))

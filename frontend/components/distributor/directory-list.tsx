@@ -149,7 +149,13 @@ export function DirectoryList({ contactPhone, contactEmail }: DirectoryListProps
                 {distributor.operating_hours && (
                   <div className="flex items-start gap-3 text-text-body">
                     <Clock className="w-4 h-4 text-secondary-500 mt-0.5 flex-shrink-0" />
-                    <span>{JSON.stringify(distributor.operating_hours)}</span>
+                    <span>
+                      {typeof distributor.operating_hours === "string"
+                        ? distributor.operating_hours
+                        : Object.entries(distributor.operating_hours)
+                            .map(([day, hours]) => `${day}: ${String(hours)}`)
+                            .join(" · ")}
+                    </span>
                   </div>
                 )}
               </div>

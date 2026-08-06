@@ -6,14 +6,13 @@ $kpiCards = $this->kpiCards;
 $filterOptions = $this->filterOptions;
 $selectedBranch = $this->selectedBranch;
 $activeFilterCount = $this->activeFilterCount();
-$canCreate = $this->canCreateBranch();
 @endphp
     <div class="vestra-workspace vestra-territories">
         <x-territories.page-header
             title="Territories"
-            description="Visualize and manage distributor branch coverage across territories."
+            description="Geographic coverage dashboard for approved distributors."
             :view-mode="$this->viewMode"
-            :can-create="$canCreate"
+            :can-create="false"
             :csv-url="$this->getExportUrl('csv')"
             :excel-url="$this->getExportUrl('excel')"
             :pdf-url="$this->getExportUrl('pdf')"
@@ -50,7 +49,6 @@ $canCreate = $this->canCreateBranch();
                             @else
                                 <x-territories.empty-state
                                     :has-filters="$this->hasActiveFilters()"
-                                    :can-create="$canCreate"
                                 />
                             @endif
                         @else
