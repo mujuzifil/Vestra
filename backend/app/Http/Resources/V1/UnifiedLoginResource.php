@@ -18,6 +18,8 @@ class UnifiedLoginResource extends JsonResource
                 'is_admin' => $this->resource['user']->isAdmin(),
                 'roles' => $this->resource['user']->roles->pluck('name'),
                 'must_change_password' => $this->resource['user']->mustChangePassword(),
+                'last_login_at' => $this->resource['user']->last_login_at?->toIso8601String(),
+                'password_changed_at' => $this->resource['user']->password_changed_at?->toIso8601String(),
                 'created_at' => $this->resource['user']->created_at,
                 'updated_at' => $this->resource['user']->updated_at,
             ],
