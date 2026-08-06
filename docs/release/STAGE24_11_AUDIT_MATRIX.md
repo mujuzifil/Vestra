@@ -69,4 +69,4 @@ Evidence: `backend/tests/Feature/Admin/*PageTest.php` per module; mount RBAC via
 | Responsive / browsers | Pass | Code review — `frontend/docs/phase24_11/README.md` |
 | Error handling / activity / KPIs | Pass | Activity/Support/Quotes/Companies/Tasks/Credit KPI tests use DB aggregates |
 | Production data hygiene | Pass | `ProductionConfigIntegrityTest`, `ProductSeeder` test guard D-017 |
-| Full regression suite | Pending | Operator run required before gate sign-off |
+| Full regression suite | Pass | Backend Feature: **630 passed** (2554 assertions), 2026-08-06; frontend `eslint` exit 0; `npm run build` success after D-023 sitemap timeout |

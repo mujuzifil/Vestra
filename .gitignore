@@ -93,3 +93,5 @@ pnpm-debug.log*
 # TLS certificates — issued per-host by certbot, never committed
 certbot/
 backups/
+
+tmp/

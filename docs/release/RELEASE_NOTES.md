@@ -1,5 +1,29 @@
 # VESTRA — Release Notes
 
+## v2.1.0 — Production Hardening (Stage 24.11)
+
+**Date:** 2026-08-06 · **Stage:** 24.11
+
+Platform-wide hardening release (no new business modules). Public Website and Admin Portal ship together.
+
+### Highlights
+
+- End-to-end CRM loops hardened: company-linked quotes, account portal scope, distributor approval → company sync (carried from 24.10 + 24.11 fixes)
+- Filament auth denials return clean 403; stub Pipeline/Opportunities blocked
+- Distributor credit checkout and volume pricing fixed; notification template parity completed
+- List performance indexes and KPI/query fixes; media usage cleanup on product/blog delete
+- Full Feature regression: **630** tests passed; frontend production build verified
+
+### Known residual risk
+
+- **KI-001:** Credential rotation / git history purge remains an operator action — see release gate item 11 residual-risk acceptance.
+
+### Rollback
+
+Image rollback via `scripts/rollback.sh` + [ROLLBACK_CHECKLIST.md](ROLLBACK_CHECKLIST.md). Migrations in this release are additive.
+
+---
+
 ## v1.0.0 — Production Launch Candidate
 
 **Date:** 2026-07-22 · **Phase:** 15 — Production Readiness & Launch Certification

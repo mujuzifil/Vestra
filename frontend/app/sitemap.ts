@@ -21,7 +21,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Dynamic product pages
   let productPages: MetadataRoute.Sitemap = [];
   try {
-    const res = await fetch(`${API_URL}/products`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${API_URL}/products`, {
+      next: { revalidate: 3600 },
+      signal: AbortSignal.timeout(8_000),
+    });
     const data = await res.json();
     if (data.success && Array.isArray(data.data)) {
       productPages = data.data.map((product: { slug: string; updated_at?: string }) => ({
@@ -32,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }));
     }
   } catch {
-    // Fallback: no product pages if API is unavailable
+    // Fallback: no product pages if API is unavailable or times out during build
   }
 
   return [...staticPages, ...productPages];
