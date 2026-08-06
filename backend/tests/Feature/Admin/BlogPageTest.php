@@ -70,8 +70,8 @@ class BlogPageTest extends TestCase
     {
         $customer = $this->customer();
 
-        Livewire::actingAs($customer)
-            ->test(BlogPage::class)
+        $this->actingAs($customer)
+            ->get('/marketing/blog')
             ->assertForbidden();
     }
 

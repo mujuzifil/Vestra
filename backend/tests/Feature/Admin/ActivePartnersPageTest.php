@@ -113,8 +113,8 @@ class ActivePartnersPageTest extends TestCase
     {
         $customer = $this->customer();
 
-        Livewire::actingAs($customer)
-            ->test(ActivePartnersPage::class)
+        $this->actingAs($customer)
+            ->get('/distributors/active-partners')
             ->assertForbidden();
     }
 
