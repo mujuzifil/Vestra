@@ -51,6 +51,9 @@ class UnifiedLoginController extends Controller
         $tokenName = $isAdmin ? 'admin-token' : 'customer-token';
         $abilities = $isAdmin ? ['admin'] : ['customer'];
 
+        $user->forceFill(['last_login_at' => now()])->save();
+        $user->refresh();
+
         AuditService::logAuth($user, 'login', $request->ip(), $request->userAgent());
 
         if ($isAdmin && $user->mustChangePassword()) {

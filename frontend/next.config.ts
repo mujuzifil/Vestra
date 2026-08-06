@@ -77,6 +77,9 @@ const nextConfig: NextConfig = {
               `img-src 'self' data: https: blob: ${API_ORIGIN}`,
               "font-src 'self' data:",
               `connect-src 'self' ${API_ORIGIN}`,
+              // Allow Google Maps Embed iframes on Contact (default-src alone blocks them).
+              "frame-src 'self' https://www.google.com https://maps.google.com https://www.google.com/maps",
+              "child-src 'self' https://www.google.com https://maps.google.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               `form-action 'self' ${BACKEND_ORIGIN}`,

@@ -250,7 +250,14 @@ class ApiEndpointsTest extends TestCase
             ->assertJsonPath('data.role', 'customer')
             ->assertJsonPath('data.redirect_to', '/account')
             ->assertJsonPath('data.exchange_token', null)
-            ->assertJsonPath('data.user.is_admin', false);
+            ->assertJsonPath('data.user.is_admin', false)
+            ->assertJsonPath('data.user.last_login_at', fn ($value) => is_string($value) && $value !== '');
+
+        $this->assertNotNull($user->fresh()->last_login_at);
+        $this->assertDatabaseHas('audit_logs', [
+            'user_id' => $user->id,
+            'action' => 'login',
+        ]);
     }
 
     public function test_public_registration_rejects_privilege_escalation_fields(): void
