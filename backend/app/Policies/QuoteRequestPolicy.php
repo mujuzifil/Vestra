@@ -49,11 +49,15 @@ class QuoteRequestPolicy
 
     public function viewAsCustomer(User $user, QuoteRequest $quoteRequest): bool
     {
-        return $quoteRequest->user_id === $user->id;
+        if ($quoteRequest->user_id === $user->id) {
+            return true;
+        }
+
+        return $quoteRequest->companyProfile?->user_id === $user->id;
     }
 
     public function downloadAsCustomer(User $user, QuoteRequest $quoteRequest): bool
     {
-        return $quoteRequest->user_id === $user->id;
+        return $this->viewAsCustomer($user, $quoteRequest);
     }
 }

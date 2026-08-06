@@ -9,6 +9,7 @@ use App\Models\QuoteRequest;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 
 class QuoteRequestService
 {
@@ -28,10 +29,16 @@ class QuoteRequestService
                 ? $this->companyProfiles->requireForAuthenticatedUser($user, $data)
                 : $this->companyProfiles->resolveForQuote(null, $data);
 
+            if ($companyProfile === null) {
+                throw ValidationException::withMessages([
+                    'company' => 'Unable to resolve company profile for this quote request.',
+                ]);
+            }
+
             $quote = QuoteRequest::create([
                 'reference_number' => $this->generateReference(),
-                'user_id' => $user?->id ?? $companyProfile?->user_id,
-                'company_profile_id' => $companyProfile?->id,
+                'user_id' => $user?->id ?? $companyProfile->user_id,
+                'company_profile_id' => $companyProfile->id,
                 'full_name' => $data['full_name'],
                 'company_name' => $data['company_name'],
                 'email' => $data['email'],

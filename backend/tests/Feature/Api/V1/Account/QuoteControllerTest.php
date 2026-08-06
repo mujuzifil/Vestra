@@ -63,4 +63,40 @@ class QuoteControllerTest extends TestCase
             'subject_id' => $quote->id,
         ]);
     }
+
+    public function test_customer_can_view_quote_linked_via_company_profile(): void
+    {
+        $user = User::factory()->create();
+        $profile = \App\Models\CompanyProfile::factory()->create(['user_id' => $user->id]);
+        $quote = QuoteRequest::factory()->create([
+            'user_id' => null,
+            'email' => $user->email,
+            'company_profile_id' => $profile->id,
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $this->getJson("/api/v1/account/quotes/{$quote->id}")
+            ->assertOk()
+            ->assertJsonPath('data.reference_number', $quote->reference_number);
+    }
+
+    public function test_account_quote_list_reflects_admin_status_update(): void
+    {
+        $user = User::factory()->create();
+        $quote = QuoteRequest::factory()->create([
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'status' => 'pending',
+        ]);
+
+        $quote->update(['status' => 'approved']);
+
+        Sanctum::actingAs($user);
+
+        $this->getJson("/api/v1/account/quotes/{$quote->id}")
+            ->assertOk()
+            ->assertJsonPath('data.status', 'approved')
+            ->assertJsonPath('data.status_label', 'Approved');
+    }
 }
