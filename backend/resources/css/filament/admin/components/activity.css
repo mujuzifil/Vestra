@@ -15,6 +15,8 @@
 .vestra-activity__table-card {
     padding: 0;
     overflow: visible;
+    display: flex;
+    flex-direction: column;
 }
 
 .vestra-kpi-grid--5 {
@@ -581,6 +583,8 @@
    Pagination
    ========================================================================== */
 .vestra-activity__pagination {
+    position: relative;
+    z-index: 5;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -589,6 +593,8 @@
     padding: var(--space-4);
     border-top: 1px solid var(--border-default);
     background-color: var(--surface-card);
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    flex-shrink: 0;
 }
 
 .vestra-activity__pagination-info {

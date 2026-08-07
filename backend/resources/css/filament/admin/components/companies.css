@@ -68,7 +68,9 @@
 
 .vestra-companies__table-card {
     padding: 0;
-    overflow: hidden;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
 }
 
 .vestra-kpi-grid--5 {
@@ -281,6 +283,8 @@
    ========================================================================== */
 .vestra-companies__table-wrap {
     overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
 }
 
 .vestra-companies__table {
@@ -533,8 +537,8 @@
     position: absolute;
     top: calc(100% + var(--space-1));
     right: 0;
-    z-index: 50;
-    min-width: 180px;
+    z-index: 80;
+    min-width: 190px;
     padding: var(--space-1);
     border: 1px solid var(--border-default);
     border-radius: var(--radius-md);
@@ -573,6 +577,8 @@
    Pagination
    ========================================================================== */
 .vestra-companies__pagination {
+    position: relative;
+    z-index: 5;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -581,6 +587,8 @@
     padding: var(--space-4);
     border-top: 1px solid var(--border-default);
     background-color: var(--surface-card);
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    flex-shrink: 0;
 }
 
 .vestra-companies__pagination-info {
@@ -881,7 +889,7 @@
 .vestra-companies-detail {
     position: fixed;
     inset: 0;
-    z-index: 50;
+    z-index: 90;
     display: none;
     align-items: stretch;
     justify-content: flex-end;

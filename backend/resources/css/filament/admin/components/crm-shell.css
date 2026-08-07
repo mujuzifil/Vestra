@@ -705,7 +705,8 @@
     flex: 1;
     min-width: 0;
     overflow-x: hidden;
-    padding: var(--space-6) var(--space-4) var(--space-12);
+    overflow-y: visible;
+    padding: var(--space-6) var(--space-4) var(--space-16);
 }
 
 @media (min-width: 1024px) {
