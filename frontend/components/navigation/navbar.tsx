@@ -198,7 +198,10 @@ export function Navbar() {
           )}
 
           <button
-            className="lg:hidden text-white p-2 z-50 rounded-full focus-visible:ring-2 focus-visible:ring-secondary-500"
+            className={cn(
+              "lg:hidden p-2 z-50 rounded-full focus-visible:ring-2 focus-visible:ring-secondary-500",
+              isOpen ? "text-secondary-300" : "text-white"
+            )}
             onClick={() => setIsOpen(!isOpen)}
             aria-label={isOpen ? "Close menu" : "Open menu"}
             aria-expanded={isOpen}
@@ -213,8 +216,8 @@ export function Navbar() {
       <div
         id="mobile-menu"
         className={cn(
-          "fixed inset-0 bg-primary-800/98 flex flex-col items-center justify-center gap-8 transition-transform-base duration-400 lg:hidden",
-          isOpen ? "translate-x-0" : "-translate-x-full"
+          "fixed inset-0 z-[55] bg-primary-900 flex flex-col items-center justify-center gap-8 transition-transform-base duration-400 lg:hidden",
+          isOpen ? "translate-x-0" : "-translate-x-full pointer-events-none"
         )}
         aria-hidden={!isOpen}
       >
@@ -224,7 +227,7 @@ export function Navbar() {
               href={link.href}
               className={cn(
                 "text-xl font-medium transition-colors-base",
-                isActive(link.href) ? "text-secondary-400" : "text-white hover:text-secondary-400"
+                isActive(link.href) ? "text-secondary-300" : "text-secondary-400 hover:text-secondary-300"
               )}
             >
               {link.label}
@@ -237,7 +240,7 @@ export function Navbar() {
                     href={child.href}
                     className={cn(
                       "text-sm transition-colors-base",
-                      pathname === child.href ? "text-secondary-400" : "text-white/70 hover:text-secondary-400"
+                      pathname === child.href ? "text-secondary-300" : "text-secondary-400/80 hover:text-secondary-300"
                     )}
                   >
                     {child.label}
@@ -248,7 +251,7 @@ export function Navbar() {
           </div>
         ))}
         {!isAuthenticated && (
-          <Link href="/auth/login" className="text-secondary-400 font-medium text-lg">
+          <Link href="/auth/login" className="text-secondary-300 font-medium text-lg">
             Sign In
           </Link>
         )}
