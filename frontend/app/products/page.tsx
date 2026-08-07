@@ -694,11 +694,11 @@ function ProductCard({
           </ul>
         )}
 
-        <div className="flex gap-3 mt-auto">
-          <Button asChild variant="outline" className="flex-1 rounded-full px-4 py-2.5 h-auto text-sm">
+        <div className="flex flex-col sm:flex-row gap-3 mt-auto">
+          <Button asChild variant="outline" className="w-full sm:flex-1 rounded-full px-4 py-2.5 h-auto text-sm">
             <Link href={`/products/${product.slug}`}>Learn More</Link>
           </Button>
-          <Button asChild variant="default" className="flex-1 rounded-full px-4 py-2.5 h-auto text-sm" leftIcon={<FileText className="w-4 h-4" aria-hidden="true" />}>
+          <Button asChild variant="default" className="w-full sm:flex-1 rounded-full px-4 py-2.5 h-auto text-sm" leftIcon={<FileText className="w-4 h-4" aria-hidden="true" />}>
             <Link href={`/request-quote?product=${encodeURIComponent(product.slug)}`} data-track="product-card-quote">Request Quote</Link>
           </Button>
         </div>

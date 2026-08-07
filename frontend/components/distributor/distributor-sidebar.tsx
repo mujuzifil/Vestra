@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -48,29 +48,43 @@ const navItems: NavItem[] = [
   { label: "Settings", href: "/distributor/settings", icon: Settings },
 ];
 
-export function DistributorSidebar() {
+function resolveActiveLabel(pathname: string): string {
+  const exact = navItems.find((item) => pathname === item.href);
+  if (exact) return exact.label;
+  const nested = navItems
+    .filter((item) => pathname.startsWith(`${item.href}/`))
+    .sort((a, b) => b.href.length - a.href.length)[0];
+  return nested?.label || "Distributor";
+}
+
+export function DistributorSidebar({
+  mobileOpen,
+  setMobileOpen,
+}: {
+  mobileOpen: boolean;
+  setMobileOpen: (open: boolean) => void;
+}) {
   const pathname = usePathname();
   const { logout } = useAuth();
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   const NavContent = ({ onNavigate }: { onNavigate?: () => void }) => (
-    <nav className="flex flex-col h-full">
-      <div className="flex items-center justify-between p-4 lg:p-6 border-b border-border-default">
-        <Link href="/distributor/dashboard" className="flex items-center gap-2" onClick={onNavigate}>
+    <nav className="flex flex-col h-full min-h-0">
+      <div className="flex items-center justify-between p-4 lg:p-6 border-b border-border-default gap-2">
+        <Link href="/distributor/dashboard" className="flex items-center gap-2 min-w-0" onClick={onNavigate}>
           <span className="text-xl font-extrabold text-text-heading">VESTRA</span>
           <span className="px-2 py-0.5 text-xs font-semibold text-white bg-secondary-600 rounded-full">Dist</span>
         </Link>
         <button
           type="button"
           onClick={() => setMobileOpen(false)}
-          className="lg:hidden p-2 text-text-muted hover:text-text-heading"
+          className="lg:hidden p-2 text-text-muted hover:text-text-heading flex-shrink-0"
           aria-label="Close menu"
         >
           <X className="w-5 h-5" />
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3 lg:p-4 space-y-1">
+      <div className="flex-1 overflow-y-auto overscroll-contain p-3 lg:p-4 space-y-1">
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
           return (
@@ -87,7 +101,7 @@ export function DistributorSidebar() {
               aria-current={isActive ? "page" : undefined}
             >
               <item.icon className="w-5 h-5 flex-shrink-0" />
-              <span>{item.label}</span>
+              <span className="min-w-0 truncate">{item.label}</span>
               {isActive && <ChevronRight className="w-4 h-4 ml-auto flex-shrink-0" />}
             </Link>
           );
@@ -109,36 +123,70 @@ export function DistributorSidebar() {
 
   return (
     <>
-      {/* Mobile toggle */}
-      <div className="lg:hidden fixed top-4 left-4 z-40">
-        <button
-          type="button"
-          onClick={() => setMobileOpen(true)}
-          className="p-2.5 bg-surface-card border border-border-default rounded-xl shadow-sm text-text-heading"
-          aria-label="Open menu"
-        >
-          <Menu className="w-5 h-5" />
-        </button>
-      </div>
-
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 h-[calc(100vh-88px)] sticky top-[88px] bg-surface-card border-r border-border-default">
+      <aside className="hidden lg:flex flex-col w-64 h-[calc(100vh-72px)] sticky top-[72px] bg-surface-card border-r border-border-default">
         <NavContent />
       </aside>
 
-      {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
+        <div className="lg:hidden fixed inset-0 z-[60] flex">
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setMobileOpen(false)}
             aria-hidden="true"
           />
-          <div className="relative w-[280px] max-w-[80vw] bg-surface-card h-full shadow-xl animate-slide-right">
+          <div
+            className="relative w-[min(300px,88vw)] max-w-full bg-surface-card h-full shadow-xl animate-slide-right flex flex-col"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Distributor navigation"
+          >
             <NavContent onNavigate={() => setMobileOpen(false)} />
           </div>
         </div>
       )}
     </>
   );
+}
+
+export function DistributorMobileNavBar({
+  activeLabel,
+  onOpen,
+  mobileOpen,
+}: {
+  activeLabel: string;
+  onOpen: () => void;
+  mobileOpen: boolean;
+}) {
+  return (
+    <div className="lg:hidden fixed top-[72px] left-0 right-0 z-40 border-b border-border-default bg-surface-card/95 backdrop-blur-sm">
+      <div className="flex items-center gap-3 px-4 py-3 min-w-0 max-w-full">
+        <button
+          type="button"
+          onClick={onOpen}
+          className="p-2.5 rounded-xl border border-border-default bg-white text-primary-900 shadow-sm flex-shrink-0"
+          aria-label="Open distributor menu"
+          aria-expanded={mobileOpen}
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-medium text-text-muted">Distributor Portal</p>
+          <p className="text-sm font-semibold text-text-heading truncate">{activeLabel}</p>
+        </div>
+        <button
+          type="button"
+          onClick={onOpen}
+          className="text-sm font-semibold text-secondary-600 flex-shrink-0 px-2"
+        >
+          Menu
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** Hook-friendly active label for layout */
+export function useDistributorActiveLabel() {
+  const pathname = usePathname();
+  return resolveActiveLabel(pathname);
 }

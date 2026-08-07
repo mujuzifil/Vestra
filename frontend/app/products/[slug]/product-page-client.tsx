@@ -187,7 +187,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
           { name: product.name, url: `https://vestradetergents.com/products/${product.slug}` },
         ])}
       />
-      <main>
+      <main className="w-full max-w-full min-w-0 overflow-x-clip">
         <PageHero
           title={product.name}
           subtitle={product.short_description}
@@ -195,25 +195,25 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
         />
 
         {/* Overview */}
-        <section className="py-16 lg:py-24 bg-white" aria-labelledby="overview-heading">
+        <section className="py-12 sm:py-16 lg:py-24 bg-white overflow-x-clip" aria-labelledby="overview-heading">
           <Container>
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-              <ProductGallery images={productImages} productName={product.name} />
+            <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-start min-w-0">
+              <ProductGallery images={productImages} productName={product.name} className="min-w-0 max-w-full" />
 
-              <div>
+              <div className="min-w-0 max-w-full">
                 <span className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-secondary-500/10 text-secondary-600 mb-4">
                   {product.category.name}
                 </span>
                 <h1
                   id="overview-heading"
-                  className="text-3xl lg:text-4xl font-extrabold text-text-heading mb-4 tracking-tight"
+                  className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-text-heading mb-4 tracking-tight break-words"
                 >
                   {product.name}
                 </h1>
 
                 <div className="flex flex-wrap items-center gap-3 mb-6">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-neutral-100 text-text-body">
-                    <Package className="w-3.5 h-3.5" aria-hidden="true" />
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-neutral-100 text-text-body break-all">
+                    <Package className="w-3.5 h-3.5 flex-shrink-0" aria-hidden="true" />
                     SKU: {product.sku}
                   </span>
                   {product.status === "active" && (
@@ -224,7 +224,7 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                   )}
                 </div>
 
-                <p className="text-text-body text-base lg:text-lg leading-relaxed mb-8">
+                <p className="text-text-body text-base lg:text-lg leading-relaxed mb-8 break-words">
                   {product.description}
                 </p>
 
@@ -233,14 +233,14 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                   <Button
                     asChild
                     variant="gradient"
-                    className="flex-1 rounded-full px-6 py-3.5 h-auto"
+                    className="w-full sm:flex-1 rounded-full px-6 py-3.5 h-auto"
                     leftIcon={<FileText className="w-4 h-4" aria-hidden="true" />}
                   >
                     <Link href={`/request-quote?product=${encodeURIComponent(product.slug)}`} data-track="product-detail-quote">
                       Request a Quote
                     </Link>
                   </Button>
-                  <Button asChild variant="outline" className="flex-1 rounded-full px-6 py-3.5 h-auto">
+                  <Button asChild variant="outline" className="w-full sm:flex-1 rounded-full px-6 py-3.5 h-auto">
                     <Link href={`/contact?subject=${encodeURIComponent(`Enquiry about ${product.name}`)}`} data-track="product-detail-contact">
                       Contact Sales
                     </Link>
@@ -250,8 +250,8 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                 <Button
                   asChild
                   variant="link"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-secondary-600 hover:text-secondary-700 underline underline-offset-2 p-0 h-auto"
-                  rightIcon={<ArrowRight className="w-4 h-4" aria-hidden="true" />}
+                  className="inline-flex items-start sm:items-center gap-2 text-sm font-semibold text-secondary-600 hover:text-secondary-700 underline underline-offset-2 p-0 h-auto whitespace-normal text-left max-w-full"
+                  rightIcon={<ArrowRight className="w-4 h-4 flex-shrink-0 mt-0.5 sm:mt-0" aria-hidden="true" />}
                 >
                   <Link href="/distributor" data-track="product-detail-distributor">
                     Interested in reseller or bulk pricing? Become a distributor
@@ -386,17 +386,17 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                 title="Product Specifications"
                 subtitle="Detailed technical information."
               />
-              <div className="max-w-3xl mx-auto rounded-[16px] border border-default overflow-hidden bg-white">
-                <table className="w-full text-sm">
+              <div className="max-w-3xl mx-auto rounded-[16px] border border-default overflow-x-auto bg-white">
+                <table className="w-full min-w-[280px] text-sm">
                   <tbody>
                     {Object.entries(product.specifications)
                       .filter(([key]) => !["Package Sizes", "Sizes", "Pack Sizes", "Usage Instructions", "Directions"].includes(key))
                       .map(([key, value]) => (
                         <tr key={key} className="border-b border-default last:border-0">
-                          <td className="px-5 py-3 font-semibold text-text-heading bg-surface-page w-1/3">
+                          <td className="px-3 sm:px-5 py-3 font-semibold text-text-heading bg-surface-page w-[38%] sm:w-1/3 align-top break-words">
                             {key}
                           </td>
-                          <td className="px-5 py-3 text-text-body">{value}</td>
+                          <td className="px-3 sm:px-5 py-3 text-text-body break-words">{value}</td>
                         </tr>
                       ))}
                   </tbody>

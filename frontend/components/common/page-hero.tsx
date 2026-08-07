@@ -16,7 +16,7 @@ export function PageHero({ title, subtitle, breadcrumb, className }: PageHeroPro
   return (
     <section
       className={cn(
-        "relative pt-32 pb-20 lg:pt-44 lg:pb-28 overflow-hidden",
+        "relative pt-28 pb-14 sm:pt-32 sm:pb-20 lg:pt-44 lg:pb-28 overflow-x-clip",
         className
       )}
       style={{
@@ -34,18 +34,18 @@ export function PageHero({ title, subtitle, breadcrumb, className }: PageHeroPro
 
       {breadcrumb && <Breadcrumb items={breadcrumb} className="relative z-10" />}
 
-      <Container className="relative z-10">
+      <Container className="relative z-10 min-w-0">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className={cn("text-center", !breadcrumb && "pt-8")}
+          className={cn("text-center min-w-0 max-w-full", !breadcrumb && "pt-8")}
         >
-          <h1 className="text-3xl sm:text-4xl lg:text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold text-white mb-4 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold text-white mb-4 tracking-tight break-words px-1">
             {title}
           </h1>
           {subtitle && (
-            <p className="text-base lg:text-xl text-white/75 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-sm sm:text-base lg:text-xl text-white/75 max-w-2xl mx-auto leading-relaxed break-words px-1">
               {subtitle}
             </p>
           )}
