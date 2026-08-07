@@ -30,8 +30,8 @@ export function SectionHeader({
     >
       <h2
         id={id}
-        className={cn(
-          "text-3xl sm:text-4xl lg:text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold tracking-tight mb-4",
+          className={cn(
+          "text-2xl sm:text-3xl lg:text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold tracking-tight mb-4 break-words",
           light ? "text-white" : "text-text-heading"
         )}
       >
@@ -50,7 +50,7 @@ export function SectionHeader({
       {subtitle && (
         <p
           className={cn(
-            "text-base lg:text-lg max-w-2xl mt-5 leading-relaxed",
+            "text-sm sm:text-base lg:text-lg max-w-2xl mt-5 leading-relaxed break-words",
             centered && "mx-auto",
             light ? "text-white/75" : "text-text-muted"
           )}

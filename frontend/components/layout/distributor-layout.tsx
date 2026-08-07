@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { DistributorSidebar } from "@/components/distributor/distributor-sidebar";
+import {
+  DistributorMobileNavBar,
+  DistributorSidebar,
+  useDistributorActiveLabel,
+} from "@/components/distributor/distributor-sidebar";
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 
@@ -15,7 +19,10 @@ export function DistributorLayout({
   className?: string;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, isAuthenticated, isLoading } = useAuth();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const activeLabel = useDistributorActiveLabel();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -27,6 +34,19 @@ export function DistributorLayout({
       router.push("/distributor");
     }
   }, [isLoading, isAuthenticated, user, router]);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [mobileOpen]);
 
   if (isLoading) {
     return (
@@ -42,9 +62,15 @@ export function DistributorLayout({
 
   return (
     <div className={cn("min-h-screen w-full max-w-full min-w-0 overflow-x-clip bg-surface-page", className)}>
+      <DistributorMobileNavBar
+        activeLabel={activeLabel}
+        onOpen={() => setMobileOpen(true)}
+        mobileOpen={mobileOpen}
+      />
+
       <div className="flex w-full min-w-0">
-        <DistributorSidebar />
-        <main className="flex-1 min-w-0 max-w-full lg:ml-0 pt-16 lg:pt-0">
+        <DistributorSidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+        <main className="flex-1 min-w-0 max-w-full pt-[56px] lg:pt-0">
           <div className="p-4 sm:p-6 lg:p-8 min-w-0 max-w-full">{children}</div>
         </main>
       </div>
