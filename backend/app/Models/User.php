@@ -233,8 +233,13 @@ class User extends Authenticatable implements FilamentUser
             return $this->avatar_path;
         }
 
-        if (str_starts_with($this->avatar_path, 'avatars/') || str_starts_with($this->avatar_path, 'storage/')) {
-            return asset('storage/'.ltrim(str_replace('storage/', '', $this->avatar_path), '/'));
+        // Avatars are stored under public/avatars (see AvatarController).
+        if (str_starts_with($this->avatar_path, 'avatars/')) {
+            return asset($this->avatar_path);
+        }
+
+        if (str_starts_with($this->avatar_path, 'storage/')) {
+            return asset($this->avatar_path);
         }
 
         return asset($this->avatar_path);

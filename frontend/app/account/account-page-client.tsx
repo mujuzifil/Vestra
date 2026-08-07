@@ -3,7 +3,6 @@
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import {
   User,
   FileText,
@@ -161,7 +160,8 @@ export function AccountPageClient() {
               <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
                 <div className="relative w-16 h-16 rounded-full overflow-hidden bg-secondary-50 border-2 border-surface-card shadow-md flex-shrink-0">
                   {user.avatar_url ? (
-                    <Image src={user.avatar_url} alt={user.name} fill className="object-cover" sizes="64px" />
+                    // eslint-disable-next-line @next/next/no-img-element -- avatar host is API origin
+                    <img src={user.avatar_url} alt={user.name} className="absolute inset-0 w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-secondary-600">
                       <User className="w-8 h-8" />
@@ -181,7 +181,7 @@ export function AccountPageClient() {
                   </div>
                 </div>
                 <Link
-                  href="/account/profile"
+                  href="/account/profile/photo"
                   className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-secondary-600 bg-secondary-50 rounded-xl hover:bg-secondary-100 transition-colors-base"
                 >
                   <Camera className="w-4 h-4" />
