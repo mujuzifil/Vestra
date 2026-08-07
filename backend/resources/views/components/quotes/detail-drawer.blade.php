@@ -5,7 +5,7 @@
 
 <div
     class="vestra-quotes-detail @if ($show) vestra-quotes-detail--open @endif"
-    x-data="{ open: @js($show) }"
+    x-data="{ open: @entangle('showDetailDrawer') }"
     x-show="open"
     x-cloak
     @keydown.escape.window="if (open) $wire.closeDetailDrawer()"

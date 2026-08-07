@@ -173,6 +173,33 @@ class ActivityService
     }
 
     /**
+     * Latest activity feed items for the workspace dashboard card.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getRecentForDashboard(int $limit = 6): array
+    {
+        return $this->filteredCollection([])
+            ->take($limit)
+            ->map(function (array $item): array {
+                $actor = $item['user']['name'] ?? 'System';
+                $module = $item['module'] ?? null;
+
+                return [
+                    'id' => $item['id'],
+                    'icon' => $item['icon'] ?? 'heroicon-o-bolt',
+                    'color' => $item['color'] ?? 'gray',
+                    'title' => $item['title'] ?? 'Activity',
+                    'subtitle' => $module ? "{$actor} · {$module}" : $actor,
+                    'time' => $item['diff_for_humans'] ?? '',
+                    'url' => \App\Filament\Pages\Workspace\ActivityPage::getUrl(),
+                ];
+            })
+            ->values()
+            ->all();
+    }
+
+    /**
      * @param  array<string, mixed>  $filters
      */
     private function filteredCollection(array $filters): Collection
