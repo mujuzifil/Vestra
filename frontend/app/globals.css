@@ -195,7 +195,7 @@
   --input: var(--neutral-200);
   --ring: var(--secondary-500);
   --radius: 0.625rem;
-  --navbar-height: 88px;
+  --navbar-height: 72px;
   --hero-bg: var(--primary-900);
 }
 

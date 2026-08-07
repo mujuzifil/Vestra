@@ -45,7 +45,8 @@ export function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -59,6 +60,25 @@ export function Navbar() {
     }
   }, [searchOpen]);
 
+  // Keep the page behind the mobile menu from scrolling, and unlock on close.
+  useEffect(() => {
+    if (!isOpen && !searchOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarGap = window.innerWidth - document.documentElement.clientWidth;
+
+    document.body.style.overflow = "hidden";
+    if (scrollbarGap > 0) {
+      document.body.style.paddingRight = `${scrollbarGap}px`;
+    }
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
+    };
+  }, [isOpen, searchOpen]);
+
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname === href || pathname.startsWith(`${href}/`);
@@ -69,15 +89,14 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all-base duration-300",
+        // Fixed height so the bar does not shrink/jump when mobile browser chrome collapses on scroll.
+        "fixed top-0 left-0 right-0 z-50 h-[72px] pt-[env(safe-area-inset-top)] transition-colors duration-300",
         isHome && !scrolled
-          ? "bg-transparent py-3.5"
-          : scrolled
-            ? "bg-primary-900/98 backdrop-blur-md py-2 shadow-md"
-            : "bg-primary-900/98 py-3.5"
+          ? "bg-transparent"
+          : "bg-primary-900 shadow-md"
       )}
     >
-      <div className="container mx-auto flex items-center justify-between px-4 lg:px-8">
+      <div className="container mx-auto flex h-full items-center justify-between px-4 lg:px-8">
         <Link href="/" className="flex-shrink-0">
           <Image
             src="/assets/images/branding/vestra-logo.png"
@@ -198,68 +217,105 @@ export function Navbar() {
           )}
 
           <button
-            className={cn(
-              "lg:hidden p-2 z-50 rounded-full focus-visible:ring-2 focus-visible:ring-secondary-500",
-              isOpen ? "text-secondary-300" : "text-white"
-            )}
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label={isOpen ? "Close menu" : "Open menu"}
+            className="lg:hidden text-white p-2 rounded-full focus-visible:ring-2 focus-visible:ring-secondary-500"
+            onClick={() => setIsOpen(true)}
+            aria-label="Open menu"
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
           >
-            {isOpen ? <X className="w-6 h-6" aria-hidden="true" /> : <Menu className="w-6 h-6" aria-hidden="true" />}
+            <Menu className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu — full viewport panel, scrollable from any page scroll position */}
       <div
         id="mobile-menu"
         className={cn(
-          "fixed inset-0 z-[55] bg-primary-900 flex flex-col items-center justify-center gap-8 transition-transform-base duration-400 lg:hidden",
+          "fixed inset-0 z-[60] lg:hidden flex flex-col bg-primary-900 transition-transform duration-300 ease-out",
+          "pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]",
           isOpen ? "translate-x-0" : "-translate-x-full pointer-events-none"
         )}
+        style={{ height: "100dvh", top: 0 }}
         aria-hidden={!isOpen}
+        role="dialog"
+        aria-modal={isOpen}
+        aria-label="Site navigation"
       >
-        {navLinks.map((link) => (
-          <div key={link.href} className="text-center">
-            <Link
-              href={link.href}
-              className={cn(
-                "text-xl font-medium transition-colors-base",
-                isActive(link.href) ? "text-secondary-300" : "text-secondary-400 hover:text-secondary-300"
-              )}
-            >
-              {link.label}
-            </Link>
-            {link.children && (
-              <div className="mt-2 flex flex-col gap-1">
-                {link.children.map((child) => (
-                  <Link
-                    key={child.href}
-                    href={child.href}
-                    className={cn(
-                      "text-sm transition-colors-base",
-                      pathname === child.href ? "text-secondary-300" : "text-secondary-400/80 hover:text-secondary-300"
-                    )}
-                  >
-                    {child.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-        {!isAuthenticated && (
-          <Link href="/auth/login" className="text-secondary-300 font-medium text-lg">
-            Sign In
+        <div className="flex items-center justify-between px-4 h-[72px] flex-shrink-0 border-b border-white/10">
+          <Link href="/" className="flex-shrink-0" onClick={() => setIsOpen(false)}>
+            <Image
+              src="/assets/images/branding/vestra-logo.png"
+              alt="VESTRA"
+              width={120}
+              height={48}
+              sizes="120px"
+              className="h-10 w-auto object-contain"
+            />
           </Link>
-        )}
+          <button
+            type="button"
+            onClick={() => setIsOpen(false)}
+            className="p-2 rounded-full text-secondary-300 hover:text-secondary-200 focus-visible:ring-2 focus-visible:ring-secondary-500"
+            aria-label="Close menu"
+          >
+            <X className="w-6 h-6" aria-hidden="true" />
+          </button>
+        </div>
+
+        <nav className="flex-1 overflow-y-auto overscroll-contain px-6 py-6">
+          <ul className="flex flex-col gap-1">
+            {navLinks.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className={cn(
+                    "block py-3 text-xl font-medium transition-colors-base",
+                    isActive(link.href) ? "text-secondary-300" : "text-secondary-400 hover:text-secondary-300"
+                  )}
+                >
+                  {link.label}
+                </Link>
+                {link.children && (
+                  <ul className="mb-2 ml-3 flex flex-col gap-1 border-l border-white/10 pl-4">
+                    {link.children.map((child) => (
+                      <li key={child.href}>
+                        <Link
+                          href={child.href}
+                          onClick={() => setIsOpen(false)}
+                          className={cn(
+                            "block py-2 text-sm transition-colors-base",
+                            pathname === child.href
+                              ? "text-secondary-300"
+                              : "text-secondary-400/80 hover:text-secondary-300"
+                          )}
+                        >
+                          {child.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+
+          {!isAuthenticated && (
+            <Link
+              href="/auth/login"
+              onClick={() => setIsOpen(false)}
+              className="mt-6 inline-flex text-secondary-300 font-semibold text-lg"
+            >
+              Sign In
+            </Link>
+          )}
+        </nav>
       </div>
 
       {/* Search overlay */}
       {searchOpen && (
-        <div className="fixed inset-0 z-[60] bg-primary-900/95 backdrop-blur-sm flex items-start justify-center pt-24 px-4">
+        <div className="fixed inset-0 z-[70] bg-primary-900/95 backdrop-blur-sm flex items-start justify-center pt-24 px-4">
           <div className="w-full max-w-2xl bg-white rounded-[20px] shadow-2xl overflow-hidden">
             <form
               onSubmit={(e) => {
@@ -320,3 +376,4 @@ export function Navbar() {
     </header>
   );
 }
+
