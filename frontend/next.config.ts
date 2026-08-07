@@ -35,8 +35,34 @@ const nextConfig: NextConfig = {
         pathname: "/storage/**",
       },
       {
+        protocol: "http",
+        hostname: "localhost",
+        port: "8000",
+        pathname: "/avatars/**",
+      },
+      {
         protocol: "https",
-        hostname: process.env.NEXT_PUBLIC_CDN_HOST || "**",
+        hostname: process.env.NEXT_PUBLIC_CDN_HOST || "cdn.vestradetergents.com",
+      },
+      {
+        protocol: "https",
+        hostname: new URL(API_ORIGIN).hostname,
+        pathname: "/avatars/**",
+      },
+      {
+        protocol: "https",
+        hostname: new URL(API_ORIGIN).hostname,
+        pathname: "/storage/**",
+      },
+      {
+        protocol: "https",
+        hostname: new URL(BACKEND_ORIGIN).hostname,
+        pathname: "/avatars/**",
+      },
+      {
+        protocol: "https",
+        hostname: new URL(BACKEND_ORIGIN).hostname,
+        pathname: "/storage/**",
       },
     ],
     // Enable Next.js Image Optimization in production
