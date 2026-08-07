@@ -160,10 +160,10 @@ function CustomerSidebar() {
 
 export function CustomerLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-surface-page">
-      <div className="flex">
+    <div className="min-h-screen w-full max-w-full min-w-0 overflow-x-clip bg-surface-page">
+      <div className="flex w-full min-w-0">
         <CustomerSidebar />
-        <main className="flex-1 min-w-0 pt-16 lg:pt-6 p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 min-w-0 max-w-full pt-16 lg:pt-6 p-4 sm:p-6 lg:p-8">
           {children}
         </main>
       </div>

@@ -56,11 +56,11 @@ export function HeroSection() {
             initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-white max-w-xl"
+            className="text-white max-w-full sm:max-w-xl min-w-0"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-xs sm:text-sm font-bold tracking-wider mb-6">
-              <Star className="w-4 h-4 text-secondary-500 fill-secondary-500" aria-hidden="true" />
-              <span>PROFESSIONAL CLEANING SOLUTIONS</span>
+            <div className="inline-flex max-w-full items-center gap-2 px-3 sm:px-4 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-[11px] sm:text-sm font-bold tracking-wider mb-6">
+              <Star className="w-4 h-4 text-secondary-500 fill-secondary-500 flex-shrink-0" aria-hidden="true" />
+              <span className="truncate sm:whitespace-normal">PROFESSIONAL CLEANING SOLUTIONS</span>
             </div>
 
             <h1

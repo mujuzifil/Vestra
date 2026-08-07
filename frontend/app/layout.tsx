@@ -2,6 +2,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/lib/query-provider";
 import { RootLayoutClient } from "@/components/layout/root-layout-client";
+import { SkipLink } from "@/components/common/skip-link";
 import { createMetadata } from "@/lib/metadata";
 
 const poppins = Poppins({
@@ -18,7 +19,11 @@ export const metadata = createMetadata({
   pathname: "/",
 });
 
-import { SkipLink } from "@/components/common/skip-link";
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover" as const,
+};
 
 export default function RootLayout({
   children,
@@ -26,8 +31,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${poppins.variable} font-sans antialiased`}>
+    <html lang="en" className="scroll-smooth overflow-x-clip">
+      <body className={`${poppins.variable} font-sans antialiased overflow-x-clip max-w-full`}>
         <SkipLink />
         <QueryProvider>
           <RootLayoutClient>{children}</RootLayoutClient>

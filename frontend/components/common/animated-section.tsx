@@ -12,6 +12,7 @@ interface AnimatedSectionProps {
   duration?: number;
 }
 
+/* Prefer vertical motion so entrance animations do not widen the layout on mobile */
 const variants: Record<string, Variants> = {
   up: {
     hidden: { opacity: 0, y: 40 },
@@ -22,12 +23,12 @@ const variants: Record<string, Variants> = {
     visible: { opacity: 1, y: 0 },
   },
   left: {
-    hidden: { opacity: 0, x: -40 },
-    visible: { opacity: 1, x: 0 },
+    hidden: { opacity: 0, y: 24 },
+    visible: { opacity: 1, y: 0 },
   },
   right: {
-    hidden: { opacity: 0, x: 40 },
-    visible: { opacity: 1, x: 0 },
+    hidden: { opacity: 0, y: 24 },
+    visible: { opacity: 1, y: 0 },
   },
 };
 

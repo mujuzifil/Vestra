@@ -22,17 +22,17 @@ export function DistributorCtaSection() {
   return (
     <section
       id="distributor"
-      className="py-24 lg:py-36 bg-surface-page"
+      className="py-24 lg:py-36 bg-surface-page overflow-x-clip"
       aria-labelledby="distributor-heading"
     >
       <Container>
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <motion.div
-            initial={prefersReducedMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7 }}
-            className="relative order-2 lg:order-1"
+            className="relative order-2 lg:order-1 min-w-0"
           >
             <div className="relative aspect-square max-w-md mx-auto rounded-[24px] overflow-hidden bg-primary-50 shadow-xl">
               <Image
@@ -46,11 +46,11 @@ export function DistributorCtaSection() {
           </motion.div>
 
           <motion.div
-            initial={prefersReducedMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="order-1 lg:order-2"
+            className="order-1 lg:order-2 min-w-0"
           >
             <SectionHeader
               id="distributor-heading"

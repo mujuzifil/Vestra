@@ -19,16 +19,17 @@ export function ManufacturingSection() {
   return (
     <section
       id="manufacturing"
-      className="py-24 lg:py-36 bg-white"
+      className="py-24 lg:py-36 bg-white overflow-x-clip"
       aria-labelledby="manufacturing-heading"
     >
       <Container>
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <motion.div
-            initial={prefersReducedMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7 }}
+            className="min-w-0"
           >
             <SectionHeader
               id="manufacturing-heading"
@@ -54,11 +55,11 @@ export function ManufacturingSection() {
           </motion.div>
 
           <motion.div
-            initial={prefersReducedMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="relative"
+            className="relative min-w-0"
           >
             <div className="relative aspect-[4/3] rounded-[24px] overflow-hidden bg-primary-50 shadow-xl">
               <Image
@@ -69,7 +70,7 @@ export function ManufacturingSection() {
                 className="object-contain p-6 lg:p-10"
               />
             </div>
-            <div className="absolute -bottom-6 -left-6 lg:-bottom-8 lg:-left-8 bg-primary-900 text-white p-5 lg:p-6 rounded-[20px] shadow-xl max-w-[200px]">
+            <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 lg:-bottom-8 lg:-left-8 bg-primary-900 text-white p-4 sm:p-5 lg:p-6 rounded-[20px] shadow-xl max-w-[180px] sm:max-w-[200px]">
               <p className="text-3xl lg:text-4xl font-black text-secondary-500 mb-1">100%</p>
               <p className="text-sm font-medium text-white/80">Quality-tested batches</p>
             </div>

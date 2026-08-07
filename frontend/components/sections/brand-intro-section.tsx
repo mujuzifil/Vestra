@@ -7,15 +7,15 @@ import { Shield } from "lucide-react";
 
 export function BrandIntroSection() {
   return (
-    <section id="about" className="py-24 lg:py-36 bg-white">
+    <section id="about" className="py-24 lg:py-36 bg-white overflow-x-clip">
       <Container>
-        <div className="grid md:grid-cols-2 lg:grid-cols-[0.9fr_1.3fr_0.5fr] gap-12 lg:gap-16 items-center">
+        <div className="grid md:grid-cols-2 lg:grid-cols-[0.9fr_1.3fr_0.5fr] gap-12 lg:gap-16 items-center min-w-0">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7 }}
-            className="flex justify-center"
+            className="flex justify-center min-w-0"
           >
             <Image
               src="/assets/images/branding/vestra-logo.png"
