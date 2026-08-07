@@ -115,16 +115,49 @@ $countryFlag = $countryFlags[$country] ?? null;
     </td>
 
     <td class="vestra-companies__td vestra-companies__td--actions">
-        <div class="vestra-companies__actions" x-data="{ open: false }" @click.outside="open = false">
-            <button type="button" @click="open = !open" class="vestra-companies__action-trigger" aria-label="Company actions" aria-haspopup="true">
+        <div
+            class="vestra-companies__actions"
+            x-data="{
+                open: false,
+                menuStyle: {},
+                toggle() {
+                    this.open = !this.open;
+                    if (!this.open) {
+                        return;
+                    }
+                    const rect = this.$refs.trigger.getBoundingClientRect();
+                    const menuHeight = 300;
+                    const openUp = rect.bottom + menuHeight > window.innerHeight - 16;
+                    this.menuStyle = {
+                        position: 'fixed',
+                        top: openUp ? 'auto' : (rect.bottom + 4) + 'px',
+                        bottom: openUp ? (window.innerHeight - rect.top + 4) + 'px' : 'auto',
+                        right: (window.innerWidth - rect.right) + 'px',
+                        left: 'auto',
+                        zIndex: 80,
+                    };
+                },
+            }"
+            @click.outside="open = false"
+            @keydown.escape.window="open = false"
+        >
+            <button
+                type="button"
+                x-ref="trigger"
+                @click="toggle()"
+                class="vestra-companies__action-trigger"
+                aria-label="Company actions"
+                aria-haspopup="true"
+                :aria-expanded="open.toString()"
+            >
                 <x-filament::icon icon="heroicon-m-ellipsis-vertical" class="h-5 w-5" />
             </button>
-            <div x-show="open" x-transition class="vestra-companies__action-menu" role="menu">
-                <button type="button" wire:click="openDetailDrawer({{ $company->id }})" class="vestra-companies__action-item" role="menuitem">
+            <div x-show="open" x-cloak x-transition :style="menuStyle" class="vestra-companies__action-menu" role="menu">
+                <button type="button" @click="open = false" wire:click="openDetailDrawer({{ $company->id }})" class="vestra-companies__action-item" role="menuitem">
                     <x-filament::icon icon="heroicon-o-eye" class="h-4 w-4" />
                     <span>View</span>
                 </button>
-                <button type="button" wire:click="openEditDrawer({{ $company->id }})" class="vestra-companies__action-item" role="menuitem">
+                <button type="button" @click="open = false" wire:click="openEditDrawer({{ $company->id }})" class="vestra-companies__action-item" role="menuitem">
                     <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
                     <span>Edit</span>
                 </button>
@@ -137,12 +170,12 @@ $countryFlag = $countryFlags[$country] ?? null;
                     <span>View Activity</span>
                 </a>
                 @if ($company->status?->value !== 'inactive')
-                    <button type="button" wire:click="deactivateCompany({{ $company->id }})" wire:confirm="Deactivate this company?" class="vestra-companies__action-item" role="menuitem">
+                    <button type="button" @click="open = false" wire:click="deactivateCompany({{ $company->id }})" wire:confirm="Deactivate this company?" class="vestra-companies__action-item" role="menuitem">
                         <x-filament::icon icon="heroicon-o-minus-circle" class="h-4 w-4" />
                         <span>Deactivate</span>
                     </button>
                 @endif
-                <button type="button" wire:click="deleteCompany({{ $company->id }})" wire:confirm="Are you sure you want to delete this company?" class="vestra-companies__action-item vestra-companies__action-item--danger" role="menuitem">
+                <button type="button" @click="open = false" wire:click="deleteCompany({{ $company->id }})" wire:confirm="Are you sure you want to delete this company?" class="vestra-companies__action-item vestra-companies__action-item--danger" role="menuitem">
                     <x-filament::icon icon="heroicon-o-trash" class="h-4 w-4" />
                     <span>Delete</span>
                 </button>

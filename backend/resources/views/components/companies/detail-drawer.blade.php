@@ -5,9 +5,10 @@
 
 <div
     class="vestra-companies-detail @if ($show) vestra-companies-detail--open @endif"
-    x-data="{ open: @js($show) }"
+    x-data="{ open: @entangle('showDetailDrawer') }"
     x-show="open"
     x-cloak
+    @keydown.escape.window="if (open) $wire.closeDetailDrawer()"
     x-transition:enter="transition ease-out duration-200"
     x-transition:enter-start="opacity-0 translate-x-4"
     x-transition:enter-end="opacity-100 translate-x-0"
@@ -16,6 +17,7 @@
     x-transition:leave-end="opacity-0 translate-x-4"
     aria-label="Company details"
     role="dialog"
+    aria-modal="true"
 >
     <div class="vestra-companies-detail__overlay" wire:click="closeDetailDrawer"></div>
 
