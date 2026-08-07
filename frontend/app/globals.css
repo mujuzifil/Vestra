@@ -203,12 +203,29 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground antialiased;
-  }
+
   html {
     @apply scroll-smooth;
+    max-width: 100%;
+    overflow-x: clip;
   }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    max-width: 100%;
+    overflow-x: clip;
+    position: relative;
+  }
+
+  /* Prevent media and embeds from forcing sideways scroll on small screens */
+  img,
+  video,
+  canvas,
+  svg,
+  iframe {
+    max-width: 100%;
+  }
+
   :focus-visible {
     @apply outline-none ring-2 ring-secondary-500 ring-offset-2 ring-offset-background rounded-md;
   }
@@ -240,5 +257,13 @@
 
   .text-heading {
     color: var(--text-heading);
+  }
+
+  /* Site-wide mobile containment helper for sections/cards */
+  .vestra-page-shell {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: clip;
   }
 }

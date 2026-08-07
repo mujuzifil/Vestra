@@ -11,9 +11,9 @@ export function RootLayoutClient({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
       <WishlistProvider>
-        <div className="relative flex min-h-screen flex-col">
+        <div className="relative flex min-h-screen w-full max-w-[100vw] min-w-0 flex-col overflow-x-clip">
           <Navbar />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 w-full min-w-0 max-w-full overflow-x-clip">{children}</main>
           <Footer />
           <WhatsAppFloat />
           <Toaster

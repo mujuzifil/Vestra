@@ -41,11 +41,11 @@ export function DistributorLayout({
   }
 
   return (
-    <div className={cn("min-h-screen bg-surface-page", className)}>
-      <div className="flex">
+    <div className={cn("min-h-screen w-full max-w-full min-w-0 overflow-x-clip bg-surface-page", className)}>
+      <div className="flex w-full min-w-0">
         <DistributorSidebar />
-        <main className="flex-1 min-w-0 lg:ml-0 pt-16 lg:pt-0">
-          <div className="p-4 sm:p-6 lg:p-8">{children}</div>
+        <main className="flex-1 min-w-0 max-w-full lg:ml-0 pt-16 lg:pt-0">
+          <div className="p-4 sm:p-6 lg:p-8 min-w-0 max-w-full">{children}</div>
         </main>
       </div>
     </div>

@@ -40,8 +40,8 @@ export function Footer() {
   const businessHours = contactInfo?.businessHours || "Mon – Fri: 8:00 AM – 5:00 PM";
 
   return (
-    <footer className="bg-primary-900 text-white pt-20 pb-8">
-      <div className="container mx-auto px-4 lg:px-8">
+    <footer className="bg-primary-900 text-white pt-20 pb-8 overflow-x-clip w-full max-w-full">
+      <div className="container mx-auto px-4 lg:px-8 max-w-[1320px] min-w-0 box-border">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div>
             <Image
