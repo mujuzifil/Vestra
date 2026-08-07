@@ -34,4 +34,4 @@ Stabilize production after Stage 24.12: restore blocked Contact map, fix blank B
 
 ## Deployment
 
-See `STAGE24_12A_DEPLOYMENT_REPORT.md` after live deploy.
+Live on production (`master` `e41cc4d`, image `local-20260806201608`). Details in `STAGE24_12A_DEPLOYMENT_REPORT.md`.
