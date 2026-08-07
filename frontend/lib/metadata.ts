@@ -10,8 +10,8 @@ export const siteConfig = {
   twitterHandle: "@vestracare",
 };
 
-/** Cache-bust query so browsers pick up Stage 24.12A favicon assets after deploy. */
-export const FAVICON_VERSION = "2412a";
+/** Cache-bust query so browsers pick up the logo-only favicon after deploy. */
+export const FAVICON_VERSION = "250807";
 
 export function createMetadata({
   title,

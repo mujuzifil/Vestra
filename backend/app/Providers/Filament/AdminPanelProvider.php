@@ -72,7 +72,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('VESTRA')
             ->brandLogo(fn () => view('filament.components.vestra-logo', ['variant' => 'admin']))
             ->brandLogoHeight('2.5rem')
-            ->favicon(asset('favicon.ico') . '?v=2412a')
+            ->favicon(asset('favicon.ico') . '?v=250807')
             ->font('Poppins')
             ->colors([
                 'primary' => [
