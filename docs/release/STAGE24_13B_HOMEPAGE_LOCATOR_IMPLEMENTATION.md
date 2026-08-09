@@ -1,9 +1,9 @@
 # Stage 24.13B — Homepage Conversion CTAs & Distributor Locator Enhancement
 
-**Status:** Implemented — releasing (commit / merge / deploy)  
+**Status:** Released to production (`0ac90be`, image `local-20260809213146`)  
 **Gate (from 24.13A):** READY WITH CONDITIONS  
 **Implementation branch:** `feature/stage24-13b-homepage-locator`  
-**Date:** 2026-08-09
+**Date:** 2026-08-09 / 2026-08-10
 
 ---
 
