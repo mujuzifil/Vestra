@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\DistributorAccountStatus;
+use App\Enums\DistributorStockAvailability;
+use App\Enums\DistributorTier;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,6 +21,7 @@ class Distributor extends Model
         'distributor_request_id',
         'sales_representative_id',
         'status',
+        'tier',
         'company_name',
         'trading_name',
         'registration_number',
@@ -32,11 +35,14 @@ class Distributor extends Model
         'primary_contact_name',
         'email',
         'phone',
+        'whatsapp',
         'country',
         'district',
         'city',
         'address',
         'postal_address',
+        'google_maps_url',
+        'stock_availability',
         'logo_path',
         'operating_hours_json',
         'bank_info_json',
@@ -51,6 +57,8 @@ class Distributor extends Model
     {
         return [
             'status' => DistributorAccountStatus::class,
+            'tier' => DistributorTier::class,
+            'stock_availability' => DistributorStockAvailability::class,
             'operating_hours_json' => 'array',
             'bank_info_json' => 'array',
             'billing_info_json' => 'array',

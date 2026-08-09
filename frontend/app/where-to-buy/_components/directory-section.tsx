@@ -15,8 +15,8 @@ export function DirectorySection({ contactPhone, contactEmail }: DirectorySectio
       <Container>
         <SectionHeader
           id="directory-heading"
-          title="Distributor Directory"
-          subtitle="Search for an authorised VESTRA® partner near you."
+          title="Authorized Distributor Directory"
+          subtitle="Shop with confidence from an Authorized VESTRA Distributor. Search by name, district, area, tier, or stock availability."
         />
         <DirectoryList contactPhone={contactPhone} contactEmail={contactEmail} />
       </Container>

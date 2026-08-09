@@ -38,10 +38,10 @@ export function WhereToBuyHero() {
             Distributor Locator
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold text-white mb-6 tracking-tight leading-tight">
-            Find VESTRA® Products Near You
+            Find an Authorized VESTRA Distributor Near You.
           </h1>
           <p className="text-base lg:text-xl text-white/75 max-w-2xl mx-auto leading-relaxed mb-8">
-            VESTRA® products are supplied through an expanding network of authorised distributors and retail partners across Uganda.
+            Shop with confidence from an Authorized VESTRA Distributor. Search by district, area, or business name to locate genuine VESTRA® partners across Uganda.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto bg-white text-text-heading border-transparent hover:bg-white/90" rightIcon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" />}>

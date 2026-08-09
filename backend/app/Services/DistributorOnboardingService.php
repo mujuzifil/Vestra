@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Enums\DistributorAccountStatus;
 use App\Enums\DistributorStatus;
+use App\Enums\DistributorStockAvailability;
+use App\Enums\DistributorTier;
 use App\Events\Notification\DistributorApplicationApproved;
 use App\Events\Notification\DistributorApplicationRejected;
 use App\Models\CreditAccount;
@@ -80,6 +82,8 @@ class DistributorOnboardingService
                 'user_id' => $user->id,
                 'distributor_request_id' => $request->id,
                 'status' => DistributorAccountStatus::ACTIVE,
+                'tier' => DistributorTier::SILVER,
+                'stock_availability' => DistributorStockAvailability::IN_STOCK,
                 'company_name' => $request->company_name,
                 'trading_name' => $request->company_name,
                 'business_type' => $request->business_type,

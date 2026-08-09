@@ -617,11 +617,18 @@ export interface PublicDistributor {
   primary_contact_name: string | null;
   email: string | null;
   phone: string | null;
+  whatsapp: string | null;
   website: string | null;
   business_type: string | null;
+  tier: "silver" | "gold" | "master" | null;
+  tier_label: string | null;
   district: string | null;
   city: string | null;
+  area: string | null;
   address: string | null;
+  google_maps_url: string | null;
+  stock_availability: "in_stock" | "low_stock" | "out_of_stock" | null;
+  stock_availability_label: string | null;
   operating_hours: Record<string, unknown> | null;
   logo_url: string | null;
   branch: PublicDistributorBranch | null;
@@ -632,6 +639,10 @@ export interface DistributorDirectoryFilters {
   search?: string;
   district?: string;
   region?: string;
+  area?: string;
+  city?: string;
+  tier?: "silver" | "gold" | "master" | "";
+  stock_availability?: "in_stock" | "low_stock" | "out_of_stock" | "";
 }
 
 export interface DistributorNetworkStats {

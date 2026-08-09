@@ -9,6 +9,9 @@ class PublicDistributorResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $tier = $this->tier;
+        $stock = $this->stock_availability;
+
         return [
             'id' => $this->id,
             'company_name' => $this->company_name,
@@ -16,11 +19,18 @@ class PublicDistributorResource extends JsonResource
             'primary_contact_name' => $this->primary_contact_name,
             'email' => $this->email,
             'phone' => $this->phone,
+            'whatsapp' => $this->whatsapp,
             'website' => $this->website,
             'business_type' => $this->business_type,
+            'tier' => $tier?->value,
+            'tier_label' => $tier?->label(),
             'district' => $this->district,
             'city' => $this->city,
+            'area' => $this->city,
             'address' => $this->address,
+            'google_maps_url' => $this->google_maps_url,
+            'stock_availability' => $stock?->value,
+            'stock_availability_label' => $stock?->label(),
             'operating_hours' => $this->operating_hours_json,
             'logo_url' => $this->logoUrl(),
             'branch' => new PublicDistributorBranchResource($this->whenLoaded('defaultBranch')),

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Enums\DistributorAccountStatus;
+use App\Enums\DistributorStockAvailability;
+use App\Enums\DistributorTier;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\PublicDistributorResource;
 use App\Models\Distributor;
@@ -12,6 +14,7 @@ use App\Services\SettingService;
 use App\Traits\RespondsWithJson;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PublicDistributorController extends Controller
 {
@@ -23,6 +26,16 @@ class PublicDistributorController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        $request->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+            'district' => ['nullable', 'string', 'max:255'],
+            'region' => ['nullable', 'string', 'max:255'],
+            'area' => ['nullable', 'string', 'max:255'],
+            'city' => ['nullable', 'string', 'max:255'],
+            'tier' => ['nullable', 'string', Rule::in(array_column(DistributorTier::cases(), 'value'))],
+            'stock_availability' => ['nullable', 'string', Rule::in(array_column(DistributorStockAvailability::cases(), 'value'))],
+        ]);
+
         $query = Distributor::with(['defaultBranch', 'serviceAreas'])
             ->where('status', DistributorAccountStatus::ACTIVE->value);
 
@@ -51,6 +64,25 @@ class PublicDistributorController extends Controller
                     ->orWhere('district', 'like', "%{$region}%")
                     ->orWhereHas('defaultBranch', fn ($branch) => $branch->where('district', 'like', "%{$region}%"));
             });
+        }
+
+        $area = $request->filled('area')
+            ? (string) $request->string('area')
+            : ($request->filled('city') ? (string) $request->string('city') : null);
+
+        if ($area !== null && $area !== '') {
+            $query->where(function ($q) use ($area) {
+                $q->where('city', 'like', "%{$area}%")
+                    ->orWhereHas('defaultBranch', fn ($branch) => $branch->where('city', 'like', "%{$area}%"));
+            });
+        }
+
+        if ($request->filled('tier')) {
+            $query->where('tier', (string) $request->string('tier'));
+        }
+
+        if ($request->filled('stock_availability')) {
+            $query->where('stock_availability', (string) $request->string('stock_availability'));
         }
 
         $distributors = $query->orderBy('company_name')->get();

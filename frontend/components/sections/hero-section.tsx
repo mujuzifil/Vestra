@@ -84,12 +84,15 @@ export function HeroSection() {
               reliable supply, and professional results.
             </p>
 
-            <div className="flex flex-wrap gap-4 mb-10">
-              <Button asChild variant="gradient" className="rounded-full px-7 py-3.5 h-auto group" rightIcon={<ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />}>
-              <Link href="/request-quote" data-track="hero-primary-cta">Request a Quote</Link>
-            </Button>
-              <Button asChild variant="outline" className="rounded-full px-6 py-3.5 h-auto border-white/40 text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:text-white hover:border-white/50" rightIcon={<ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />}>
+            <div className="flex flex-wrap gap-3 sm:gap-4 mb-10">
+              <Button asChild variant="gradient" className="rounded-full px-6 sm:px-7 py-3.5 h-auto group w-full sm:w-auto justify-center" rightIcon={<ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />}>
+                <Link href="/request-quote" data-track="hero-primary-cta">Request a Quote</Link>
+              </Button>
+              <Button asChild variant="outline" className="rounded-full px-6 py-3.5 h-auto border-white/40 text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:text-white hover:border-white/50 w-full sm:w-auto justify-center" rightIcon={<ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />}>
                 <Link href="/distributor" data-track="hero-secondary-cta">Become a Distributor</Link>
+              </Button>
+              <Button asChild variant="outline" className="rounded-full px-6 py-3.5 h-auto border-white/40 text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:text-white hover:border-white/50 w-full sm:w-auto justify-center" rightIcon={<ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" aria-hidden="true" />}>
+                <Link href="/where-to-buy" data-track="hero-where-to-buy-cta">Where to Buy</Link>
               </Button>
             </div>
 

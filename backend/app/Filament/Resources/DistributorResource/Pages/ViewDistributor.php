@@ -13,9 +13,7 @@ class ViewDistributor extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make()
-                ->url(fn ($record): string => route('filament.admin.resources.distributor-requests.edit', $record->distributor_request_id ?? $record->id))
-                ->hidden(fn ($record): bool => $record->distributor_request_id === null),
+            Actions\EditAction::make(),
         ];
     }
 }

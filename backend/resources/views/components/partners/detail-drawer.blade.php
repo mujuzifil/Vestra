@@ -56,6 +56,12 @@
             <div class="vestra-partners-detail__body">
                 <div class="vestra-partners-detail__badges">
                     <x-partners.status-badge :status="$status" />
+                    @if ($partner['tier_label'] ?? null)
+                        <span class="vestra-partners-detail__type-badge">{{ $partner['tier_label'] }}</span>
+                    @endif
+                    @if ($partner['stock_availability_label'] ?? null)
+                        <span class="vestra-partners-detail__type-badge">{{ $partner['stock_availability_label'] }}</span>
+                    @endif
                     @if ($partner['business_type'] ?? null)
                         <span class="vestra-partners-detail__type-badge">{{ $partner['business_type'] }}</span>
                     @endif
@@ -80,6 +86,9 @@
                         >
                             Activate
                         </button>
+                    @endif
+                    @if (($actions['edit'] ?? false) && ($partner['edit_url'] ?? null))
+                        <a href="{{ $partner['edit_url'] }}" class="vestra-partners-detail__action-btn">Edit</a>
                     @endif
                     @if (($actions['credit'] ?? false) && ($partner['credit_url'] ?? null))
                         <a href="{{ $partner['credit_url'] }}" class="vestra-partners-detail__action-btn">Credit</a>
@@ -131,7 +140,42 @@
                         @if ($partner['primary_contact']['phone'] ?? null)
                             <p class="vestra-partners-detail__contact-meta">{{ $partner['primary_contact']['phone'] }}</p>
                         @endif
+                        @if ($partner['whatsapp'] ?? null)
+                            <p class="vestra-partners-detail__contact-meta">WhatsApp: {{ $partner['whatsapp'] }}</p>
+                        @endif
                     </div>
+                </div>
+
+                <div class="vestra-partners-detail__section">
+                    <h3 class="vestra-partners-detail__section-title">Public Locator</h3>
+                    <dl class="vestra-partners-detail__definition-list">
+                        <div class="vestra-partners-detail__definition-row">
+                            <dt>Tier</dt>
+                            <dd>{{ $partner['tier_label'] ?? '—' }}</dd>
+                        </div>
+                        <div class="vestra-partners-detail__definition-row">
+                            <dt>Stock</dt>
+                            <dd>{{ $partner['stock_availability_label'] ?? '—' }}</dd>
+                        </div>
+                        <div class="vestra-partners-detail__definition-row">
+                            <dt>District</dt>
+                            <dd>{{ $partner['district'] ?? '—' }}</dd>
+                        </div>
+                        <div class="vestra-partners-detail__definition-row">
+                            <dt>Area / Town</dt>
+                            <dd>{{ $partner['city'] ?? '—' }}</dd>
+                        </div>
+                        <div class="vestra-partners-detail__definition-row">
+                            <dt>Google Maps</dt>
+                            <dd>
+                                @if ($partner['google_maps_url'] ?? null)
+                                    <a href="{{ $partner['google_maps_url'] }}" target="_blank" rel="noopener noreferrer">View location</a>
+                                @else
+                                    —
+                                @endif
+                            </dd>
+                        </div>
+                    </dl>
                 </div>
 
                 @if ($partner['application'] ?? null)
