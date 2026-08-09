@@ -56,8 +56,8 @@
             <div class="vestra-partners-detail__body">
                 <div class="vestra-partners-detail__badges">
                     <x-partners.status-badge :status="$status" />
-                    @if ($partner['tier_label'] ?? null)
-                        <span class="vestra-partners-detail__type-badge">{{ $partner['tier_label'] }}</span>
+                    @if ($partner['tier'] ?? $partner['tier_label'] ?? null)
+                        <x-partners.tier-badge :tier="$partner['tier'] ?? null" :label="$partner['tier_label'] ?? null" />
                     @endif
                     @if ($partner['stock_availability_label'] ?? null)
                         <span class="vestra-partners-detail__type-badge">{{ $partner['stock_availability_label'] }}</span>

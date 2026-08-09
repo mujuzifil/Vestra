@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DistributorResource\Pages;
 
+use App\Filament\Pages\Distributors\PartnerEditPage;
 use App\Filament\Resources\DistributorResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
@@ -13,7 +14,10 @@ class ViewDistributor extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            Actions\Action::make('editPartner')
+                ->label('Edit Partner')
+                ->icon('heroicon-o-pencil-square')
+                ->url(fn ($record): string => PartnerEditPage::getUrl(['partner' => $record->id])),
         ];
     }
 }

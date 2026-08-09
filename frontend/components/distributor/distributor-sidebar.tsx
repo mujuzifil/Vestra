@@ -22,6 +22,8 @@ import {
   Bell,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { useDistributorProfile } from "@/hooks/use-distributor-profile";
+import { DistributorTierBadge } from "@/components/distributor/distributor-tier-badge";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -65,13 +67,21 @@ export function DistributorSidebar({
 }) {
   const pathname = usePathname();
   const { logout } = useAuth();
+  const { data: profile } = useDistributorProfile();
 
   const NavContent = ({ onNavigate }: { onNavigate?: () => void }) => (
     <nav className="flex flex-col h-full min-h-0">
       <div className="flex items-center justify-between p-4 lg:p-6 border-b border-border-default gap-2">
-        <Link href="/distributor/dashboard" className="flex items-center gap-2 min-w-0" onClick={onNavigate}>
-          <span className="text-xl font-extrabold text-text-heading">VESTRA</span>
-          <span className="px-2 py-0.5 text-xs font-semibold text-white bg-secondary-600 rounded-full">Dist</span>
+        <Link href="/distributor/dashboard" className="flex min-w-0 flex-col gap-2" onClick={onNavigate}>
+          <span className="flex items-center gap-2 min-w-0">
+            <span className="text-xl font-extrabold text-text-heading">VESTRA</span>
+            <span className="px-2 py-0.5 text-xs font-semibold text-white bg-secondary-600 rounded-full">Dist</span>
+          </span>
+          <DistributorTierBadge
+            tier={profile?.tier}
+            label={profile?.tier_label}
+            className="w-fit"
+          />
         </Link>
         <button
           type="button"

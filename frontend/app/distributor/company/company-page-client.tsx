@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Building2, Loader2, Save, Upload, X } from "lucide-react";
 import { InputField, TextareaField, SelectField } from "@/components/common/form-field";
 import { useDistributorProfile } from "@/hooks/use-distributor-profile";
+import { DistributorTierBadge } from "@/components/distributor/distributor-tier-badge";
 import { toastSuccess, toastError } from "@/lib/toast-utils";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -69,6 +70,10 @@ export function CompanyPageClient() {
       <div>
         <h1 className="text-2xl font-extrabold text-text-heading">Company Profile</h1>
         <p className="text-muted">Manage your distributor company information.</p>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <span className="text-sm font-medium text-text-muted">Partnership level</span>
+          <DistributorTierBadge tier={distributor.tier} label={distributor.tier_label} size="md" />
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-[20px] border border-neutral-200 shadow-sm p-6 lg:p-8 space-y-6">

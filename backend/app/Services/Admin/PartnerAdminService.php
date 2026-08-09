@@ -254,7 +254,7 @@ class PartnerAdminService
                 'coverage' => true,
                 'edit' => true,
             ],
-            'edit_url' => \App\Filament\Resources\DistributorResource::getUrl('edit', ['record' => $distributor]),
+            'edit_url' => \App\Filament\Pages\Distributors\PartnerEditPage::getUrl(['partner' => $distributor->id]),
             'credit_url' => $creditAccount
                 ? \App\Filament\Pages\Distributors\CreditPage::getUrl(['search' => $distributor->company_name])
                 : null,

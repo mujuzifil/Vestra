@@ -197,7 +197,10 @@ class DistributorResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('editPartner')
+                    ->label('Edit')
+                    ->icon('heroicon-o-pencil-square')
+                    ->url(fn (Distributor $record): string => \App\Filament\Pages\Distributors\PartnerEditPage::getUrl(['partner' => $record->id])),
             ])
             ->bulkActions([])
             ->defaultSort('created_at', 'desc')
@@ -248,7 +251,6 @@ class DistributorResource extends Resource
             'index' => Pages\ListDistributors::route('/'),
             'create' => Pages\CreateDistributor::route('/create'),
             'view' => Pages\ViewDistributor::route('/{record}'),
-            'edit' => Pages\EditDistributor::route('/{record}/edit'),
         ];
     }
 

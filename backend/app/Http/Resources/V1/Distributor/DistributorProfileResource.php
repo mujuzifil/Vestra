@@ -36,6 +36,8 @@ class DistributorProfileResource extends JsonResource
             'expected_monthly_volume' => $this->expected_monthly_volume,
             'products_of_interest' => $this->products_of_interest,
             'status' => $this->status,
+            'tier' => $this->tier?->value,
+            'tier_label' => $this->tier?->label(),
             'approved_at' => $this->approved_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

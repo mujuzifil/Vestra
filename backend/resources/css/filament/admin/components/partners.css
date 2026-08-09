@@ -1008,3 +1008,212 @@
         transition: none !important;
     }
 }
+
+/* ==========================================================================
+   Tier badges + Partner edit workspace
+   ========================================================================== */
+
+.vestra-tier-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.vestra-tier-badge--silver {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #334155;
+}
+
+.vestra-tier-badge--gold {
+    background: #fffbeb;
+    border-color: #fcd34d;
+    color: #92400e;
+}
+
+.vestra-tier-badge--master {
+    background: #ecfdf5;
+    border-color: #6ee7b7;
+    color: #065f46;
+}
+
+.vestra-tier-badge--unknown {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #64748b;
+}
+
+.vestra-partner-edit__hint {
+    margin: 0 0 1rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.vestra-partner-edit__two-col {
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .vestra-partner-edit__two-col {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.vestra-partner-edit__tier-grid {
+    display: grid;
+    gap: 0.75rem;
+}
+
+@media (min-width: 900px) {
+    .vestra-partner-edit__tier-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.vestra-partner-edit__tier-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 1px solid var(--border-default);
+    border-radius: 16px;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.vestra-partner-edit__tier-card:hover {
+    transform: translateY(-1px);
+}
+
+.vestra-partner-edit__tier-card.is-selected {
+    box-shadow: 0 0 0 2px rgba(112, 192, 80, 0.25);
+}
+
+.vestra-partner-edit__tier-card--silver.is-selected {
+    border-color: #94a3b8;
+}
+
+.vestra-partner-edit__tier-card--gold.is-selected {
+    border-color: #f59e0b;
+}
+
+.vestra-partner-edit__tier-card--master.is-selected {
+    border-color: #10b981;
+}
+
+.vestra-partner-edit__tier-badge {
+    display: inline-flex;
+    width: fit-content;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.vestra-partner-edit__tier-badge--silver {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.vestra-partner-edit__tier-badge--gold {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.vestra-partner-edit__tier-badge--master {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.vestra-partner-edit__tier-copy {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    line-height: 1.4;
+}
+
+.vestra-partner-edit__stock-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.vestra-partner-edit__stock-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-default);
+    background: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.vestra-partner-edit__stock-chip--in_stock.is-selected {
+    background: #ecfdf5;
+    border-color: #6ee7b7;
+    color: #065f46;
+}
+
+.vestra-partner-edit__stock-chip--low_stock.is-selected {
+    background: #fffbeb;
+    border-color: #fcd34d;
+    color: #92400e;
+}
+
+.vestra-partner-edit__stock-chip--out_of_stock.is-selected {
+    background: #fef2f2;
+    border-color: #fca5a5;
+    color: #991b1b;
+}
+
+.vestra-partner-edit__hours-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.vestra-partner-edit__hours-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.vestra-partner-edit__hours-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.vestra-partner-edit__link-btn {
+    border: 0;
+    background: transparent;
+    color: var(--secondary-600, #4d8f2f);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.vestra-partner-edit__icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-default);
+    border-radius: 10px;
+    background: #fff;
+    color: #b91c1c;
+    cursor: pointer;
+}

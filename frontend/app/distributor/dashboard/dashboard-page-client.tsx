@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { DistributorStatCard } from "@/components/distributor/distributor-stat-card";
 import { CreditLimitCard } from "@/components/distributor/credit-limit-card";
+import { DistributorTierBadge } from "@/components/distributor/distributor-tier-badge";
 import { useDistributorDashboard } from "@/hooks/use-distributor-dashboard";
 import { QuoteStatusBadge } from "@/components/distributor/quote-status-badge";
 import type { DistributorOrder, DistributorQuotation, DistributorNotification } from "@/types";
@@ -119,6 +120,9 @@ export function DashboardPageClient() {
         <div>
           <h1 className="text-2xl font-extrabold text-text-heading">Distributor Dashboard</h1>
           <p className="text-muted">Welcome back, {distributor.company_name}</p>
+          <div className="mt-3">
+            <DistributorTierBadge tier={distributor.tier} label={distributor.tier_label} size="md" />
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <Link

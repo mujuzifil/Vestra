@@ -26,7 +26,10 @@ $utilizationClass = match (true) {
         >
             {{ $partner->company_name }}
         </button>
-        <span class="vestra-partners__partner-meta">{{ $partnerCode }}</span>
+        <div class="vestra-partners__partner-meta" style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
+            <span>{{ $partnerCode }}</span>
+            <x-partners.tier-badge :tier="$partner->tier" />
+        </div>
     </td>
 
     <td class="vestra-partners__td vestra-partners__td--territory">
@@ -91,6 +94,14 @@ $utilizationClass = match (true) {
                     <x-filament::icon icon="heroicon-o-eye" class="h-4 w-4" />
                     <span>View Partner</span>
                 </button>
+                <a
+                    href="{{ \App\Filament\Pages\Distributors\PartnerEditPage::getUrl(['partner' => $partner->id]) }}"
+                    class="vestra-partners__action-item"
+                    role="menuitem"
+                >
+                    <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
+                    <span>Edit Partner</span>
+                </a>
             </div>
         </div>
     </td>

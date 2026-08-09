@@ -12,8 +12,10 @@ import {
   ExternalLink,
   MessageCircle,
   Package,
+  ShieldCheck,
 } from "lucide-react";
 import { InputField } from "@/components/common/form-field";
+import { DistributorTierBadge } from "@/components/distributor/distributor-tier-badge";
 import { getPublicDistributors } from "@/lib/api/public-distributors";
 import { cn } from "@/lib/utils";
 import type { PublicDistributor } from "@/types";
@@ -37,18 +39,6 @@ function formatOperatingHours(hours: PublicDistributor["operating_hours"]): stri
 function whatsappHref(whatsapp: string): string {
   const digits = whatsapp.replace(/[^\d+]/g, "").replace(/^\+/, "");
   return `https://wa.me/${digits}`;
-}
-
-function tierBadgeClass(tier: PublicDistributor["tier"]): string {
-  switch (tier) {
-    case "gold":
-      return "bg-amber-50 text-amber-800 border-amber-200";
-    case "master":
-      return "bg-emerald-50 text-emerald-800 border-emerald-200";
-    case "silver":
-    default:
-      return "bg-slate-100 text-slate-700 border-slate-200";
-  }
 }
 
 function stockBadgeClass(stock: PublicDistributor["stock_availability"]): string {
@@ -105,14 +95,19 @@ export function DirectoryList({ contactPhone, contactEmail }: DirectoryListProps
 
   return (
     <div className="space-y-8">
-      <div className="rounded-[24px] border border-border bg-white p-6 shadow-sm">
-        <div className="mb-5">
-          <h3 className="text-lg font-bold text-text-heading">
-            Find an Authorized VESTRA Distributor Near You.
-          </h3>
-          <p className="mt-1 text-sm text-text-muted">
-            Shop with confidence from an Authorized VESTRA Distributor.
-          </p>
+      <div className="rounded-[24px] border border-border bg-gradient-to-br from-white via-white to-secondary-50/40 p-6 shadow-sm">
+        <div className="mb-5 flex items-start gap-3">
+          <div className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-secondary-500/10 text-secondary-700">
+            <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-text-heading">
+              Find an Authorized VESTRA Distributor Near You.
+            </h3>
+            <p className="mt-1 text-sm text-text-muted">
+              Shop with confidence from an Authorized VESTRA Distributor. Every listing is verified by VESTRA.
+            </p>
+          </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -261,45 +256,46 @@ export function DirectoryList({ contactPhone, contactEmail }: DirectoryListProps
             return (
               <div
                 key={distributor.id}
-                className="rounded-[20px] border border-border bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+                className="overflow-hidden rounded-[20px] border border-border bg-white shadow-sm transition-shadow hover:shadow-md"
               >
-                <div className="mb-4 flex items-start justify-between gap-4">
-                  <div>
-                    <h3 className="text-lg font-bold text-text-heading">
-                      {distributor.trading_name || distributor.company_name}
-                    </h3>
-                    {distributor.trading_name && (
-                      <p className="text-sm text-text-muted">{distributor.company_name}</p>
-                    )}
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <span
-                        className={cn(
-                          "inline-flex rounded-full border px-2.5 py-1 text-xs font-semibold",
-                          tierBadgeClass(distributor.tier)
-                        )}
-                      >
-                        {distributor.tier_label || "Authorized Distributor"}
-                      </span>
-                      {distributor.stock_availability_label && (
-                        <span
-                          className={cn(
-                            "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium",
-                            stockBadgeClass(distributor.stock_availability)
-                          )}
-                        >
-                          <Package className="h-3 w-3" />
-                          {distributor.stock_availability_label}
-                        </span>
+                <div className="border-b border-border bg-neutral-50/80 px-6 py-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="text-lg font-bold text-text-heading">
+                        {distributor.trading_name || distributor.company_name}
+                      </h3>
+                      {distributor.trading_name && (
+                        <p className="text-sm text-text-muted">{distributor.company_name}</p>
                       )}
                     </div>
+                    <DistributorTierBadge
+                      tier={distributor.tier}
+                      label={distributor.tier_label}
+                    />
                   </div>
+                  {distributor.stock_availability_label && (
+                    <div className="mt-3">
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium",
+                          stockBadgeClass(distributor.stock_availability)
+                        )}
+                      >
+                        <Package className="h-3 w-3" />
+                        {distributor.stock_availability_label}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
-                <div className="space-y-2 text-sm">
+                <div className="space-y-2 px-6 py-4 text-sm">
                   {locationBits.length > 0 && (
                     <div className="flex items-start gap-3 text-text-body">
                       <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-secondary-500" />
-                      <span>{locationBits.join(" · ")}</span>
+                      <span>
+                        <span className="font-medium text-text-heading">District / Area: </span>
+                        {locationBits.join(" · ")}
+                      </span>
                     </div>
                   )}
                   {distributor.branch?.formatted_address && (
@@ -324,7 +320,7 @@ export function DirectoryList({ contactPhone, contactEmail }: DirectoryListProps
                   )}
                 </div>
 
-                <div className="mt-5 flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 border-t border-border px-6 py-4">
                   {distributor.whatsapp && (
                     <a
                       href={whatsappHref(distributor.whatsapp)}
@@ -350,7 +346,7 @@ export function DirectoryList({ contactPhone, contactEmail }: DirectoryListProps
                 </div>
 
                 {distributor.service_areas && distributor.service_areas.length > 0 && (
-                  <div className="mt-4 border-t border-border pt-4">
+                  <div className="border-t border-border px-6 py-4">
                     <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">
                       Service Areas
                     </p>

@@ -358,6 +358,8 @@ export interface Distributor {
   expected_monthly_volume: string | null;
   products_of_interest: string | null;
   status: "active" | "suspended";
+  tier: "silver" | "gold" | "master" | null;
+  tier_label: string | null;
   approved_at: string | null;
   suspended_at: string | null;
   created_at: string;
