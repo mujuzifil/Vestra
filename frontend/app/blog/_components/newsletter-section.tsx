@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, CheckCircle } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Container } from "@/components/common/container";
 import { SectionHeader } from "@/components/common/section-header";
+import { SubmissionSuccessDialog } from "@/components/feedback/submission-success-dialog";
 
 const interestOptions = [
   "Laundry Tips",
@@ -19,6 +20,7 @@ export function NewsletterSection() {
   const [email, setEmail] = useState("");
   const [interests, setInterests] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
+  const [subscribedEmail, setSubscribedEmail] = useState("");
 
   const toggleInterest = (interest: string) => {
     setInterests((prev) =>
@@ -30,7 +32,11 @@ export function NewsletterSection() {
     e.preventDefault();
     if (!email) return;
     // Placeholder: wire up to a mailing platform when ready.
+    setSubscribedEmail(email);
     setSubmitted(true);
+    setName("");
+    setEmail("");
+    setInterests([]);
   };
 
   return (
@@ -49,18 +55,7 @@ export function NewsletterSection() {
             subtitle="Subscribe for the latest articles, product insights, and commercial cleaning advice from VESTRA®."
           />
 
-          {submitted ? (
-            <div className="bg-white rounded-[24px] border border-default shadow-lg p-8 lg:p-12 text-center">
-              <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-5">
-                <CheckCircle className="w-8 h-8 text-green-600" aria-hidden="true" />
-              </div>
-              <h3 className="text-xl font-bold text-text-heading mb-2">Thank You for Subscribing</h3>
-              <p className="text-text-muted">
-                You will receive our latest Knowledge Centre updates at {email}.
-              </p>
-            </div>
-          ) : (
-            <form
+          <form
               onSubmit={handleSubmit}
               className="bg-white rounded-[24px] border border-default shadow-lg p-6 lg:p-10"
             >
@@ -126,7 +121,19 @@ export function NewsletterSection() {
                 Subscribe
               </button>
             </form>
-          )}
+
+          <SubmissionSuccessDialog
+            open={submitted}
+            onClose={() => setSubmitted(false)}
+            title="Thank You for Subscribing"
+            description={
+              subscribedEmail
+                ? `You will receive our latest Knowledge Centre updates at ${subscribedEmail}.`
+                : "You will receive our latest Knowledge Centre updates."
+            }
+            primaryAction={{ label: "Continue Reading", onClick: () => setSubmitted(false), variant: "gradient" }}
+            secondaryAction={{ label: "Return Home", href: "/" }}
+          />
         </motion.div>
       </Container>
     </section>

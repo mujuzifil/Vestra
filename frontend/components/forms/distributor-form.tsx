@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useRef, useState, FormEvent } from "react";
 import { Loader2, Send, AlertCircle, Upload } from "lucide-react";
 import { InputField, TextareaField, SelectField } from "@/components/common/form-field";
+import { SubmissionSuccessDialog } from "@/components/feedback/submission-success-dialog";
 import { useDistributorMutation } from "@/hooks/use-distributor";
+import { toastError, toastSuccess } from "@/lib/toast-utils";
 import { cn } from "@/lib/utils";
 import type { DistributorFormData } from "@/types";
 
@@ -53,7 +54,9 @@ const fieldNameMap: Record<string, keyof DistributorFormData> = {
 export function DistributorForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [documents, setDocuments] = useState<FileList | null>(null);
-  const router = useRouter();
+  const [successOpen, setSuccessOpen] = useState(false);
+  const [reference, setReference] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
 
   const mutation = useDistributorMutation();
 
@@ -105,7 +108,8 @@ export function DistributorForm() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+    const formEl = e.currentTarget;
+    const formData = new FormData(formEl);
     const validationErrors = validate(formData, documents);
 
     if (Object.keys(validationErrors).length > 0) {
@@ -135,12 +139,16 @@ export function DistributorForm() {
 
     mutation.mutate(data, {
       onSuccess: (response) => {
-        e.currentTarget.reset();
+        formEl.reset();
         setDocuments(null);
         const ref = response.id ? `VESTRA-DIST-${response.id}` : "VESTRA-DIST-0000";
-        router.push(`/distributor/success?ref=${encodeURIComponent(ref)}`);
+        setReference(ref);
+        setSuccessOpen(true);
+        toastSuccess("Distributor application submitted.");
       },
       onError: (error) => {
+        const message = error.message || "Something went wrong. Please try again.";
+        toastError(message);
         if (error instanceof Error && "errors" in error) {
           const apiError = error as Error & { errors?: Record<string, string[]> };
           const serverErrors: FormErrors = {};
@@ -154,199 +162,212 @@ export function DistributorForm() {
           }
           setErrors(serverErrors);
         } else {
-          setErrors({ _server: error.message || "Something went wrong. Please try again." });
+          setErrors({ _server: message });
         }
       },
     });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-      {errors._server && (
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 text-red-600 text-sm">
-          <AlertCircle className="w-4 h-4 flex-shrink-0" />
-          {errors._server}
-        </div>
-      )}
+    <>
+      <form ref={formRef} onSubmit={handleSubmit} className="space-y-5" noValidate>
+        {errors._server && (
+          <div className="flex items-center gap-2 p-3 rounded-lg bg-red-50 text-red-600 text-sm">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            {errors._server}
+          </div>
+        )}
 
-      <div className="grid sm:grid-cols-2 gap-5">
-        <InputField
-          id="fullName"
-          name="fullName"
-          label="Full Name"
-          placeholder="Your full name"
-          error={errors.fullName}
-        />
-        <InputField
-          id="businessName"
-          name="businessName"
-          label="Business Name"
-          placeholder="Registered business name"
-          error={errors.businessName}
-        />
-      </div>
-
-      <div className="grid sm:grid-cols-2 gap-5">
-        <InputField
-          id="position"
-          name="position"
-          label="Position / Title"
-          placeholder="e.g. Managing Director"
-          error={errors.position}
-        />
-        <InputField
-          id="email"
-          name="email"
-          type="email"
-          label="Email Address"
-          placeholder="you@business.com"
-          error={errors.email}
-        />
-      </div>
-
-      <div className="grid sm:grid-cols-2 gap-5">
-        <InputField
-          id="phone"
-          name="phone"
-          type="tel"
-          label="Phone Number"
-          placeholder="+256 707 128 442"
-          error={errors.phone}
-        />
-        <InputField
-          id="district"
-          name="district"
-          label="District / City"
-          placeholder="Kampala"
-          error={errors.district}
-        />
-      </div>
-
-      <InputField
-        id="physicalAddress"
-        name="physicalAddress"
-        label="Physical Address"
-        placeholder="Plot 123, Kampala Road"
-        error={errors.physicalAddress}
-      />
-
-      <div className="grid sm:grid-cols-2 gap-5">
-        <SelectField
-          id="businessType"
-          name="businessType"
-          label="Business Type"
-          options={businessTypeOptions}
-          error={errors.businessType}
-        />
-        <InputField
-          id="yearsInBusiness"
-          name="yearsInBusiness"
-          type="number"
-          min={0}
-          max={100}
-          label="Years in Business"
-          placeholder="e.g. 5"
-          error={errors.yearsInBusiness}
-        />
-      </div>
-
-      <TextareaField
-        id="regionsCovered"
-        name="regionsCovered"
-        label="Regions Covered"
-        placeholder="Which districts or regions do you currently cover?"
-        rows={3}
-        error={errors.regionsCovered}
-      />
-
-      <InputField
-        id="existingBrands"
-        name="existingBrands"
-        label="Existing Brands / Product Lines (Optional)"
-        placeholder="List any current distribution brands"
-        error={errors.existingBrands}
-      />
-
-      <div className="grid sm:grid-cols-2 gap-5">
-        <SelectField
-          id="warehouseAvailability"
-          name="warehouseAvailability"
-          label="Warehouse Availability"
-          options={yesNoOptions}
-          error={errors.warehouseAvailability}
-        />
-        <SelectField
-          id="deliveryCapability"
-          name="deliveryCapability"
-          label="Delivery Capability"
-          options={yesNoOptions}
-          error={errors.deliveryCapability}
-        />
-      </div>
-
-      <TextareaField
-        id="additionalInformation"
-        name="additionalInformation"
-        label="Additional Information (Optional)"
-        placeholder="Tell us about your distribution experience, target market, and why you want to partner with VESTRA..."
-        rows={4}
-        error={errors.additionalInformation}
-      />
-
-      <div className="space-y-1.5">
-        <label htmlFor="documents" className="block text-sm font-semibold text-text-heading">
-          Supporting Documents (Optional)
-        </label>
-        <div
-          className={cn(
-            "relative flex items-center gap-3 px-4 py-3 rounded-xl border bg-neutral-50 cursor-pointer hover:bg-neutral-100 transition-colors-base",
-            errors.documents ? "border-danger-400" : "border-border-default"
-          )}
-        >
-          <Upload className="w-5 h-5 text-muted flex-shrink-0" />
-          <span className="text-sm text-text-muted truncate">
-            {documents && documents.length > 0
-              ? `${documents.length} file${documents.length > 1 ? "s" : ""} selected`
-              : "Upload business registration, trading licence, or company profile"}
-          </span>
-          <input
-            id="documents"
-            name="documents"
-            type="file"
-            multiple
-            accept=".pdf,.jpg,.jpeg,.png"
-            className="absolute inset-0 opacity-0 cursor-pointer"
-            onChange={(e) => setDocuments(e.target.files)}
+        <div className="grid sm:grid-cols-2 gap-5">
+          <InputField
+            id="fullName"
+            name="fullName"
+            label="Full Name"
+            placeholder="Your full name"
+            error={errors.fullName}
+          />
+          <InputField
+            id="businessName"
+            name="businessName"
+            label="Business Name"
+            placeholder="Registered business name"
+            error={errors.businessName}
           />
         </div>
-        {errors.documents && (
-          <p id="documents-error" className="text-sm text-danger-500" role="alert">
-            {errors.documents}
-          </p>
-        )}
-        <p className="text-xs text-text-muted">Maximum 5 files. PDF, JPG, or PNG up to 5 MB each.</p>
-      </div>
 
-      <button
-        type="submit"
-        disabled={mutation.isPending}
-        className={cn(
-          "w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-1 transition-all",
-          mutation.isPending && "opacity-70 cursor-not-allowed"
-        )}
-      >
-        {mutation.isPending ? (
-          <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            Submitting...
-          </>
-        ) : (
-          <>
-            <Send className="w-4 h-4" />
-            Submit Application
-          </>
-        )}
-      </button>
-    </form>
+        <div className="grid sm:grid-cols-2 gap-5">
+          <InputField
+            id="position"
+            name="position"
+            label="Position / Title"
+            placeholder="e.g. Managing Director"
+            error={errors.position}
+          />
+          <InputField
+            id="email"
+            name="email"
+            type="email"
+            label="Email Address"
+            placeholder="you@business.com"
+            error={errors.email}
+          />
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-5">
+          <InputField
+            id="phone"
+            name="phone"
+            type="tel"
+            label="Phone Number"
+            placeholder="+256 707 128 442"
+            error={errors.phone}
+          />
+          <InputField
+            id="district"
+            name="district"
+            label="District / City"
+            placeholder="Kampala"
+            error={errors.district}
+          />
+        </div>
+
+        <InputField
+          id="physicalAddress"
+          name="physicalAddress"
+          label="Physical Address"
+          placeholder="Plot 123, Kampala Road"
+          error={errors.physicalAddress}
+        />
+
+        <div className="grid sm:grid-cols-2 gap-5">
+          <SelectField
+            id="businessType"
+            name="businessType"
+            label="Business Type"
+            options={businessTypeOptions}
+            error={errors.businessType}
+          />
+          <InputField
+            id="yearsInBusiness"
+            name="yearsInBusiness"
+            type="number"
+            min={0}
+            max={100}
+            label="Years in Business"
+            placeholder="e.g. 5"
+            error={errors.yearsInBusiness}
+          />
+        </div>
+
+        <TextareaField
+          id="regionsCovered"
+          name="regionsCovered"
+          label="Regions Covered"
+          placeholder="Which districts or regions do you currently cover?"
+          rows={3}
+          error={errors.regionsCovered}
+        />
+
+        <InputField
+          id="existingBrands"
+          name="existingBrands"
+          label="Existing Brands / Product Lines (Optional)"
+          placeholder="List any current distribution brands"
+          error={errors.existingBrands}
+        />
+
+        <div className="grid sm:grid-cols-2 gap-5">
+          <SelectField
+            id="warehouseAvailability"
+            name="warehouseAvailability"
+            label="Warehouse Availability"
+            options={yesNoOptions}
+            error={errors.warehouseAvailability}
+          />
+          <SelectField
+            id="deliveryCapability"
+            name="deliveryCapability"
+            label="Delivery Capability"
+            options={yesNoOptions}
+            error={errors.deliveryCapability}
+          />
+        </div>
+
+        <TextareaField
+          id="additionalInformation"
+          name="additionalInformation"
+          label="Additional Information (Optional)"
+          placeholder="Tell us about your distribution experience, target market, and why you want to partner with VESTRA..."
+          rows={4}
+          error={errors.additionalInformation}
+        />
+
+        <div className="space-y-1.5">
+          <label htmlFor="documents" className="block text-sm font-semibold text-text-heading">
+            Supporting Documents (Optional)
+          </label>
+          <div
+            className={cn(
+              "relative flex items-center gap-3 px-4 py-3 rounded-xl border bg-neutral-50 cursor-pointer hover:bg-neutral-100 transition-colors-base",
+              errors.documents ? "border-danger-400" : "border-border-default"
+            )}
+          >
+            <Upload className="w-5 h-5 text-muted flex-shrink-0" />
+            <span className="text-sm text-text-muted truncate">
+              {documents && documents.length > 0
+                ? `${documents.length} file${documents.length > 1 ? "s" : ""} selected`
+                : "Upload business registration, trading licence, or company profile"}
+            </span>
+            <input
+              id="documents"
+              name="documents"
+              type="file"
+              multiple
+              accept=".pdf,.jpg,.jpeg,.png"
+              className="absolute inset-0 opacity-0 cursor-pointer"
+              onChange={(e) => setDocuments(e.target.files)}
+            />
+          </div>
+          {errors.documents && (
+            <p id="documents-error" className="text-sm text-danger-500" role="alert">
+              {errors.documents}
+            </p>
+          )}
+          <p className="text-xs text-text-muted">Maximum 5 files. PDF, JPG, or PNG up to 5 MB each.</p>
+        </div>
+
+        <button
+          type="submit"
+          disabled={mutation.isPending}
+          className={cn(
+            "w-full inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white bg-gradient-to-br from-green-500 to-green-600 shadow-lg shadow-green-500/30 hover:-translate-y-1 transition-all",
+            mutation.isPending && "opacity-70 cursor-not-allowed"
+          )}
+        >
+          {mutation.isPending ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              Submitting...
+            </>
+          ) : (
+            <>
+              <Send className="w-4 h-4" />
+              Submit Application
+            </>
+          )}
+        </button>
+      </form>
+
+      <SubmissionSuccessDialog
+        open={successOpen}
+        onClose={() => setSuccessOpen(false)}
+        title="Application Submitted"
+        description="Thank you for your interest in becoming a VESTRA distributor. We have received your application and our partnership team will review it shortly."
+        referenceLabel="Reference Number"
+        reference={reference}
+        primaryAction={{ label: "View Products", href: "/products", variant: "gradient" }}
+        secondaryAction={{ label: "Return Home", href: "/" }}
+      />
+    </>
   );
 }

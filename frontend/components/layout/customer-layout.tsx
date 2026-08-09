@@ -223,7 +223,7 @@ export function CustomerLayout({ children }: { children: React.ReactNode }) {
 
       <div className="flex w-full min-w-0">
         <CustomerSidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
-        <main className="flex-1 min-w-0 max-w-full overflow-x-clip pt-[56px] lg:pt-0">
+        <main className="flex-1 min-w-0 max-w-full overflow-x-clip pt-[calc(72px+56px)] lg:pt-[72px]">
           {children}
         </main>
       </div>

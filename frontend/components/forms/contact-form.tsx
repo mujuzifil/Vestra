@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, FormEvent, useRef } from "react";
-import Link from "next/link";
-import { CheckCircle, Send, AlertCircle, Paperclip, X } from "lucide-react";
+import { Send, AlertCircle, Paperclip, X } from "lucide-react";
 import { InputField, TextareaField, SelectField } from "@/components/common/form-field";
 import { Button } from "@/components/ui/button";
+import { SubmissionSuccessDialog } from "@/components/feedback/submission-success-dialog";
 import { useContactMutation } from "@/hooks/use-contact";
+import { toastError, toastSuccess } from "@/lib/toast-utils";
 import type { ContactEnquiryType, ContactFormData } from "@/types";
 
 interface FormErrors {
@@ -45,10 +46,11 @@ function formatFileSize(bytes: number): string {
 }
 
 export function ContactForm({ defaultSubject, defaultEnquiryType = "general" }: ContactFormProps) {
-  const [submitted, setSubmitted] = useState(false);
+  const [successOpen, setSuccessOpen] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [files, setFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const mutation = useContactMutation();
 
@@ -86,9 +88,9 @@ export function ContactForm({ defaultSubject, defaultEnquiryType = "general" }: 
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(false);
+    const formEl = e.currentTarget;
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(formEl);
     const data: ContactFormData = {
       name: formData.get("name")?.toString().trim() || "",
       company: formData.get("company")?.toString().trim() || undefined,
@@ -110,11 +112,15 @@ export function ContactForm({ defaultSubject, defaultEnquiryType = "general" }: 
 
     mutation.mutate(data, {
       onSuccess: () => {
-        setSubmitted(true);
         setFiles([]);
-        e.currentTarget.reset();
+        formEl.reset();
+        if (fileInputRef.current) fileInputRef.current.value = "";
+        setSuccessOpen(true);
+        toastSuccess("Your message has been sent.");
       },
       onError: (error) => {
+        const message = error.message || "Something went wrong. Please try again.";
+        toastError(message);
         if (error instanceof Error && "errors" in error) {
           const apiError = error as Error & { errors?: Record<string, string[]> };
           const serverErrors: FormErrors = {};
@@ -127,163 +133,153 @@ export function ContactForm({ defaultSubject, defaultEnquiryType = "general" }: 
           }
           setErrors(serverErrors);
         } else {
-          setErrors({ _server: error.message || "Something went wrong. Please try again." });
+          setErrors({ _server: message });
         }
       },
     });
   };
 
-  if (submitted) {
-    return (
-      <div className="text-center py-12">
-        <CheckCircle className="w-16 h-16 text-success-500 mx-auto mb-4" aria-hidden="true" />
-        <h3 className="text-2xl font-bold text-text-heading mb-2">Message Sent</h3>
-        <p className="text-text-muted mb-6">
-          Thank you for contacting VESTRA®. Our team will respond within 24–48 business hours.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button asChild variant="gradient" className="rounded-full px-6 py-3 h-auto">
-            <Link href="/request-quote">Request a Quote</Link>
-          </Button>
-          <Button asChild variant="outline" className="rounded-full px-6 py-3 h-auto">
-            <Link href="/distributor">Become a Distributor</Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-      {errors._server && (
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-danger-50 text-danger-600 text-sm">
-          <AlertCircle className="w-4 h-4 flex-shrink-0" />
-          {errors._server}
+    <>
+      <form ref={formRef} onSubmit={handleSubmit} className="space-y-5" noValidate>
+        {errors._server && (
+          <div className="flex items-center gap-2 p-3 rounded-lg bg-danger-50 text-danger-600 text-sm">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            {errors._server}
+          </div>
+        )}
+
+        <div className="grid sm:grid-cols-2 gap-5">
+          <InputField id="name" name="name" label="Your Name" placeholder="John Doe" error={errors.name} />
+          <InputField
+            id="company"
+            name="company"
+            label="Company (optional)"
+            placeholder="Your company"
+            error={errors.company}
+          />
         </div>
-      )}
 
-      <div className="grid sm:grid-cols-2 gap-5">
-        <InputField id="name" name="name" label="Your Name" placeholder="John Doe" error={errors.name} />
-        <InputField
-          id="company"
-          name="company"
-          label="Company (optional)"
-          placeholder="Your company"
-          error={errors.company}
-        />
-      </div>
+        <div className="grid sm:grid-cols-2 gap-5">
+          <InputField
+            id="email"
+            name="email"
+            type="email"
+            label="Your Email"
+            placeholder="john@example.com"
+            error={errors.email}
+          />
+          <InputField
+            id="phone"
+            name="phone"
+            type="tel"
+            label="Phone (optional)"
+            placeholder="+256 707 128 442"
+            error={errors.phone}
+          />
+        </div>
 
-      <div className="grid sm:grid-cols-2 gap-5">
-        <InputField
-          id="email"
-          name="email"
-          type="email"
-          label="Your Email"
-          placeholder="john@example.com"
-          error={errors.email}
-        />
-        <InputField
-          id="phone"
-          name="phone"
-          type="tel"
-          label="Phone (optional)"
-          placeholder="+256 707 128 442"
-          error={errors.phone}
-        />
-      </div>
+        <div className="grid sm:grid-cols-2 gap-5">
+          <InputField
+            id="subject"
+            name="subject"
+            label="Subject"
+            placeholder="How can we help?"
+            error={errors.subject}
+            defaultValue={defaultSubject}
+          />
+          <SelectField
+            id="enquiry_type"
+            name="enquiry_type"
+            label="Enquiry Type"
+            options={enquiryOptions}
+            error={errors.enquiry_type}
+            defaultValue={defaultEnquiryType}
+          />
+        </div>
 
-      <div className="grid sm:grid-cols-2 gap-5">
-        <InputField
-          id="subject"
-          name="subject"
-          label="Subject"
-          placeholder="How can we help?"
-          error={errors.subject}
-          defaultValue={defaultSubject}
+        <TextareaField
+          id="message"
+          name="message"
+          label="Your Message"
+          placeholder="Tell us more about your inquiry..."
+          rows={5}
+          error={errors.message}
         />
-        <SelectField
-          id="enquiry_type"
-          name="enquiry_type"
-          label="Enquiry Type"
-          options={enquiryOptions}
-          error={errors.enquiry_type}
-          defaultValue={defaultEnquiryType}
-        />
-      </div>
 
-      <TextareaField
-        id="message"
-        name="message"
-        label="Your Message"
-        placeholder="Tell us more about your inquiry..."
-        rows={5}
-        error={errors.message}
-      />
-
-      {/* Attachments */}
-      <div className="space-y-2">
-        <label htmlFor="attachments" className="block text-sm font-semibold text-text-heading">
-          Attachments (optional)
-        </label>
-        <input
-          id="attachments"
-          ref={fileInputRef}
-          type="file"
-          multiple
-          accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-          onChange={handleFileChange}
-          className="hidden"
-        />
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="rounded-xl"
-          leftIcon={<Paperclip className="w-4 h-4" aria-hidden="true" />}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          Add files
-        </Button>
-        {files.length > 0 && (
-          <ul className="space-y-2 mt-2">
-            {files.map((file, index) => (
-              <li
-                key={`${file.name}-${index}`}
-                className="flex items-center justify-between gap-3 px-3 py-2 rounded-xl border border-default bg-surface-page text-sm"
-              >
-                <span className="truncate">
-                  {file.name} <span className="text-text-muted">({formatFileSize(file.size)})</span>
-                </span>
-                <button
-                  type="button"
-                  onClick={() => removeFile(index)}
-                  className="p-1 text-text-muted hover:text-danger-500 transition-colors-base"
-                  aria-label={`Remove ${file.name}`}
+        <div className="space-y-2">
+          <label htmlFor="attachments" className="block text-sm font-semibold text-text-heading">
+            Attachments (optional)
+          </label>
+          <input
+            id="attachments"
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="rounded-xl"
+            leftIcon={<Paperclip className="w-4 h-4" aria-hidden="true" />}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            Add files
+          </Button>
+          {files.length > 0 && (
+            <ul className="space-y-2 mt-2">
+              {files.map((file, index) => (
+                <li
+                  key={`${file.name}-${index}`}
+                  className="flex items-center justify-between gap-3 px-3 py-2 rounded-xl border border-default bg-surface-page text-sm"
                 >
-                  <X className="w-4 h-4" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-        {errors.attachments && (
-          <p id="attachments-error" className="text-sm text-danger-500" role="alert">
-            {errors.attachments}
-          </p>
-        )}
-        <p className="text-xs text-text-muted">Up to 5 files. PDF, JPG, PNG, DOC/DOCX. Max 5 MB each.</p>
-      </div>
+                  <span className="truncate">
+                    {file.name} <span className="text-text-muted">({formatFileSize(file.size)})</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => removeFile(index)}
+                    className="p-1 text-text-muted hover:text-danger-500 transition-colors-base"
+                    aria-label={`Remove ${file.name}`}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          {errors.attachments && (
+            <p id="attachments-error" className="text-sm text-danger-500" role="alert">
+              {errors.attachments}
+            </p>
+          )}
+          <p className="text-xs text-text-muted">Up to 5 files. PDF, JPG, PNG, DOC/DOCX. Max 5 MB each.</p>
+        </div>
 
-      <Button
-        type="submit"
-        variant="gradient"
-        fullWidth
-        isLoading={mutation.isPending}
-        leftIcon={<Send className="w-4 h-4" aria-hidden="true" />}
-        className="rounded-full px-7 py-3.5 h-auto"
-      >
-        {mutation.isPending ? "Sending..." : "Send Message"}
-      </Button>
-    </form>
+        <Button
+          type="submit"
+          variant="gradient"
+          fullWidth
+          isLoading={mutation.isPending}
+          leftIcon={<Send className="w-4 h-4" aria-hidden="true" />}
+          className="rounded-full px-7 py-3.5 h-auto"
+        >
+          {mutation.isPending ? "Sending..." : "Send Message"}
+        </Button>
+      </form>
+
+      <SubmissionSuccessDialog
+        open={successOpen}
+        onClose={() => setSuccessOpen(false)}
+        title="Message Sent"
+        description="Thank you for contacting VESTRA®. Our team will respond within 24–48 business hours."
+        primaryAction={{ label: "Request a Quote", href: "/request-quote", variant: "gradient" }}
+        secondaryAction={{ label: "Become a Distributor", href: "/distributor" }}
+      />
+    </>
   );
 }

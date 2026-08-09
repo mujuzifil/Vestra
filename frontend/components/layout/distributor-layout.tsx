@@ -70,7 +70,7 @@ export function DistributorLayout({
 
       <div className="flex w-full min-w-0">
         <DistributorSidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
-        <main className="flex-1 min-w-0 max-w-full pt-[56px] lg:pt-0">
+        <main className="flex-1 min-w-0 max-w-full pt-[calc(72px+56px)] lg:pt-[72px]">
           <div className="p-4 sm:p-6 lg:p-8 min-w-0 max-w-full">{children}</div>
         </main>
       </div>
