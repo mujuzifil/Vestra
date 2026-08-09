@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Search, User, ChevronDown, LogIn } from "lucide-react";
+import { Menu, X, Search, User, ChevronDown, LogIn, MapPin } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useSearchSuggestions } from "@/hooks/use-products";
 import { NotificationBell } from "@/components/notifications/notification-bell";
@@ -96,15 +96,15 @@ export function Navbar() {
           : "bg-primary-900 shadow-md"
       )}
     >
-      <div className="container mx-auto flex h-full items-center justify-between px-4 lg:px-8">
-        <Link href="/" className="flex-shrink-0">
+      <div className="container mx-auto flex h-full items-center gap-2 px-3 sm:px-4 lg:px-8">
+        <Link href="/" className="min-w-0 flex-shrink-0">
           <Image
             src="/assets/images/branding/vestra-logo.png"
             alt="VESTRA"
             width={140}
             height={60}
-            sizes="140px"
-            className="h-12 w-auto object-contain"
+            sizes="(max-width: 640px) 112px, 140px"
+            className="h-10 w-auto object-contain sm:h-12"
             priority
           />
         </Link>
@@ -157,25 +157,46 @@ export function Navbar() {
           })}
         </nav>
 
-        <div className="flex items-center gap-2 ml-auto">
+        {/* Mobile/tablet action cluster: Search → Where to Buy → Account → Menu */}
+        <div className="ml-auto flex min-w-0 items-center gap-0.5 sm:gap-1.5">
           <button
             aria-label="Search products"
             onClick={() => setSearchOpen(true)}
-            className="text-white hover:text-secondary-400 transition-colors-base p-2 rounded-full focus-visible:ring-2 focus-visible:ring-secondary-500"
+            className="flex-shrink-0 rounded-full p-2 text-white transition-colors-base hover:text-secondary-400 focus-visible:ring-2 focus-visible:ring-secondary-500"
           >
-            <Search className="w-5 h-5" aria-hidden="true" />
+            <Search className="h-5 w-5" aria-hidden="true" />
           </button>
 
-          {isAuthenticated && <NotificationBell />}
+          <Link
+            href="/where-to-buy"
+            data-track="mobile-header-where-to-buy"
+            aria-label="Where to Buy"
+            aria-current={isActive("/where-to-buy") ? "page" : undefined}
+            className={cn(
+              "lg:hidden inline-flex flex-shrink-0 items-center gap-1 rounded-full px-2.5 py-1.5 text-[11px] font-semibold leading-none whitespace-nowrap shadow-sm transition-colors-base sm:gap-1.5 sm:px-3 sm:text-xs",
+              "bg-secondary-500 text-white hover:bg-secondary-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary-300 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900",
+              isActive("/where-to-buy") && "ring-2 ring-white/40"
+            )}
+          >
+            <MapPin className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+            <span className="max-[359px]:hidden">Where to Buy</span>
+            <span className="min-[360px]:hidden">Buy</span>
+          </Link>
+
+          {isAuthenticated && (
+            <div className="hidden min-[400px]:block flex-shrink-0">
+              <NotificationBell />
+            </div>
+          )}
 
           {isAuthenticated ? (
-            <div className="group relative">
+            <div className="group relative flex-shrink-0">
               <Link
                 href={user?.is_admin ? adminDashboardUrl : "/account"}
                 aria-label={user?.is_admin ? "Admin dashboard" : "My account"}
-                className="flex items-center gap-1 text-white hover:text-secondary-400 transition-colors-base p-2 rounded-full focus-visible:ring-2 focus-visible:ring-secondary-500"
+                className="flex items-center gap-1 rounded-full p-2 text-white transition-colors-base hover:text-secondary-400 focus-visible:ring-2 focus-visible:ring-secondary-500"
               >
-                <User className="w-5 h-5" />
+                <User className="h-5 w-5" />
                 <span className="hidden xl:inline text-sm font-medium">{user?.name?.split(" ")[0]}</span>
               </Link>
               <div className="absolute top-full right-0 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all-base duration-200">
@@ -210,20 +231,20 @@ export function Navbar() {
             <Link
               href="/auth/login"
               aria-label="Sign in"
-              className="text-white hover:text-secondary-400 transition-colors-base p-2 rounded-full focus-visible:ring-2 focus-visible:ring-secondary-500"
+              className="flex-shrink-0 rounded-full p-2 text-white transition-colors-base hover:text-secondary-400 focus-visible:ring-2 focus-visible:ring-secondary-500"
             >
-              <LogIn className="w-5 h-5" />
+              <LogIn className="h-5 w-5" />
             </Link>
           )}
 
           <button
-            className="lg:hidden text-white p-2 rounded-full focus-visible:ring-2 focus-visible:ring-secondary-500"
+            className="lg:hidden flex-shrink-0 rounded-full p-2 text-white focus-visible:ring-2 focus-visible:ring-secondary-500"
             onClick={() => setIsOpen(true)}
             aria-label="Open menu"
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
           >
-            <Menu className="w-6 h-6" aria-hidden="true" />
+            <Menu className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
       </div>
