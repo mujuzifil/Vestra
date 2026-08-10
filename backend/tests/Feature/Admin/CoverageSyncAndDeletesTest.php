@@ -154,4 +154,49 @@ class CoverageSyncAndDeletesTest extends TestCase
             ->assertSuccessful()
             ->assertJsonMissing(['company_name' => 'Purge Target Co']);
     }
+
+    public function test_admin_can_purge_partner_that_has_quotations_and_orders(): void
+    {
+        $admin = $this->admin();
+        $portalUser = User::factory()->create([
+            'email' => 'partner-quotes@example.com',
+            'is_admin' => false,
+            'status' => 'active',
+            'email_verified_at' => now(),
+        ]);
+
+        $distributor = Distributor::factory()->create([
+            'user_id' => $portalUser->id,
+            'status' => DistributorAccountStatus::ACTIVE,
+            'company_name' => 'Quoted Partner Co',
+            'district' => 'Wakiso',
+        ]);
+
+        $quotation = \App\Models\QuotationRequest::factory()->create([
+            'distributor_id' => $distributor->id,
+        ]);
+
+        \App\Models\Order::factory()->create([
+            'user_id' => $portalUser->id,
+            'distributor_id' => $distributor->id,
+            'channel' => 'distributor',
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(ActivePartnersPage::class)
+            ->call('deletePartner', $distributor->id)
+            ->assertNotified();
+
+        $this->assertDatabaseMissing('distributors', ['id' => $distributor->id]);
+        $this->assertDatabaseMissing('quotation_requests', ['id' => $quotation->id]);
+        $this->assertDatabaseHas('orders', [
+            'user_id' => $portalUser->id,
+            'distributor_id' => null,
+        ]);
+        $this->assertDatabaseHas('users', [
+            'id' => $portalUser->id,
+            'email' => 'deleted-partner-'.$portalUser->id.'@vestra.invalid',
+            'status' => 'inactive',
+        ]);
+    }
 }

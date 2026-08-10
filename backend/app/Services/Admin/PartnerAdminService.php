@@ -465,16 +465,30 @@ class PartnerAdminService
                 request()?->userAgent()
             );
 
+            // Detach optional channel links without violating non-null FKs.
             if (Schema::hasColumn('orders', 'distributor_id')) {
                 Order::query()->where('distributor_id', $distributorId)->update(['distributor_id' => null]);
             }
 
-            if (Schema::hasTable('quotation_requests') && Schema::hasColumn('quotation_requests', 'distributor_id')) {
-                DB::table('quotation_requests')->where('distributor_id', $distributorId)->update(['distributor_id' => null]);
+            // quotation_requests.distributor_id is NOT NULL — delete rows (items cascade).
+            if (Schema::hasTable('quotation_requests')) {
+                $quotationIds = DB::table('quotation_requests')
+                    ->where('distributor_id', $distributorId)
+                    ->pluck('id');
+
+                if ($quotationIds->isNotEmpty() && Schema::hasTable('quotation_items')) {
+                    DB::table('quotation_items')->whereIn('quotation_request_id', $quotationIds)->delete();
+                }
+
+                DB::table('quotation_requests')->where('distributor_id', $distributorId)->delete();
             }
 
-            if (Schema::hasTable('payment_uploads') && Schema::hasColumn('payment_uploads', 'distributor_id')) {
+            if (Schema::hasTable('payment_uploads')) {
                 DB::table('payment_uploads')->where('distributor_id', $distributorId)->delete();
+            }
+
+            if (Schema::hasTable('distributor_product_prices')) {
+                DB::table('distributor_product_prices')->where('distributor_id', $distributorId)->delete();
             }
 
             $creditAccount = $distributor->creditAccount;
@@ -491,17 +505,43 @@ class PartnerAdminService
             $distributor->delete();
 
             if ($userId) {
-                $user = User::query()->find($userId);
-                if ($user !== null) {
-                    if (method_exists($user, 'tokens')) {
-                        $user->tokens()->delete();
-                    }
-                    $user->delete();
-                }
+                $this->purgePortalUser((int) $userId);
             }
 
             DB::afterCommit(fn () => $this->catalogSync->syncDistributors($distributorId));
         });
+    }
+
+    private function purgePortalUser(int $userId): void
+    {
+        $user = User::query()->find($userId);
+        if ($user === null) {
+            return;
+        }
+
+        if (method_exists($user, 'tokens')) {
+            $user->tokens()->delete();
+        }
+
+        // orders.user_id is RESTRICT — keep a deactivated shell when history exists.
+        $hasRestrictedOrders = Schema::hasTable('orders')
+            && Order::query()->where('user_id', $userId)->exists();
+
+        if ($hasRestrictedOrders) {
+            $user->forceFill([
+                'name' => 'Deleted Partner',
+                'email' => 'deleted-partner-'.$userId.'@vestra.invalid',
+                'phone' => null,
+                'status' => 'inactive',
+                'password' => bcrypt(str()->random(40)),
+                'remember_token' => null,
+                'email_verified_at' => null,
+            ])->save();
+
+            return;
+        }
+
+        $user->delete();
     }
 
     /**
