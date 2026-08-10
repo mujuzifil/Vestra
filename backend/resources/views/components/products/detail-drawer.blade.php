@@ -2,6 +2,7 @@
     'show' => false,
     'product' => null,
     'canEdit' => false,
+    'canDelete' => false,
 ])
 
 @php
@@ -62,12 +63,25 @@ $display = function ($value, string $fallback = 'Not provided') {
                     @endif
                 </div>
 
-                @if ($canEdit)
+                @if ($canEdit || $canDelete)
                     <div class="vestra-products-detail__quick-actions">
-                        <button type="button" wire:click="openEditModal({{ $product['id'] }})" class="vestra-products-detail__quick-action vestra-products-detail__quick-action--success">
-                            <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
-                            <span>Edit Product</span>
-                        </button>
+                        @if ($canEdit)
+                            <button type="button" wire:click="openEditModal({{ $product['id'] }})" class="vestra-products-detail__quick-action vestra-products-detail__quick-action--success">
+                                <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
+                                <span>Edit Product</span>
+                            </button>
+                        @endif
+                        @if ($canDelete)
+                            <button
+                                type="button"
+                                wire:click="deleteProduct({{ $product['id'] }})"
+                                wire:confirm="Delete this product? It will be removed from the public website. If it is linked to existing orders, it will be deactivated instead."
+                                class="vestra-products-detail__quick-action vestra-products-detail__quick-action--danger"
+                            >
+                                <x-filament::icon icon="heroicon-o-trash" class="h-4 w-4" />
+                                <span>Delete Product</span>
+                            </button>
+                        @endif
                     </div>
                 @endif
 

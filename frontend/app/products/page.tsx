@@ -60,17 +60,6 @@ function packageSizes(product: Product): string[] {
     .filter(Boolean);
 }
 
-function formatProductPrice(price: string | number | null | undefined): string | null {
-  const numeric = typeof price === "number" ? price : Number(String(price ?? "").replace(/,/g, ""));
-  if (!Number.isFinite(numeric) || numeric <= 0) {
-    return null;
-  }
-
-  return new Intl.NumberFormat("en-UG", {
-    maximumFractionDigits: numeric % 1 === 0 ? 0 : 2,
-  }).format(numeric);
-}
-
 function industriesForProduct(product: Product): string[] {
   return categoryToIndustries[product.category.slug] || ["Commercial Use"];
 }
@@ -624,7 +613,6 @@ function ProductCard({
   const sizes = packageSizes(product);
   const industries = industriesForProduct(product);
   const features = product.features?.slice(0, 3) || [];
-  const formattedPrice = formatProductPrice(product.price);
 
   return (
     <motion.article
@@ -671,15 +659,9 @@ function ProductCard({
             {product.name}
           </Link>
         </h3>
-        <p className="text-sm text-text-muted mb-3 line-clamp-2 leading-relaxed">
+        <p className="text-sm text-text-muted mb-4 line-clamp-2 leading-relaxed">
           {product.short_description}
         </p>
-
-        {formattedPrice && (
-          <p className="mb-4 text-base font-extrabold tracking-tight text-text-heading">
-            UGX {formattedPrice}
-          </p>
-        )}
 
         {sizes.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-3">

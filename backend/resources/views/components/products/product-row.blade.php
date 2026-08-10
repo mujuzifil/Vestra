@@ -121,6 +121,19 @@ $isSelected = in_array($product->id, $selectedIds, true);
                     <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
                     <span>Edit Product</span>
                 </button>
+                @can('delete', $product)
+                    <button
+                        type="button"
+                        wire:click="deleteProduct({{ $product->id }})"
+                        wire:confirm="Delete this product? It will be removed from the public website. If it is linked to existing orders, it will be deactivated instead."
+                        class="vestra-products__action-item vestra-products__action-item--danger"
+                        role="menuitem"
+                        @click="open = false"
+                    >
+                        <x-filament::icon icon="heroicon-o-trash" class="h-4 w-4" />
+                        <span>Delete Product</span>
+                    </button>
+                @endcan
             </div>
         </div>
     </td>

@@ -403,6 +403,48 @@ class ProductsPageTest extends TestCase
         Livewire::actingAs($admin)
             ->test(ProductsPage::class)
             ->assertSee('View Details')
-            ->assertSee('Edit Product');
+            ->assertSee('Edit Product')
+            ->assertSee('Delete Product');
+    }
+
+    public function test_admin_can_delete_product_from_catalog(): void
+    {
+        $admin = $this->admin();
+        $product = $this->makeProduct(['name' => 'Removable Public Product']);
+
+        Livewire::actingAs($admin)
+            ->test(ProductsPage::class)
+            ->call('deleteProduct', $product->id)
+            ->assertNotified();
+
+        $this->assertDatabaseMissing('products', ['id' => $product->id]);
+    }
+
+    public function test_delete_deactivates_product_when_order_history_blocks_hard_delete(): void
+    {
+        $admin = $this->admin();
+        $product = $this->makeProduct([
+            'name' => 'Ordered Product',
+            'status' => ProductStatus::ACTIVE->value,
+            'featured' => true,
+        ]);
+
+        \App\Models\OrderItem::factory()->create([
+            'order_id' => \App\Models\Order::factory()->create()->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+            'unit_price' => 10,
+        ]);
+
+        Livewire::actingAs($admin)
+            ->test(ProductsPage::class)
+            ->call('deleteProduct', $product->id)
+            ->assertNotified();
+
+        $product->refresh();
+
+        $this->assertDatabaseHas('products', ['id' => $product->id]);
+        $this->assertSame(ProductStatus::INACTIVE, $product->status);
+        $this->assertFalse((bool) $product->featured);
     }
 }

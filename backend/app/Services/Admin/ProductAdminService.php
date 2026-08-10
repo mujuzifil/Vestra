@@ -10,9 +10,11 @@ use App\Models\ProductImage;
 use App\Models\ProductWarehouseStock;
 use App\Models\Setting;
 use App\Models\User;
+use App\Services\AuditService;
 use App\Services\Catalog\CatalogSyncService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -248,6 +250,71 @@ class ProductAdminService
     {
         $image = $product->images()->whereKey($imageId)->firstOrFail();
         app(MediaAdminService::class)->unlinkProductImage($product, $image);
+    }
+
+    /**
+     * Permanently remove a product when safe; otherwise deactivate it so it
+     * disappears from the public catalog while preserving order history.
+     *
+     * @return array{mode: 'deleted'|'deactivated', product: Product|null}
+     */
+    public function deleteProduct(Product $product, ?User $actor = null): array
+    {
+        $categoryId = $product->category_id;
+        $productId = $product->id;
+        $snapshot = [
+            'name' => $product->name,
+            'sku' => $product->sku,
+            'status' => $product->status instanceof ProductStatus
+                ? $product->status->value
+                : (string) $product->status,
+        ];
+
+        if ($product->orderItems()->exists()) {
+            $product->update([
+                'status' => ProductStatus::INACTIVE->value,
+                'featured' => false,
+                'updated_by' => $actor?->id,
+            ]);
+
+            $product = $product->fresh(['category', 'images.mediaAsset']) ?? $product;
+
+            AuditService::log($actor, 'product.deactivated', $product, [
+                ...$snapshot,
+                'reason' => 'Referenced by existing orders; deactivated instead of hard delete.',
+            ]);
+            $this->catalogSync->syncProducts($product->id, $product->category_id);
+
+            return ['mode' => 'deactivated', 'product' => $product];
+        }
+
+        try {
+            DB::transaction(function () use ($product): void {
+                $product->delete();
+            });
+
+            AuditService::log($actor, 'product.deleted', null, $snapshot);
+            $this->catalogSync->syncProducts($productId, $categoryId);
+
+            return ['mode' => 'deleted', 'product' => null];
+        } catch (QueryException $exception) {
+            $product->update([
+                'status' => ProductStatus::INACTIVE->value,
+                'featured' => false,
+                'updated_by' => $actor?->id,
+            ]);
+
+            $product = $product->fresh(['category', 'images.mediaAsset']) ?? $product;
+
+            AuditService::log($actor, 'product.deactivated', $product, [
+                ...$snapshot,
+                'reason' => 'Database constraints prevented hard delete; deactivated instead.',
+                'error' => $exception->getMessage(),
+            ]);
+            $this->catalogSync->syncProducts($product->id, $product->category_id);
+
+            return ['mode' => 'deactivated', 'product' => $product];
+        }
     }
 
     /**

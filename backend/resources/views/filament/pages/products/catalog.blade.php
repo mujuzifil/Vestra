@@ -52,6 +52,7 @@ $existingImages = $this->editingProductImages;
         :show="$showDetailDrawer"
         :product="$selectedProduct"
         :can-edit="$this->canUpdateSelected"
+        :can-delete="$this->canDeleteSelected"
     />
 
     <x-products.product-form

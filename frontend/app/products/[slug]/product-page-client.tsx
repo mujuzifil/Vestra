@@ -73,17 +73,6 @@ function usageInstructions(product: Product): string {
   );
 }
 
-function formatProductPrice(price: string | number | null | undefined): string | null {
-  const numeric = typeof price === "number" ? price : Number(String(price ?? "").replace(/,/g, ""));
-  if (!Number.isFinite(numeric) || numeric <= 0) {
-    return null;
-  }
-
-  return new Intl.NumberFormat("en-UG", {
-    maximumFractionDigits: numeric % 1 === 0 ? 0 : 2,
-  }).format(numeric);
-}
-
 function getRecentlyViewed(currentSlug: string): RecentProduct[] {
   if (typeof window === "undefined") return [];
   try {
@@ -183,7 +172,6 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
   const industries = industriesForProduct(product);
   const applications = applicationsForProduct(product);
   const instructions = usageInstructions(product);
-  const formattedPrice = formatProductPrice(product.price);
 
   const productImages = product.images.length > 0
     ? product.images.map((img) => img.image)
@@ -235,12 +223,6 @@ export default function ProductPageClient({ slug }: ProductPageClientProps) {
                     </span>
                   )}
                 </div>
-
-                {formattedPrice && (
-                  <p className="mb-6 text-2xl font-extrabold tracking-tight text-text-heading">
-                    UGX {formattedPrice}
-                  </p>
-                )}
 
                 <p className="text-text-body text-base lg:text-lg leading-relaxed mb-8 break-words">
                   {product.description}

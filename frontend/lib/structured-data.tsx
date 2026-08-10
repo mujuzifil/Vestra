@@ -98,14 +98,7 @@ export function productSchema(product: Product) {
       "@type": "Brand",
       name: COMPANY_NAME,
     },
-    offers: {
-      "@type": "Offer",
-      url: `${SITE_URL}/products/${product.slug}`,
-      priceCurrency: "UGX",
-      price: product.price.toString(),
-      availability: "https://schema.org/InStock",
-      itemCondition: "https://schema.org/NewCondition",
-    },
+    url: `${SITE_URL}/products/${product.slug}`,
   };
 }
 

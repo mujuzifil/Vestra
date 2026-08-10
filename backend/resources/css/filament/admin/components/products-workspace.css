@@ -739,6 +739,15 @@
     background-color: var(--success-50);
 }
 
+.vestra-products-detail__quick-action--danger {
+    border-color: var(--danger-300);
+    color: var(--danger-700);
+}
+
+.vestra-products-detail__quick-action--danger:hover {
+    background-color: var(--danger-50);
+}
+
 .vestra-products-detail__section {
     display: flex;
     flex-direction: column;

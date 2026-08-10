@@ -184,6 +184,17 @@ class ProductsPage extends Page
         return $product !== null && Gate::allows('update', $product);
     }
 
+    public function getCanDeleteSelectedProperty(): bool
+    {
+        if (empty($this->selectedProductId)) {
+            return false;
+        }
+
+        $product = Product::query()->find($this->selectedProductId);
+
+        return $product !== null && Gate::allows('delete', $product);
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -347,6 +358,48 @@ class ProductsPage extends Page
     {
         unset($this->pendingMediaAssets[$index]);
         $this->pendingMediaAssets = array_values($this->pendingMediaAssets);
+    }
+
+    public function deleteProduct(int $id): void
+    {
+        $product = Product::query()->findOrFail($id);
+        Gate::authorize('delete', $product);
+
+        $result = $this->getProductServiceProperty()->deleteProduct($product, auth()->user());
+
+        if ($this->selectedProductId === $id) {
+            if (($result['mode'] ?? null) === 'deactivated' && ($result['product'] ?? null) !== null) {
+                $this->selectedProductId = $result['product']->id;
+                $this->showDetailDrawer = true;
+            } else {
+                $this->closeDetailDrawer();
+            }
+        }
+
+        if (($result['mode'] ?? null) === 'deleted') {
+            $this->selectedIds = array_values(array_filter(
+                $this->selectedIds,
+                fn (int $selectedId) => $selectedId !== $id
+            ));
+
+            if ($this->editingProductId === $id) {
+                $this->closeFormModal();
+            }
+
+            Notification::make()
+                ->title('Product deleted')
+                ->body('The product was permanently removed from admin and the public website.')
+                ->success()
+                ->send();
+
+            return;
+        }
+
+        Notification::make()
+            ->title('Product deactivated')
+            ->body('This product is linked to existing orders, so it was deactivated and hidden from the public website instead of permanently deleted.')
+            ->warning()
+            ->send();
     }
 
     /**
