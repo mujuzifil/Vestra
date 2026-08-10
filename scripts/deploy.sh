@@ -175,7 +175,7 @@ fi
 
 log "Waiting for frontend health..."
 for i in $(seq 1 18); do
-    if $COMPOSE exec -T frontend curl -fsS http://localhost:3000/api/health >/dev/null 2>&1; then
+    if $COMPOSE exec -T frontend node -e "require('http').get('http://127.0.0.1:3000/api/health',(r)=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))" >/dev/null 2>&1; then
         ok "Frontend healthy after ${i} attempt(s)."
         break
     fi

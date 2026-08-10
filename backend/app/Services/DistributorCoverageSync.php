@@ -6,7 +6,6 @@ use App\Enums\DistributorAccountStatus;
 use App\Models\Distributor;
 use App\Models\DistributorBranch;
 use App\Models\DistributorServiceArea;
-use Illuminate\Support\Collection;
 
 class DistributorCoverageSync
 {
