@@ -350,9 +350,11 @@ class DistributorOnboardingService
         $defaultBranch = $distributor->branches()->where('is_default', true)->first()
             ?? $distributor->branches()->first();
 
-        $extraDistricts = collect([$request->target_region])
+        $extraDistricts = collect([$request->target_region, $request->region])
             ->filter(fn ($value) => filled($value))
-            ->reject(fn ($value) => mb_strtolower((string) $value) === mb_strtolower((string) $distributor->district));
+            ->map(fn ($value) => $this->coverageSync->canonicalizeDistrict((string) $value))
+            ->filter()
+            ->reject(fn ($value) => mb_strtolower((string) $value) === mb_strtolower((string) ($distributor->district ?? '')));
 
         foreach ($extraDistricts as $extraDistrict) {
             $region = $this->coverageSync->resolveMacroRegion((string) $extraDistrict);

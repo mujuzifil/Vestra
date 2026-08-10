@@ -45,6 +45,7 @@ class DistributorCoverageSync
         'sembabule' => 'Central',
         'kitende' => 'Central',
         'entebbe' => 'Central',
+        'nakawa' => 'Central',
         'jinja' => 'Eastern',
         'iganga' => 'Eastern',
         'kamuli' => 'Eastern',
@@ -147,6 +148,8 @@ class DistributorCoverageSync
         'masaka' => [-0.3411, 31.7361],
         'entebbe' => [0.0512, 32.4637],
         'kitende' => [0.2250, 32.5200],
+        'wakiso' => [0.4044, 32.4590],
+        'entebbe' => [0.0512, 32.4637],
         'tororo' => [0.692999, 34.1809],
         'soroti' => [1.7145, 33.6111],
         'busia' => [0.4651, 34.0922],
@@ -155,11 +158,52 @@ class DistributorCoverageSync
         'bushenyi' => [-0.5425, 30.1850],
     ];
 
+    /**
+     * Locality / alias → canonical district label.
+     *
+     * @var array<string, string>
+     */
+    private const DISTRICT_ALIASES = [
+        'kitende' => 'Wakiso',
+        'entebbe' => 'Wakiso',
+        'nakawa' => 'Kampala',
+        'kololo' => 'Kampala',
+        'makindye' => 'Kampala',
+        'kawempe' => 'Kampala',
+        'rubaga' => 'Kampala',
+        'luwero' => 'Luweero',
+        'sembabule' => 'Ssembabule',
+        'kibaale' => 'Kibaale',
+        'fort portal' => 'Fort Portal',
+    ];
+
+    /**
+     * Values that must never appear as covered "districts".
+     *
+     * @var array<int, string>
+     */
+    private const INVALID_DISTRICTS = [
+        'uganda',
+        'east africa',
+        'africa',
+        'nationwide',
+        'national',
+        'all',
+        'n/a',
+        'na',
+        'none',
+        'central',
+        'eastern',
+        'northern',
+        'western',
+    ];
+
     public function sync(Distributor $distributor): Distributor
     {
         $distributor->refresh();
 
         $defaultBranch = $this->syncDefaultBranch($distributor);
+        $this->pruneAndNormalizeServiceAreas($distributor, $defaultBranch);
         $this->ensurePrimaryServiceArea($distributor, $defaultBranch);
         $this->ensureBranchCoordinates($distributor, $defaultBranch);
 
@@ -181,10 +225,37 @@ class DistributorCoverageSync
         return $count;
     }
 
+    /**
+     * Return a public-facing district label, or null when the value is not a real place.
+     */
+    public function canonicalizeDistrict(?string $value): ?string
+    {
+        $normalized = $this->normalizeLabel($value);
+        if ($normalized === '' || in_array($normalized, self::INVALID_DISTRICTS, true)) {
+            return null;
+        }
+
+        if (isset(self::DISTRICT_ALIASES[$normalized])) {
+            return self::DISTRICT_ALIASES[$normalized];
+        }
+
+        if (isset(self::DISTRICT_REGIONS[$normalized])) {
+            return mb_convert_case($normalized, MB_CASE_TITLE, 'UTF-8');
+        }
+
+        // Keep unknown but plausible place names; drop values that look like countries.
+        if (preg_match('/\b(republic|kingdom|country)\b/i', (string) $value)) {
+            return null;
+        }
+
+        return mb_convert_case(trim((string) $value), MB_CASE_TITLE, 'UTF-8');
+    }
+
     public function resolveMacroRegion(?string $district, ?string $city = null, ?string $fallback = null): string
     {
         foreach ([$district, $city, $fallback] as $candidate) {
-            $normalized = $this->normalizeLabel($candidate);
+            $canonical = $this->canonicalizeDistrict($candidate) ?? $candidate;
+            $normalized = $this->normalizeLabel($canonical);
             if ($normalized === '') {
                 continue;
             }
@@ -197,6 +268,12 @@ class DistributorCoverageSync
 
             if (isset(self::DISTRICT_REGIONS[$normalized])) {
                 return self::DISTRICT_REGIONS[$normalized];
+            }
+
+            if (isset(self::DISTRICT_ALIASES[$this->normalizeLabel($candidate)])) {
+                $alias = self::DISTRICT_ALIASES[$this->normalizeLabel($candidate)];
+
+                return self::DISTRICT_REGIONS[$this->normalizeLabel($alias)] ?? 'Central';
             }
         }
 
@@ -221,13 +298,9 @@ class DistributorCoverageSync
      */
     public function resolveCoordinates(?string $address, ?string $district, ?string $city = null): ?array
     {
-        $fromPlusCode = $this->coordinatesFromPlusCode($address);
-        if ($fromPlusCode !== null) {
-            return $fromPlusCode;
-        }
-
         foreach ([$district, $city] as $candidate) {
-            $key = $this->normalizeLabel($candidate);
+            $canonical = $this->canonicalizeDistrict($candidate);
+            $key = $this->normalizeLabel($canonical ?? $candidate);
             if ($key !== '' && isset(self::DISTRICT_CENTROIDS[$key])) {
                 return self::DISTRICT_CENTROIDS[$key];
             }
@@ -244,10 +317,50 @@ class DistributorCoverageSync
         return $regionCentroids[$region] ?? null;
     }
 
+    public function coordinatesAreInUganda(float $latitude, float $longitude): bool
+    {
+        return $latitude >= -1.6 && $latitude <= 4.3
+            && $longitude >= 29.4 && $longitude <= 35.2;
+    }
+
+    private function pruneAndNormalizeServiceAreas(Distributor $distributor, DistributorBranch $branch): void
+    {
+        $seen = [];
+
+        foreach ($distributor->serviceAreas()->get() as $area) {
+            $canonical = $this->canonicalizeDistrict($area->district);
+            if ($canonical === null) {
+                $area->delete();
+
+                continue;
+            }
+
+            $region = $this->resolveMacroRegion($canonical, null, $area->region);
+            $key = mb_strtolower($region.'|'.$canonical);
+
+            if (isset($seen[$key])) {
+                $area->delete();
+
+                continue;
+            }
+
+            $seen[$key] = true;
+            $area->update([
+                'branch_id' => $area->branch_id ?: $branch->id,
+                'region' => $region,
+                'district' => $canonical,
+                'status' => $area->status ?: 'covered',
+            ]);
+        }
+    }
+
     private function syncDefaultBranch(Distributor $distributor): DistributorBranch
     {
         $branch = $distributor->branches()->where('is_default', true)->first()
             ?? $distributor->branches()->first();
+
+        $canonicalDistrict = $this->canonicalizeDistrict($distributor->district)
+            ?: $this->canonicalizeDistrict($distributor->city);
 
         if ($branch === null) {
             $branch = DistributorBranch::create([
@@ -257,7 +370,7 @@ class DistributorCoverageSync
                 'phone' => $distributor->phone,
                 'email' => $distributor->email,
                 'country' => $distributor->country ?: 'Uganda',
-                'district' => $distributor->district,
+                'district' => $canonicalDistrict ?: $distributor->district,
                 'city' => $distributor->city,
                 'address' => $distributor->address,
                 'status' => 'active',
@@ -266,7 +379,7 @@ class DistributorCoverageSync
         } else {
             $branch->fill([
                 'country' => $distributor->country ?: ($branch->country ?: 'Uganda'),
-                'district' => $distributor->district ?: $branch->district,
+                'district' => $canonicalDistrict ?: ($distributor->district ?: $branch->district),
                 'city' => $distributor->city ?: $branch->city,
                 'address' => $distributor->address ?: $branch->address,
                 'manager_name' => $branch->manager_name ?: $distributor->primary_contact_name,
@@ -281,16 +394,16 @@ class DistributorCoverageSync
 
     private function ensurePrimaryServiceArea(Distributor $distributor, DistributorBranch $branch): void
     {
-        $district = trim((string) ($distributor->district ?: $branch->district ?: $distributor->city ?: $branch->city));
-        if ($district === '') {
+        $district = $this->canonicalizeDistrict($distributor->district)
+            ?: $this->canonicalizeDistrict($branch->district)
+            ?: $this->canonicalizeDistrict($distributor->city)
+            ?: $this->canonicalizeDistrict($branch->city);
+
+        if ($district === null) {
             return;
         }
 
-        $region = $this->resolveMacroRegion(
-            $distributor->district,
-            $distributor->city,
-            $branch->district
-        );
+        $region = $this->resolveMacroRegion($district);
 
         $exists = $distributor->serviceAreas()
             ->get()
@@ -300,50 +413,26 @@ class DistributorCoverageSync
             });
 
         if ($exists) {
-            // Normalize any existing rows that used district-as-region naming.
-            $distributor->serviceAreas()
-                ->whereRaw('LOWER(district) = ?', [mb_strtolower($district)])
-                ->each(function (DistributorServiceArea $area) use ($region): void {
-                    if ($this->normalizeMacroRegion((string) $area->region) !== $region
-                        || ! in_array($area->region, self::MACRO_REGIONS, true)
-                    ) {
-                        $area->update([
-                            'region' => $region,
-                            'status' => $area->status ?: 'covered',
-                        ]);
-                    }
-                });
-
             return;
         }
 
-        // Upgrade a single poorly-seeded area instead of duplicating noise.
-        if ($distributor->serviceAreas()->count() === 1) {
-            $only = $distributor->serviceAreas()->first();
-            if ($only !== null) {
-                $only->update([
-                    'branch_id' => $branch->id,
-                    'region' => $region,
-                    'district' => $district,
-                    'status' => 'covered',
-                ]);
-
-                return;
-            }
+        if ($distributor->serviceAreas()->count() === 0) {
+            DistributorServiceArea::create([
+                'distributor_id' => $distributor->id,
+                'branch_id' => $branch->id,
+                'region' => $region,
+                'district' => $district,
+                'status' => 'covered',
+            ]);
         }
-
-        DistributorServiceArea::create([
-            'distributor_id' => $distributor->id,
-            'branch_id' => $branch->id,
-            'region' => $region,
-            'district' => $district,
-            'status' => 'covered',
-        ]);
     }
 
     private function ensureBranchCoordinates(Distributor $distributor, DistributorBranch $branch): void
     {
-        if ($branch->latitude !== null && $branch->longitude !== null) {
+        $lat = $branch->latitude !== null ? (float) $branch->latitude : null;
+        $lng = $branch->longitude !== null ? (float) $branch->longitude : null;
+
+        if ($lat !== null && $lng !== null && $this->coordinatesAreInUganda($lat, $lng)) {
             return;
         }
 
@@ -361,74 +450,6 @@ class DistributorCoverageSync
             'latitude' => $coords[0],
             'longitude' => $coords[1],
         ]);
-    }
-
-    /**
-     * Minimal Open Location Code decoder for full plus codes (e.g. 8H4C+6JR).
-     *
-     * @return array{0: float, 1: float}|null
-     */
-    private function coordinatesFromPlusCode(?string $haystack): ?array
-    {
-        if (! filled($haystack)) {
-            return null;
-        }
-
-        if (! preg_match('/\b([23456789CFGHJMPQRVWX]{2,8}\+[23456789CFGHJMPQRVWX]{2,3})\b/i', $haystack, $matches)) {
-            return null;
-        }
-
-        $code = strtoupper($matches[1]);
-        $alphabet = '23456789CFGHJMPQRVWX';
-        [$area, $suffix] = explode('+', $code, 2);
-
-        if (strlen($area) < 2 || strlen($suffix) < 2) {
-            return null;
-        }
-
-        $decodePair = function (string $chars) use ($alphabet): array {
-            $lat = 0.0;
-            $lng = 0.0;
-            $place = 1.0;
-            for ($i = 0; $i + 1 < strlen($chars); $i += 2) {
-                $place *= 20.0;
-                $latIndex = strpos($alphabet, $chars[$i]);
-                $lngIndex = strpos($alphabet, $chars[$i + 1]);
-                if ($latIndex === false || $lngIndex === false) {
-                    return [null, null];
-                }
-                $lat += $latIndex / $place;
-                $lng += $lngIndex / $place;
-            }
-
-            return [$lat, $lng];
-        };
-
-        [$latFrac, $lngFrac] = $decodePair($area);
-        if ($latFrac === null || $lngFrac === null) {
-            return null;
-        }
-
-        // Refine with first two suffix chars when available.
-        if (strlen($suffix) >= 2) {
-            $place = 20 ** (int) (strlen($area) / 2);
-            $latIndex = strpos($alphabet, $suffix[0]);
-            $lngIndex = strpos($alphabet, $suffix[1]);
-            if ($latIndex !== false && $lngIndex !== false) {
-                $place *= 20.0;
-                $latFrac += $latIndex / $place;
-                $lngFrac += $lngIndex / $place;
-            }
-        }
-
-        $latitude = $latFrac * 20.0 - 90.0;
-        $longitude = $lngFrac * 20.0 - 180.0;
-
-        if ($latitude < -90 || $latitude > 90 || $longitude < -180 || $longitude > 180) {
-            return null;
-        }
-
-        return [round($latitude, 6), round($longitude, 6)];
     }
 
     private function normalizeLabel(?string $value): string

@@ -143,13 +143,19 @@ class PublicDistributorController extends Controller
         }
 
         foreach ($areas as $item) {
-            $macro = $coverageSync->normalizeMacroRegion((string) $item->region);
-            $key = mb_strtolower((string) $item->district).'|'.(string) $item->status;
+            $district = $coverageSync->canonicalizeDistrict((string) $item->district);
+            if ($district === null) {
+                continue;
+            }
+
+            $macro = $coverageSync->resolveMacroRegion($district, null, (string) $item->region);
+            $status = (string) $item->status;
+            $key = mb_strtolower($district).'|'.$status;
 
             if (! isset($buckets[$macro][$key])) {
                 $buckets[$macro][$key] = [
-                    'district' => $item->district,
-                    'status' => $item->status,
+                    'district' => $district,
+                    'status' => $status,
                     'count' => 0,
                 ];
             }
@@ -158,8 +164,7 @@ class PublicDistributorController extends Controller
         }
 
         $payload = collect($buckets)
-            ->map(fn (array $districts) => collect($districts)->sortBy('district')->values())
-            ->filter(fn ($districts) => $districts->isNotEmpty());
+            ->map(fn (array $districts) => collect($districts)->sortBy('district')->values()->all());
 
         return $this->successResponse($payload);
     }

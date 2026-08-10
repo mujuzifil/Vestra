@@ -72,7 +72,9 @@ class CoverageSyncAndDeletesTest extends TestCase
 
         $this->getJson('/api/v1/public/distributors/coverage')
             ->assertSuccessful()
-            ->assertJsonPath('data.Central.0.district', 'Kampala');
+            ->assertJsonPath('data.Central.0.district', 'Kampala')
+            ->assertJsonMissing(['district' => 'Uganda'])
+            ->assertJsonMissing(['district' => 'Kitende']);
     }
 
     public function test_territories_map_mode_backfills_coordinates(): void

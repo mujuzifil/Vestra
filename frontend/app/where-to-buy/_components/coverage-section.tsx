@@ -10,8 +10,8 @@ export function CoverageSection() {
       <Container>
         <SectionHeader
           id="coverage-heading"
-          title="Coverage Map"
-          subtitle="Our authorised distributor coverage across Uganda."
+          title="Coverage across Uganda"
+          subtitle="See where authorised VESTRA distributors are listed by region and district."
         />
         <CoverageMap />
       </Container>
