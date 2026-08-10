@@ -106,7 +106,7 @@
 
 .vestra-partners__table-card {
     padding: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 /* ==========================================================================
@@ -234,6 +234,7 @@
    ========================================================================== */
 .vestra-partners__table-wrap {
     overflow-x: auto;
+    overflow-y: visible;
 }
 
 .vestra-partners__table {
@@ -451,7 +452,7 @@
     position: absolute;
     top: calc(100% + var(--space-1));
     right: 0;
-    z-index: 50;
+    z-index: 80;
     min-width: 180px;
     padding: var(--space-1);
     border: 1px solid var(--border-default);
@@ -460,19 +461,31 @@
     box-shadow: var(--shadow-lg);
 }
 
+.vestra-partners__action-menu--up {
+    top: auto;
+    bottom: calc(100% + var(--space-1));
+}
+
 .vestra-partners__action-item {
     display: flex;
     align-items: center;
     gap: var(--space-2);
     width: 100%;
     padding: var(--space-2) var(--space-3);
+    border: none;
+    background: transparent;
     border-radius: var(--radius-sm);
     font-size: var(--text-body-sm);
     font-weight: var(--font-medium);
     color: var(--text-heading);
     text-align: left;
     text-decoration: none;
+    cursor: pointer;
     transition: background-color var(--duration-fast) var(--ease-base);
+}
+
+.vestra-partners__action-item--danger {
+    color: var(--danger-600, #dc2626);
 }
 
 .vestra-partners__action-item:hover {

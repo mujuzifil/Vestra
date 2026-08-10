@@ -108,7 +108,7 @@
 
 .vestra-credit__table-card {
     padding: 0;
-    overflow: hidden;
+    overflow: visible;
 }
 
 /* ==========================================================================
@@ -225,6 +225,7 @@
    ========================================================================== */
 .vestra-credit__table-wrap {
     overflow-x: auto;
+    overflow-y: visible;
 }
 
 .vestra-credit__table {
@@ -474,13 +475,18 @@
     position: absolute;
     top: calc(100% + var(--space-1));
     right: 0;
-    z-index: 50;
+    z-index: 80;
     min-width: 180px;
     padding: var(--space-1);
     border: 1px solid var(--border-default);
     border-radius: var(--radius-md);
     background-color: var(--surface-card);
     box-shadow: var(--shadow-lg);
+}
+
+.vestra-credit__action-menu--up {
+    top: auto;
+    bottom: calc(100% + var(--space-1));
 }
 
 .vestra-credit__action-item {

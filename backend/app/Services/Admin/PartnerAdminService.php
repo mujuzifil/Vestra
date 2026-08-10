@@ -13,6 +13,7 @@ use App\Models\SalesRepresentative;
 use App\Models\User;
 use App\Services\AuditService;
 use App\Services\Catalog\CatalogSyncService;
+use App\Services\DistributorCoverageSync;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +24,7 @@ class PartnerAdminService
 {
     public function __construct(
         private readonly CatalogSyncService $catalogSync,
+        private readonly DistributorCoverageSync $coverageSync,
     ) {}
     /**
      * @param  array<string, mixed>  $filters
@@ -253,6 +255,7 @@ class PartnerAdminService
                 'credit' => $creditAccount !== null,
                 'coverage' => true,
                 'edit' => true,
+                'delete' => true,
             ],
             'edit_url' => \App\Filament\Pages\Distributors\PartnerEditPage::getUrl(['partner' => $distributor->id]),
             'credit_url' => $creditAccount
@@ -358,6 +361,7 @@ class PartnerAdminService
             }
 
             $distributor->activate();
+            $this->coverageSync->sync($distributor);
 
             AuditService::log(
                 $admin,
@@ -419,6 +423,14 @@ class PartnerAdminService
 
             $distributor->update($allowed);
 
+            $locationTouched = collect(['country', 'district', 'city', 'address'])
+                ->intersect(array_keys($allowed))
+                ->isNotEmpty();
+
+            if ($locationTouched || $distributor->isActive()) {
+                $this->coverageSync->sync($distributor->fresh());
+            }
+
             AuditService::log(
                 $admin,
                 'distributor_profile_updated',
@@ -433,6 +445,62 @@ class PartnerAdminService
             DB::afterCommit(fn () => $this->catalogSync->syncDistributors($distributorId));
 
             return $distributor->fresh(['user', 'creditAccount', 'branches', 'serviceAreas']);
+        });
+    }
+
+    public function purge(Distributor $distributor, ?User $admin = null): void
+    {
+        DB::transaction(function () use ($distributor, $admin): void {
+            $distributor->refresh();
+            $userId = $distributor->user_id;
+            $distributorId = $distributor->id;
+            $companyName = $distributor->company_name;
+
+            AuditService::log(
+                $admin,
+                'distributor_purged',
+                $distributor,
+                ['company_name' => $companyName, 'user_id' => $userId],
+                request()?->ip(),
+                request()?->userAgent()
+            );
+
+            if (Schema::hasColumn('orders', 'distributor_id')) {
+                Order::query()->where('distributor_id', $distributorId)->update(['distributor_id' => null]);
+            }
+
+            if (Schema::hasTable('quotation_requests') && Schema::hasColumn('quotation_requests', 'distributor_id')) {
+                DB::table('quotation_requests')->where('distributor_id', $distributorId)->update(['distributor_id' => null]);
+            }
+
+            if (Schema::hasTable('payment_uploads') && Schema::hasColumn('payment_uploads', 'distributor_id')) {
+                DB::table('payment_uploads')->where('distributor_id', $distributorId)->delete();
+            }
+
+            $creditAccount = $distributor->creditAccount;
+            if ($creditAccount !== null) {
+                $creditAccount->transactions()->delete();
+                $creditAccount->delete();
+            }
+
+            $distributor->serviceAreas()->delete();
+            $distributor->documents()->delete();
+            $distributor->contacts()->delete();
+            $distributor->branches()->delete();
+
+            $distributor->delete();
+
+            if ($userId) {
+                $user = User::query()->find($userId);
+                if ($user !== null) {
+                    if (method_exists($user, 'tokens')) {
+                        $user->tokens()->delete();
+                    }
+                    $user->delete();
+                }
+            }
+
+            DB::afterCommit(fn () => $this->catalogSync->syncDistributors($distributorId));
         });
     }
 

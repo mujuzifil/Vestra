@@ -216,6 +216,22 @@ class PartnerEditPage extends Page
         $this->redirect(ActivePartnersPage::getUrl(['search' => $validated['form']['company_name']]), navigate: true);
     }
 
+    public function deletePartner(): void
+    {
+        $distributor = Distributor::query()->findOrFail($this->partner);
+        Gate::authorize('delete', $distributor);
+
+        $this->getPartnerServiceProperty()->purge($distributor, auth()->user());
+
+        Notification::make()
+            ->title('Partner deleted')
+            ->body('The partner was permanently removed from admin, portal, and the public website.')
+            ->success()
+            ->send();
+
+        $this->redirect(ActivePartnersPage::getUrl(), navigate: true);
+    }
+
     protected function hydrateFromDistributor(Distributor $distributor): void
     {
         $hours = is_array($distributor->operating_hours_json) ? $distributor->operating_hours_json : [];

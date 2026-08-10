@@ -223,6 +223,29 @@ class ApplicationsPage extends Page
             ->send();
     }
 
+    public function deleteApplication(int $id): void
+    {
+        $application = DistributorRequest::query()->findOrFail($id);
+        Gate::authorize('delete', $application);
+
+        $this->getApplicationServiceProperty()->delete($application);
+
+        if ($this->selectedApplicationId === $id) {
+            $this->closeDetailDrawer();
+        }
+
+        $this->selectedIds = array_values(array_filter(
+            $this->selectedIds,
+            fn (int $selectedId) => $selectedId !== $id
+        ));
+
+        Notification::make()
+            ->title('Application deleted')
+            ->body('The application was permanently removed.')
+            ->success()
+            ->send();
+    }
+
     public function bulkApprove(): void
     {
         if (empty($this->selectedIds)) {

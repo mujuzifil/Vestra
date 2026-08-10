@@ -4,6 +4,7 @@ namespace App\Filament\Pages\Distributors;
 
 use App\Models\DistributorBranch;
 use App\Services\Admin\TerritoryAdminService;
+use App\Services\DistributorCoverageSync;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Url;
@@ -161,6 +162,10 @@ class TerritoriesPage extends Page
     public function setViewMode(string $mode): void
     {
         $this->viewMode = in_array($mode, ['table', 'map'], true) ? $mode : 'table';
+
+        if ($this->viewMode === 'map') {
+            app(DistributorCoverageSync::class)->backfillActivePartners();
+        }
     }
 
     public function openDetailDrawer(int $id): void

@@ -101,6 +101,15 @@ $display = function ($value, string $fallback = 'Not provided') {
                             <span>Reject</span>
                         </button>
                     @endif
+                    <button
+                        type="button"
+                        wire:click="deleteApplication({{ $application['id'] }})"
+                        wire:confirm="Permanently delete this application? This cannot be undone."
+                        class="vestra-applications-detail__quick-action vestra-applications-detail__quick-action--danger"
+                    >
+                        <x-filament::icon icon="heroicon-o-trash" class="h-4 w-4" />
+                        <span>Delete</span>
+                    </button>
                     <button type="button" onclick="window.print()" class="vestra-applications-detail__quick-action">
                         <x-filament::icon icon="heroicon-o-printer" class="h-4 w-4" />
                         <span>Print</span>

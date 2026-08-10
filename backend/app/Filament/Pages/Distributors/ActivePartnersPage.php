@@ -175,6 +175,24 @@ class ActivePartnersPage extends Page
             ->send();
     }
 
+    public function deletePartner(int $id): void
+    {
+        $distributor = Distributor::query()->findOrFail($id);
+        Gate::authorize('delete', $distributor);
+
+        $this->getPartnerServiceProperty()->purge($distributor, auth()->user());
+
+        if ($this->selectedPartnerId === $id) {
+            $this->closeDetailDrawer();
+        }
+
+        Notification::make()
+            ->title('Partner deleted')
+            ->body('The partner was permanently removed from admin, portal, and the public website.')
+            ->success()
+            ->send();
+    }
+
     public function sortBy(string $field): void
     {
         if ($this->sortField === $field) {

@@ -42,16 +42,33 @@ $initials = $initials !== '' ? $initials : 'D';
         <x-credit.status-badge :status="$account->status" />
     </td>
     <td class="vestra-credit__td vestra-credit__td--actions">
-        <div class="vestra-credit__actions" x-data="{ open: false }" @click.outside="open = false">
-            <button type="button" @click="open = !open" class="vestra-credit__action-trigger" aria-label="Row actions">
+        <div
+            class="vestra-credit__actions"
+            x-data="{
+                open: false,
+                dropUp: false,
+                toggle() {
+                    this.open = !this.open;
+                    if (!this.open) {
+                        return;
+                    }
+                    this.$nextTick(() => {
+                        const rect = this.$el.getBoundingClientRect();
+                        this.dropUp = (window.innerHeight - rect.bottom) < 180;
+                    });
+                }
+            }"
+            @click.outside="open = false"
+        >
+            <button type="button" @click="toggle()" class="vestra-credit__action-trigger" aria-label="Row actions">
                 <x-filament::icon icon="heroicon-o-ellipsis-vertical" class="h-4 w-4" />
             </button>
-            <div x-show="open" x-transition class="vestra-credit__action-menu" role="menu">
-                <button type="button" wire:click="openDetailDrawer({{ $account->id }})" class="vestra-credit__action-item" role="menuitem">
+            <div x-show="open" x-transition class="vestra-credit__action-menu" role="menu" :class="{ 'vestra-credit__action-menu--up': dropUp }">
+                <button type="button" wire:click="openDetailDrawer({{ $account->id }})" class="vestra-credit__action-item" role="menuitem" @click="open = false">
                     <x-filament::icon icon="heroicon-o-eye" class="h-4 w-4" />
                     <span>View Details</span>
                 </button>
-                <button type="button" wire:click="openAdjustDrawer({{ $account->id }})" class="vestra-credit__action-item" role="menuitem">
+                <button type="button" wire:click="openAdjustDrawer({{ $account->id }})" class="vestra-credit__action-item" role="menuitem" @click="open = false">
                     <x-filament::icon icon="heroicon-o-adjustments-horizontal" class="h-4 w-4" />
                     <span>Adjust Limit</span>
                 </button>

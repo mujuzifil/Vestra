@@ -96,6 +96,14 @@
                     @if (($actions['coverage'] ?? false) && ($partner['territories_url'] ?? null))
                         <a href="{{ $partner['territories_url'] }}" class="vestra-partners-detail__action-btn">Territories</a>
                     @endif
+                    <button
+                        type="button"
+                        wire:click="deletePartner({{ $partner['id'] }})"
+                        wire:confirm="Permanently delete this partner? They will disappear from the public website and distributor portal and must reapply."
+                        class="vestra-partners-detail__action-btn vestra-partners-detail__action-btn--danger"
+                    >
+                        Delete
+                    </button>
                 </div>
 
                 <div class="vestra-partners-detail__section">

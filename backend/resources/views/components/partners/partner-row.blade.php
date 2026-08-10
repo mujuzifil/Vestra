@@ -85,12 +85,29 @@ $utilizationClass = match (true) {
     </td>
 
     <td class="vestra-partners__td vestra-partners__td--actions">
-        <div class="vestra-partners__actions" x-data="{ open: false }" @click.outside="open = false">
-            <button type="button" @click="open = !open" class="vestra-partners__action-trigger" aria-label="Partner actions" aria-haspopup="true">
+        <div
+            class="vestra-partners__actions"
+            x-data="{
+                open: false,
+                dropUp: false,
+                toggle() {
+                    this.open = !this.open;
+                    if (!this.open) {
+                        return;
+                    }
+                    this.$nextTick(() => {
+                        const rect = this.$el.getBoundingClientRect();
+                        this.dropUp = (window.innerHeight - rect.bottom) < 180;
+                    });
+                }
+            }"
+            @click.outside="open = false"
+        >
+            <button type="button" @click="toggle()" class="vestra-partners__action-trigger" aria-label="Partner actions" aria-haspopup="true">
                 <x-filament::icon icon="heroicon-m-ellipsis-vertical" class="h-5 w-5" />
             </button>
-            <div x-show="open" x-transition class="vestra-partners__action-menu" role="menu">
-                <button type="button" wire:click="openDetailDrawer({{ $partner->id }})" class="vestra-partners__action-item" role="menuitem">
+            <div x-show="open" x-transition class="vestra-partners__action-menu" role="menu" :class="{ 'vestra-partners__action-menu--up': dropUp }">
+                <button type="button" wire:click="openDetailDrawer({{ $partner->id }})" class="vestra-partners__action-item" role="menuitem" @click="open = false">
                     <x-filament::icon icon="heroicon-o-eye" class="h-4 w-4" />
                     <span>View Partner</span>
                 </button>
@@ -98,10 +115,24 @@ $utilizationClass = match (true) {
                     href="{{ \App\Filament\Pages\Distributors\PartnerEditPage::getUrl(['partner' => $partner->id]) }}"
                     class="vestra-partners__action-item"
                     role="menuitem"
+                    @click="open = false"
                 >
                     <x-filament::icon icon="heroicon-o-pencil-square" class="h-4 w-4" />
                     <span>Edit Partner</span>
                 </a>
+                @can('delete', $partner)
+                    <button
+                        type="button"
+                        wire:click="deletePartner({{ $partner->id }})"
+                        wire:confirm="Permanently delete this partner? They will disappear from the public website and distributor portal and must reapply."
+                        class="vestra-partners__action-item vestra-partners__action-item--danger"
+                        role="menuitem"
+                        @click="open = false"
+                    >
+                        <x-filament::icon icon="heroicon-o-trash" class="h-4 w-4" />
+                        <span>Delete Partner</span>
+                    </button>
+                @endcan
             </div>
         </div>
     </td>

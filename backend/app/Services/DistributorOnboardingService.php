@@ -27,6 +27,7 @@ class DistributorOnboardingService
     public function __construct(
         private readonly CatalogSyncService $catalogSync,
         private readonly CompanyProfileService $companyProfiles,
+        private readonly DistributorCoverageSync $coverageSync,
     ) {}
 
     public function approve(DistributorRequest $request, ?User $admin = null): Distributor
@@ -336,26 +337,38 @@ class DistributorOnboardingService
 
     private function seedServiceAreas(Distributor $distributor, DistributorRequest $request): void
     {
-        if ($distributor->serviceAreas()->exists()) {
-            return;
+        if (! filled($distributor->district) && filled($request->region)) {
+            $distributor->forceFill([
+                'district' => $request->region,
+                'city' => $distributor->city ?: $request->target_region,
+                'country' => $distributor->country ?: $request->country ?: 'Uganda',
+            ])->save();
         }
+
+        $this->coverageSync->sync($distributor->fresh());
 
         $defaultBranch = $distributor->branches()->where('is_default', true)->first()
             ?? $distributor->branches()->first();
 
-        $areas = collect([
-            ['region' => $request->region, 'district' => $request->region],
-            ['region' => $request->target_region, 'district' => $request->target_region],
-            ['region' => $request->country, 'district' => $request->country],
-        ])->filter(fn (array $area) => filled($area['region']) && filled($area['district']))
-            ->unique(fn (array $area) => mb_strtolower($area['region'].'|'.$area['district']));
+        $extraDistricts = collect([$request->target_region])
+            ->filter(fn ($value) => filled($value))
+            ->reject(fn ($value) => mb_strtolower((string) $value) === mb_strtolower((string) $distributor->district));
 
-        foreach ($areas as $area) {
+        foreach ($extraDistricts as $extraDistrict) {
+            $region = $this->coverageSync->resolveMacroRegion((string) $extraDistrict);
+            $exists = $distributor->serviceAreas()
+                ->whereRaw('LOWER(district) = ?', [mb_strtolower((string) $extraDistrict)])
+                ->exists();
+
+            if ($exists) {
+                continue;
+            }
+
             DistributorServiceArea::create([
                 'distributor_id' => $distributor->id,
                 'branch_id' => $defaultBranch?->id,
-                'region' => $area['region'],
-                'district' => $area['district'],
+                'region' => $region,
+                'district' => (string) $extraDistrict,
                 'status' => 'covered',
             ]);
         }

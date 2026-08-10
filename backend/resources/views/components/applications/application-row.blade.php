@@ -125,11 +125,25 @@ $location = collect([$application->region, $application->country])->filter()->im
                         wire:confirm="Reject this application?"
                         class="vestra-applications__action-item vestra-applications__action-item--danger"
                         role="menuitem"
+                        @click="open = false"
                     >
                         <x-filament::icon icon="heroicon-o-x-circle" class="h-4 w-4" />
                         <span>Reject</span>
                     </button>
                 @endif
+                @can('delete', $application)
+                    <button
+                        type="button"
+                        wire:click="deleteApplication({{ $application->id }})"
+                        wire:confirm="Permanently delete this application? This cannot be undone."
+                        class="vestra-applications__action-item vestra-applications__action-item--danger"
+                        role="menuitem"
+                        @click="open = false"
+                    >
+                        <x-filament::icon icon="heroicon-o-trash" class="h-4 w-4" />
+                        <span>Delete</span>
+                    </button>
+                @endcan
             </div>
         </div>
     </td>

@@ -138,6 +138,11 @@ class ApplicationAdminService
         ];
     }
 
+    public function delete(DistributorRequest $application): void
+    {
+        $application->delete();
+    }
+
     /**
      * @return array<string, mixed>
      */

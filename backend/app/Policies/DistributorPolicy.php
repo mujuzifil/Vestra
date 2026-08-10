@@ -55,6 +55,17 @@ class DistributorPolicy
         return $this->update($user, $distributor);
     }
 
+    public function delete(User $user, Distributor $distributor): bool
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        return $this->allowsPermission($user, 'active-partners.delete')
+            || $this->allowsPermission($user, 'active-partners.edit')
+            || $this->allowsPermission($user, 'distributors.delete');
+    }
+
     public function export(User $user): bool
     {
         if ($user->isAdmin()) {

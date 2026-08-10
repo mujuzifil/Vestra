@@ -21,6 +21,14 @@
         </div>
 
         <div class="vestra-staff-form__hero-actions">
+            <button
+                type="button"
+                class="vestra-button vestra-button--secondary"
+                wire:click="deletePartner"
+                wire:confirm="Permanently delete this partner? They will disappear from the public website and distributor portal and must reapply."
+            >
+                Delete Partner
+            </button>
             <a href="{{ $backUrl }}" class="vestra-button vestra-button--secondary">Cancel</a>
             <button type="submit" form="partner-edit-form" class="vestra-button vestra-button--primary" wire:loading.attr="disabled">
                 Save Partner
@@ -156,7 +164,7 @@
             <p class="vestra-partner-edit__hint">Suspended partners are hidden from the public Where to Buy directory.</p>
             <div class="vestra-staff-form__field">
                 <label for="partner-status" class="vestra-staff-form__label">Status</label>
-                <select id="partner-status" wire:model="form.status" class="vestra-staff-form__input">
+                <select id="partner-status" wire:model="form.status" class="vestra-staff-form__select">
                     @foreach ($statusOptions as $status)
                         <option value="{{ $status['value'] }}">{{ $status['label'] }}</option>
                     @endforeach

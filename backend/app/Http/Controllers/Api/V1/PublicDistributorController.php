@@ -127,24 +127,40 @@ class PublicDistributorController extends Controller
 
     public function coverageRegions(): JsonResponse
     {
+        $coverageSync = app(\App\Services\DistributorCoverageSync::class);
+
         $areas = DistributorServiceArea::query()
-            ->selectRaw('region, district, status, COUNT(*) as count')
+            ->select(['region', 'district', 'status'])
+            ->selectRaw('COUNT(*) as count')
             ->whereHas('distributor', fn ($q) => $q->where('status', DistributorAccountStatus::ACTIVE->value))
             ->groupBy('region', 'district', 'status')
-            ->orderBy('region')
             ->orderBy('district')
             ->get();
 
-        $grouped = $areas->groupBy('region')->map(function ($districts) {
-            return $districts->map(function ($item) {
-                return [
+        $buckets = [];
+        foreach (\App\Services\DistributorCoverageSync::MACRO_REGIONS as $macro) {
+            $buckets[$macro] = [];
+        }
+
+        foreach ($areas as $item) {
+            $macro = $coverageSync->normalizeMacroRegion((string) $item->region);
+            $key = mb_strtolower((string) $item->district).'|'.(string) $item->status;
+
+            if (! isset($buckets[$macro][$key])) {
+                $buckets[$macro][$key] = [
                     'district' => $item->district,
                     'status' => $item->status,
-                    'count' => $item->count,
+                    'count' => 0,
                 ];
-            })->values();
-        });
+            }
 
-        return $this->successResponse($grouped);
+            $buckets[$macro][$key]['count'] += (int) $item->count;
+        }
+
+        $payload = collect($buckets)
+            ->map(fn (array $districts) => collect($districts)->sortBy('district')->values())
+            ->filter(fn ($districts) => $districts->isNotEmpty());
+
+        return $this->successResponse($payload);
     }
 }
