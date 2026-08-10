@@ -20,38 +20,38 @@ export function HeroSection() {
   return (
     <section
       id="home"
-      className="relative min-h-[600px] lg:min-h-[calc(100vh-88px)] flex items-center bg-primary-900 overflow-hidden pt-28 lg:pt-0"
+      className="relative min-h-[640px] lg:min-h-[calc(100vh-72px)] flex items-center overflow-hidden pt-28 lg:pt-0"
       aria-labelledby="hero-heading"
     >
-      {/* Background effects */}
+      {/* Full-bleed product atmosphere */}
       <div className="absolute inset-0 z-0">
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{
-            background:
-              "radial-gradient(ellipse 80% 70% at 85% 65%, rgba(8,42,82,0.35) 0%, transparent 55%), radial-gradient(circle at 20% 30%, rgba(25,85,145,0.08) 0%, transparent 30%)",
-          }}
-        />
-        <div className="absolute -top-40 right-0 w-[clamp(360px,40vw,680px)] h-[clamp(360px,40vw,680px)] rounded-full bg-[rgba(8,45,90,0.6)] blur-[clamp(50px,6vw,100px)] opacity-85" />
-        <div className="absolute -bottom-24 right-[30%] w-[clamp(280px,30vw,480px)] h-[clamp(280px,30vw,480px)] rounded-full bg-[rgba(20,90,160,0.2)] blur-[clamp(50px,6vw,100px)] opacity-70" />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(circle at 78% 58%, rgba(255,255,255,0.05) 0%, transparent 45%)",
-          }}
+        <Image
+          src="/assets/images/hero/whitemax-hero.webp"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[62%_center] sm:object-[70%_center] lg:object-[78%_center]"
+          aria-hidden="true"
         />
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at center, transparent 45%, rgba(2,8,18,0.75) 100%)",
+              "linear-gradient(105deg, rgba(3,17,40,0.94) 0%, rgba(3,17,40,0.88) 34%, rgba(3,17,40,0.55) 58%, rgba(3,17,40,0.28) 78%, rgba(3,17,40,0.18) 100%)",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 80% at 18% 45%, rgba(3,17,40,0.55) 0%, transparent 60%), radial-gradient(ellipse at center, transparent 50%, rgba(2,8,18,0.55) 100%)",
           }}
         />
       </div>
 
       <Container className="relative z-10 w-full py-16 lg:py-24">
-        <div className="grid lg:grid-cols-[45%_55%] gap-8 lg:gap-12 items-center">
+        <div className="grid lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] gap-10 lg:gap-8 items-center">
           <motion.div
             initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -60,28 +60,22 @@ export function HeroSection() {
           >
             <div className="inline-flex max-w-full items-center gap-2 px-3 sm:px-4 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-[11px] sm:text-sm font-bold tracking-wider mb-6">
               <Star className="w-4 h-4 text-secondary-500 fill-secondary-500 flex-shrink-0" aria-hidden="true" />
-              <span className="truncate sm:whitespace-normal">PROFESSIONAL CLEANING SOLUTIONS</span>
+              <span className="truncate sm:whitespace-normal">WORLD-CLASS CLEANING SOLUTIONS</span>
             </div>
 
             <h1
               id="hero-heading"
-              className="text-4xl sm:text-5xl lg:text-[clamp(3rem,6vw,6rem)] font-black leading-[1.05] tracking-tight mb-6"
+              className="text-4xl sm:text-5xl lg:text-[clamp(2.75rem,5.4vw,4.75rem)] font-black leading-[1.05] tracking-tight mb-6"
             >
-              Professional
+              Professional Cleaning Solutions.
               <br />
-              Cleaning Solutions
-              <br />
-              <span className="text-secondary-500">
-                Manufactured
-                <br />
-                for Uganda.
-              </span>
+              <span className="text-secondary-500">Engineered for Every Standard.</span>
             </h1>
 
             <p className="text-white/80 text-base sm:text-lg leading-relaxed mb-8 max-w-xl">
-              VESTRA® manufactures high-performance detergents and fabric care products for
-              businesses, institutions, and distribution partners who demand consistent quality,
-              reliable supply, and professional results.
+              VESTRA® develops high-performance detergents and fabric-care solutions for businesses,
+              institutions, and distribution partners demanding consistent quality, reliable supply,
+              and professional results.
             </p>
 
             <div className="flex flex-wrap gap-3 sm:gap-4 mb-10">
@@ -114,36 +108,8 @@ export function HeroSection() {
             </div>
           </motion.div>
 
-          <motion.div
-            initial={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, ease: "easeOut", delay: 0.2 }}
-            className="relative lg:absolute lg:right-0 lg:bottom-0 lg:w-[55%] lg:h-full flex items-end justify-end"
-          >
-            <div className="relative w-full aspect-[4/3] lg:aspect-auto lg:h-full">
-              <Image
-                src="/assets/images/hero/home-page-image.webp"
-                alt="VESTRA professional detergent product range manufactured in Uganda"
-                fill
-                sizes="(max-width: 1024px) 100vw, 55vw"
-                priority
-                className="object-contain object-right-bottom"
-                style={{
-                  maskImage:
-                    "linear-gradient(to right, transparent 0%, black 18%, black 92%, transparent 100%)",
-                  WebkitMaskImage:
-                    "linear-gradient(to right, transparent 0%, black 18%, black 92%, transparent 100%)",
-                }}
-              />
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background:
-                    "radial-gradient(ellipse 100% 80% at 75% 75%, transparent 55%, rgba(3,17,40,0.5) 85%, rgba(3,17,40,0.9) 100%)",
-                }}
-              />
-            </div>
-          </motion.div>
+          {/* Spacer keeps product visible on the right through the gradient */}
+          <div className="hidden lg:block min-h-[420px]" aria-hidden="true" />
         </div>
       </Container>
     </section>
