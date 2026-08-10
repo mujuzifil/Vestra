@@ -60,28 +60,22 @@ export function HeroSection() {
           >
             <div className="inline-flex max-w-full items-center gap-2 px-3 sm:px-4 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-[11px] sm:text-sm font-bold tracking-wider mb-6">
               <Star className="w-4 h-4 text-secondary-500 fill-secondary-500 flex-shrink-0" aria-hidden="true" />
-              <span className="truncate sm:whitespace-normal">PROFESSIONAL CLEANING SOLUTIONS</span>
+              <span className="truncate sm:whitespace-normal">WORLD-CLASS CLEANING SOLUTIONS</span>
             </div>
 
             <h1
               id="hero-heading"
-              className="text-4xl sm:text-5xl lg:text-[clamp(3rem,6vw,6rem)] font-black leading-[1.05] tracking-tight mb-6"
+              className="text-4xl sm:text-5xl lg:text-[clamp(2.75rem,5.4vw,4.75rem)] font-black leading-[1.05] tracking-tight mb-6"
             >
-              Professional
+              Professional Cleaning Solutions.
               <br />
-              Cleaning Solutions
-              <br />
-              <span className="text-secondary-500">
-                Manufactured
-                <br />
-                for Uganda.
-              </span>
+              <span className="text-secondary-500">Engineered for Every Standard.</span>
             </h1>
 
             <p className="text-white/80 text-base sm:text-lg leading-relaxed mb-8 max-w-xl">
-              VESTRA® manufactures high-performance detergents and fabric care products for
-              businesses, institutions, and distribution partners who demand consistent quality,
-              reliable supply, and professional results.
+              VESTRA® develops high-performance detergents and fabric-care solutions for businesses,
+              institutions, and distribution partners demanding consistent quality, reliable supply,
+              and professional results.
             </p>
 
             <div className="flex flex-wrap gap-3 sm:gap-4 mb-10">
