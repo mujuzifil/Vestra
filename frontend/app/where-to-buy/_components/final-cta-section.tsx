@@ -18,14 +18,11 @@ export function FinalCTASection() {
             Looking for VESTRA® Products?
           </h2>
           <p className="text-base lg:text-lg text-white/75 mb-8">
-            Contact our sales team, apply to become a distributor, or request a tailored quotation.
+            Contact our sales team or request a tailored quotation for your business.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto bg-white text-text-heading border-transparent hover:bg-white/90">
               <Link href="/contact">Contact Sales</Link>
-            </Button>
-            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto border-white/40 text-white bg-transparent hover:bg-white/10 hover:text-white hover:border-white/50">
-              <Link href="/distributor">Become a Distributor</Link>
             </Button>
             <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto border-white/40 text-white bg-transparent hover:bg-white/10 hover:text-white hover:border-white/50">
               <Link href="/request-quote">Request a Quote</Link>

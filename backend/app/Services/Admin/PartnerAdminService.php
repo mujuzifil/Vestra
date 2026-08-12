@@ -504,44 +504,8 @@ class PartnerAdminService
 
             $distributor->delete();
 
-            if ($userId) {
-                $this->purgePortalUser((int) $userId);
-            }
-
             DB::afterCommit(fn () => $this->catalogSync->syncDistributors($distributorId));
         });
-    }
-
-    private function purgePortalUser(int $userId): void
-    {
-        $user = User::query()->find($userId);
-        if ($user === null) {
-            return;
-        }
-
-        if (method_exists($user, 'tokens')) {
-            $user->tokens()->delete();
-        }
-
-        // orders.user_id is RESTRICT — keep a deactivated shell when history exists.
-        $hasRestrictedOrders = Schema::hasTable('orders')
-            && Order::query()->where('user_id', $userId)->exists();
-
-        if ($hasRestrictedOrders) {
-            $user->forceFill([
-                'name' => 'Deleted Partner',
-                'email' => 'deleted-partner-'.$userId.'@vestra.invalid',
-                'phone' => null,
-                'status' => 'inactive',
-                'password' => bcrypt(str()->random(40)),
-                'remember_token' => null,
-                'email_verified_at' => null,
-            ])->save();
-
-            return;
-        }
-
-        $user->delete();
     }
 
     /**

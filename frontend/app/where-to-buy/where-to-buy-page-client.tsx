@@ -14,7 +14,6 @@ import { WhereYouCanBuySection } from "./_components/where-you-can-buy-section";
 import { CoverageSection } from "./_components/coverage-section";
 import { DirectorySection } from "./_components/directory-section";
 import { NeedHelpSection } from "./_components/need-help-section";
-import { BecomeDistributorCTASection } from "./_components/become-distributor-cta-section";
 import { RelatedResourcesSection } from "./_components/related-resources-section";
 import { FinalCTASection } from "./_components/final-cta-section";
 
@@ -34,10 +33,6 @@ const whereToBuyFaqs = [
   {
     question: "How long does delivery take?",
     answer: "Delivery timelines depend on location and order size. Our sales team confirms lead times when preparing your quotation.",
-  },
-  {
-    question: "How do I become a distributor?",
-    answer: "Complete the distributor application on our Become a Distributor page. Our partnership team will review your application within 5–7 business days.",
   },
   {
     question: "Do you support commercial customers?",
@@ -98,7 +93,6 @@ export function WhereToBuyPageClient() {
         <CoverageSection />
         <DirectorySection contactPhone={phone} contactEmail={email} />
         <NeedHelpSection contactPhone={phone} contactEmail={email} whatsapp={whatsapp} />
-        <BecomeDistributorCTASection />
 
         {/* FAQ */}
         <section className="py-20 lg:py-28 bg-white" aria-labelledby="where-to-buy-faq-heading">

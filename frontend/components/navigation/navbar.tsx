@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, Search, User, ChevronDown, LogIn, MapPin } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useSearchSuggestions } from "@/hooks/use-products";
+import { useCategories } from "@/hooks/use-categories";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { cn } from "@/lib/utils";
 
@@ -15,16 +16,7 @@ const adminDashboardUrl = "/admin";
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
-  {
-    label: "Products",
-    href: "/products",
-    children: [
-      { label: "Heavy Duty Detergent", href: "/products/heavy-duty-detergent" },
-      { label: "Silk Care", href: "/products/silk-care" },
-      { label: "EcoSuit Cleaner", href: "/products/ecosuit-cleaner" },
-      { label: "Pro Finish", href: "/products/pro-finish" },
-    ],
-  },
+  { label: "Products", href: "/products" },
   { label: "Become a Distributor", href: "/distributor" },
   { label: "Request a Quote", href: "/request-quote" },
   { label: "Where to Buy", href: "/where-to-buy" },
@@ -35,6 +27,7 @@ const navLinks = [
 export function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
+  const { data: categories } = useCategories();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -86,6 +79,17 @@ export function Navbar() {
 
   const isHome = pathname === "/";
 
+  const productChildren = (categories ?? []).map((category) => ({
+    label: category.name,
+    href: `/products?category=${encodeURIComponent(category.slug)}`,
+  }));
+
+  const links = navLinks.map((link) =>
+    link.label === "Products"
+      ? { ...link, children: productChildren.length > 0 ? productChildren : undefined }
+      : link
+  );
+
   return (
     <header
       className={cn(
@@ -110,7 +114,7 @@ export function Navbar() {
         </Link>
 
         <nav className="hidden lg:flex items-center gap-5 xl:gap-6 absolute left-1/2 -translate-x-1/2">
-          {navLinks.map((link) => {
+          {links.map((link) => {
             const active = isActive(link.href);
             return (
               <div key={link.href} className="group relative">
@@ -286,7 +290,7 @@ export function Navbar() {
 
         <nav className="flex-1 overflow-y-auto overscroll-contain px-6 py-6">
           <ul className="flex flex-col gap-1">
-            {navLinks.map((link) => (
+            {links.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}

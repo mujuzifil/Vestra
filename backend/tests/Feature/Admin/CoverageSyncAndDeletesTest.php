@@ -148,7 +148,7 @@ class CoverageSyncAndDeletesTest extends TestCase
             ->call('deletePartner', $distributor->id);
 
         $this->assertDatabaseMissing('distributors', ['id' => $distributor->id]);
-        $this->assertDatabaseMissing('users', ['id' => $portalUser->id]);
+        $this->assertDatabaseHas('users', ['id' => $portalUser->id, 'email' => 'partner-purge@example.com']);
 
         $this->getJson('/api/v1/public/distributors')
             ->assertSuccessful()
@@ -195,8 +195,8 @@ class CoverageSyncAndDeletesTest extends TestCase
         ]);
         $this->assertDatabaseHas('users', [
             'id' => $portalUser->id,
-            'email' => 'deleted-partner-'.$portalUser->id.'@vestra.invalid',
-            'status' => 'inactive',
+            'email' => 'partner-quotes@example.com',
+            'status' => 'active',
         ]);
     }
 }

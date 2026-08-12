@@ -47,9 +47,6 @@ export function WhereToBuyHero() {
             <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto bg-white text-text-heading border-transparent hover:bg-white/90" rightIcon={<ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform-base" />}>
               <Link href="#directory">Find a Distributor</Link>
             </Button>
-            <Button asChild variant="outline" className="rounded-full px-7 py-3.5 h-auto border-white/40 text-white bg-transparent hover:bg-white/10 hover:text-white hover:border-white/50">
-              <Link href="/distributor">Become a Distributor</Link>
-            </Button>
           </div>
         </motion.div>
       </Container>

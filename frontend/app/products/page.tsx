@@ -155,6 +155,16 @@ export default function ProductsPage() {
   }, [filteredProducts, page]);
 
   useEffect(() => {
+    setCategory(searchParams.get("category") ?? "");
+    setQuery(searchParams.get("q") ?? "");
+    setPackageSize(searchParams.get("package_size") ?? "");
+    setIndustry(searchParams.get("industry") ?? "");
+    setAvailability(searchParams.get("availability") ?? "");
+    setSort(searchParams.get("sort") ?? "");
+    setPage(Number(searchParams.get("page") ?? 1));
+  }, [searchParams]);
+
+  useEffect(() => {
     setPage(1);
   }, [query, category, packageSize, industry, availability, sort]);
 
@@ -198,17 +208,40 @@ export default function ProductsPage() {
     [allProducts, compare]
   );
 
+  const activeCategory = useMemo(
+    () => categories?.find((cat) => cat.slug === category) ?? null,
+    [categories, category]
+  );
+
+  const showCategoryBrowse = !category;
+
+  useEffect(() => {
+    if (!category) return;
+    const target = document.getElementById("products-listing");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [category]);
+
   const activeFiltersCount = [category, packageSize, industry, availability, sort].filter(Boolean).length;
 
   return (
     <main>
       <PageHero
-        title="Professional Cleaning Products"
-        subtitle="Explore our range of professional detergents and fabric care solutions manufactured for businesses, institutions, and distributors."
-        breadcrumb={[{ label: "Products" }]}
+        title={activeCategory ? activeCategory.name : "Professional Cleaning Products"}
+        subtitle={
+          activeCategory?.description ||
+          "Explore our range of professional detergents and fabric care solutions manufactured for businesses, institutions, and distributors."
+        }
+        breadcrumb={
+          activeCategory
+            ? [{ label: "Products", href: "/products" }, { label: activeCategory.name }]
+            : [{ label: "Products" }]
+        }
       />
 
-      {/* Categories */}
+      {/* Categories — browse view only */}
+      {showCategoryBrowse && (
       <section className="py-16 lg:py-20 bg-white" aria-labelledby="categories-heading">
         <Container>
           <SectionHeader
@@ -230,14 +263,11 @@ export default function ProductsPage() {
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.5, delay: index * 0.08 }}
                 >
-                  <button
-                    type="button"
-                    onClick={() => setCategory(cat.slug === category ? "" : cat.slug)}
+                  <Link
+                    href={`/products?category=${encodeURIComponent(cat.slug)}`}
                     className={cn(
-                      "w-full text-left p-6 rounded-[20px] border transition-all-base h-full",
-                      category === cat.slug
-                        ? "border-secondary-500 bg-secondary-50 shadow-md"
-                        : "border-default bg-white hover:-translate-y-1 hover:shadow-md hover:border-primary-300"
+                      "block w-full text-left p-6 rounded-[20px] border transition-all-base h-full",
+                      "border-default bg-white hover:-translate-y-1 hover:shadow-md hover:border-primary-300"
                     )}
                   >
                     <div className="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center text-primary-500 mb-4">
@@ -245,13 +275,14 @@ export default function ProductsPage() {
                     </div>
                     <h3 className="text-lg font-bold text-text-heading mb-1">{cat.name}</h3>
                     <p className="text-sm text-text-muted line-clamp-2">{cat.description || `Explore ${cat.name}.`}</p>
-                  </button>
+                  </Link>
                 </motion.div>
               ))}
             </div>
           )}
         </Container>
       </section>
+      )}
 
       {/* Filter Bar */}
       <section className="py-6 bg-surface-page border-y border-default" aria-label="Product filters">
@@ -347,8 +378,24 @@ export default function ProductsPage() {
       )}
 
       {/* Products Grid */}
-      <section className="py-16 lg:py-24 bg-white" aria-labelledby="products-heading">
+      <section id="products-listing" className="py-16 lg:py-24 bg-white scroll-mt-28" aria-labelledby="products-heading">
         <Container>
+          {activeCategory && (
+            <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wider text-secondary-600 mb-1">Category</p>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-text-heading tracking-tight">
+                  {activeCategory.name}
+                </h2>
+              </div>
+              <Link
+                href="/products"
+                className="text-sm font-semibold text-secondary-600 hover:text-secondary-700"
+              >
+                View all categories
+              </Link>
+            </div>
+          )}
           <h2 id="products-heading" className="sr-only">
             Product Listing
           </h2>
