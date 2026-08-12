@@ -13,7 +13,13 @@ import { cn } from "@/lib/utils";
 
 const adminDashboardUrl = "/admin";
 
-const navLinks = [
+type NavLink = {
+  label: string;
+  href: string;
+  children?: { label: string; href: string }[];
+};
+
+const navLinks: NavLink[] = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
   { label: "Products", href: "/products" },
