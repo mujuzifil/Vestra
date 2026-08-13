@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -8,6 +9,7 @@ import { Container } from "@/components/common/container";
 import { Icon } from "@/components/common/icon";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const heroFeatures = [
   { icon: "Factory", title: "Manufactured", description: "in Uganda" },
@@ -15,43 +17,85 @@ const heroFeatures = [
   { icon: "FlaskConical", title: "Advanced", description: "Formulations" },
 ];
 
+const heroSlides = [
+  {
+    src: "/assets/images/hero/home-page-image.webp",
+    alt: "VESTRA professional detergent product range manufactured in Uganda",
+    objectPosition: "object-[70%_center] sm:object-[75%_center] lg:object-[80%_center]",
+  },
+  {
+    src: "/assets/images/hero/hero-slide-whitemax.webp",
+    alt: "VESTRA WhiteMax professional laundry whitening solution",
+    objectPosition: "object-[55%_center] sm:object-[60%_center] lg:object-[65%_center]",
+  },
+  {
+    src: "/assets/images/hero/hero-slide-silkcare.webp",
+    alt: "VESTRA Silk Care professional silk and luxury garment wash",
+    objectPosition: "object-[50%_center] sm:object-[55%_center] lg:object-[60%_center]",
+  },
+] as const;
+
+const SLIDE_INTERVAL_MS = 2000;
+
 export function HeroSection() {
   const prefersReducedMotion = useReducedMotion();
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    if (prefersReducedMotion || heroSlides.length <= 1) return;
+
+    const timer = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % heroSlides.length);
+    }, SLIDE_INTERVAL_MS);
+
+    return () => window.clearInterval(timer);
+  }, [prefersReducedMotion]);
+
   return (
     <section
       id="home"
-      className="relative min-h-[600px] lg:min-h-[calc(100vh-88px)] flex items-center bg-primary-900 overflow-hidden pt-28 lg:pt-0"
+      className="relative min-h-[680px] sm:min-h-[720px] lg:min-h-[calc(100vh-72px)] flex items-center overflow-hidden pt-28 lg:pt-0"
       aria-labelledby="hero-heading"
     >
-      {/* Background effects */}
-      <div className="absolute inset-0 z-0">
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{
-            background:
-              "radial-gradient(ellipse 80% 70% at 85% 65%, rgba(8,42,82,0.35) 0%, transparent 55%), radial-gradient(circle at 20% 30%, rgba(25,85,145,0.08) 0%, transparent 30%)",
-          }}
-        />
-        <div className="absolute -top-40 right-0 w-[clamp(360px,40vw,680px)] h-[clamp(360px,40vw,680px)] rounded-full bg-[rgba(8,45,90,0.6)] blur-[clamp(50px,6vw,100px)] opacity-85" />
-        <div className="absolute -bottom-24 right-[30%] w-[clamp(280px,30vw,480px)] h-[clamp(280px,30vw,480px)] rounded-full bg-[rgba(20,90,160,0.2)] blur-[clamp(50px,6vw,100px)] opacity-70" />
+      {/* Full-bleed rotating product atmosphere */}
+      <div className="absolute inset-0 z-0" aria-hidden="true">
+        {heroSlides.map((slide, index) => (
+          <motion.div
+            key={slide.src}
+            className="absolute inset-0"
+            initial={false}
+            animate={{ opacity: index === activeIndex ? 1 : 0 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.7, ease: "easeInOut" }}
+          >
+            <Image
+              src={slide.src}
+              alt=""
+              fill
+              priority={index === 0}
+              sizes="100vw"
+              className={cn("object-cover", slide.objectPosition)}
+            />
+          </motion.div>
+        ))}
+
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(circle at 78% 58%, rgba(255,255,255,0.05) 0%, transparent 45%)",
+              "linear-gradient(105deg, rgba(3,17,40,0.94) 0%, rgba(3,17,40,0.88) 34%, rgba(3,17,40,0.55) 58%, rgba(3,17,40,0.28) 78%, rgba(3,17,40,0.18) 100%)",
           }}
         />
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at center, transparent 45%, rgba(2,8,18,0.75) 100%)",
+              "radial-gradient(ellipse 70% 80% at 18% 45%, rgba(3,17,40,0.55) 0%, transparent 60%), linear-gradient(to top, rgba(2,8,18,0.72) 0%, transparent 42%), radial-gradient(ellipse at center, transparent 50%, rgba(2,8,18,0.45) 100%)",
           }}
         />
       </div>
 
       <Container className="relative z-10 w-full py-16 lg:py-24">
-        <div className="grid lg:grid-cols-[45%_55%] gap-8 lg:gap-12 items-center">
+        <div className="grid lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] gap-10 lg:gap-8 items-center">
           <motion.div
             initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -108,38 +152,39 @@ export function HeroSection() {
             </div>
           </motion.div>
 
-          <motion.div
-            initial={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, ease: "easeOut", delay: 0.2 }}
-            className="relative lg:absolute lg:right-0 lg:bottom-0 lg:w-[55%] lg:h-full flex items-end justify-end"
-          >
-            <div className="relative w-full aspect-[4/3] lg:aspect-auto lg:h-full">
-              <Image
-                src="/assets/images/hero/home-page-image.webp"
-                alt="VESTRA professional detergent product range manufactured in Uganda"
-                fill
-                sizes="(max-width: 1024px) 100vw, 55vw"
-                priority
-                className="object-contain object-right-bottom"
-                style={{
-                  maskImage:
-                    "linear-gradient(to right, transparent 0%, black 18%, black 92%, transparent 100%)",
-                  WebkitMaskImage:
-                    "linear-gradient(to right, transparent 0%, black 18%, black 92%, transparent 100%)",
-                }}
-              />
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background:
-                    "radial-gradient(ellipse 100% 80% at 75% 75%, transparent 55%, rgba(3,17,40,0.5) 85%, rgba(3,17,40,0.9) 100%)",
-                }}
-              />
-            </div>
-          </motion.div>
+          {/* Keeps product visible through the gradient on large screens */}
+          <div className="hidden lg:block min-h-[420px]" aria-hidden="true" />
         </div>
       </Container>
+
+      {!prefersReducedMotion && (
+        <div
+          className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 lg:bottom-8 lg:left-auto lg:right-8 lg:translate-x-0"
+          role="tablist"
+          aria-label="Hero image slides"
+        >
+          {heroSlides.map((slide, index) => (
+            <button
+              key={slide.src}
+              type="button"
+              role="tab"
+              aria-selected={index === activeIndex}
+              aria-label={`Show slide ${index + 1}`}
+              onClick={() => setActiveIndex(index)}
+              className={cn(
+                "h-1.5 rounded-full transition-all duration-300",
+                index === activeIndex
+                  ? "w-7 bg-secondary-500"
+                  : "w-1.5 bg-white/40 hover:bg-white/70"
+              )}
+            />
+          ))}
+        </div>
+      )}
+
+      <span className="sr-only" aria-live="polite">
+        {heroSlides[activeIndex]?.alt}
+      </span>
     </section>
   );
 }
