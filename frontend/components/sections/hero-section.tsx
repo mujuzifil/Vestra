@@ -21,17 +21,14 @@ const heroSlides = [
   {
     src: "/assets/images/hero/home-page-image.webp",
     alt: "VESTRA professional detergent product range manufactured in Uganda",
-    objectPosition: "object-[68%_center] sm:object-[72%_center] lg:object-[78%_center]",
   },
   {
     src: "/assets/images/hero/hero-slide-whitemax.webp",
     alt: "VESTRA WhiteMax professional laundry whitening solution",
-    objectPosition: "object-center",
   },
   {
     src: "/assets/images/hero/hero-slide-silkcare.webp",
     alt: "VESTRA Silk Care professional silk and luxury garment wash",
-    objectPosition: "object-center",
   },
 ] as const;
 
@@ -58,7 +55,6 @@ export function HeroSection() {
       className="relative overflow-hidden bg-primary-900 pt-[calc(72px+env(safe-area-inset-top))]"
       aria-labelledby="hero-heading"
     >
-      {/* Soft brand atmosphere behind the stacked layout */}
       <div className="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
         <div
           className="absolute inset-0 opacity-50"
@@ -69,71 +65,62 @@ export function HeroSection() {
         />
       </div>
 
-      {/* Image slides — above the words */}
-      <div className="relative z-10">
-        <div className="relative mx-auto w-full max-w-[1400px]">
-          <div className="relative aspect-[4/5] sm:aspect-[16/10] lg:aspect-[21/9] overflow-hidden bg-primary-950">
+      {/* Full-width slides — entire image visible, edge-to-edge */}
+      <div className="relative z-10 w-full">
+        <div className="relative w-full overflow-hidden bg-[#031128]">
+          <div className="grid w-full">
             {heroSlides.map((slide, index) => (
               <motion.div
                 key={slide.src}
-                className="absolute inset-0"
+                className="col-start-1 row-start-1 w-full"
                 initial={false}
                 animate={{ opacity: index === activeIndex ? 1 : 0 }}
                 transition={{
                   duration: prefersReducedMotion ? 0 : SLIDE_FADE_MS,
                   ease: "easeInOut",
                 }}
+                aria-hidden={index !== activeIndex}
               >
                 <Image
                   src={slide.src}
                   alt={slide.alt}
-                  fill
+                  width={1600}
+                  height={2000}
                   priority={index === 0}
-                  sizes="(max-width: 1400px) 100vw, 1400px"
-                  className={cn("object-cover", slide.objectPosition)}
+                  sizes="100vw"
+                  className="h-auto w-full"
                 />
               </motion.div>
             ))}
-
-            {/* Soft edge blend into the navy section below */}
-            <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-20 sm:h-28 lg:h-32"
-              style={{
-                background:
-                  "linear-gradient(to top, rgba(3,17,40,0.95) 0%, rgba(3,17,40,0.45) 45%, transparent 100%)",
-              }}
-              aria-hidden="true"
-            />
-
-            {!prefersReducedMotion && (
-              <div
-                className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 sm:bottom-5"
-                role="tablist"
-                aria-label="Hero image slides"
-              >
-                {heroSlides.map((slide, index) => (
-                  <button
-                    key={slide.src}
-                    type="button"
-                    role="tab"
-                    aria-selected={index === activeIndex}
-                    aria-label={`Show slide ${index + 1}`}
-                    onClick={() => setActiveIndex(index)}
-                    className={cn(
-                      "h-1.5 rounded-full transition-all duration-300",
-                      index === activeIndex
-                        ? "w-7 bg-secondary-500"
-                        : "w-1.5 bg-white/45 hover:bg-white/75"
-                    )}
-                  />
-                ))}
-              </div>
-            )}
           </div>
+
+          {!prefersReducedMotion && (
+            <div
+              className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 sm:bottom-5"
+              role="tablist"
+              aria-label="Hero image slides"
+            >
+              {heroSlides.map((slide, index) => (
+                <button
+                  key={slide.src}
+                  type="button"
+                  role="tab"
+                  aria-selected={index === activeIndex}
+                  aria-label={`Show slide ${index + 1}`}
+                  onClick={() => setActiveIndex(index)}
+                  className={cn(
+                    "h-1.5 rounded-full transition-all duration-300",
+                    index === activeIndex
+                      ? "w-7 bg-secondary-500"
+                      : "w-1.5 bg-white/45 hover:bg-white/75"
+                  )}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Copy below the slides with breathing room */}
       <Container className="relative z-10 pb-16 pt-10 sm:pb-20 sm:pt-12 lg:pb-28 lg:pt-16">
         <motion.div
           initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}

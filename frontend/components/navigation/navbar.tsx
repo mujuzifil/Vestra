@@ -90,7 +90,7 @@ export function Navbar() {
     href: `/products?category=${encodeURIComponent(category.slug)}`,
   }));
 
-  const links = navLinks.map((link) =>
+  const links: NavLink[] = navLinks.map((link) =>
     link.label === "Products"
       ? { ...link, children: productChildren.length > 0 ? productChildren : undefined }
       : link

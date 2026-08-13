@@ -5,13 +5,13 @@ export const siteConfig = {
   tagline: "Professional Fabric Care",
   description:
     "VESTRA is a premium fabric care brand dedicated to developing high-performance cleaning solutions that combine advanced chemistry, innovation, and exceptional garment care.",
-  url: "https://vestra.com",
+  url: "https://vestradetergents.com",
   locale: "en_US",
   twitterHandle: "@vestracare",
 };
 
-/** Cache-bust query so browsers pick up the logo-only favicon after deploy. */
-export const FAVICON_VERSION = "250807";
+/** Cache-bust query so browsers/crawlers pick up the updated VESTRA favicon. */
+export const FAVICON_VERSION = "260814";
 
 export function createMetadata({
   title,
@@ -42,10 +42,13 @@ export function createMetadata({
         { url: `/favicon.ico?v=${v}`, sizes: "any" },
         { url: `/favicon-16x16.png?v=${v}`, sizes: "16x16", type: "image/png" },
         { url: `/favicon-32x32.png?v=${v}`, sizes: "32x32", type: "image/png" },
+        { url: `/favicon-48x48.png?v=${v}`, sizes: "48x48", type: "image/png" },
+        { url: `/favicon-96x96.png?v=${v}`, sizes: "96x96", type: "image/png" },
         { url: `/icon-192x192.png?v=${v}`, sizes: "192x192", type: "image/png" },
         { url: `/icon-512x512.png?v=${v}`, sizes: "512x512", type: "image/png" },
       ],
       apple: [{ url: `/apple-touch-icon.png?v=${v}`, sizes: "180x180", type: "image/png" }],
+      shortcut: [`/favicon.ico?v=${v}`],
     },
     manifest: `/manifest.json?v=${v}`,
     openGraph: {

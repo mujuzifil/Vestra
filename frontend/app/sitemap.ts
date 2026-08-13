@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vestra.com";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://vestradetergents.com";
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
