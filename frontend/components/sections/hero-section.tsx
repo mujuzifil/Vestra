@@ -19,16 +19,20 @@ const heroFeatures = [
 
 const heroSlides = [
   {
-    src: "/assets/images/hero/home-page-image.webp",
-    alt: "VESTRA professional detergent product range manufactured in Uganda",
-  },
-  {
     src: "/assets/images/hero/hero-slide-whitemax.webp",
-    alt: "VESTRA WhiteMax professional laundry whitening solution",
+    alt: "VESTRA WhiteMax — brighter whites professional laundry whitening",
   },
   {
     src: "/assets/images/hero/hero-slide-silkcare.webp",
-    alt: "VESTRA Silk Care professional silk and luxury garment wash",
+    alt: "VESTRA Silk Care — silk and luxury garment wash",
+  },
+  {
+    src: "/assets/images/hero/hero-slide-ecosuit.webp",
+    alt: "VESTRA Eco Suit Cleaner — respect the garment",
+  },
+  {
+    src: "/assets/images/hero/hero-slide-range.webp",
+    alt: "VESTRA professional detergent range manufactured in Uganda",
   },
 ] as const;
 
@@ -65,14 +69,14 @@ export function HeroSection() {
         />
       </div>
 
-      {/* Full-width slides — entire image visible, edge-to-edge */}
+      {/* Compact full-width banner — copy sits directly below */}
       <div className="relative z-10 w-full">
-        <div className="relative w-full overflow-hidden bg-[#031128]">
-          <div className="grid w-full">
+        <div className="relative h-[200px] w-full overflow-hidden bg-[#031128] sm:h-[240px] md:h-[280px] lg:h-[320px]">
+          <div className="absolute inset-0">
             {heroSlides.map((slide, index) => (
               <motion.div
                 key={slide.src}
-                className="col-start-1 row-start-1 w-full"
+                className="absolute inset-0"
                 initial={false}
                 animate={{ opacity: index === activeIndex ? 1 : 0 }}
                 transition={{
@@ -84,11 +88,10 @@ export function HeroSection() {
                 <Image
                   src={slide.src}
                   alt={slide.alt}
-                  width={1600}
-                  height={2000}
+                  fill
                   priority={index === 0}
                   sizes="100vw"
-                  className="h-auto w-full"
+                  className="object-cover object-center"
                 />
               </motion.div>
             ))}
@@ -96,7 +99,7 @@ export function HeroSection() {
 
           {!prefersReducedMotion && (
             <div
-              className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 sm:bottom-5"
+              className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 sm:bottom-4"
               role="tablist"
               aria-label="Hero image slides"
             >
@@ -121,7 +124,7 @@ export function HeroSection() {
         </div>
       </div>
 
-      <Container className="relative z-10 pb-16 pt-10 sm:pb-20 sm:pt-12 lg:pb-28 lg:pt-16">
+      <Container className="relative z-10 pb-16 pt-8 sm:pb-20 sm:pt-10 lg:pb-28 lg:pt-14">
         <motion.div
           initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
