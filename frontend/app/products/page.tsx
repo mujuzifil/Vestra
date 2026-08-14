@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { Container } from "@/components/common/container";
 import { PageHero } from "@/components/common/page-hero";
 import { SectionHeader } from "@/components/common/section-header";
+import { whyChoosePillars } from "@/components/sections/why-choose-section";
 import { EmptyProducts } from "@/components/ui/empty-products";
 import { SkeletonGrid } from "@/components/ui/skeleton-grid";
 import { ApiError } from "@/components/ui/api-error";
@@ -37,14 +38,6 @@ const categoryToIndustries: Record<string, string[]> = {
   "stain-removal": ["Commercial Laundries", "Cleaning Companies", "Hotels"],
   "garment-finishing": ["Commercial Laundries", "Hotels", "Manufacturers"],
 };
-
-const whyChooseItems = [
-  { icon: "ShieldCheck", title: "Premium Quality", description: "Rigorous standards in every batch." },
-  { icon: "Factory", title: "Manufacturer Direct", description: "Source straight from the maker." },
-  { icon: "Truck", title: "Bulk Supply", description: "Flexible commercial volumes." },
-  { icon: "Globe", title: "Reliable Distribution", description: "Supply across Uganda." },
-  { icon: "HeartHandshake", title: "Professional Support", description: "Dedicated sales and technical help." },
-];
 
 function packageSizes(product: Product): string[] {
   if (!product.specifications) return [];
@@ -551,27 +544,30 @@ export default function ProductsPage() {
           <SectionHeader
             id="why-choose-heading"
             title="Why Choose VESTRA®"
-            subtitle="The advantages that make us a dependable manufacturing partner."
+            subtitle="Different cleaning challenges require different solutions."
             light
           />
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
-            {whyChooseItems.map((item, index) => (
-              <motion.div
-                key={item.title}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-5">
+            {whyChoosePillars.map((pillar, index) => (
+              <motion.article
+                key={pillar.number}
                 initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.5, delay: index * 0.08 }}
-                className="text-center p-6 rounded-[20px] bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-colors-base"
+                className="rounded-[20px] border border-white/10 bg-white/5 p-5 text-white sm:p-6"
               >
-                <div className="w-14 h-14 rounded-full border border-white/25 flex items-center justify-center mx-auto mb-4 text-secondary-500">
-                  <IconFor name={item.icon} />
-                </div>
-                <h3 className="text-base font-semibold mb-1">{item.title}</h3>
-                <p className="text-sm text-white/70">{item.description}</p>
-              </motion.div>
+                <p className="mb-3 font-mono text-sm font-bold tracking-[0.18em] text-secondary-500">
+                  {pillar.number}
+                </p>
+                <h3 className="mb-2 text-lg font-bold uppercase tracking-wide">{pillar.title}</h3>
+                <p className="text-sm leading-relaxed text-white/75">{pillar.description}</p>
+              </motion.article>
             ))}
           </div>
+          <p className="mt-8 text-center text-base font-semibold tracking-tight text-white sm:text-xl">
+            Clean deeper. Care smarter. Finish better.
+          </p>
         </Container>
       </section>
 
@@ -751,67 +747,5 @@ function ProductCard({
         </div>
       </div>
     </motion.article>
-  );
-}
-
-function IconFor({ name, className }: { name: string; className?: string }) {
-  // Simple mapping for the five Why Choose icons used in this page.
-  const map: Record<string, ReactNode> = {
-    ShieldCheck: <ShieldCheckIcon className={className} />,
-    Factory: <FactoryIcon className={className} />,
-    Truck: <TruckIcon className={className} />,
-    Globe: <GlobeIcon className={className} />,
-    HeartHandshake: <HeartHandshakeIcon className={className} />,
-  };
-  return map[name] || null;
-}
-
-// Minimal inline icon components to avoid adding to common/icon.tsx for one page.
-function ShieldCheckIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      <path d="m9 12 2 2 4-4" />
-    </svg>
-  );
-}
-function FactoryIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
-      <path d="M17 18h1" />
-      <path d="M12 18h1" />
-      <path d="M7 18h1" />
-    </svg>
-  );
-}
-function TruckIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
-      <path d="M15 18H9" />
-      <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-2.48-3.1A1 1 0 0 0 18.52 9H15" />
-      <circle cx="7" cy="18" r="2" />
-      <circle cx="17" cy="18" r="2" />
-    </svg>
-  );
-}
-function GlobeIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="10" />
-      <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-      <path d="M2 12h20" />
-    </svg>
-  );
-}
-function HeartHandshakeIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3.986 6.017" />
-      <path d="M14.5 17.5 12 20l-2.5-2.5" />
-      <path d="M12 13.5 9.5 11l2.5-2.5L12 8l2.5 2.5L17 11l-2.5 2.5" />
-      <path d="M12 20v-8" />
-    </svg>
   );
 }

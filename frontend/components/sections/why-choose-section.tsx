@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Container } from "@/components/common/container";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
-const pillars = [
+export const whyChoosePillars = [
   {
     number: "01",
     title: "Deep Cleaning",
@@ -59,7 +59,7 @@ export function WhyChooseSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
-          className="mx-auto mb-10 max-w-3xl text-center lg:mb-12"
+          className="mx-auto mb-8 max-w-3xl text-center lg:mb-12"
         >
           <h2
             id="why-choose-heading"
@@ -73,15 +73,15 @@ export function WhyChooseSection() {
           </p>
         </motion.div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-          {pillars.map((pillar, index) => (
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-5">
+          {whyChoosePillars.map((pillar, index) => (
             <motion.article
               key={pillar.number}
               initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.5, delay: prefersReducedMotion ? 0 : index * 0.08 }}
-              className="rounded-[20px] border border-white/10 bg-white/5 p-6 text-white backdrop-blur-sm transition-all-base hover:-translate-y-1 hover:border-secondary-500/40 hover:bg-white/10 lg:p-7"
+              className="rounded-[20px] border border-white/10 bg-white/5 p-5 text-white backdrop-blur-sm transition-all-base hover:-translate-y-1 hover:border-secondary-500/40 hover:bg-white/10 sm:p-6 lg:p-7"
             >
               <p className="mb-4 font-mono text-sm font-bold tracking-[0.18em] text-secondary-500">
                 {pillar.number}
@@ -101,7 +101,7 @@ export function WhyChooseSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.55, delay: prefersReducedMotion ? 0 : 0.2 }}
-          className="mt-10 text-center text-lg font-semibold tracking-tight text-white sm:text-xl lg:mt-12 lg:text-2xl"
+          className="mt-8 text-center text-base font-semibold tracking-tight text-white sm:mt-10 sm:text-xl lg:mt-12 lg:text-2xl"
         >
           Clean deeper. Care smarter. Finish better.
         </motion.p>

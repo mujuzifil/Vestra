@@ -11,12 +11,6 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const heroFeatures = [
-  { icon: "Factory", title: "Manufactured", description: "in Uganda" },
-  { icon: "Shield", title: "Professional", description: "Quality" },
-  { icon: "FlaskConical", title: "Advanced", description: "Formulations" },
-];
-
 const heroSlides = [
   {
     src: "/assets/images/hero/hero-slide-whitemax.webp",
@@ -253,20 +247,6 @@ function MobileHero({
             >
               <Link href="/where-to-buy" data-track="hero-where-to-buy-cta">Where to Buy</Link>
             </Button>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-8">
-            {heroFeatures.map((feature) => (
-              <div key={feature.title} className="flex items-center gap-3 text-left">
-                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-secondary-500/40 bg-secondary-500/10 text-secondary-500 sm:h-12 sm:w-12">
-                  <Icon name={feature.icon} className="h-5 w-5" aria-hidden="true" />
-                </div>
-                <div className="leading-tight">
-                  <strong className="block text-sm font-semibold text-white">{feature.title}</strong>
-                  <span className="text-xs text-white/70 sm:text-sm">{feature.description}</span>
-                </div>
-              </div>
-            ))}
           </div>
         </motion.div>
       </Container>
