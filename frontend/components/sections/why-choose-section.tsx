@@ -2,24 +2,42 @@
 
 import { motion } from "framer-motion";
 import { Container } from "@/components/common/container";
-import { Icon } from "@/components/common/icon";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
-const whyChooseFeatures = [
-  { icon: "Award", title: "Premium Quality", description: "Manufactured to professional standards with rigorous quality control." },
-  { icon: "Factory", title: "Manufacturer Direct", description: "Source directly from the manufacturer for consistency and value." },
-  { icon: "Truck", title: "Reliable Supply", description: "Dependable production and delivery schedules for your business." },
-  { icon: "ShoppingCart", title: "Bulk Orders", description: "Flexible commercial volumes tailored to institutional demand." },
-  { icon: "Globe", title: "Nationwide Distribution", description: "Supplying businesses and distributors across Uganda." },
-  { icon: "HeartHandshake", title: "Professional Support", description: "Dedicated sales and technical support for every partner." },
-];
+const pillars = [
+  {
+    number: "01",
+    title: "Deep Cleaning",
+    description:
+      "Powerful cleaning solutions engineered to tackle deep-seated dirt, soils and everyday buildup.",
+  },
+  {
+    number: "02",
+    title: "Specialized Fabric Care",
+    description:
+      "Purpose-built solutions for delicate, premium and specialty fabrics—helping clean while caring for the garment.",
+  },
+  {
+    number: "03",
+    title: "Targeted Solutions",
+    description:
+      "Specialized products designed for specific cleaning challenges, from difficult stains to demanding garment-care applications.",
+  },
+  {
+    number: "04",
+    title: "Professional Results",
+    description:
+      "A complete approach to cleaning, care and finishing for garments that look, feel and perform at their best.",
+  },
+] as const;
 
 export function WhyChooseSection() {
   const prefersReducedMotion = useReducedMotion();
+
   return (
     <section
       id="why-choose"
-      className="relative py-24 lg:py-36 overflow-hidden"
+      className="relative overflow-hidden py-16 lg:py-24"
       style={{
         background:
           "linear-gradient(135deg, var(--primary-900) 0%, var(--primary-700) 50%, var(--primary-500) 100%)",
@@ -27,7 +45,8 @@ export function WhyChooseSection() {
       aria-labelledby="why-choose-heading"
     >
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="pointer-events-none absolute inset-0"
+        aria-hidden="true"
         style={{
           background:
             "radial-gradient(circle at 20% 80%, rgba(112,192,80,0.1) 0%, transparent 45%), radial-gradient(circle at 80% 20%, rgba(13,59,102,0.6) 0%, transparent 40%)",
@@ -35,36 +54,57 @@ export function WhyChooseSection() {
       />
 
       <Container className="relative z-10">
-        <motion.h2
-          id="why-choose-heading"
-          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+        <motion.div
+          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.7 }}
-          className="text-3xl sm:text-4xl lg:text-[clamp(2.5rem,5vw,3.75rem)] font-extrabold text-white text-center mb-4 tracking-tight"
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="mx-auto mb-10 max-w-3xl text-center lg:mb-12"
         >
-          Why Choose VESTRA®
-        </motion.h2>
-        <div className="w-20 h-1 bg-gradient-to-r from-secondary-500 to-primary-300 rounded-full mx-auto mb-16" />
+          <h2
+            id="why-choose-heading"
+            className="mb-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-[clamp(2.25rem,4vw,3.25rem)]"
+          >
+            Why Choose VESTRA®
+          </h2>
+          <div className="mx-auto mb-5 h-1 w-20 rounded-full bg-gradient-to-r from-secondary-500 to-primary-300" />
+          <p className="text-base leading-relaxed text-white/80 sm:text-lg">
+            Different cleaning challenges require different solutions.
+          </p>
+        </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {whyChooseFeatures.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+          {pillars.map((pillar, index) => (
+            <motion.article
+              key={pillar.number}
+              initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: index * 0.08 }}
-              className="text-center text-white p-8 lg:p-9 rounded-[20px] bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 hover:-translate-y-2 hover:border-secondary-500/40 hover:shadow-xl transition-all-base"
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.5, delay: prefersReducedMotion ? 0 : index * 0.08 }}
+              className="rounded-[20px] border border-white/10 bg-white/5 p-6 text-white backdrop-blur-sm transition-all-base hover:-translate-y-1 hover:border-secondary-500/40 hover:bg-white/10 lg:p-7"
             >
-              <div className="w-16 h-16 lg:w-[72px] lg:h-[72px] rounded-full border-2 border-white/25 flex items-center justify-center mx-auto mb-5 text-secondary-500 group-hover:border-secondary-500 group-hover:bg-secondary-500/10 transition-colors-base">
-                <Icon name={feature.icon} className="w-7 h-7 lg:w-8 lg:h-8" aria-hidden="true" />
-              </div>
-              <h3 className="text-base lg:text-lg font-semibold mb-2 leading-snug">{feature.title}</h3>
-              <p className="text-sm lg:text-base text-white/70 leading-relaxed">{feature.description}</p>
-            </motion.div>
+              <p className="mb-4 font-mono text-sm font-bold tracking-[0.18em] text-secondary-500">
+                {pillar.number}
+              </p>
+              <h3 className="mb-3 text-lg font-bold uppercase leading-snug tracking-wide lg:text-xl">
+                {pillar.title}
+              </h3>
+              <p className="text-sm leading-relaxed text-white/75 lg:text-[0.95rem]">
+                {pillar.description}
+              </p>
+            </motion.article>
           ))}
         </div>
+
+        <motion.p
+          initial={prefersReducedMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.55, delay: prefersReducedMotion ? 0 : 0.2 }}
+          className="mt-10 text-center text-lg font-semibold tracking-tight text-white sm:text-xl lg:mt-12 lg:text-2xl"
+        >
+          Clean deeper. Care smarter. Finish better.
+        </motion.p>
       </Container>
     </section>
   );
