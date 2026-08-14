@@ -59,7 +59,7 @@ const heroSlides = [
     highlight: "Engineered for Every Wash",
     description:
       "Powerful commercial detergents designed for businesses, institutions, and professionals who need reliable supply and consistent quality.",
-    accentCta: "quote" as const,
+    accentCta: "distributor" as const,
     glow: "rgba(112, 192, 80, 0.18)",
   },
 ] as const;
