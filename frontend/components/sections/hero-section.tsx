@@ -69,58 +69,60 @@ export function HeroSection() {
         />
       </div>
 
-      {/* Compact full-width banner — copy sits directly below */}
-      <div className="relative z-10 w-full">
-        <div className="relative h-[200px] w-full overflow-hidden bg-[#031128] sm:h-[240px] md:h-[280px] lg:h-[320px]">
-          <div className="absolute inset-0">
-            {heroSlides.map((slide, index) => (
-              <motion.div
-                key={slide.src}
-                className="absolute inset-0"
-                initial={false}
-                animate={{ opacity: index === activeIndex ? 1 : 0 }}
-                transition={{
-                  duration: prefersReducedMotion ? 0 : SLIDE_FADE_MS,
-                  ease: "easeInOut",
-                }}
-                aria-hidden={index !== activeIndex}
-              >
-                <Image
-                  src={slide.src}
-                  alt={slide.alt}
-                  fill
-                  priority={index === 0}
-                  sizes="100vw"
-                  className="object-cover object-center"
-                />
-              </motion.div>
-            ))}
-          </div>
-
-          {!prefersReducedMotion && (
-            <div
-              className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 sm:bottom-4"
-              role="tablist"
-              aria-label="Hero image slides"
-            >
+      {/* Portrait slides keep native 4:5 ratio so nothing is cropped */}
+      <div className="relative z-10 flex w-full justify-center bg-[#031128]">
+        <div className="relative w-full max-w-[28rem] sm:max-w-[32rem] md:max-w-[36rem]">
+          <div className="relative aspect-[4/5] w-full overflow-hidden">
+            <div className="absolute inset-0 grid">
               {heroSlides.map((slide, index) => (
-                <button
+                <motion.div
                   key={slide.src}
-                  type="button"
-                  role="tab"
-                  aria-selected={index === activeIndex}
-                  aria-label={`Show slide ${index + 1}`}
-                  onClick={() => setActiveIndex(index)}
-                  className={cn(
-                    "h-1.5 rounded-full transition-all duration-300",
-                    index === activeIndex
-                      ? "w-7 bg-secondary-500"
-                      : "w-1.5 bg-white/45 hover:bg-white/75"
-                  )}
-                />
+                  className="col-start-1 row-start-1 h-full w-full"
+                  initial={false}
+                  animate={{ opacity: index === activeIndex ? 1 : 0 }}
+                  transition={{
+                    duration: prefersReducedMotion ? 0 : SLIDE_FADE_MS,
+                    ease: "easeInOut",
+                  }}
+                  aria-hidden={index !== activeIndex}
+                >
+                  <Image
+                    src={slide.src}
+                    alt={slide.alt}
+                    fill
+                    priority={index === 0}
+                    sizes="(max-width: 640px) 100vw, 576px"
+                    className="object-contain object-center"
+                  />
+                </motion.div>
               ))}
             </div>
-          )}
+
+            {!prefersReducedMotion && (
+              <div
+                className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 sm:bottom-4"
+                role="tablist"
+                aria-label="Hero image slides"
+              >
+                {heroSlides.map((slide, index) => (
+                  <button
+                    key={slide.src}
+                    type="button"
+                    role="tab"
+                    aria-selected={index === activeIndex}
+                    aria-label={`Show slide ${index + 1}`}
+                    onClick={() => setActiveIndex(index)}
+                    className={cn(
+                      "h-1.5 rounded-full transition-all duration-300",
+                      index === activeIndex
+                        ? "w-7 bg-secondary-500"
+                        : "w-1.5 bg-white/45 hover:bg-white/75"
+                    )}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
