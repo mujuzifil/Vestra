@@ -13,6 +13,17 @@ import { cn } from "@/lib/utils";
 
 const heroSlides = [
   {
+    src: "/assets/images/hero/hero-slide-range.webp",
+    alt: "VESTRA professional detergent range manufactured in Uganda",
+    kicker: "WORLD-CLASS CLEANING SOLUTIONS",
+    headline: "Professional Cleaning Solutions",
+    highlight: "Engineered for Every Wash",
+    description:
+      "Powerful commercial detergents designed for businesses, institutions, and professionals who need reliable supply and consistent quality.",
+    accentCta: "quote" as const,
+    glow: "rgba(112, 192, 80, 0.18)",
+  },
+  {
     src: "/assets/images/hero/hero-slide-whitemax.webp",
     alt: "VESTRA WhiteMax — brighter whites professional laundry whitening",
     kicker: "WORLD-CLASS CLEANING SOLUTIONS",
@@ -44,17 +55,6 @@ const heroSlides = [
       "Eco Suit Cleaner removes soil from suits and dark garments without fading or fabric damage — built for professional finishing rooms.",
     accentCta: "buy" as const,
     glow: "rgba(80, 140, 220, 0.22)",
-  },
-  {
-    src: "/assets/images/hero/hero-slide-range.webp",
-    alt: "VESTRA professional detergent range manufactured in Uganda",
-    kicker: "WORLD-CLASS CLEANING SOLUTIONS",
-    headline: "Professional Cleaning Solutions",
-    highlight: "Engineered for Every Wash",
-    description:
-      "Powerful commercial detergents designed for businesses, institutions, and professionals who need reliable supply and consistent quality.",
-    accentCta: "distributor" as const,
-    glow: "rgba(112, 192, 80, 0.18)",
   },
 ] as const;
 
