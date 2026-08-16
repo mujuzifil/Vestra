@@ -53,7 +53,7 @@ const heroSlides = [
     highlight: "Engineered for Tailored Fabrics",
     description:
       "Eco Suit Cleaner removes soil from suits and dark garments without fading or fabric damage — built for professional finishing rooms.",
-    accentCta: "buy" as const,
+    accentCta: "distributor" as const,
     glow: "rgba(80, 140, 220, 0.22)",
   },
 ] as const;
