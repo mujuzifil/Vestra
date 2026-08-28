@@ -77,7 +77,7 @@ export function CoverageMap() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="min-w-0 space-y-8 overflow-x-clip">
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="rounded-2xl border border-border bg-primary-50/40 px-5 py-4">
           <p className="text-xs font-semibold uppercase tracking-wider text-primary-700">Districts covered</p>
@@ -93,9 +93,9 @@ export function CoverageMap() {
         </div>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] items-start">
+      <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] items-start">
         <div
-          className="relative overflow-hidden rounded-[28px] border border-border bg-[linear-gradient(160deg,#f4f8f3_0%,#eef4f8_45%,#f7faf7_100%)] p-5 sm:p-7"
+          className="relative min-w-0 w-full overflow-hidden rounded-[28px] border border-border bg-[linear-gradient(160deg,#f4f8f3_0%,#eef4f8_45%,#f7faf7_100%)] p-4 sm:p-7"
           aria-label="Uganda regional coverage overview"
         >
           <div className="absolute inset-0 opacity-[0.35]" style={{
@@ -103,17 +103,17 @@ export function CoverageMap() {
               "radial-gradient(circle at 20% 20%, rgba(13,59,102,0.08), transparent 40%), radial-gradient(circle at 80% 70%, rgba(45,138,90,0.12), transparent 35%)",
           }} />
 
-          <div className="relative mb-5 flex items-end justify-between gap-3">
-            <div>
+          <div className="relative mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-3">
+            <div className="min-w-0">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">Uganda</p>
               <h3 className="text-xl font-bold text-text-heading">Regional presence</h3>
             </div>
-            <p className="text-xs text-text-muted text-right max-w-[12rem]">
+            <p className="text-xs text-text-muted sm:max-w-[12rem] sm:text-right">
               Select a region to see authorised districts.
             </p>
           </div>
 
-          <div className="relative mx-auto grid max-w-md grid-cols-2 gap-3 sm:gap-4">
+          <div className="relative mx-auto grid w-full min-w-0 max-w-md grid-cols-2 gap-3 overflow-x-clip sm:gap-4">
             <button
               type="button"
               onClick={() => setActiveRegion("Northern")}
@@ -160,7 +160,7 @@ export function CoverageMap() {
           </div>
         </div>
 
-        <div className="rounded-[28px] border border-border bg-white p-5 sm:p-7 shadow-sm">
+        <div className="min-w-0 rounded-[28px] border border-border bg-white p-5 sm:p-7 shadow-sm">
           <div className="mb-5">
             <p className="text-xs font-semibold uppercase tracking-wider text-secondary-600">{activeRegion} region</p>
             <h3 className="text-2xl font-bold text-text-heading mt-1">{activeRegion}</h3>
@@ -230,10 +230,10 @@ function regionTone(
   const hasCoverage = (coverage[region] || []).some((d) => d.status === "covered");
 
   if (active && hasCoverage) {
-    return "border-secondary-500 bg-secondary-500 text-white shadow-md scale-[1.01]";
+    return "border-secondary-500 bg-secondary-500 text-white shadow-md ring-2 ring-secondary-500/25";
   }
   if (active) {
-    return "border-primary-500 bg-white text-text-heading shadow-md scale-[1.01]";
+    return "border-primary-500 bg-white text-text-heading shadow-md ring-2 ring-primary-500/20";
   }
   if (hasCoverage) {
     return "border-secondary-200 bg-secondary-50 text-secondary-900 hover:border-secondary-400";
@@ -251,18 +251,18 @@ function RegionTileLabel({
   const coveredCount = districts.filter((d) => d.status === "covered").length;
 
   return (
-    <div>
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-sm font-bold tracking-wide">{region}</span>
+    <div className="min-w-0">
+      <div className="flex min-w-0 items-center justify-between gap-2">
+        <span className="min-w-0 truncate text-sm font-bold tracking-wide">{region}</span>
         {coveredCount > 0 ? (
-          <span className="text-[11px] font-semibold uppercase tracking-wide opacity-90">
+          <span className="shrink-0 text-[11px] font-semibold uppercase tracking-wide opacity-90">
             {coveredCount} district{coveredCount === 1 ? "" : "s"}
           </span>
         ) : (
-          <span className="text-[11px] font-medium uppercase tracking-wide opacity-70">Soon</span>
+          <span className="shrink-0 text-[11px] font-medium uppercase tracking-wide opacity-70">Soon</span>
         )}
       </div>
-      <p className="mt-1 text-xs opacity-80 line-clamp-2">{regionBlurb[region]}</p>
+      <p className="mt-1 text-xs opacity-80 line-clamp-2 break-words">{regionBlurb[region]}</p>
     </div>
   );
 }
