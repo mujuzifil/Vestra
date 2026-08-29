@@ -33,7 +33,7 @@ export function buildCompanyInfo(settings: Setting[]) {
     mission: getSettingValue(settings, "company_mission", "To deliver professional-grade fabric care solutions."),
     vision: getSettingValue(settings, "company_vision", "Building one of Africa's most respected fabric care brands."),
     philosophy: getSettingValue(settings, "company_philosophy", "We believe fabric care should do more than clean."),
-    founded: getSettingValue(settings, "company_founded", "2020"),
+    founded: getSettingValue(settings, "founded", "2026"),
     headquarters: getSettingValue(settings, "company_headquarters", "Kampala, Uganda"),
   };
 }

@@ -825,7 +825,7 @@ class SettingSeeder extends Seeder
             ['key' => 'company_description', 'value' => 'VESTRA is a premium fabric care brand dedicated to developing high-performance cleaning solutions that combine advanced chemistry, innovation, and exceptional garment care.', 'type' => SettingType::TEXT, 'group' => SettingGroup::CONTENT, 'label' => 'Company Description', 'sort_order' => 3, 'is_public' => true, 'is_sensitive' => false],
             ['key' => 'philosophy', 'value' => 'We believe fabric care should do more than clean. It should preserve, protect, and prolong the life of every garment we touch.', 'type' => SettingType::TEXT, 'group' => SettingGroup::CONTENT, 'label' => 'Philosophy', 'sort_order' => 4, 'is_public' => true, 'is_sensitive' => false],
             ['key' => 'footer_text', 'value' => '© '.date('Y').' VESTRA. All rights reserved. Premium garment care solutions.', 'type' => SettingType::TEXT, 'group' => SettingGroup::CONTENT, 'label' => 'Footer Text', 'sort_order' => 5, 'is_public' => true, 'is_sensitive' => false],
-            ['key' => 'founded', 'value' => '2020', 'type' => SettingType::STRING, 'group' => SettingGroup::GENERAL, 'label' => 'Founded Year', 'sort_order' => 13, 'is_public' => true, 'is_sensitive' => false],
+            ['key' => 'founded', 'value' => '2026', 'type' => SettingType::STRING, 'group' => SettingGroup::GENERAL, 'label' => 'Founded Year', 'sort_order' => 13, 'is_public' => true, 'is_sensitive' => false],
             ['key' => 'headquarters', 'value' => 'Kampala, Uganda', 'type' => SettingType::STRING, 'group' => SettingGroup::GENERAL, 'label' => 'Headquarters', 'sort_order' => 14, 'is_public' => true, 'is_sensitive' => false],
 
             // Network stats (Where to Buy)
