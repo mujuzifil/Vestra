@@ -128,7 +128,7 @@ export function AboutPageClient() {
                 ) : (
                   <>
                     <p className="text-text-body text-base lg:text-lg leading-relaxed mb-5">
-                      Founded in {companyInfo?.founded || "2020"} and headquartered in{" "}
+                      Founded in {companyInfo?.founded || "2026"} and headquartered in{" "}
                       {companyInfo?.headquarters || "Kampala, Uganda"}, VESTRA® was created to meet
                       the growing demand for reliable, professional-grade cleaning solutions across
                       Uganda.
