@@ -28,6 +28,8 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'github_actions' => filter_var(env('GITHUB_ACTIONS', false), FILTER_VALIDATE_BOOL),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

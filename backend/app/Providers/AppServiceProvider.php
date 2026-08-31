@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        if (env('GITHUB_ACTIONS') === 'true' && env('DB_CONNECTION') === 'sqlite') {
+        if (config('app.github_actions') && config('database.default') === 'sqlite') {
             config([
                 'cache.default' => 'array',
                 'queue.default' => 'sync',
