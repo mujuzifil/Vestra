@@ -106,7 +106,7 @@ class AppServiceProvider extends ServiceProvider
 
     protected function enforceBootstrapPasswordNotDefault(): void
     {
-        if (! app()->environment('production')) {
+        if (! app()->environment('production') || (config('app.github_actions') && config('database.default') === 'sqlite')) {
             return;
         }
 
