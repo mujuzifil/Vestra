@@ -35,6 +35,14 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        if (env('GITHUB_ACTIONS') === 'true' && env('DB_CONNECTION') === 'sqlite') {
+            config([
+                'cache.default' => 'array',
+                'queue.default' => 'sync',
+                'session.driver' => 'array',
+            ]);
+        }
+
         // Production is served exclusively over HTTPS behind a TLS-terminating
         // proxy. URL generation that runs before the TrustProxies middleware —
         // Filament panel registration, queued mail, console commands — cannot

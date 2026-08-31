@@ -60,8 +60,8 @@ class DistributorLifecycleTest extends TestCase
             'email' => 'lifecycle-partner@example.com',
             'company_name' => 'Lifecycle Distribution Ltd',
             'country' => 'Uganda',
-            'region' => 'Central',
-            'target_region' => 'Western',
+            'region' => 'Kampala',
+            'target_region' => 'Mbarara',
         ]);
 
         $distributor = app(DistributorOnboardingService::class)->approve($application, $admin);

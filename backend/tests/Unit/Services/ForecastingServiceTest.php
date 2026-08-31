@@ -3,10 +3,12 @@
 namespace Tests\Unit\Services;
 
 use App\Services\ForecastingService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ForecastingServiceTest extends TestCase
 {
+    use RefreshDatabase;
     public function test_revenue_forecast_returns_historical_and_forecast_arrays(): void
     {
         $service = new ForecastingService();
