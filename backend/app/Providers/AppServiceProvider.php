@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        if (config('app.github_actions') && config('database.default') === 'sqlite') {
+        if ($this->isCiMediaValidationRun()) {
             config([
                 'cache.default' => 'array',
                 'queue.default' => 'sync',
@@ -106,7 +106,7 @@ class AppServiceProvider extends ServiceProvider
 
     protected function enforceBootstrapPasswordNotDefault(): void
     {
-        if (! app()->environment('production') || (config('app.github_actions') && config('database.default') === 'sqlite')) {
+        if (! app()->environment('production') || $this->isCiMediaValidationRun()) {
             return;
         }
 
@@ -182,5 +182,16 @@ class AppServiceProvider extends ServiceProvider
                 'Default bootstrap administrator password detected in production. Change the password immediately and re-deploy.'
             );
         }
+    }
+
+    private function isCiMediaValidationRun(): bool
+    {
+        if (! config('app.github_actions') || config('database.default') !== 'sqlite') {
+            return false;
+        }
+
+        $database = (string) config('database.connections.sqlite.database');
+
+        return $database !== ':memory:' && $database !== '';
     }
 }
